@@ -3,12 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <title>home</title>
 </head>
 <body>
-    <h1>Authentication Page</h1>
-    <a href="{{url_for('signin')}}">Sign In</a><br>
-    <a href="{{url_for('signup')}}">Sign Up</a><br>
+    <div class="container">
+        <!-- Left Section -->
+        <div class="left-section">
+            <h1>Welcome</h1>
+            <div class="welcome-text">
+                <h2>To the pig management system</h2>
+            </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right-section">
+            <h1>Get started</h1>
+            <div class="button">
+                <a href="{{url_for('signin')}}" class="btn">Log in</a>
+                <a href="{{url_for('signup')}}" class="btn">Sign up</a>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

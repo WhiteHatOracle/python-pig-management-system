@@ -6,10 +6,20 @@ body{
     align-items: center;
     height: 100vh;
 
-    background-image: url('/static/Login_Signup.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
+    background-size: 300% 300%;
+    animation: gradientMove 10s ease infinite;
+}
+@keyframes gradientMove {
+    0%{
+        background-position: 0% 50%; 
+    }
+    50%{ 
+        background-position: 100% 50%; 
+    }
+    100%{ 
+        background-position: 0% 50%; 
+    }
 }
 
 h1 {
