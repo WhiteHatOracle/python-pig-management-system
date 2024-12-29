@@ -11,34 +11,23 @@
         <h1>Login</h1>
 
         <form method="POST" action="">
-            {{ form.hidden_tag() }}
-        
-            <div>
+                {{ form.hidden_tag() }}
                 <label for="username">Username:</label>
                 {{ form.username(id="username", class="form-control", autocomplete="off") }}
                 {% for error in form.username.errors %}
                     <span class="error">{{ error }}</span>
                 {% endfor %}
-            </div>
-        
-            <div>
+
                 <label for="password">Password:</label>
                 {{ form.password(id="password", class="form-control") }}
                 {% for error in form.password.errors %}
                     <span class="error">{{ error }}</span>
                 {% endfor %}
-            </div>
                
-            <div class="least-btn">
-                {{ form.submit(class="btn btn-primary") }}
-            </div>
-
-            <div>
-                <label class="signup-link">                    
-                    <a href="{{url_for('signup')}}">Sign Up instead</a>
-                </label>
-            </div>
+            {{ form.submit(class="btn btn-primary") }}
         </form>
+        
+        <a href="{{url_for('signup')}}">Sign Up instead</a>
         
 
     </div>

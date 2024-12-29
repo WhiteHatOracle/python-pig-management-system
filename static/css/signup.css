@@ -10,6 +10,22 @@ body {
     align-items: center;
     min-height: 100vh;
     color: #333;
+
+    background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
+    background-size: 300% 300%;
+    animation: gradientMove 15s ease infinite;
+}
+
+@keyframes gradientMove {
+    0%{
+        background-position: 0% 50%; 
+    }
+    50%{ 
+        background-position: 100% 50%; 
+    }
+    100%{ 
+        background-position: 0% 50%; 
+    }
 }
 
 h1 {
@@ -26,7 +42,20 @@ form {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+    backdrop-filter: blur(10px);         /* Blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+    border-radius: 12px;                /* Rounded corners */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+    width: 400px;
+    max-width: 400px;
+    box-sizing: border-box;
+    color: #ffffff;                     /* Text color for contrast */
 }
+
 
 label {
     display: block;
