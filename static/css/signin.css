@@ -22,27 +22,144 @@ body{
     }
 }
 
-h1 {
-    text-align: center;
+.Login_Form h1{
     font-size: 36px;
-}
-
-.Login_Form{
-    width: 550px;
-    height: 250px;
-    border: 2px solid #000;
-    opacity: 0.5;
+    padding: 0 auto;
     color: #fff;
-    background-color: #000;
-    align-self: center;
-    padding: 8px 15px;
-    border-radius: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-form{
-    font-size: 20px;
+/* Form Container */
+form {
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+    backdrop-filter: blur(10px);         /* Blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+    border-radius: 12px;                /* Rounded corners */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+    width: 500px;
+    box-sizing: border-box;
+    color: #ffffff;                     /* Text color for contrast */
 }
 
-form input{
-    width: 250px;
+/* Input Fields */
+input[type="text"],
+input[type="password"],
+input[type="checkbox"],
+button {
+    font-size: 16px;
+    margin: 5px 0 15px;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Input Focus */
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #007bff; /* Blue highlight on focus */
+    outline: none;
+}
+
+/* Labels */
+label {
+    font-size: 14px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+}
+
+/* Button */
+button {
+    background: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background 0.3s;
+}
+
+/* Button Hover */
+button:hover {
+    background: #0056b3;
+}
+
+/* Error Messages */
+.error {
+    color: #ff4d4d; /* Red for errors */
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* "Remember Me" Section */
+label[for="remember-me"] {
+    display: inline-flex; /* Align items horizontally */
+    align-items: center;  /* Vertically align checkbox and text */
+    gap: 10px;            /* Space between checkbox and text */
+    font-size: 14px;
+    margin-bottom: 15px;  /* Add spacing below */
+}
+
+input[type="checkbox"] {
+    margin: 0;           /* Remove default margin for checkboxes */
+    width: auto;         /* Prevent checkbox from stretching */
+}
+
+/* Form Layout */
+div {
+    margin-bottom: 15px;
+}
+
+/* Container for Submit Button and Sign-Up Link */
+.least-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;         
+}
+
+/* Button Styling */
+.least-btn .btn {
+    background: #007bff;       /* Primary blue color */
+    color: white;              /* White text */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;        /* Size the button */
+    font-size: 16px;
+    cursor: pointer;
+    width: 200px;
+    text-decoration: none;     /* Remove underline */
+    transition: background 0.3s ease;
+}
+
+/* Button Hover Effect */
+.least-btn .btn:hover {
+    background: #0056b3;       /* Darker blue on hover */
+}
+
+.signup-link{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+}
+
+.signup-link:hover{
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.signup-link:active{
+    transform: scale(0.95);
+    text-decoration: none;
 }
