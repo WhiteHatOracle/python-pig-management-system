@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Feed Form</h1>
+
+    <form method="POST" action="">
+        {{ form.hidden_tag()}}
+        <label for="days">Number of days: </label>
+        {{ form.days }}
+        <label for="feed">Name of Feed: </label>
+        {{ form.feed }}
+        <label for="feed_cost">Cost of feed: </label>
+        {{ form.feed_cost }}
+        <label for="num3_meal_cost">Cost of Number 3 Meal: </label>
+        {{ form.num3_meal_cost}}
+        <label for="pigs">Number of pigs: </label>
+        {{ form.pigs}}
+        <label for="feed_consumption">consumption per animal per day: </label>
+        {{ form.feed_consumption }}
+        
+        {{ form.submit}}
+    </form>
+
+    <div>
+        <h2>RESULT</h2>
+        <label for="feed">Name of Feed: </label>
+        {{ result.feed}}<br>
+        <label for="pigs">Number of Animals: </label>
+        {{result.pigs}}<br>
+        <label for="days">Number of days: </label>
+        {{result.days}}<br>
+        <label for="totalFeed">Total required feed for {{result.days}}days:</label>
+        <b>{{"{:,.2f}".format(result.totalFeed)}}Kg</b> <br>
+        <label for="numOfBags">Total number of bags: </label>
+        {{"{:,.2f}".format(result.numOfBags)}}<br>
+        <label for="concCost">Total cost of concentrate: </label>
+        <u>K{{"{:,.2f}".format(result.concCost)}}</u><br>
+        <label for="num3Meal">Total required Number 3 meal for {{result.days}}days: </label>
+        <b>{{"{:,.2f}".format(result.num3Meal)}}Kg</b><br>
+        <label for="num3MealTotalCost">Total cost of Number 3 meal: </label>
+        <u>K{{"{:,.2f}".format(result.num3MealTotalCost) }}</u> <br>
+        <label for="totalCost">Total Cost of feed for {{result.pigs|safe}} Pigs for {{result.days|safe}} days: </label>
+        <b><u> K{{ "{:,.2f}".format(result.totalCost) }} </u></b>
+
+</body>
+</html>

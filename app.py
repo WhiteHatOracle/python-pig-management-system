@@ -1,8 +1,8 @@
-from flask import Flask, render_template, url_for, redirect, flash
+from flask import Flask, render_template, url_for, redirect, flash, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
@@ -52,6 +52,16 @@ class LoginForm(FlaskForm):
     password = PasswordField(validators=[InputRequired(), Length(min = 4, max = 20)], render_kw={"Placeholder": "Password"})
     remember = BooleanField("Remember Me") # Optional remember me checkbox
     submit = SubmitField("Login")
+
+# Define feed calculation form
+class FeedCalculatorForm(FlaskForm):
+    days = IntegerField(validators=[InputRequired()], render_kw=({"Placeholder": "Number of days (e.g 21)"}))
+    feed = StringField(validators=[InputRequired(),Length(min = 4, max = 20)], render_kw=({"Placeholder":"Feed Name(e.g weaner)"}))
+    feed_cost = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Cost of Concentrate(e.g 850)"}))
+    num3_meal_cost = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Cost of Number 3 Meal(e.g 5.35)"}))
+    pigs = IntegerField(validators=[InputRequired()], render_kw=({"Placeholder":"Number of pigs(e.g 4)"}))
+    feed_consumption = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Feed consumption per animal(e.g 1.5)"}))
+    submit = SubmitField("Calculate")
 
 # Home route
 @app.route('/')
@@ -104,6 +114,38 @@ def signup():
             db.session.rollback()
             flash("An error occurred during registration. Please try again.", "Error")
     return render_template('signup.html', form = form)
+
+@app.route('/calculate', methods=['GET','POST'])
+def calculate():
+    # Get input data from the frontend
+    form = FeedCalculatorForm()
+    result = None #initialize result
+    if form.validate_on_submit():
+        # Perform calculations
+        total_feed = form.days.data * form.pigs.data * float(form.feed_consumption.data)
+
+        concentrates = round(0.4 * total_feed)
+        num_of_bags = round(concentrates / 50)
+        conc_cost = num_of_bags * float(form.feed_cost.data)
+
+        num3_meal = round(0.6 * total_feed, 2)
+        num3_meal_total_cost = num3_meal * float(form.num3_meal_cost.data)
+
+        total_cost = conc_cost + num3_meal_total_cost
+
+        # Prepare the result
+        result = {
+            "totalFeed": total_feed,
+            "numOfBags": num_of_bags,
+            "concCost": conc_cost,
+            "num3Meal": num3_meal,
+            "num3MealTotalCost": num3_meal_total_cost,
+            "totalCost": total_cost,
+            "feed": form.feed.data,
+            "pigs": form.pigs.data,
+            "days": form.days.data
+        }
+    return render_template('feed-calculator.html', form = form, result = result)
 
 # Run the app
 if __name__ == '__main__':
