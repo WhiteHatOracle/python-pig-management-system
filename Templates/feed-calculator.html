@@ -29,23 +29,32 @@
     <div>
         <h2>RESULT</h2>
         <label for="feed">Name of Feed: </label>
-        {{ result.feed}}<br>
+        {{ result.feed|default('N/A') }}<br>
+
         <label for="pigs">Number of Animals: </label>
-        {{result.pigs}}<br>
-        <label for="days">Number of days: </label>
-        {{result.days}}<br>
-        <label for="totalFeed">Total required feed for {{result.days}}days:</label>
-        <b>{{"{:,.2f}".format(result.totalFeed)}}Kg</b> <br>
-        <label for="numOfBags">Total number of bags: </label>
-        {{"{:,.2f}".format(result.numOfBags)}}<br>
-        <label for="concCost">Total cost of concentrate: </label>
-        <u>K{{"{:,.2f}".format(result.concCost)}}</u><br>
-        <label for="num3Meal">Total required Number 3 meal for {{result.days}}days: </label>
-        <b>{{"{:,.2f}".format(result.num3Meal)}}Kg</b><br>
-        <label for="num3MealTotalCost">Total cost of Number 3 meal: </label>
-        <u>K{{"{:,.2f}".format(result.num3MealTotalCost) }}</u> <br>
-        <label for="totalCost">Total Cost of feed for {{result.pigs|safe}} Pigs for {{result.days|safe}} days: </label>
-        <b><u> K{{ "{:,.2f}".format(result.totalCost) }} </u></b>
+        {{ result.pigs|default(0) }}<br>
+
+        <label for="days">Number of Days: </label>
+        {{ result.days|default(0) }}<br>
+
+        <label for="totalFeed">Total required feed for {{ result.days|default(0) }} days: </label>
+        <b>{{ "{:,.2f}".format(result.totalFeed|default(0)) }} Kg</b><br>
+
+        <label for="numOfBags">Total Number of Bags: </label>
+        {{ "{:,.2f}".format(result.numOfBags|default(0)) }}<br>
+
+        <label for="concCost">Total Cost of Concentrate: </label>
+        <u>K{{ "{:,.2f}".format(result.concCost|default(0)) }}</u><br>
+
+        <label for="num3Meal">Total Required Number 3 Meal for {{ result.days|default(0) }} days: </label>
+        <b>{{ "{:,.2f}".format(result.num3Meal|default(0)) }} Kg</b><br>
+
+        <label for="num3MealTotalCost">Total Cost of Number 3 Meal: </label>
+        <u>K{{ "{:,.2f}".format(result.num3MealTotalCost|default(0)) }}</u><br>
+
+        <label for="totalCost">Total Cost of Feed for {{ result.pigs|default(0) }} Pigs for {{ result.days|default(0) }} days: </label>
+        <b><u>K{{ "{:,.2f}".format(result.totalCost|default(0)) }}</u></b>
+
 
 </body>
 </html>
