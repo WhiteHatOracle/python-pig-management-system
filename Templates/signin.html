@@ -2,15 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/signin.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>Sign In</title>
 </head>
 <body>
-    <div class="Login_Form">
+    <div class="Welcome_Form">
         <h1>Login</h1>
 
-        <form method="POST" action="">
+        <form method="POST" action="{{url_for('signin')}}">
                 {{ form.hidden_tag() }}
                 <label for="username">Username:</label>
                 {{ form.username(id="username", class="form-control", autocomplete="off") }}
@@ -24,10 +24,10 @@
                     <span class="error">{{ error }}</span>
                 {% endfor %}
                
-            {{ form.submit(class="btn btn-primary") }}
+            {{ form.submit(class="btn btn-primary", type='submit') }}
         </form>
         
-        <a href="{{url_for('signup')}}">Sign Up instead</a>
+        <a href="{{url_for('signup')}}">Don't have an account? Sign up.</a>
         
 
     </div>

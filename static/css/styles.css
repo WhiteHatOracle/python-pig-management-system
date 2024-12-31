@@ -1,5 +1,4 @@
-/* General Styles */
-body {
+body{
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -15,7 +14,6 @@ body {
     background-size: 300% 300%;
     animation: gradientMove 15s ease infinite;
 }
-
 @keyframes gradientMove {
     0%{
         background-position: 0% 50%; 
@@ -34,7 +32,6 @@ h1 {
     margin-bottom: 20px;
 }
 
-/* Form Styles */
 form {
     background: #ffffff;
     padding: 20px 30px;
@@ -55,7 +52,6 @@ form {
     box-sizing: border-box;
     color: #ffffff;                     /* Text color for contrast */
 }
-
 
 label {
     display: block;
@@ -79,15 +75,6 @@ input.form-control:focus {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-span.error {
-    color: #d9534f;
-    font-size: 12px;
-    margin-top: -10px;
-    margin-bottom: 10px;
-    display: block;
-}
-
-/* Button Styles */
 input.btn {
     background-color: #007bff;
     color: white;
@@ -103,7 +90,6 @@ input.btn:hover {
     background-color: #0056b3;
 }
 
-/* Link Styles */
 a {
     display: block;
     text-align: center;
