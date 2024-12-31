@@ -3,30 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/feedcalculator.css')}}">
     <title>Document</title>
 </head>
 <body>
     <h1>Feed Form</h1>
 
-    <form method="POST" action="">
+    <form method="POST" action="?scroll=results">
         {{ form.hidden_tag()}}
         <label for="days">Number of days: </label>
-        {{ form.days }}
+        {{ form.days(autocomplete="off") }}
         <label for="feed">Name of Feed: </label>
-        {{ form.feed }}
+        {{ form.feed(autocomplete="off") }}
         <label for="feed_cost">Cost of feed: </label>
-        {{ form.feed_cost }}
+        {{ form.feed_cost(autocomplete="off") }}
         <label for="num3_meal_cost">Cost of Number 3 Meal: </label>
-        {{ form.num3_meal_cost}}
+        {{ form.num3_meal_cost(autocomplete="off")}}
         <label for="pigs">Number of pigs: </label>
-        {{ form.pigs}}
+        {{ form.pigs(autocomplete="off")}}
         <label for="feed_consumption">consumption per animal per day: </label>
-        {{ form.feed_consumption }}
-        
+        {{ form.feed_consumption (autocomplete="off")}}
+        <div class="submitBTN">
         {{ form.submit}}
+        </div>
     </form>
 
-    <div>
+    <div id="results" class="result-feed">
         <h2>RESULT</h2>
         <label for="feed">Name of Feed: </label>
         {{ result.feed|default('N/A') }}<br>
@@ -54,7 +56,19 @@
 
         <label for="totalCost">Total Cost of Feed for {{ result.pigs|default(0) }} Pigs for {{ result.days|default(0) }} days: </label>
         <b><u>K{{ "{:,.2f}".format(result.totalCost|default(0)) }}</u></b>
+    </div>
 
-
+    <script>
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('scroll') === 'results') {
+                const resultsDiv = document.getElementById('results');
+                if (resultsDiv) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+    
 </body>
 </html>
