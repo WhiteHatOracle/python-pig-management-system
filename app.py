@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, flash, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Date
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField
@@ -33,6 +34,28 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable = False, unique=True, index = True) # Indexed for quick lookup
     password = db.Column(db.String(80), nullable = False)
+
+#define sow model
+class Sows(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    sow_id = db.Column(db.String(50), unique=True, nullable=False)
+    service_date = db.Column(db.Date, nullable=False)
+    boar_used = db.Column(db.String(50), nullable=False)
+    check_up = db.Column(db.Date)
+    Litter_guard_one = db.Column(db.Date)
+    Litter_guard_two = db.Column(db.Date)
+    feed_up = db.Column(db.Date)
+    Action_date = db.Column(db.Date)
+    Due_date = db.Column(db.Date)
+
+    def calculate_dates(self):
+        self.check_up = self.service_date + timedelta(days=21)
+        self.Litter_guard_one = self.service_date + timedelta(days = 68)
+        self.feed_up = self.service_date + timedelta(days = 90)
+        self.Litter_guard_two = self.service_date + timedelta(days = 100)
+        self.Action_date = self.service_date + timedelta(days = int(109))
+        self.Due_date = self.service_date + timedelta(days = 114)
+
 
 # Define registration form
 class RegisterForm(FlaskForm):
@@ -115,6 +138,7 @@ def signup():
             flash("An error occurred during registration. Please try again.", "Error")
     return render_template('signup.html', form = form)
 
+#feed calculation route
 @app.route('/calculate', methods=['GET','POST'])
 def calculate():
     # Get input data from the frontend
@@ -147,6 +171,15 @@ def calculate():
         }
     return render_template('feed-calculator.html', form = form, result = result)
 
+@app.route("/sow_manager", methods=['POST','GET'])
+def get_sows():
+    sows = Sows.query.all()
+    return render_template('sows.html')
+
+
 # Run the app
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Ensure all tables are created
+        print("Database initialized successfully!")
     app.run(debug=True)

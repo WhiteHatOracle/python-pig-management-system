@@ -1,137 +1,96 @@
-/* General Styles */
-body{
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+h1{
+    font-size: 28px;
     color: #333;
-
-    background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
-    background-size: 300% 300%;
-    animation: gradientMove 15s ease infinite;
-}
-@keyframes gradientMove {
-    0%{
-        background-position: 0% 50%; 
-    }
-    50%{ 
-        background-position: 100% 50%; 
-    }
-    100%{ 
-        background-position: 0% 50%; 
-    }
-}
-
-h1 {
-    text-align: center;
-    margin-top: 20px;
-    color: #4CAF50;
-}
-
-h2 {
-    color: #333;
-    margin-top: 20px;
     text-align: center;
 }
 
-/* Form Styles */
-form {
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-
-    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
-    backdrop-filter: blur(10px);         /* Blur effect */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-    border-radius: 12px;                /* Rounded corners */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    padding: 20px;
-    /* width: 100%; */
-    max-width: 800px;
-    box-sizing: border-box;
-    color: #ffffff;                     /* Text color for contrast */
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-
-}
-
-input[type="text"], input[type="number"], select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    outline: none;
-}
-
-.submitBTN{
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center;    /* Center vertically (optional, if needed) */
-}
-
-input[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-input[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-/* Result Section Styles */
-.result-feed {
+form{
+    max-width: auto;
     margin: 20px auto;
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-
-    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
-    backdrop-filter: blur(10px);         /* Blur effect */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-    border-radius: 12px;                /* Rounded corners */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     padding: 20px;
-    /* width: 100%; */
-    max-width: 800px;
-    box-sizing: border-box;
-    color: #ffffff;                     /* Text color for contrast */
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+    display: grid; 
+    grid-template-columns: 1fr 2fr;
 }
 
-label {
-    font-weight: bold;
+form label{
+    display: grid;
+    margin-bottom: 8px;
 }
 
-b {
-    color: #4CAF50;
+form input{
+    width: 100%;
+    padding: 8px 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+    margin-bottom: 15px;
 }
 
-u {
-    color: #333;
-    text-decoration: none;
-    font-weight: bold;
-    border-bottom: 2px dotted #4CAF50;
+.submitBTN {
+    text-align: center;
+    margin-top: 15px;
+    grid-column: 1/-1;
+    width: 100%;
+}
+
+.submitBTN input {
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submitBTN input:hover {
+    background-color: #222533;
+}
+
+/* Result Section */
+.result-feed {
+    max-width: auto;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 1fr 2fr; /* Two columns: labels and values */
+    gap: 15px 10px; /* Row and column spacing */
+    align-items: center;
+}
+
+.result-feed label{
+    text-align: left;
+    padding-right: 10px 15px;
+}
+
+@media (max-width: 768px) {
+    form{
+        grid-template-columns: 1fr;
+    }
+    form label input{
+        text-align: left;
+        padding: 0;
+    }
+    .result-feed {
+        grid-template-columns: 1fr; /* Switch to single column on smaller screens */
+    }
+
+    .result-feed label, .result-feed span {
+        text-align: left; /* Align all text to the left for single-column layout */
+        padding-right: 0;
+    }
+
+    .result-feed span{
+        color: #333;
+    }
 }
