@@ -62,6 +62,7 @@ body{
 #sidebar ul{
   list-style: none;
 }
+
 #sidebar > ul > li:first-child{
   display: flex;
   justify-content: flex-end;
@@ -70,6 +71,7 @@ body{
     font-weight: 600;
   }
 }
+
 #sidebar a, #sidebar .logo{ 
   border-radius: .5em;
   padding: .85em;

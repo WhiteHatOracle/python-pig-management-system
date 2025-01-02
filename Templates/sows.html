@@ -1,14 +1,55 @@
-{% extends 'dashboard.html'%}
+{% extends 'home.html'%}
 
 {% block title%}
 Sows
 {% endblock%}
 
 {% block head %} 
-<link rel="stylesheet" href="url_for ">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 {% endblock %}
  
-{% block body %} 
-<h2>These are the sows</h2>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias ut distinctio, perspiciatis nam ad itaque? Vel eaque laborum ex nulla vitae, maxime quasi esse deserunt optio cumque necessitatibus voluptates accusantium. Corporis beatae inventore id corrupti debitis eaque hic, optio tempore perspiciatis. Harum dolores veniam quidem omnis consequuntur officiis facilis in recusandae? Magni modi minus veniam! Velit, voluptatibus quae ipsam eius odit maxime consequuntur ipsum aspernatur amet placeat a, minus fugiat qui earum officia praesentium voluptatem ad ut unde temporibus voluptate quaerat suscipit optio enim. Incidunt tenetur repellendus reprehenderit similique eveniet, deserunt, at illum expedita quasi totam error obcaecati aut! Numquam.</p>
+{% block content %} 
+<div class="sow-table">
+    <h1>Sows</h1>
+    <form method="POST" action="/sow_manager">
+        <input type="text" name="sows" id="sows" placeholder="Sow ID">
+        <input type="text" name="boar-used" id="boar-used" placeholder="Boar ID">
+        <input type="date" name="service-date" id="service-date">
+        <input type="submit" class="submit-btn">
+    </form>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Sow ID</th>
+                <th>Service Date</th>
+                <th>Boar Used</th>
+                <th>Check Up</th>
+                <th>Litter Guard One</th>
+                <th>Litter Guard Two</th>
+                <th>Feed Up</th>
+                <th>Action Date</th>
+                <th>Due Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sow in sows %}
+            <tr>
+                <td data-cell="Sow" >{{ sow.sow_id }}</td>
+                <td data-cell="Service Date" >{{ sow.service_date }}</td>
+                <td data-cell="Boar" >{{ sow.boar_used }}</td>
+                <td data-cell="21 day Checkup" >{{ sow.check_up }}</td>
+                <td data-cell="First Litter Guard" >{{ sow.Litter_guard_one }}</td>
+                <td data-cell="Second Litter Guard" >{{ sow.Litter_guard_two }}</td>
+                <td data-cell="Feed Up" >{{ sow.feed_up }}</td>
+                <td data-cell="Action Date" >{{ sow.Action_date }}</td>
+                <td data-cell="Due date" >{{ sow.Due_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
 {% endblock %}

@@ -7,7 +7,8 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Integ
 from wtforms.validators import InputRequired, Length, ValidationError
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-# from decouple import config
+import datetime
+from datetime import datetime
 
 # Initalize Flask app
 app = Flask(__name__)
@@ -173,8 +174,38 @@ def calculate():
 
 @app.route("/sow_manager", methods=['POST','GET'])
 def get_sows():
-    sows = Sows.query.all()
-    return render_template('sows.html')
+    form = Sows()
+    if request.method == 'POST':
+        try:
+            #get data from the form
+            sow_id = request.form['sows']
+            service_date = request.form['service-date']
+            boar_used = request.form['boar-used']
+
+
+            #convert service date from string to date
+            service_date = datetime.strptime(service_date, '%Y-%m-%d')
+
+
+            #create a new sow instance
+            new_sow = Sows(
+            sow_id=sow_id,
+            service_date=service_date,
+            boar_used=boar_used
+            )
+            new_sow.calculate_dates()  # Calculate derived dates
+
+            #add the new sow to the data base
+            db.session.add(new_sow)
+            db.session.commit()
+        except Exception as e:
+            flash(f'Error: {str(e)}', 'error')
+            return redirect('/sow_manager')
+
+        return redirect('/sow_manager')#redirect to the sow manager page
+
+    sows = Sows.query.all() # Fetch all records
+    return render_template('sows.html', sows=sows) # pass to template
 
 
 # Run the app

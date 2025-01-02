@@ -1,28 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-    <title>home</title>
-</head>
-<body>
-    <div class="container">
-        <!-- Left Section -->
-        <div class="left-section">
-            <!-- <h1>Welcome</h1> -->
-            <div class="welcome-text">
-                <h2>Pig Management System</h2>
-            </div>
-        </div>
-        <!-- Right Section -->
-        <div class="right-section">
-            <h1>Get started</h1>
-            <div class="button">
-                <a href="{{url_for('signin')}}" class="btn">Log in</a>
-                <a href="{{url_for('signup')}}" class="btn">Sign up</a>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+
+{% extends 'home.html'%}
+
+{% block title%}
+Home
+{% endblock%}
+
+{% block head %} 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+ 
+{% block content %} 
+<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias ut distinctio, perspiciatis nam ad itaque? Vel eaque laborum ex nulla vitae, maxime quasi esse deserunt optio cumque necessitatibus voluptates accusantium. Corporis beatae inventore id corrupti debitis eaque hic, optio tempore perspiciatis. Harum dolores veniam quidem omnis consequuntur officiis facilis in recusandae? Magni modi minus veniam! Velit, voluptatibus quae ipsam eius odit maxime consequuntur ipsum aspernatur amet placeat a, minus fugiat qui earum officia praesentium voluptatem ad ut unde temporibus voluptate quaerat suscipit optio enim. Incidunt tenetur repellendus reprehenderit similique eveniet, deserunt, at illum expedita quasi totam error obcaecati aut! Numquam.</p>
+<div class="button">
+    <a href="{{url_for('signin')}}" class="btn">Log in</a>
+    <a href="{{url_for('signup')}}" class="btn">Sign up</a>
+</div>
+{% endblock %}
