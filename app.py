@@ -87,10 +87,15 @@ class FeedCalculatorForm(FlaskForm):
     feed_consumption = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Feed consumption per animal(e.g 1.5)"}))
     submit = SubmitField("Calculate")
 
-# Home route
+#start page
 @app.route('/')
+def start():
+    return render_template('start.html')  # starting page
+
+# Home route
+@app.route('/home')
 def home():
-    return render_template('start.html')  # Displays Homepage
+    return render_template('home.html')  # Displays Homepage
 
 # Sign in route
 @app.route('/signin', methods=['GET', 'POST'])
