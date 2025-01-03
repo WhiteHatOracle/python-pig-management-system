@@ -90,7 +90,7 @@ class FeedCalculatorForm(FlaskForm):
 # Home route
 @app.route('/')
 def home():
-    return render_template('home.html')  # Displays Homepage
+    return render_template('start.html')  # Displays Homepage
 
 # Sign in route
 @app.route('/signin', methods=['GET', 'POST'])

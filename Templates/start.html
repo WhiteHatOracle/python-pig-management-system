@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/start.css') }}">
+    <title>Plan a Trip</title>
+</head>
+<body>
+    <div class="left-section">
+        <h1>Manage your Pigs</h1>
+        <div class="dot"></div>
+    </div>
+    <div class="right-section">
+        <h1>Get started</h1>
+        <div class="buttons">
+            <a href="{{url_for('signin')}}" class="button">log in</a>
+            <a href="{{url_for('signup')}}" class="button">Sign up</a>
+        </div>
+        <a href="#">Try it first</a>
+        <div class="footer">
+            <a href="#">Terms of use</a> |
+            <a href="#">Privacy policy</a>
+        </div>
+    </div>
+</body>
+</html>
