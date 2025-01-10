@@ -1,137 +1,112 @@
-/* General Styles */
-body{
-    font-family: Arial, sans-serif;
+body {
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    background-color: #f9f9f9;
     color: #333;
-
-    background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
-    background-size: 300% 300%;
-    animation: gradientMove 15s ease infinite;
-}
-@keyframes gradientMove {
-    0%{
-        background-position: 0% 50%; 
-    }
-    50%{ 
-        background-position: 100% 50%; 
-    }
-    100%{ 
-        background-position: 0% 50%; 
-    }
 }
 
-h1 {
-    text-align: center;
-    margin-top: 20px;
-    color: #4CAF50;
+main {
+    padding: 20px;
 }
 
 h2 {
-    color: #333;
-    margin-top: 20px;
+    font-size: 32px;
+    margin-bottom: 20px;
     text-align: center;
 }
 
-/* Form Styles */
 form {
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-
-    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
-    backdrop-filter: blur(10px);         /* Blur effect */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-    border-radius: 12px;                /* Rounded corners */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    padding: 20px;
-    /* width: 100%; */
-    max-width: 800px;
-    box-sizing: border-box;
-    color: #ffffff;                     /* Text color for contrast */
+    display: grid;
+    grid-template-columns: 30ch auto;
+    gap: 0.5rem;
+    margin: 20px auto;
 }
 
 label {
-    display: block;
-    margin-bottom: 8px;
     font-weight: bold;
-
+    margin-bottom: 5px;
 }
 
-input[type="text"], input[type="number"], select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
+input[type="text"], input[type="number"], select, textarea {
+    padding: 10px;
+    font-size: 16px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 5px;
+    width: 100%;
     box-sizing: border-box;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: #0056b3;
     outline: none;
 }
 
-.submitBTN{
-    display: flex;
+.submitBTN {
+    grid-column: 1 / -1; /* Make the div span across all columns */
+    display: flex; /* Use flexbox for centering the button */
     justify-content: center; /* Center horizontally */
-    align-items: center;    /* Center vertically (optional, if needed) */
+    margin-top: 1rem; /* Optional spacing above the button */
 }
-
-input[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
+.submitBTN input[type="submit"] {
     padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px;
     font-size: 16px;
+    color: #fff;
+    background-color: #0056b3;
+    width: 300px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-input[type="submit"]:hover {
-    background-color: #45a049;
+.submitBTN input[type="submit"]:hover {
+    background-color: #003d82;
 }
 
-/* Result Section Styles */
-.result-feed {
-    margin: 20px auto;
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-
-    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
-    backdrop-filter: blur(10px);         /* Blur effect */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-    border-radius: 12px;                /* Rounded corners */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    padding: 20px;
-    /* width: 100%; */
-    max-width: 800px;
-    box-sizing: border-box;
-    color: #ffffff;                     /* Text color for contrast */
+#results {
+    display: grid;
+    grid-template-columns: 40ch auto;
+    gap: 0.5rem;
+    margin-top: 30px;
+    max-width: 100%;
 }
-
-label {
+#results label {
+    display: block;
     font-weight: bold;
+    margin: 10px 0 5px;
 }
 
-b {
-    color: #4CAF50;
+#results b, #results u {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #0056b3;
 }
 
 u {
-    color: #333;
     text-decoration: none;
-    font-weight: bold;
-    border-bottom: 2px dotted #4CAF50;
+    border-bottom: 2px dotted #0056b3;
+}
+
+@media (max-width: 800px) {
+    .container {
+        padding: 15px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    label {
+        font-size: 14px;
+    }
+
+    input[type="text"], input[type="number"], select, textarea {
+        font-size: 14px;
+    }
+
+    .submitBTN input[type="submit"] {
+        font-size: 14px;
+    }
 }

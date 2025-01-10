@@ -1,0 +1,94 @@
+form {
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+    backdrop-filter: blur(10px);         /* Blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+    border-radius: 12px;                /* Rounded corners */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+    /* width: 100%; */
+    min-width: 800px;
+    box-sizing: border-box;
+    color: #ffffff;                     /* Text color for contrast */
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+
+}
+
+input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.submitBTN{
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center;    /* Center vertically (optional, if needed) */
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Result Section Styles */
+.result-feed {
+    margin: 20px auto;
+    background: #ffffff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+
+    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
+    backdrop-filter: blur(10px);         /* Blur effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
+    border-radius: 12px;                /* Rounded corners */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 20px;
+    /* width: 100%; */
+    max-width: 800px;
+    box-sizing: border-box;
+    color: #ffffff;                     /* Text color for contrast */
+}
+
+label {
+    font-weight: bold;
+}
+
+b {
+    color: #4CAF50;
+}
+
+u {
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 2px dotted #4CAF50;
+}
