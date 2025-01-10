@@ -1,6 +1,6 @@
-from flask import Flask, render_template, url_for, redirect, flash, request, jsonify
+from flask import Flask, render_template, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user, current_user
+from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField
 from wtforms.validators import InputRequired, Length, ValidationError
@@ -63,10 +63,16 @@ class FeedCalculatorForm(FlaskForm):
     feed_consumption = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Feed consumption per animal(e.g 1.5)"}))
     submit = SubmitField("Calculate")
 
-# Home route
-@app.route('/')
+
+@app.route('/home', methods=['GET','POST'])
 def home():
-    return render_template('home.html')  # Displays Homepage
+    return render_template('home.html')
+
+# login route
+@app.route('/')
+def login():
+    return render_template('login.html')  # Displays Homepage
+
 
 # Sign in route
 @app.route('/signin', methods=['GET', 'POST'])
@@ -77,7 +83,7 @@ def signin():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data) # Log in the user
-                return redirect(url_for('dashboard'))
+                return redirect(url_for('home'))
             else:
                 flash("Invalid Password, Please try again.", "Error") # Invalid password feedback
         else:

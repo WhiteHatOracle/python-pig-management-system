@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    <title>home</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Section -->
+        <div class="left-section">
+            <!-- <h1>Welcome</h1> -->
+            <div class="welcome-text">
+                <h2>Pig Management System</h2>
+            </div>
+        </div>
+        <!-- Right Section -->
+        <div class="right-section">
+            <h1>Get started</h1>
+            <div class="button">
+                <a href="{{url_for('signin')}}" class="btn">Log in</a>
+                <a href="{{url_for('signup')}}" class="btn">Sign up</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

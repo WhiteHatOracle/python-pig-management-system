@@ -1,14 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
-    <title>Dashboard</title>
-</head>
-<body>
-    <h1>you are logged in</h1>
-    <a href="{{url_for('logout')}}">logout</a>
-    <a href="{{url_for('calculate')}}">Feed Calculatoro</a>
-</body>
-</html>
+{% extends "home.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css' )}}">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <div class="container">
+        <h2>Dashboard</h2>
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Similique quaerat ea perspiciatis atque consequatur numquam earum provident dolore quas, libero reiciendis vero cupiditate architecto, et nulla est tempora itaque? Accusantium!</p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut, beatae consequuntur architecto assumenda repellendus maiores deleniti eius nobis exercitationem tempora, velit nulla sunt libero quas illo quaerat! Et, vitae laudantium.</p>
+    </div>
+    <div class="container">
+        <h2>dashboard two</h2>
+        <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Amet deleniti minima non! Eos aliquam nobis quod? Iste voluptate impedit dignissimos debitis. Rerum enim aspernatur repudiandae autem vel veniam eaque veritatis?</p>
+    </div>
+</main>
+
+{% endblock %}
