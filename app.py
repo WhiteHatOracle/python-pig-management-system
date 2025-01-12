@@ -2,8 +2,8 @@ from flask import Flask, render_template, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField
-from wtforms.validators import InputRequired, Length, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField
+from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
 # from decouple import config
@@ -63,6 +63,17 @@ class FeedCalculatorForm(FlaskForm):
     feed_consumption = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Feed consumption per animal(e.g 1.5)"}))
     submit = SubmitField("Calculate")
 
+# Define Invoice generator form
+class invoiceGenerator(FlaskForm):
+    company = StringField(validators=[InputRequired(),Length(min = 4, max = 50)], render_kw=({"Placeholder":"Company Name"}))
+    firstBandRange = StringField(validators=[InputRequired(),Length(min = 4, max = 10)], render_kw=({"Placeholder": "e.g., 65-109.9" }))
+    firstBandPrice = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"60.0 or 60"}))
+    secondBandRange = StringField(validators=[InputRequired(),Length(min = 4, max = 10)], render_kw=({"Placeholder":"e.g., 65-109.9"}))
+    secondBandPrice = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"60.0 or 60"}))
+    thirdBandRange = StringField(validators=[InputRequired(),Length(min = 4, max = 10)], render_kw=({"Placeholder": "e.g., 65-109.9" }))
+    thirdBandPrice = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"60.0 or 60"}))
+    weights = TextAreaField(validators=[DataRequired()], render_kw=({"Placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."}))
+    submit = SubmitField("Generate Invoice")
 
 @app.route('/home', methods=['GET','POST'])
 def home():
@@ -72,7 +83,6 @@ def home():
 @app.route('/')
 def login():
     return render_template('login.html')  # Displays Homepage
-
 
 # Sign in route
 @app.route('/signin', methods=['GET', 'POST'])
@@ -121,6 +131,7 @@ def signup():
             flash("An error occurred during registration. Please try again.", "Error")
     return render_template('signup.html', form = form)
 
+# Feed management route
 @app.route('/calculate', methods=['GET','POST'])
 def calculate():
     # Get input data from the frontend
@@ -152,6 +163,17 @@ def calculate():
             "days": form.days.data
         }
     return render_template('feed-calculator.html', form = form, result = result)
+
+# Invoice Generator route
+@app.route('/invoice-generator', methods=['GET','POST'])
+def invoice_Generator():
+    form = invoiceGenerator()
+    if form.validate_on_submit():
+        # Perform calculations
+        total_feed = form.days.data * form.pigs.data * float(form.feed_consumption.data)
+
+    
+    return render_template('invoiceGenerator.html', form=form)
 
 # Run the app
 if __name__ == '__main__':

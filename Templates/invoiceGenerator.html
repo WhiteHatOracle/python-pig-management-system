@@ -1,0 +1,48 @@
+{% extends "home.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/feedcalculator.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2>Invoice Generator</h2>
+    <form class="container" method="POST" action="?scroll=results">
+        {{ form.hidden_tag()}}  
+        <label for="company">Company Name</label>
+        {{ form.company(autocomplete="off") }}
+
+        <label for="firstBandRange">First band range</label>
+        {{ form.firstBandRange(autocomplete="off") }}
+
+        <label for="firstBandPrice">First band price</label>
+        {{ form.firstBandPrice(autocomplete="off") }}
+
+        <label for="secondBandRange">Second band range</label>
+        {{ form.secondBandRange(autocomplete="off") }}
+
+        <label for="secondBandPrice">Second band price</label>
+        {{ form.secondBandPrice(autocomplete="off") }}
+        
+        <label for="thirdBandRange">Third band range</label>
+        {{ form.thirdBandRange(autocomplete="off") }}
+
+        <label for="thirdBandPrice">Third band price</label>
+        {{ form.thirdBandPrice(autocomplete="off") }}
+
+        <label for="weights">Weights</label>
+        {{ form.weights(autocomplete="off") }}
+        
+        <div class="submitBTN">
+            {{ form.submit }}
+        </div>
+
+    </form>    
+</main>
+
+{% endblock %}
