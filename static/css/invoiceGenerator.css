@@ -1,13 +1,9 @@
-body {
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
-/* main {
-    padding: 20px;
-} */
-h2{
+#header{
     background-color: #333;
     color: #fff;
     text-align: center;
@@ -15,15 +11,14 @@ h2{
     margin-bottom: 20px;
     border-radius: 5px;
 }
-
-form {
+form{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
 label {
     font-weight: bold;
-    margin-bottom: 10px 0 0 0;
+    margin: 10px 0 0 0;
 }
 
 input[type="text"], input[type="number"], select, textarea {
@@ -39,7 +34,6 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     border-color: #0056b3;
     outline: none;
 }
-
 .submitBTN {
     grid-column: 1 / -1; /* Make the div span across all columns */
     display: flex; /* Use flexbox for centering the button */
@@ -62,37 +56,62 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     background-color: #003d82;
 }
 
-#results {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.5rem;
-    margin-top: 30px;
-    max-width: 100%;
+.invoice-table {
+    border: 1px solid #333;
+    border-collapse: collapse;
+    min-width: 100%;
+    /* background-color: #fff; */
+    border-radius: 5px;
+    box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.15);
+    margin: 25px auto;
+    text-align: center;
 }
-#results label {
-    display: block;
-    font-weight: bold;
-    margin: 10px 0 5px;
+.totalCost{
+    text-align: right;
+    margin: 25px auto;
+}
+.invoice-table thead tr {
+    color: #fff;
+    font-size: 20px;
+    border-bottom: 1px dashed #333;
+}
+.invoice-table tfoot tr {
+    color: #fff;
+    font-size: 20px;
+    border-top: 1px dashed #333;
 }
 
-#results b, #results u {
-    display: block;
-    margin-bottom: 15px;
+.invoice-table thead tr th{
+    font-size: 16px;
+    letter-spacing: 1px;
+    color: grey;
+    padding: 8px;
+}
+
+.invoice-table tfoot tr td{
     font-size: 18px;
-    color: #0056b3;
+    letter-spacing: 1px;
+    color: green;
+    padding: 8px;
 }
 
-u {
-    text-decoration: none;
-    border-bottom: 2px dotted #0056b3;
+.invoice-table tbody tr td{
+    padding: 8px;
 }
 
-@media (max-width: 800px) {
-    /* .container {
-        padding: 15px;
-    } */
-    form, #results {
-        grid-template-columns: 1fr;
+.invoice-table thead tr th:nth-last-child(1),
+.invoice-table tbody tr td:nth-last-child(1),
+.invoice-table tfoot tr td:nth-last-child(1){
+    text-align: right;
+}
+
+@media (max-width: 800px){
+    
+    form{
+        grid-template-columns: repeat(1, 1fr);
     }
-
+    .invoice-table{
+        width: 100%;
+    }
+    
 }

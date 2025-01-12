@@ -4,15 +4,16 @@
 
 {% block head %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{url_for('static',filename='css/feedcalculator.css')}}">
+  <!-- <link rel="stylesheet" href="{{url_for('static',filename='css/feedcalculator.css')}}"> -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/invoiceGenerator.css')}}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
   <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
 <main>
-    <h2>Invoice Generator</h2>
-    <form class="container" method="POST" action="?scroll=results">
+    <h2 id="header">Invoice Generator</h2>
+    <form class="container" method="POST" action="?scroll=invoice">
         {{ form.hidden_tag()}}  
         <label for="company">Company Name</label>
         {{ form.company(autocomplete="off") }}
@@ -43,30 +44,47 @@
         </div>
     </form>    
     
-    <div class="container">
+    <div class="container" id="invoice">
         {% if invoice_data %}
             <h2>Invoice for {{ company_name }}</h2>
-            <table border="1">
+            <table class="invoice-table">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Weight</th>
                         <th>Price per Kg</th>
                         <th>Cost</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for item in invoice_data %}
-                        <tr>
-                            <td>{{ item.weight }}</td>
-                            <td>{{ item.price }}</td>
-                            <td>{{ item.cost }}</td>
-                        </tr>
+                    {% for idx, item in enumerate(invoice_data, start=1) %}
+                    <tr>
+                        <td>{{ idx }}</td>
+                        <td>{{ item.formatted_weight }}</td>
+                        <td>{{ item.formatted_price }}</td>
+                        <td>{{ item.formatted_cost }}</td> <!-- Format cost -->
+                    </tr>
                     {% endfor %}
                 </tbody>
+                <tfoot>
+                    <td colspan="3" align="right" >Total:</td>
+                    <td>{{ total_cost }}</td>
+                    <!-- <h3 class="totalCost">Total Cost: {{ total_cost }}</h3> -->
+                </tfoot>
             </table>
-            <h3>Total Cost: {{ total_cost }}</h3>
         {% endif %}
     </div>
+    <script>
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('scroll') === 'invoice') {
+                const resultsDiv = document.getElementById('invoice');
+                if (resultsDiv) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
 </main>
 
 {% endblock %}

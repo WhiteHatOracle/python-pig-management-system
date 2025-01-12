@@ -16,6 +16,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious'
 app.config['PERMANT_SESSION_LIFETIME'] = timedelta(minutes = 30) # auto-logout after inactivity
 
+# Make `enumerate` available in Jinja2 templates
+app.jinja_env.globals.update(enumerate=enumerate)
+
 # Initalize database, bcrypt and login manager
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
@@ -214,16 +217,25 @@ def invoice_Generator():
 
             cost = weight * price
             total_cost += cost
-            invoice_data.append({"weight": weight, "price": price, "cost": cost})
-
+            # invoice_data.append({"weight": weight, "price": price,"formatted_price": f"K{price:,.2f}", "cost": cost,"formatted_cost": f"K{cost:,.2f}"})
+            invoice_data.append({
+                    "weight": round(weight, 2),
+                    "formatted_weight": f"{weight}kg",
+                    "price": price,  # Keep raw price
+                    "formatted_price": f"K{price:,.2f}",  # Format price as currency
+                    "cost": cost,  # Keep raw cost
+                    "formatted_cost": f"K{cost:,.2f}"  # Format cost as currency
+                })
         return render_template('invoiceGenerator.html', 
                                form=form, 
                                company_name=company_name, 
                                invoice_data=invoice_data, 
-                               total_cost=total_cost)
+                            #    total_cost=total_cost,
+                               total_cost=f"K{total_cost:,.2f}")
 
     return render_template('invoiceGenerator.html', form=form)
 
 # Run the app
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
