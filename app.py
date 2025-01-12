@@ -64,16 +64,32 @@ class FeedCalculatorForm(FlaskForm):
     submit = SubmitField("Calculate")
 
 # Define Invoice generator form
-class invoiceGenerator(FlaskForm):
-    company = StringField(validators=[InputRequired(),Length(min = 4, max = 50)], render_kw=({"Placeholder":"Company Name"}))
-    firstBandRange = StringField(validators=[InputRequired(),Length(min = 4, max = 10)], render_kw=({"Placeholder": "e.g., 65-109.9" }))
-    firstBandPrice = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"60.0 or 60"}))
-    secondBandRange = StringField(validators=[InputRequired(),Length(min = 4, max = 10)], render_kw=({"Placeholder":"e.g., 65-109.9"}))
-    secondBandPrice = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"60.0 or 60"}))
-    thirdBandRange = StringField(validators=[InputRequired(),Length(min = 4, max = 10)], render_kw=({"Placeholder": "e.g., 65-109.9" }))
-    thirdBandPrice = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"60.0 or 60"}))
-    weights = TextAreaField(validators=[DataRequired()], render_kw=({"Placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."}))
+class InvoiceGeneratorForm(FlaskForm):
+    company = StringField(validators=[InputRequired(), Length(min=4, max=50)], 
+                          render_kw={"placeholder": "Company Name"})
+    firstBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], 
+                                 render_kw={"placeholder": "e.g., 65-109.9"})
+    firstBandPrice = DecimalField(validators=[InputRequired()], 
+                                  render_kw={"placeholder": "60.0 or 60"})
+    secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], 
+                                  render_kw={"placeholder": "e.g., 65-109.9"})
+    secondBandPrice = DecimalField(validators=[InputRequired()], 
+                                   render_kw={"placeholder": "60.0 or 60"})
+    thirdBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], 
+                                 render_kw={"placeholder": "e.g., 65-109.9"})
+    thirdBandPrice = DecimalField(validators=[InputRequired()], 
+                                  render_kw={"placeholder": "60.0 or 60"})
+    weights = TextAreaField(validators=[DataRequired()], 
+                            render_kw={"placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
     submit = SubmitField("Generate Invoice")
+
+# Utility function to parse weight ranges/ this is for the invoice generator
+def parse_range(range_str):
+    try:
+        min_weight, max_weight = map(float, range_str.split('-'))
+        return min_weight, max_weight
+    except ValueError:
+        return None, None
 
 @app.route('/home', methods=['GET','POST'])
 def home():
@@ -167,12 +183,45 @@ def calculate():
 # Invoice Generator route
 @app.route('/invoice-generator', methods=['GET','POST'])
 def invoice_Generator():
-    form = invoiceGenerator()
+    form = InvoiceGeneratorForm()
     if form.validate_on_submit():
-        # Perform calculations
-        total_feed = form.days.data * form.pigs.data * float(form.feed_consumption.data)
+        company_name = form.company.data
+        weights = [float(w.strip()) for w in form.weights.data.split(',')]
 
-    
+        # Parse weight ranges and prices
+        first_min, first_max = parse_range(form.firstBandRange.data)
+        first_price = form.firstBandPrice.data
+
+        second_min, second_max = parse_range(form.secondBandRange.data)
+        second_price = form.secondBandPrice.data
+
+        third_min, third_max = parse_range(form.thirdBandRange.data)
+        third_price = form.thirdBandPrice.data
+
+        # Calculate prices based on weights
+        invoice_data = []
+        total_cost = 0
+
+        for weight in weights:
+            if first_min <= weight <= first_max:
+                price = float(first_price)
+            elif second_min <= weight <= second_max:
+                price = float(second_price)
+            elif third_min <= weight <= third_max:
+                price = float(third_price)
+            else:
+                price = 0  # Weight falls outside defined ranges
+
+            cost = weight * price
+            total_cost += cost
+            invoice_data.append({"weight": weight, "price": price, "cost": cost})
+
+        return render_template('invoiceGenerator.html', 
+                               form=form, 
+                               company_name=company_name, 
+                               invoice_data=invoice_data, 
+                               total_cost=total_cost)
+
     return render_template('invoiceGenerator.html', form=form)
 
 # Run the app

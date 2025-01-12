@@ -41,8 +41,32 @@
         <div class="submitBTN">
             {{ form.submit }}
         </div>
-
     </form>    
+    
+    <div class="container">
+        {% if invoice_data %}
+            <h2>Invoice for {{ company_name }}</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Weight</th>
+                        <th>Price per Kg</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in invoice_data %}
+                        <tr>
+                            <td>{{ item.weight }}</td>
+                            <td>{{ item.price }}</td>
+                            <td>{{ item.cost }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h3>Total Cost: {{ total_cost }}</h3>
+        {% endif %}
+    </div>
 </main>
 
 {% endblock %}
