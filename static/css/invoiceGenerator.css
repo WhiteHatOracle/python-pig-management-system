@@ -45,7 +45,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     font-size: 16px;
     color: #fff;
     background-color: #0056b3;
-    width: 300px;
+    max-width: 300px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -53,6 +53,30 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 }
 
 .submitBTN input[type="submit"]:hover {
+    transform: translateY(-3px);
+    background-color: #003d82;
+}
+
+.download_invoice{
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+form .btn{
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0056b3;
+    max-width: 300px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+form .btn:hover{
+    transform: translateY(-3px);
     background-color: #003d82;
 }
 

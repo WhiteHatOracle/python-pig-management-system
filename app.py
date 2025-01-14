@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, flash
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_wtf import FlaskForm
@@ -6,7 +6,7 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Integ
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-# from decouple import config
+import datetime
 
 # Initalize Flask app
 app = Flask(__name__)
@@ -68,22 +68,15 @@ class FeedCalculatorForm(FlaskForm):
 
 # Define Invoice generator form
 class InvoiceGeneratorForm(FlaskForm):
-    company = StringField(validators=[InputRequired(), Length(min=4, max=50)], 
-                          render_kw={"placeholder": "Company Name"})
-    firstBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], 
-                                 render_kw={"placeholder": "e.g., 65-109.9"})
-    firstBandPrice = DecimalField(validators=[InputRequired()], 
-                                  render_kw={"placeholder": "60.0 or 60"})
-    secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], 
-                                  render_kw={"placeholder": "e.g., 65-109.9"})
-    secondBandPrice = DecimalField(validators=[InputRequired()], 
-                                   render_kw={"placeholder": "60.0 or 60"})
-    thirdBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], 
-                                 render_kw={"placeholder": "e.g., 65-109.9"})
-    thirdBandPrice = DecimalField(validators=[InputRequired()], 
-                                  render_kw={"placeholder": "60.0 or 60"})
-    weights = TextAreaField(validators=[DataRequired()], 
-                            render_kw={"placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
+    company = StringField(validators=[InputRequired(), Length(min=4, max=50)], render_kw={"placeholder": "Company Name"})
+    selling_company = StringField(validators=[InputRequired(), Length(min=4, max=50)], render_kw={"placeholder": "Selling Company Name"})
+    firstBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
+    firstBandPrice = DecimalField(validators=[InputRequired()], render_kw={"placeholder": "60.0 or 60"})
+    secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
+    secondBandPrice = DecimalField(validators=[InputRequired()], render_kw={"placeholder": "60.0 or 60"})
+    thirdBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
+    thirdBandPrice = DecimalField(validators=[InputRequired()], render_kw={"placeholder": "60.0 or 60"})
+    weights = TextAreaField(validators=[DataRequired()], render_kw={"placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
     submit = SubmitField("Generate Invoice")
 
 # Utility function to parse weight ranges/ this is for the invoice generator
@@ -217,7 +210,6 @@ def invoice_Generator():
 
             cost = weight * price
             total_cost += cost
-            # invoice_data.append({"weight": weight, "price": price,"formatted_price": f"K{price:,.2f}", "cost": cost,"formatted_cost": f"K{cost:,.2f}"})
             invoice_data.append({
                     "weight": round(weight, 2),
                     "formatted_weight": f"{weight}kg",
@@ -228,13 +220,81 @@ def invoice_Generator():
                 })
         return render_template('invoiceGenerator.html', 
                                form=form, 
-                               company_name=company_name, 
+                               company_name=company_name,
                                invoice_data=invoice_data, 
-                            #    total_cost=total_cost,
                                total_cost=f"K{total_cost:,.2f}")
 
     return render_template('invoiceGenerator.html', form=form)
 
+
+@app.route('/download-invoice', methods=['POST'])
+def download_invoice():
+    company_name = request.form.get("company_name")
+    invoice_data = eval(request.form.get("invoice_data"))  # Parse invoice data passed from the form
+    total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
+    
+    invoice_number = f"INV-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+    pdf = generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = f'attachment; filename={invoice_number}.pdf'
+    return response
+
+from fpdf import FPDF
+
+def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost):
+    class PDF(FPDF):
+        def header(self):
+            self.set_font("Arial", "B", 14)
+            self.cell(0, 10, "Invoice", align="C", ln=True)
+            self.ln(10)
+
+        def footer(self):
+            self.set_y(-15)
+            self.set_font("Arial", "I", 8)
+            self.cell(0, 10, f"Page {self.page_no()}", align="C")
+
+    pdf = PDF()
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+
+    # Title and Header Section
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, f"Invoice Number: {invoice_number}", ln=True)
+    pdf.cell(0, 10, f"Company Name: {company_name}", ln=True)
+    pdf.cell(0, 10, f"Date: {datetime.datetime.now().strftime('%Y-%m-%d')}", ln=True)
+    pdf.ln(10)
+
+    # Table Header
+    pdf.set_font("Arial", "B", 10)
+    pdf.set_fill_color(200, 220, 255)
+    pdf.cell(10, 10, "#", border=1, align="C", fill=True)
+    pdf.cell(60, 10, "Weight (kg)", border=1, align="C", fill=True)
+    pdf.cell(60, 10, "Price per Kg (K)", border=1, align="C", fill=True)
+    pdf.cell(60, 10, "Cost (K)", border=1, align="C", fill=True)
+    pdf.ln()
+
+    # Table Data
+    pdf.set_font("Arial", size=10)
+    for idx, item in enumerate(invoice_data, start=1):
+        pdf.cell(10, 10, str(idx), border=1, align="C")
+        pdf.cell(60, 10, item["formatted_weight"], border=1, align="C")
+        pdf.cell(60, 10, item["formatted_price"], border=1, align="C")
+        pdf.cell(60, 10, item["formatted_cost"], border=1, align="C")
+        pdf.ln()
+
+    # Total Cost
+    pdf.set_font("Arial", "B", 12)
+    pdf.ln(5)
+    pdf.cell(130, 10, "Total Cost:", border=0, align="R")
+    pdf.cell(60, 10, f"K{total_cost:,.2f}", border=1, align="C")
+    pdf.ln(10)
+
+    # Footer Section
+    pdf.set_font("Arial", "I", 8)
+    pdf.cell(0, 10, "Thank you for your business!", align="C", ln=True)
+
+    return pdf.output(dest='S').encode('latin1')
 # Run the app
 if __name__ == '__main__':
     # app.run(debug=True)

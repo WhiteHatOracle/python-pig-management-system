@@ -17,6 +17,8 @@
         {{ form.hidden_tag()}}  
         <label for="company">Company Name</label>
         {{ form.company(autocomplete="off") }}
+        <label for="selling_company">Selling company</label>
+        {{ form.selling_company(autocomplete="off") }}
 
         <label for="firstBandRange">First band range</label>
         {{ form.firstBandRange(autocomplete="off") }}
@@ -72,6 +74,12 @@
                     <!-- <h3 class="totalCost">Total Cost: {{ total_cost }}</h3> -->
                 </tfoot>
             </table>
+            <form method="POST" action="/download-invoice" class="download_invoice">
+                <input type="hidden" name="company_name" value="{{ company_name }}">
+                <input type="hidden" name="invoice_data" value="{{ invoice_data }}">
+                <input type="hidden" name="total_cost" value="{{ total_cost }}">
+                <button type="submit" class="btn btn-success">Download PDF</button>
+            </form>
         {% endif %}
     </div>
     <script>
