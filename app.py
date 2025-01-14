@@ -112,7 +112,7 @@ def signin():
         if user:
             if bcrypt.check_password_hash(user.password, form.password.data):
                 login_user(user, remember=form.remember.data) # Log in the user
-                return redirect(url_for('home'))
+                return redirect(url_for('dashboard'))
             else:
                 flash("Invalid Password, Please try again.", "Error") # Invalid password feedback
         else:
