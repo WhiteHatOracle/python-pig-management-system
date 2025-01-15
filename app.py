@@ -69,7 +69,6 @@ class FeedCalculatorForm(FlaskForm):
 # Define Invoice generator form
 class InvoiceGeneratorForm(FlaskForm):
     company = StringField(validators=[InputRequired(), Length(min=4, max=50)], render_kw={"placeholder": "Company Name"})
-    selling_company = StringField(validators=[InputRequired(), Length(min=4, max=50)], render_kw={"placeholder": "Selling Company Name"})
     firstBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
     firstBandPrice = DecimalField(validators=[InputRequired()], render_kw={"placeholder": "60.0 or 60"})
     secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
@@ -288,7 +287,15 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
     pdf.ln(5)
     pdf.cell(130, 10, "Total Cost:", border=0, align="R")
     pdf.cell(60, 10, f"K{total_cost:,.2f}", border=1, align="C")
+    pdf.ln(40)
+
+    # Signatures Section
+    pdf.set_font("Arial", "B", 10)
+    pdf.cell(90, 10, "Received by: ____________________________", border=0, ln=0)
+    pdf.cell(90, 10, "Supplied by: ____________________________", border=0, ln=1)
     pdf.ln(10)
+    pdf.cell(90, 10, "Signature: ____________________________", border=0, ln=0)
+    pdf.cell(90, 10, "Signature: ____________________________", border=0, ln=1)
 
     # Footer Section
     pdf.set_font("Arial", "I", 8)
