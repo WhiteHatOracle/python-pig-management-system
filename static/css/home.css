@@ -22,7 +22,6 @@ body{
   color: var(--text-clr);
   display: grid;
   grid-template-columns: auto 1fr;
-
   background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
   background-size: 300% 300%;
   animation: gradientMove 120s ease infinite;

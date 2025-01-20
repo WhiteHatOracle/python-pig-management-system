@@ -1,0 +1,112 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#header{
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+form{
+    display: grid;
+    grid-template-columns: repeat(2, 2fr);
+    gap: 1rem;
+}
+.sumbitBTN{
+    display: flex;
+    grid-column: 1/-1;
+    justify-content: center;
+}
+form #submit{
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0056b3;
+    width: 300px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#submit:hover{
+    transform: translateY(-3px);
+    background-color: #003d82;
+}
+
+#sow-id{
+    background-color: #fff;
+    border: none;
+    font-size: 16px;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+#date{
+    font-size: 16px;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+}
+
+label{
+    font-weight: bold;
+    margin: 20px 0 0 0;
+}
+
+.sow-table {
+    border-collapse: collapse;
+    min-width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.15);
+    margin: 25px auto;
+    text-align: center;
+}
+.sow-table, tr, th, td{
+    border: 1px solid black;
+}
+
+th{
+    width: 100px;
+}
+
+.sow-btns{
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    gap: 1rem;
+    /* align-items: center; */
+    width: 100%;
+    /* justify-content: space-around; */
+}
+.sow-btn{
+    padding: 10px 20px;
+    width: 100%;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0056b3;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.sow-btn:hover{
+    background-color: #003d82;
+    /* transform: translateY(-3px); */
+}
+
+@media (max-width:800px) {
+    form{
+        grid-template-columns:1fr;
+    }
+    table{
+        display: none;
+    }
+    .top-page{
+        display: none;
+    }
+}

@@ -1,0 +1,46 @@
+{% extends 'home.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+
+{% endblock %}
+{% block content %}
+<main>
+    <h2 id="header">Sow Manager</h2>
+    <div class="container sow-form">
+        <form action="">
+            <label for="sow id">Sow ID:</label>
+            <input type="text" id="sow-id">
+            <label for="Date of birth">Date of birth:</label>
+            <input type="date" id="date">
+            <div class="sumbitBTN">
+                <input type="submit" id="submit">
+            </div>
+        </form>
+    </div>
+    <table class="sow-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Sow ID</th>
+                <th>Date of birth</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>1</th>
+                <th>MI24001</th>
+                <th>24/01/2023</th>
+                <th class="sow-btns">
+                    <button class="sow-btn">Delete</button>
+                    <button class="sow-btn">View </button>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+</main>
+{% endblock %}

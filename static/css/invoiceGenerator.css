@@ -3,6 +3,7 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 #header{
     background-color: #333;
     color: #fff;
@@ -45,7 +46,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     font-size: 16px;
     color: #fff;
     background-color: #0056b3;
-    max-width: 300px;
+    width: 300px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -81,10 +82,8 @@ form .btn:hover{
 }
 
 .invoice-table {
-    /* border: 1px solid #333; */
     border-collapse: collapse;
     min-width: 100%;
-    /* background-color: #fff; */
     border-radius: 5px;
     box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.15);
     margin: 25px auto;

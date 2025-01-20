@@ -302,6 +302,11 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
     pdf.cell(0, 10, "Thank you for your business!", align="C", ln=True)
 
     return pdf.output(dest='S').encode('latin1')
+
+@app.route("/sow-manager", methods=['GET','POST'])
+def sows():
+    return render_template('sows.html')
+
 # Run the app
 if __name__ == '__main__':
     # app.run(debug=True)

@@ -4,9 +4,6 @@ body {
     box-sizing: border-box;
 }
 
-/* main {
-    padding: 20px;
-} */
 h2{
     background-color: #333;
     color: #fff;
@@ -23,7 +20,7 @@ form {
 }
 label {
     font-weight: bold;
-    margin-bottom: 10px 0 0 0;
+    margin: 10px 0 0 0;
 }
 
 input[type="text"], input[type="number"], select, textarea {
@@ -60,6 +57,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 
 .submitBTN input[type="submit"]:hover {
     background-color: #003d82;
+    transform: translateY(-3px);
 }
 
 #results {
@@ -88,9 +86,6 @@ u {
 }
 
 @media (max-width: 800px) {
-    /* .container {
-        padding: 15px;
-    } */
     form, #results {
         grid-template-columns: 1fr;
     }
