@@ -10,18 +10,21 @@
 {% block content %}
 <main>
     <h2 id="header">Sow Manager</h2>
-    <div class="container sow-form">
-        <form action="">
-            <label for="sow id">Sow ID:</label>
-            <input type="text" id="sow-id">
-            <label for="Date of birth">Date of birth:</label>
-            <input type="date" id="date">
-            <div class="sumbitBTN">
-                <input type="submit" id="submit">
-            </div>
-        </form>
-    </div>
-    <table class="sow-table">
+    <form action="?scroll=sowTable" class="container" method="POST">
+        {{ form.hidden_tag() }}
+
+        <label for="sowID">Sow ID</label>
+        {{ form.sowID(autocomplete="off") }}
+        
+        <label for="DOB">Date Of Birth</label>
+        {{ form.DOB(autocomplete="off") }}
+        
+        <div class="submitBTN">
+            {{ form.submit}}
+        </div>
+
+    </form>
+    <table class="sow-table" id="sowTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -42,5 +45,16 @@
             </tr>
         </tbody>
     </table>
+    <script>
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('scroll') === 'sowTable') {
+                const resultsDiv = document.getElementById('sowTable');
+                if (resultsDiv) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
 </main>
 {% endblock %}

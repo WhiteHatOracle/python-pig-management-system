@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, redirect, flash, make_respons
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
@@ -36,6 +36,13 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), nullable = False, unique=True, index = True) # Indexed for quick lookup
     password = db.Column(db.String(80), nullable = False)
+
+
+# Define sow management form
+class SowForm(FlaskForm):
+    sowID = StringField(validators=[InputRequired(), Length(min=3,max=20)])
+    DOB = DateField(validators=[InputRequired()])
+    submit = SubmitField("Add Sow")
 
 # Define registration form
 class RegisterForm(FlaskForm):
@@ -305,7 +312,8 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
 
 @app.route("/sow-manager", methods=['GET','POST'])
 def sows():
-    return render_template('sows.html')
+    form=SowForm()
+    return render_template('sows.html', form=form)
 
 # Run the app
 if __name__ == '__main__':

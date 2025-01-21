@@ -15,15 +15,34 @@
 
 form{
     display: grid;
-    grid-template-columns: repeat(2, 2fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
-.sumbitBTN{
-    display: flex;
-    grid-column: 1/-1;
-    justify-content: center;
+label {
+    font-weight: bold;
+    margin: 10px 0 0 0;
 }
-form #submit{
+
+input[type="text"], input[type="date"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-width: 100%;
+    box-sizing: border-box;
+}   
+
+input[type="text"]:focus, input[type="date"]:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+.submitBTN {
+    grid-column: 1 / -1; /* Make the div span across all columns */
+    display: flex; /* Use flexbox for centering the button */
+    justify-content: center; /* Center horizontally */
+    margin-top: 1rem; /* Optional spacing above the button */
+}
+.submitBTN input[type="submit"] {
     padding: 10px 20px;
     font-size: 16px;
     color: #fff;
@@ -34,30 +53,10 @@ form #submit{
     cursor: pointer;
     transition: background-color 0.3s;
 }
-#submit:hover{
+
+.submitBTN input[type="submit"]:hover {
     transform: translateY(-3px);
     background-color: #003d82;
-}
-
-#sow-id{
-    background-color: #fff;
-    border: none;
-    font-size: 16px;
-    outline: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-}
-#date{
-    font-size: 16px;
-    outline: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    border: none;
-}
-
-label{
-    font-weight: bold;
-    margin: 20px 0 0 0;
 }
 
 .sow-table {
