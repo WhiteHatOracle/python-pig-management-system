@@ -1,5 +1,6 @@
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
@@ -8,6 +9,7 @@ from flask_bcrypt import Bcrypt
 from datetime import timedelta
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
+import datetime
 
 # Initalize Flask app
 app = Flask(__name__)
@@ -23,6 +25,7 @@ app.jinja_env.globals.update(enumerate=enumerate)
 
 # Initalize database, bcrypt and login manager
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -47,6 +50,29 @@ class Sows(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     sowID = db.Column(db.String(20), nullable=False, unique=True, index=True)
     DOB = db.Column(db.Date)
+
+        # Relationship with ServiceRecords
+    service_records = db.relationship("ServiceRecords", back_populates="sow", cascade="all, delete-orphan")
+
+
+class ServiceRecords(db.Model):
+    __tablename__ = "service_records"
+
+    id = db.Column(db.Integer, primary_key=True)
+    sow_id = db.Column(db.Integer, db.ForeignKey("sows.id"), nullable=False)
+    service_date = db.Column(db.Date, nullable=False)
+    boar_used = db.Column(db.String(50), nullable=False)
+
+    # New calculated date fields
+    checkup_date = db.Column(db.Date)
+    litter_guard1_date = db.Column(db.Date)
+    litter_guard2_date = db.Column(db.Date)
+    feed_up_date = db.Column(db.Date)
+    due_date = db.Column(db.Date)
+    action_date = db.Column(db.Date)
+
+    # Relationship back to Sows
+    sow = db.relationship("Sows", back_populates="service_records")
 
 # Define sow management form
 class SowForm(FlaskForm):
@@ -385,6 +411,73 @@ def delete_sow(sow_id):
     db.session.commit()
     flash('Sow deleted successfully!', 'success')
     return redirect(url_for('sows'))
+
+@app.route('/sows/<int:sow_id>', methods=['GET', 'POST'])
+def sow_service_records(sow_id):
+    sow = Sows.query.get_or_404(sow_id)
+
+    if request.method == 'POST':
+        service_date = request.form.get('service_date')
+        boar_used = request.form.get('boar_used')
+
+        # Validate and add service record
+        if service_date and boar_used:
+            try:
+                # Convert service_date to datetime
+                service_date = datetime.strptime(service_date, '%Y-%m-%d')
+                boar_used=boar_used.upper()    
+
+                # Calculate other dates
+                checkup_date = service_date + timedelta(days=21)
+                litter_guard1_date = service_date + timedelta(days=68)
+                feed_up_date = service_date + timedelta(days=90)
+                litter_guard2_date = service_date + timedelta(days=100)
+                action_date = service_date + timedelta(days=109)
+                due_date = service_date + timedelta(days=114)
+
+                # Create and add new service record
+                new_record = ServiceRecords(
+                    sow_id=sow.id,
+                    service_date=service_date,
+                    boar_used=boar_used,
+                    checkup_date=checkup_date,
+                    litter_guard1_date=litter_guard1_date,
+                    litter_guard2_date=litter_guard2_date,
+                    feed_up_date=feed_up_date,
+                    due_date=due_date,
+                    action_date=action_date
+                )
+                db.session.add(new_record)
+                db.session.commit()
+                flash('Service record added successfully!', 'success')
+            except ValueError:
+                flash('Invalid date format!', 'error')
+            except Exception as e:
+                db.session.rollback()
+                flash(f"An error occurred: {str(e)}", "error")
+        else:
+            flash('All fields are required!', 'error')
+
+        return redirect(url_for('sow_service_records', sow_id=sow.id))
+
+    return render_template('sow_service_records.html', sow=sow)
+
+@app.route('/delete-service-record/<int:record_id>', methods=['POST'])
+def delete_service_record(record_id):
+    # Query the record by ID
+    record = ServiceRecords.query.get_or_404(record_id)
+    
+    try:
+        # Delete the record
+        db.session.delete(record)
+        db.session.commit()
+        flash('Service record deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'An error occurred while deleting the record: {str(e)}', 'error')
+    
+    # Redirect back to the sow's service records page
+    return redirect(url_for('sow_service_records', sow_id=record.sow_id))
 
 
 # Run the app

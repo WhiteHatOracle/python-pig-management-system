@@ -1,0 +1,65 @@
+{% extends 'home.html' %}
+{% block title %}Service Records for {{ sow.sowID }}{% endblock %}
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+
+{% endblock %}
+{% block content %}
+<main>
+    <h2 id="header">Service Records for Sow: {{ sow.sowID }}</h2>
+    <p>Date of Birth: {{ sow.DOB }}</p>
+    <form method="post" class="container">
+        <label for="service_date">Service Date:</label>
+        <input type="date" id="service_date" name="service_date" required>
+        <label for="boar_used">Boar Used:</label>
+        <input type="text" id="boar_used" name="boar_used" autocomplete="off" required>
+        <div class="submitBTN">
+            <button type="submit" class="submit-btn" >Add Record</button>
+        </div>
+    </form>
+
+
+    <h2>Service Records</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Service Date</th>
+                <th>Boar Used</th>
+                <th>Checkup Date</th>
+                <th>Litter Guard 1</th>
+                <th>Feed Up</th>
+                <th>Litter Guard 2</th>
+                <th>Action Date</th>
+                <th>Due Date</th>
+                <th>action</th>
+            </tr>
+        </thead>    
+        {% for record in sow.service_records %}
+        <tbody> 
+            <tr>
+                <td class="index">{{ loop.index }}</td> <!-- Use loop.index for a 1-based index -->
+                <td data-cell="Service Date:">{{ record.service_date }}</td>
+                <td data-cell="Boar Used">{{ record.boar_used }}</td>
+                <td data-cell="Check-up Date:">{{ record.checkup_date }}</td>
+                <td data-cell="Litter Guard 1:">{{ record.litter_guard1_date }}</td>
+                <td data-cell="90 days Feed up:">{{ record.feed_up_date }}</td>
+                <td data-cell="Litter Guard 2:">{{ record.litter_guard2_date }}</td>
+                <td data-cell="Action Date:">{{ record.action_date }}</td>
+                <td data-cell="Due Date:">{{ record.due_date }}</td>
+                <td>
+                    <form action="{{ url_for('delete_service_record', record_id=record.id) }}" method="POST" style="display:inline;">
+                        <button class="action-btn" >
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>   
+        {% endfor %}
+    </table>
+</main>
+{% endblock %}
