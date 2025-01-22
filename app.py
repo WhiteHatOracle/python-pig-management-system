@@ -7,6 +7,7 @@ from wtforms.validators import InputRequired, Length, ValidationError, DataRequi
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 
 # Initalize Flask app
 app = Flask(__name__)
@@ -326,24 +327,6 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
 
     return pdf.output(dest='S').encode('latin1')
 
-# @app.route("/sow-manager", methods=['GET', 'POST'])
-# def sows():
-#     form = SowForm()
-#     if form.validate_on_submit():
-#         sowID = form.sowID.data
-#         DOB = form.DOB.data
-#         new_sow = Sows(sowID=sowID, DOB=DOB)
-#         try:
-#             db.session.add(new_sow)
-#             db.session.commit()
-#             flash("Sow added successfully")
-#             return redirect(url_for('sows'))
-#         except Exception as e:
-#             db.session.rollback()
-#             flash("There was an error. Please try again")
-#     sows = Sows.query.all()
-#     return render_template('sows.html', form=form, sows=sows)
-
 @app.route('/sow-manager', methods=['GET', 'POST'])
 def sows():
     # Fetch all sows from the database
@@ -356,23 +339,53 @@ def sows():
         # Validate input
         if not sow_id or not dob_str:
             flash('All fields are required!', 'error')
-            return render_template('dashboard.html', sows=sows)
+            return render_template('sows.html', sows=sows, form=form)
 
         try:
             # Convert string to date object
             dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
         except ValueError:
             flash('Invalid date format! Use YYYY-MM-DD.', 'error')
-            return render_template('dashboard.html', sows=sows)
+            return render_template('sows.html', sows=sows, form=form)
+
+        #convert sow id to uppercase
+        sow_id = sow_id.upper()
+
+        # Check if sowID already exists
+        existing_sow = Sows.query.filter_by(sowID=sow_id).first()
+        if existing_sow:
+            flash('Sow ID already exists!', 'error')
+            return render_template('sows.html', sows=sows, form=form)
 
         # Add new sow to the database
-        new_sow = Sows(sowID=sow_id, DOB=dob)
-        db.session.add(new_sow)
-        db.session.commit()
+        try:
+            new_sow = Sows(sowID=sow_id, DOB=dob)
+            db.session.add(new_sow)
+            db.session.commit()
+            flash('Sow added successfully!', 'success')
+        except IntegrityError:
+            db.session.rollback()  # Rollback the session to avoid lingering issues
+            flash(f'Sow with ID {sow_id} already exists!', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
 
         return redirect(url_for('sows'))
 
     return render_template('sows.html', sows=sows, form=form)
+
+@app.route('/delete-sow/<string:sow_id>', methods=['POST'])
+def delete_sow(sow_id):
+    sow = Sows.query.filter_by(sowID=sow_id).first()
+    if not sow:
+        flash('Sow not found!', 'error')
+        return redirect(url_for('sows'))
+
+    db.session.delete(sow)
+    db.session.commit()
+    flash('Sow deleted successfully!', 'success')
+    return redirect(url_for('sows'))
+
 
 # Run the app
 if __name__ == '__main__':
