@@ -59,51 +59,79 @@ input[type="text"]:focus, input[type="date"]:focus {
     background-color: #003d82;
 }
 
-.sow-table {
+.sow-table{
     border-collapse: collapse;
     min-width: 100%;
     border-radius: 5px;
-    box-shadow: 0 10px 30px 5px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
     margin: 25px auto;
     text-align: center;
 }
-.sow-table, tr, th, td{
-    border: 1px solid black;
-}
 
-th{
-    width: 100px;
+.sow-table thead tr{
+    border-bottom: 1px dashed #333;
 }
-
-.sow-btns{
-    display: grid;
-    grid-template-columns: repeat(2,1fr);
-    gap: 1rem;
-    /* align-items: center; */
-    width: 100%;
-    /* justify-content: space-around; */
-}
-.sow-btn{
-    padding: 10px 20px;
-    width: 100%;
+.sow-table thead tr th{
+    color: grey;
     font-size: 16px;
-    color: #fff;
-    background-color: #0056b3;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    letter-spacing: 1px;
+    padding: 8px;
 }
-.sow-btn:hover{
-    background-color: #003d82;
-    /* transform: translateY(-3px); */
+
+.sow-table tbody tr th{
+    padding: 8px;
+}
+
+.actions-column{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Adjust spacing between buttons and separator */
+}
+.action-btn{
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Space between text and icon */
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333; /* Adjust color of the button */
+}
+
+.form-btns{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    /* margin-top: 20px; */
+}
+
+.seperator{
+    font-size: 16px;
+    color: #333; /* Adjust color of the separator */
+    display: inline-block;
+    line-height: 1;
+}
+
+.icon{
+    display: none;
 }
 
 @media (max-width:800px) {
+    .action-txt{
+        display: none;
+    }
+    .icon{
+        display: inline-block;
+    }
+    .actions-column{
+        text-align: center;
+    }
     form{
         grid-template-columns:1fr;
     }
     table{
-        display: none;
+        min-width: 100%;
     }
     .top-page{
         display: none;

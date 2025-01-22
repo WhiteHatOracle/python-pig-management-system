@@ -374,7 +374,7 @@ def sows():
 
     return render_template('sows.html', sows=sows, form=form)
 
-@app.route('/delete-sow/<string:sow_id>', methods=['POST'])
+@app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])
 def delete_sow(sow_id):
     sow = Sows.query.filter_by(sowID=sow_id).first()
     if not sow:
