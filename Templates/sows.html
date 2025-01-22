@@ -10,7 +10,7 @@
 {% block content %}
 <main>
     <h2 id="header">Sow Manager</h2>
-    <form action="?scroll=sowTable" class="container" method="POST">
+    <form  class="container" method="POST">
         {{ form.hidden_tag() }}
 
         <label for="sowID">Sow ID</label>
@@ -29,23 +29,38 @@
             <tr>
                 <th>#</th>
                 <th>Sow ID</th>
-                <th>Date of birth</th>
+                <th>Date of Birth</th>
                 <th>Action</th>
             </tr>
         </thead>
+        {% if sows %}
         <tbody>
+            {% for idx, sow in enumerate(sows, 1) %}
             <tr>
-                <th>1</th>
-                <th>MI24001</th>
-                <th>24/01/2023</th>
+                <th>{{ idx }}</th>
+                <th>{{ sow.sowID }}</th>
+                <th>{{ sow.DOB.strftime('%d-%m-%Y') }}</th>
                 <th class="sow-btns">
-                    <button class="sow-btn">Delete</button>
-                    <button class="sow-btn">View </button>
+                    <form method="POST" action="" style="display:inline;">
+                        <button type="submit" class="sow-btn">Delete</button>
+                    </form>
+                    <a href="">
+                        <button type="button" class="sow-btn">View</button>
+                    </a>
                 </th>
             </tr>
+            {% endfor %}
         </tbody>
+        {% else %}
+        <tbody>
+            <tr>
+                <td colspan="4" style="text-align:center;">No sows found.</td>
+            </tr>
+        </tbody>
+        {% endif %}
     </table>
-    <script>
+    
+    <!-- <script>
         window.addEventListener('load', function () {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('scroll') === 'sowTable') {
@@ -55,6 +70,6 @@
                 }
             }
         });
-    </script>
+    </script> -->
 </main>
 {% endblock %}

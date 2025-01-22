@@ -6,15 +6,16 @@ from wtforms import StringField, PasswordField, SubmitField, BooleanField, Integ
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
 from datetime import timedelta
-import datetime
+from datetime import datetime
 
 # Initalize Flask app
 app = Flask(__name__)
 
 # Load configuration from enviroment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious'
-app.config['PERMANT_SESSION_LIFETIME'] = timedelta(minutes = 30) # auto-logout after inactivity
+app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious' 
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)# auto-logout after inactivity
+
 
 # Make `enumerate` available in Jinja2 templates
 app.jinja_env.globals.update(enumerate=enumerate)
@@ -37,12 +38,27 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), nullable = False, unique=True, index = True) # Indexed for quick lookup
     password = db.Column(db.String(80), nullable = False)
 
+# Define the Sows model
+class Sows(db.Model):
+
+    __tablename__ = "sows"
+
+    id = db.Column(db.Integer, primary_key=True)
+    sowID = db.Column(db.String(20), nullable=False, unique=True, index=True)
+    DOB = db.Column(db.Date)
 
 # Define sow management form
 class SowForm(FlaskForm):
     sowID = StringField(validators=[InputRequired(), Length(min=3,max=20)])
     DOB = DateField(validators=[InputRequired()])
     submit = SubmitField("Add Sow")
+        
+    def validate_sowID(self, sowID):
+        existing_sow = Sows.query.filter_by(sowID = sowID.data).first
+        if existing_sow:
+            raise ValidationError('The sow already exists. Please choose a different sow ID')
+   
+        
 
 # Define registration form
 class RegisterForm(FlaskForm):
@@ -310,10 +326,53 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
 
     return pdf.output(dest='S').encode('latin1')
 
-@app.route("/sow-manager", methods=['GET','POST'])
+# @app.route("/sow-manager", methods=['GET', 'POST'])
+# def sows():
+#     form = SowForm()
+#     if form.validate_on_submit():
+#         sowID = form.sowID.data
+#         DOB = form.DOB.data
+#         new_sow = Sows(sowID=sowID, DOB=DOB)
+#         try:
+#             db.session.add(new_sow)
+#             db.session.commit()
+#             flash("Sow added successfully")
+#             return redirect(url_for('sows'))
+#         except Exception as e:
+#             db.session.rollback()
+#             flash("There was an error. Please try again")
+#     sows = Sows.query.all()
+#     return render_template('sows.html', form=form, sows=sows)
+
+@app.route('/sow-manager', methods=['GET', 'POST'])
 def sows():
-    form=SowForm()
-    return render_template('sows.html', form=form)
+    # Fetch all sows from the database
+    sows = Sows.query.all()
+    form = SowForm()
+    if request.method == 'POST':
+        sow_id = request.form.get('sowID')
+        dob_str = request.form.get('DOB')  # Date as string
+
+        # Validate input
+        if not sow_id or not dob_str:
+            flash('All fields are required!', 'error')
+            return render_template('dashboard.html', sows=sows)
+
+        try:
+            # Convert string to date object
+            dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+        except ValueError:
+            flash('Invalid date format! Use YYYY-MM-DD.', 'error')
+            return render_template('dashboard.html', sows=sows)
+
+        # Add new sow to the database
+        new_sow = Sows(sowID=sow_id, DOB=dob)
+        db.session.add(new_sow)
+        db.session.commit()
+
+        return redirect(url_for('sows'))
+
+    return render_template('sows.html', sows=sows, form=form)
 
 # Run the app
 if __name__ == '__main__':
