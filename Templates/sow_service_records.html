@@ -37,9 +37,10 @@
                 <th>Due Date</th>
                 <th>action</th>
             </tr>
-        </thead>    
-        {% for record in sow.service_records %}
+        </thead>
+        {% if sow.service_records %}  
         <tbody> 
+            {% for record in sow.service_records %}
             <tr>
                 <td class="index">{{ loop.index }}</td> <!-- Use loop.index for a 1-based index -->
                 <td data-cell="Service Date:">{{ record.service_date }}</td>
@@ -58,8 +59,15 @@
                     </form>
                 </td>
             </tr>
-        </tbody>   
-        {% endfor %}
+            {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody class="no_records_found">
+            <tr>
+                <td colspan="10" style="text-align: center;">No records found.</td>
+            </tr>
+        </tbody>
+        {% endif %}
     </table>
 </main>
 {% endblock %}

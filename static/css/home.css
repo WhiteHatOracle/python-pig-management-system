@@ -56,6 +56,7 @@ body{
   overflow: hidden;
   text-wrap: nowrap;
 }
+
 #sidebar.close{
   padding: 5px;
   width: 60px;
@@ -71,13 +72,6 @@ body{
     font-weight: 600;
   }
 }
-#sidebar ul li.active a{
-  color: var(--accent-clr);
-
-  svg{
-    fill: var(--accent-clr);
-  }
-}
 
 #sidebar a, #sidebar .logo{
   border-radius: .5em;
@@ -87,14 +81,6 @@ body{
   display: flex;
   align-items: center;
   gap: 1em;
-}
-.dropdown-btn{
-  width: 100%;
-  text-align: left;
-  background: none;
-  border: none;
-  font: inherit;
-  cursor: pointer;
 }
 #sidebar svg{
   flex-shrink: 0;

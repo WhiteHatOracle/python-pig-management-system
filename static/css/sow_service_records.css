@@ -59,7 +59,9 @@ table{
     box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
     margin: 25px auto;
 }
-
+table tbody tr td{
+    text-align: center;
+}
 table thead tr{
     border-bottom: 1px dashed #333;
 }
@@ -67,9 +69,6 @@ table thead tr th{
     color: #4b4b4b;
     font-size: 16px;
     padding: 8px;
-}
-tr:of-nth-child(odd){
-    background-color: #f9f9f9;
 }
 .action-btn{
     justify-content: center;
@@ -79,7 +78,6 @@ tr:of-nth-child(odd){
     cursor: pointer;
     padding: 8px 0 0 0 ;
 }
-
 
 
 @media (max-width:800px) {

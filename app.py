@@ -6,10 +6,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_bcrypt import Bcrypt
-from datetime import timedelta
-from datetime import datetime
+from datetime import timedelta, datetime
 from sqlalchemy.exc import IntegrityError
-import datetime
+# import datetime
 
 # Initalize Flask app
 app = Flask(__name__)

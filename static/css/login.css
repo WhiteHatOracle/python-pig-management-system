@@ -90,3 +90,30 @@ body{
 .btn:hover{
     background-color: #0052cc;
 }
+.mobile-container{
+    display: none;
+}
+
+@media (max-width:800px) {
+    .container{
+        display: none;
+    }   
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    .mobile-container{
+        display: flex;
+        height: 100dvh;
+        flex-direction: column;
+        min-width: 100%;
+        /* background-color: #333; */
+    }
+    .welcome-text{
+        margin: 50% auto;
+    }
+    .buttons{
+        margin: 20px auto 0 auto;
+    }
+}
