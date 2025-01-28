@@ -8,6 +8,7 @@ from wtforms.validators import InputRequired, Length, ValidationError, DataRequi
 from flask_bcrypt import Bcrypt
 from datetime import timedelta, datetime
 from sqlalchemy.exc import IntegrityError
+import datetime
 # import datetime
 
 # Initalize Flask app
@@ -193,6 +194,7 @@ def signup():
 
 # Feed management route
 @app.route('/calculate', methods=['GET','POST'])
+@login_required
 def calculate():
     # Get input data from the frontend
     form = FeedCalculatorForm()
@@ -226,6 +228,7 @@ def calculate():
 
 # Invoice Generator route
 @app.route('/invoice-generator', methods=['GET','POST'])
+@login_required
 def invoice_Generator():
     form = InvoiceGeneratorForm()
     if form.validate_on_submit():
@@ -276,6 +279,7 @@ def invoice_Generator():
 
 
 @app.route('/download-invoice', methods=['POST'])
+@login_required
 def download_invoice():
     company_name = request.form.get("company_name")
     invoice_data = eval(request.form.get("invoice_data"))  # Parse invoice data passed from the form
@@ -353,6 +357,7 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
     return pdf.output(dest='S').encode('latin1')
 
 @app.route('/sow-manager', methods=['GET', 'POST'])
+@login_required
 def sows():
     # Fetch all sows from the database
     sows = Sows.query.all()
@@ -400,6 +405,7 @@ def sows():
     return render_template('sows.html', sows=sows, form=form)
 
 @app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])
+@login_required
 def delete_sow(sow_id):
     sow = Sows.query.filter_by(sowID=sow_id).first()
     if not sow:
@@ -412,6 +418,7 @@ def delete_sow(sow_id):
     return redirect(url_for('sows'))
 
 @app.route('/sows/<int:sow_id>', methods=['GET', 'POST'])
+@login_required
 def sow_service_records(sow_id):
     sow = Sows.query.get_or_404(sow_id)
 
@@ -462,6 +469,7 @@ def sow_service_records(sow_id):
     return render_template('sow_service_records.html', sow=sow)
 
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
+@login_required
 def delete_service_record(record_id):
     # Query the record by ID
     record = ServiceRecords.query.get_or_404(record_id)
