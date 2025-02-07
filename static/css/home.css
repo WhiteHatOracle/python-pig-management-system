@@ -16,9 +16,7 @@ html{
   line-height: 1.5rem;
 }
 body{
-  min-height: 100vh;
   min-height: 100dvh;
-  background-color: var(--base-clr);
   color: var(--text-clr);
   display: grid;
   grid-template-columns: auto 1fr;
@@ -26,6 +24,7 @@ body{
   background-size: 300% 300%;
   animation: gradientMove 120s ease infinite;
 }
+
 @keyframes gradientMove {
   0%{
       background-position: 0% 50%; 
@@ -37,6 +36,7 @@ body{
       background-position: 0% 50%; 
   }
 }
+
 #sidebar{
   box-sizing: border-box;
   height: 100vh;
@@ -47,7 +47,6 @@ body{
   -webkit-backdrop-filter: blur(10px); /* Safari support */
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */  
   border: 1px solid var(--line-clr);
-
 
   position: sticky;
   top: 0;

@@ -2,3 +2,58 @@
     margin: 0;
     padding:0;
 }
+
+header {
+    background: #4CAF50;
+    padding: 1rem;
+    color: white;
+    text-align: center;
+}
+
+.overview {
+    display: flex;
+    justify-content: space-around;
+    border: 1px solid #333;
+    /* background: white; */
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    text-align: center;
+    padding: 10px;
+}
+
+.charts {
+    display: flex;
+    justify-content: space-around;
+}
+
+.chart {
+    width: 45%;
+    border: 1px solid #333;
+    /* background: white; */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.quick-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background: #45a049;
+}
+

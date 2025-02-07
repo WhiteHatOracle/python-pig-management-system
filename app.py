@@ -8,8 +8,6 @@ from wtforms.validators import InputRequired, Length, ValidationError, DataRequi
 from flask_bcrypt import Bcrypt
 from datetime import timedelta, datetime
 from sqlalchemy.exc import IntegrityError
-import datetime
-# import datetime
 
 # Initalize Flask app
 app = Flask(__name__)
@@ -167,7 +165,7 @@ def signin():
 def logout():
     logout_user() # Logout the current user
     flash("You have been logged out.","Success")
-    return redirect(url_for('signin'))
+    return redirect(url_for('login'))
 
 # Dashboard route(requires login)
 @app.route('/dashboard', methods=['GET','POST'])
