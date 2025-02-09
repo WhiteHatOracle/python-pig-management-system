@@ -1,4 +1,5 @@
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request
+import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
@@ -8,9 +9,17 @@ from wtforms.validators import InputRequired, Length, ValidationError, DataRequi
 from flask_bcrypt import Bcrypt
 from datetime import timedelta, datetime
 from sqlalchemy.exc import IntegrityError
+import dash
+from dash import dcc, html
+from dash.dependencies import Output, Input
+import plotly.graph_objs as go
+import dash_bootstrap_components as dbc
 
 # Initalize Flask app
 app = Flask(__name__)
+# Initialise Dash app
+dash_app = dash.Dash(__name__, server=app, routes_pathname_prefix="/dashboard_internal/", external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
+
 
 # Load configuration from enviroment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -52,7 +61,7 @@ class Sows(db.Model):
         # Relationship with ServiceRecords
     service_records = db.relationship("ServiceRecords", back_populates="sow", cascade="all, delete-orphan")
 
-
+# Define the lservice Records
 class ServiceRecords(db.Model):
     __tablename__ = "service_records"
 
@@ -134,6 +143,80 @@ def parse_range(range_str):
     except ValueError:
         return None, None
 
+# Funnction to fetch data
+def get_pig_counts():
+    num_sows = Sows.query.count()
+    boars = 4
+    pokers = 98
+    total_pigs = num_sows + boars + pokers   
+    return total_pigs, num_sows, boars, pokers
+
+# Dashboard Layout
+dash_app.layout = dbc.Container([
+    html.Div([
+        dbc.Row([
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Total Pigs"),
+                    html.H2(id="total-pigs")
+                ], className="dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Total Sows"),
+                    html.H2(id="total-sows")
+                ], className="dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Total Boars"),
+                    html.H2(id="total-boars")
+                ], className="dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Total Porkers"),
+                    html.H2(id="total-pokers")
+                ], className="dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+        ], className="card-grid"),
+
+        dcc.Interval(
+        id="interval-update",
+        interval=5000,  # Updates every 5 seconds (adjust as needed)
+        n_intervals=0
+        ),
+
+    ], className="dashboard-wrapper"),
+], fluid=True)
+
+# Callback to Update Data
+@dash_app.callback([
+        dash.Output("total-pigs", "children"),
+        dash.Output("total-sows", "children"),
+        dash.Output("total-boars", "children"),
+        dash.Output("total-pokers", "children"),
+        ],
+    [dash.Input("interval-update", "n_intervals")]
+)
+
+def update_counts(n):
+    try:
+        total_pigs, num_sows, boars, pokers = get_pig_counts()
+        return str(total_pigs), str(num_sows), str(boars), str(pokers)
+    except Exception as e:
+        print("Error fetching pig data:", e)
+        return "Error", "Error", "Error", "Error"
+
+# Flask Route for Dash App (to embed in iframe)
+@app.route("/dashboard/")
+def dashboard():
+    return render_template("dashboard.html")
+    # return flask.redirect("/dashboard_internal/")
+
 @app.route('/home', methods=['GET','POST'])
 def home():
     return render_template('home.html')
@@ -167,13 +250,6 @@ def logout():
     flash("You have been logged out.","Success")
     return redirect(url_for('login'))
 
-# Dashboard route(requires login)
-@app.route('/dashboard', methods=['GET','POST'])
-@login_required
-def dashboard():
-    return render_template('dashboard.html') # Dashboard for logged in users
-
-# Signup route
 @app.route('/signup', methods = ['GET', 'POST'])
 def signup():
     form = RegisterForm()
@@ -246,7 +322,7 @@ def invoice_Generator():
         # Calculate prices based on weights
         invoice_data = []
         total_cost = 0
-
+        
         for weight in weights:
             if first_min <= weight <= first_max:
                 price = float(first_price)
@@ -353,6 +429,12 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
     pdf.cell(0, 10, "Thank you for your business!", align="C", ln=True)
 
     return pdf.output(dest='S').encode('latin1')
+
+@app.route('/boar-manager', methods=['GET','POST'])
+@login_required
+def boars():
+    # Fetch all boars from the database
+    return render_template('boars.html')
 
 @app.route('/sow-manager', methods=['GET', 'POST'])
 @login_required
@@ -484,8 +566,11 @@ def delete_service_record(record_id):
     # Redirect back to the sow's service records page
     return redirect(url_for('sow_service_records', sow_id=record.sow_id))
 
+# Run the Dashboard
+if dash_app.layout is None:
+    raise Exception("Dash layout must be set before running the server.")
 
 # Run the app
 if __name__ == '__main__':
     # app.run(debug=True)
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)

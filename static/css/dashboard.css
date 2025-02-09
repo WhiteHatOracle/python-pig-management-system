@@ -1,59 +1,69 @@
-*{
-    margin: 0;
-    padding:0;
+
+
+.black-background {
+    background: transparent;
+    min-height: 100vh;  /* Full page height */
+    padding: 20px;
 }
 
-header {
-    background: #4CAF50;
-    padding: 1rem;
+.text-white {
+    color: black !important;
+}
+
+.Title{
     color: white;
     text-align: center;
+    /* gap: 2rem; */
+    font-size: 26px;
+    padding-bottom: 15px;
 }
 
-.overview {
-    display: flex;
-    justify-content: space-around;
-    border: 1px solid #333;
-    /* background: white; */
+main .dashboard-iframe{
+    height: 100%;
+    width: 100%;
+}
+
+::-webkit-scrollbar{
+    display: none;
+}
+
+body, .dash-app, .container {
+    background-color: rgba(0, 0, 0, 0) !important; /* Transparent background */
+    width: 100%;
+    height: 100dvh;
+}
+
+.dashboard-wrapper {
     padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
 }
 
-.stat {
-    text-align: center;
-    padding: 10px;
+.card-grid {
+    display: grid;
+    gap: 20px;
 }
 
-.charts {
+.dash-card {
     display: flex;
-    justify-content: space-around;
-}
-
-.chart {
-    width: 45%;
-    border: 1px solid #333;
-    /* background: white; */
-    padding: 20px;
-    border-radius: 10px;
-}
-
-.quick-actions {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    margin-top: 20px;
+    padding: 20px;
+    min-width: 200px;
+    border: 2px solid grey;
+    border-radius: 20px;
 }
 
-button {
-    padding: 10px 20px;
-    border: none;
-    background: #4CAF50;
-    color: white;
-    margin: 10px;
-    cursor: pointer;
-    border-radius: 5px;
+/* Desktop: Cards are in one row */
+@media (min-width: 768px) {
+    .card-grid {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
+    }
 }
 
-button:hover {
-    background: #45a049;
+/* Mobile: Cards stack vertically */
+@media (max-width: 767px) {
+    .card-grid {
+        grid-template-columns: 1fr; /* 1 column, stacking cards */
+    }
 }
-
