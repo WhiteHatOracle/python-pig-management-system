@@ -1,10 +1,9 @@
 {% extends "home.html" %}
-
 {% block title %}Dashboard{% endblock %}
-
 {% block head %}
     <title>Boars</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/boars.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
     <script type="text/javascript" defer src="{{ url_for('static', filename='js/home.js')}}"></script>
 {% endblock %}
@@ -12,9 +11,74 @@
 {% block content %}
 
 <main>
-    <div>
-        <h2>Boars</h2>
-    </div>
+    <h2 id="header">Boar Manager</h2>
+    <form class="container" method="POST">
+        {{ form.hidden_tag() }}  <!-- CSRF Token -->
+
+        <label for="BoarId">Boar ID</label>
+        {{ form.BoarId(autocomplete="off") }}
+
+        <label for="DOB">Date of Birth</label>
+        {{ form.DOB(autocomplete="off") }}
+
+        <div class="submitBTN"> 
+            {{ form.submit }}
+        </div>
+    </form>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <table class="boar-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Boar ID</th>
+                <th>Date of Birth</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        {% if boars %}
+        <tbody>
+            {% for idx, boar in enumerate(boars, 1) %}
+            <tr>
+                <td>{{ idx }}</td>
+                <td>{{ boar.BoarId }}</td>
+                <td>{{ boar.DOB.strftime('%d-%m-%Y') }}</td>
+                <th class="boar-btns actions-column">
+                    <form class="form-btns" action="{{ url_for('delete_boar', BoarId=boar.BoarId) }}" method="POST" onsubmit="return confirmDelete();">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="action-btn">
+                            <span class="action-txt">Delete</span>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                            </svg>                    
+                        </button>
+                    </form>
+                </th>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody>
+            <tr>
+                <td colspan="4" style="text-align: center;">No Boars Added Yet.</td>
+            </tr>
+        </tbody>
+        {% endif %}
+    </table>
+
+    <script>
+        function confirmDelete() {
+        return confirm("Are you sure you want to delete this boar?");
+    }
+    </script>
 </main>
 
 {% endblock %}

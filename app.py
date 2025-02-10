@@ -14,6 +14,8 @@ from dash import dcc, html
 from dash.dependencies import Output, Input
 import plotly.graph_objs as go
 import dash_bootstrap_components as dbc
+from fpdf import FPDF
+
 
 # Initalize Flask app
 app = Flask(__name__)
@@ -51,20 +53,23 @@ class User(db.Model, UserMixin):
 
 # Define the Sows model
 class Sows(db.Model):
-
     __tablename__ = "sows"
-
     id = db.Column(db.Integer, primary_key=True)
     sowID = db.Column(db.String(20), nullable=False, unique=True, index=True)
     DOB = db.Column(db.Date)
-
-        # Relationship with ServiceRecords
+    # Relationship with ServiceRecords
     service_records = db.relationship("ServiceRecords", back_populates="sow", cascade="all, delete-orphan")
 
-# Define the lservice Records
+# Define the Boar model
+class Boars(db.Model):
+    __tablename__ = "boars"
+    id = db.Column(db.Integer, primary_key = True)
+    BoarId = db.Column(db.String(20), nullable = False, unique = True, index = True)
+    DOB = db.Column(db.Date)
+
+# Define the service Records
 class ServiceRecords(db.Model):
     __tablename__ = "service_records"
-
     id = db.Column(db.Integer, primary_key=True)
     sow_id = db.Column(db.Integer, db.ForeignKey("sows.id"), nullable=False)
     service_date = db.Column(db.Date, nullable=False)
@@ -91,8 +96,17 @@ class SowForm(FlaskForm):
         existing_sow = Sows.query.filter_by(sowID = sowID.data).first
         if existing_sow:
             raise ValidationError('The sow already exists. Please choose a different sow ID')
-   
-        
+
+# Define Boar Form
+class BoarForm(FlaskForm):
+    BoarId = StringField(validators = [InputRequired(), Length(min = 3, max = 20)])
+    DOB = DateField(validators=[InputRequired()])
+    submit = SubmitField("Add Boar")
+
+    def validate_BoarId(self, BoarId):
+        existing_boar = Boars.query.filter_by(BoarId = BoarId.data).first()
+        if existing_boar:
+            raise ValidationError('The Boar already exists. Please Choose a dfferent ID')
 
 # Define registration form
 class RegisterForm(FlaskForm):
@@ -351,7 +365,6 @@ def invoice_Generator():
 
     return render_template('invoiceGenerator.html', form=form)
 
-
 @app.route('/download-invoice', methods=['POST'])
 @login_required
 def download_invoice():
@@ -365,8 +378,6 @@ def download_invoice():
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename={invoice_number}.pdf'
     return response
-
-from fpdf import FPDF
 
 def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost):
     class PDF(FPDF):
@@ -433,8 +444,51 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
 @app.route('/boar-manager', methods=['GET','POST'])
 @login_required
 def boars():
-    # Fetch all boars from the database
-    return render_template('boars.html')
+    form = BoarForm()
+
+    if form.validate_on_submit():
+        boar_id = form.BoarId.data.upper()
+        boar_dob = form.DOB.data
+
+        # check if boar already exists
+        if Boars.query.filter_by(BoarId = boar_id).first():
+            flash('Boar ID already exists! Please use a different ID.', 'error')
+        
+        else:
+            #add boar to the database
+            try:
+                new_boar = Boars(BoarId = boar_id, DOB = boar_dob)
+                db.session.add(new_boar)
+                db.session.commit()
+                flash('Boar added successfully!', 'success')
+                return redirect(url_for('boars'))
+            except IntegrityError:
+                db.session.rollback()
+                flash(f'Boar with ID {boar_id} already exists!', 'error')
+            except Exception as e:
+                db.session.rollback()
+                flash(f'An error occurred: {str(e)}', 'error')
+
+    boars = Boars.query.all()
+    return render_template('boars.html', boars=boars, form=form)  
+  
+@app.route('/delete-boar/<string:BoarId>', methods=['POST'])
+@login_required
+def delete_boar(BoarId):
+    boar = Boars.query.filter_by(BoarId = BoarId.upper()).first()
+    if not boar:
+        flash('Boar not found!', 'error')
+        return redirect(url_for('boars'))
+
+    try:
+        db.session.delete(boar)
+        db.session.commit()
+        flash('Boar deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting boar: {str(e)}', 'error')
+
+    return redirect(url_for('boars'))
 
 @app.route('/sow-manager', methods=['GET', 'POST'])
 @login_required
