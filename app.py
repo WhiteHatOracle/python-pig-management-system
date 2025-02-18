@@ -93,7 +93,7 @@ class SowForm(FlaskForm):
     submit = SubmitField("Add Sow")
         
     def validate_sowID(self, sowID):
-        existing_sow = Sows.query.filter_by(sowID = sowID.data).first
+        existing_sow = Sows.query.filter_by(sowID = sowID.data).first()
         if existing_sow:
             raise ValidationError('The sow already exists. Please choose a different sow ID')
 
@@ -493,50 +493,79 @@ def delete_boar(BoarId):
 @app.route('/sow-manager', methods=['GET', 'POST'])
 @login_required
 def sows():
-    # Fetch all sows from the database
-    sows = Sows.query.all()
     form = SowForm()
-    if request.method == 'POST':
-        sow_id = request.form.get('sowID')
-        dob_str = request.form.get('DOB')  # Date as string
 
-        # Validate input
-        if not sow_id or not dob_str:
-            flash('All fields are required!', 'error')
-            return render_template('sows.html', sows=sows, form=form)
+    if form.validate_on_submit():
+        sow_id = form.sowID.data.upper()
+        dob_str = form.DOB.data
+        print(f"Sow ID: {sow_id}, DOB: {dob_str}")  # Debug print to see submitted values
+
 
         try:
-            # Convert string to date object
-            dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
-        except ValueError:
-            flash('Invalid date format! Use YYYY-MM-DD.', 'error')
-            return render_template('sows.html', sows=sows, form=form)
-
-        #convert sow id to uppercase
-        sow_id = sow_id.upper()
-
-        # Check if sowID already exists
-        existing_sow = Sows.query.filter_by(sowID=sow_id).first()
-        if existing_sow:
-            flash('Sow ID already exists!', 'error')
-            return render_template('sows.html', sows=sows, form=form)
-
-        # Add new sow to the database
-        try:
-            new_sow = Sows(sowID=sow_id, DOB=dob)
+            # Add sow to the database
+            new_sow = Sows(sowID=sow_id, DOB=dob_str)
             db.session.add(new_sow)
             db.session.commit()
             flash('Sow added successfully!', 'success')
+            return redirect(url_for('sows'))
         except IntegrityError:
-            db.session.rollback()  # Rollback the session to avoid lingering issues
+            db.session.rollback()
             flash(f'Sow with ID {sow_id} already exists!', 'error')
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
 
-        return redirect(url_for('sows'))
-
+    sows = Sows.query.all()
     return render_template('sows.html', sows=sows, form=form)
+
+
+# @app.route('/sow-manager', methods=['GET', 'POST'])
+# @login_required
+# def sows():
+#     # Fetch all sows from the database
+#     sows = Sows.query.all()
+#     form = SowForm()
+#     if request.method == 'POST':
+#         sow_id = request.form.get('sowID')
+#         dob_str = request.form.get('DOB')  # Date as string
+
+#         # Validate input
+#         if not sow_id or not dob_str:
+#             flash('All fields are required!', 'error')
+#             return render_template('sows.html', sows=sows, form=form)
+
+#         try:
+#             # Convert string to date object
+#             dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
+#         except ValueError:
+#             flash('Invalid date format! Use YYYY-MM-DD.', 'error')
+#             return render_template('sows.html', sows=sows, form=form)
+
+#         #convert sow id to uppercase
+#         sow_id = sow_id.upper()
+
+#         # Check if sowID already exists
+#         existing_sow = Sows.query.filter_by(sowID=sow_id).first()
+#         if existing_sow:
+#             flash('Sow ID already exists!', 'error')
+#             return render_template('sows.html', sows=sows, form=form)
+
+#         # Add new sow to the database
+#         try:
+#             new_sow = Sows(sowID=sow_id, DOB=dob)
+#             db.session.add(new_sow)
+#             db.session.commit()
+#             flash('Sow added successfully!', 'success')
+#         except IntegrityError:
+#             db.session.rollback()  # Rollback the session to avoid lingering issues
+#             flash(f'Sow with ID {sow_id} already exists!', 'error')
+#         except Exception as e:
+#             db.session.rollback()
+#             flash(f'An error occurred: {str(e)}', 'error')
+
+#         return redirect(url_for('sows'))
+
+#     return render_template('sows.html', sows=sows, form=form)
 
 @app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])
 @login_required

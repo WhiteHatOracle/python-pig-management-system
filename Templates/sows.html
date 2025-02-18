@@ -11,7 +11,7 @@
 {% block content %}
 <main>
     <h2 id="header">Sow Manager</h2>
-    <form  class="container" method="POST">
+    <form  class="container" method="POST" action="{{ url_for('sows') }}">
         {{ form.hidden_tag() }}
 
         <label for="sowID">Sow ID</label>
@@ -23,9 +23,8 @@
         <div class="submitBTN">
             {{ form.submit}}
         </div>
-
     </form>
-    
+
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -52,19 +51,21 @@
                 <th>{{ sow.sowID }}</th>
                 <th>{{ sow.DOB.strftime('%d-%m-%Y') }}</th>
                 <th class="sow-btns actions-column">
-                    <form class="form-btns" action="{{ url_for('delete_sow', sow_id=sow.sowID) }}" onsubmit="return confirmDelete();">
-                    <button class="action-btn" >
-                        <span class="action-txt">Delete</span>
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
-                    </button>
-                    </form>
-                    <span class="separator">|</span>
                     <form class="form-btns" action="{{ url_for('sow_service_records', sow_id=sow.id) }}">
-                    <button class="action-btn">
-                        <span class="action-txt">View</span>
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
-                    </button>  
+                        {{ form.hidden_tag() }}
+                        <button class="action-btn">
+                            <span class="action-txt">View</span>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+                        </button>  
                     </form> 
+                    <span class="separator">|</span>
+                    <form class="form-btns" action="{{ url_for('delete_sow', sow_id=sow.sowID) }}" onsubmit="return confirmDelete();">
+                        {{ form.hidden_tag() }}
+                        <button class="action-btn" >
+                            <span class="action-txt">Delete</span>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
+                        </button>
+                    </form>
                 </th>
             </tr>
             {% endfor %}

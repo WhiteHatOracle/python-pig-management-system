@@ -1,28 +1,22 @@
-// const toggleButton = document.getElementById('toggle-btn')
-// const sidebar = document.getElementById('sidebar')
+// const toggleButton = document.getElementById('toggle-btn');
+// const sidebar = document.getElementById('sidebar');
 
-// function toggleSidebar(){
-//   sidebar.classList.toggle('close')
-//   toggleButton.classList.toggle('rotate')
+// function toggleSidebar() {
+//   const isClosed = sidebar.classList.toggle('close');
+//   toggleButton.classList.toggle('rotate');
 // }
 
-const toggleButton = document.getElementById('toggle-btn');
-const sidebar = document.getElementById('sidebar');
-
-// Load the saved state from local storage
-// document.addEventListener('DOMContentLoaded', () => {
-//   const isClosed = localStorage.getItem('sidebarClosed') === 'true';
-//   if (isClosed) {
-//     sidebar.classList.add('close');
-//     toggleButton.classList.add('rotate');
-//   }
-// });
-
-// Function to toggle the sidebar and save the state
-function toggleSidebar() {
-  const isClosed = sidebar.classList.toggle('close');
-  toggleButton.classList.toggle('rotate');
+document.addEventListener("DOMContentLoaded", function () {
+    const sidebar = document.getElementById("sidebar");
+    const hamburger = document.getElementById("hamburger");
+    const closeBtn = document.getElementById("close-btn");
   
-  // Save the current state to local storage
-  // localStorage.setItem('sidebarClosed', isClosed);
-}
+    hamburger.addEventListener("click", function () {
+      sidebar.classList.add("active");
+    });
+  
+    closeBtn.addEventListener("click", function () {
+      sidebar.classList.remove("active");
+    });
+  });
+  
