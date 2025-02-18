@@ -160,7 +160,7 @@ def parse_range(range_str):
 # Funnction to fetch data
 def get_pig_counts():
     num_sows = Sows.query.count()
-    boars = 4
+    boars = Boars.query.count()
     pokers = 98
     total_pigs = num_sows + boars + pokers   
     return total_pigs, num_sows, boars, pokers
