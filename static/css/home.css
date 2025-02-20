@@ -39,7 +39,7 @@ body{
 
 #sidebar{
   box-sizing: border-box;
-  height: 100vh;
+  height: 100dvh;
   width: 250px;
   padding: 5px 1em;
   background: rgba(0, 0, 0, 0.1); /* Semi-transparent white */
@@ -58,11 +58,45 @@ body{
 
 #sidebar.close{
   padding: 5px;
-  width: 60px;
+  width: 64px;
 }
+
+/* Hide text when collapsed */
+#sidebar.close ul li span {
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+#sidebar.close .logo span {
+  opacity: 0; /* Hide text when collapsed */
+}
+
+/* hide logo when side bar is collapsed */
+#sidebar.close .logo img{
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+}
+
+/* Rotate the toggle icon when the side bar is closed */
+#sidebar.close #toggle-btn {
+  transform: rotate(180deg);
+  transition: opacity 200ms ease-in-out;
+  z-index: 1000;
+  display: block;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Show text when open */
+#sidebar ul li span {
+  opacity: 1;
+  transition: opacity 200ms ease-in-out 100ms;
+}
+
 #sidebar ul{
   list-style: none;
 }
+
 #sidebar > ul > li:first-child{
   display: flex;
   justify-content: flex-end;
@@ -70,6 +104,47 @@ body{
   .logo{
     font-weight: 600;
   }
+}
+
+#sidebar > ul > li:last-child{
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  position: absolute;   
+  width: 250px;
+  bottom: 0;
+}
+
+.logo{
+  min-width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: auto;
+  align-items: center;
+}
+
+.logo img{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+#toggle-btn {
+  cursor: pointer;
+  transition: transform 300ms ease-in-out;
+  min-width: 20px; /* Ensures visibility */
+  z-index: 100;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  cursor: pointer;
+  outline: 2px solid var(--text-clr);
+}
+
+#logo-txt-btn{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 #sidebar a, #sidebar .logo{
@@ -81,13 +156,16 @@ body{
   align-items: center;
   gap: 1em;
 }
+
 #sidebar svg{
   flex-shrink: 0;
   fill: var(--text-clr);
 }
+
 #sidebar a span{
   flex-grow: 1;
 }
+
 #sidebar a:hover{
   background-color: var(--hover-clr);
 }
@@ -100,21 +178,6 @@ body{
 }
 #sidebar{
   padding-left: 2em;
-}
-#toggle-btn{
-  margin-left: auto;
-  padding: 1em;
-  border: none;
-  border-radius: .5em;
-  background: none;
-  cursor: pointer;
-
-  svg{
-    transition: rotate 150ms ease;
-  }
-}
-#toggle-btn:hover{
-  background-color: var(--hover-clr);
 }
 
 main{

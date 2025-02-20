@@ -1,22 +1,13 @@
-// const toggleButton = document.getElementById('toggle-btn');
-// const sidebar = document.getElementById('sidebar');
+// const sidebar = document.getElementById("sidebar");
+// const toggleBtn = document.getElementById("toggle-btn");
 
-// function toggleSidebar() {
-//   const isClosed = sidebar.classList.toggle('close');
-//   toggleButton.classList.toggle('rotate');
-// }
+// toggleBtn.addEventListener("click", function() {
+//     sidebar.classList.toggle("close");
+// });
+const sidebar = document.getElementById("sidebar");
+const toggleBtn = document.getElementById("toggle-btn");
 
-document.addEventListener("DOMContentLoaded", function () {
-    const sidebar = document.getElementById("sidebar");
-    const hamburger = document.getElementById("hamburger");
-    const closeBtn = document.getElementById("close-btn");
-  
-    hamburger.addEventListener("click", function () {
-      sidebar.classList.add("active");
-    });
-  
-    closeBtn.addEventListener("click", function () {
-      sidebar.classList.remove("active");
-    });
-  });
-  
+toggleBtn.addEventListener("click", function(event) {
+    sidebar.classList.toggle("close");
+    event.stopPropagation(); // Prevents unintended clicks elsewhere
+});
