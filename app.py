@@ -1,5 +1,4 @@
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request
-import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
@@ -11,23 +10,20 @@ from datetime import timedelta, datetime
 from sqlalchemy.exc import IntegrityError
 import dash
 from dash import dcc, html
-from dash.dependencies import Output, Input
+# from dash.dependencies import Output, Input
 import plotly.graph_objs as go
 import dash_bootstrap_components as dbc
 from fpdf import FPDF
-
 
 # Initalize Flask app
 app = Flask(__name__)
 # Initialise Dash app
 dash_app = dash.Dash(__name__, server=app, routes_pathname_prefix="/dashboard_internal/", external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
 
-
 # Load configuration from enviroment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious' 
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)# auto-logout after inactivity
-
 
 # Make `enumerate` available in Jinja2 templates
 app.jinja_env.globals.update(enumerate=enumerate)
@@ -517,55 +513,6 @@ def sows():
 
     sows = Sows.query.all()
     return render_template('sows.html', sows=sows, form=form)
-
-
-# @app.route('/sow-manager', methods=['GET', 'POST'])
-# @login_required
-# def sows():
-#     # Fetch all sows from the database
-#     sows = Sows.query.all()
-#     form = SowForm()
-#     if request.method == 'POST':
-#         sow_id = request.form.get('sowID')
-#         dob_str = request.form.get('DOB')  # Date as string
-
-#         # Validate input
-#         if not sow_id or not dob_str:
-#             flash('All fields are required!', 'error')
-#             return render_template('sows.html', sows=sows, form=form)
-
-#         try:
-#             # Convert string to date object
-#             dob = datetime.strptime(dob_str, '%Y-%m-%d').date()
-#         except ValueError:
-#             flash('Invalid date format! Use YYYY-MM-DD.', 'error')
-#             return render_template('sows.html', sows=sows, form=form)
-
-#         #convert sow id to uppercase
-#         sow_id = sow_id.upper()
-
-#         # Check if sowID already exists
-#         existing_sow = Sows.query.filter_by(sowID=sow_id).first()
-#         if existing_sow:
-#             flash('Sow ID already exists!', 'error')
-#             return render_template('sows.html', sows=sows, form=form)
-
-#         # Add new sow to the database
-#         try:
-#             new_sow = Sows(sowID=sow_id, DOB=dob)
-#             db.session.add(new_sow)
-#             db.session.commit()
-#             flash('Sow added successfully!', 'success')
-#         except IntegrityError:
-#             db.session.rollback()  # Rollback the session to avoid lingering issues
-#             flash(f'Sow with ID {sow_id} already exists!', 'error')
-#         except Exception as e:
-#             db.session.rollback()
-#             flash(f'An error occurred: {str(e)}', 'error')
-
-#         return redirect(url_for('sows'))
-
-#     return render_template('sows.html', sows=sows, form=form)
 
 @app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])
 @login_required

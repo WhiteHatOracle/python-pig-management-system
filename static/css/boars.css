@@ -103,19 +103,18 @@ input[type="text"]:focus, input[type="date"]:focus {
     display: flex;
     justify-content: center;
     gap: 8px;
-    /* margin-top: 20px; */
 }
 
-/* .seperator{
+.seperator{
     font-size: 16px;
     color: #333; 
     display: inline-block;
     line-height: 1;
-} */
+}
 
-/* .icon{
+.icon{
     display: none;
-} */
+}
 
 @media (max-width:800px) {
     .action-txt{

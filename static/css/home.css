@@ -41,13 +41,12 @@ body{
   box-sizing: border-box;
   height: 100dvh;
   width: 250px;
-  padding: 5px 1em;
+  padding: 5px 20px;
   background: rgba(0, 0, 0, 0.1); /* Semi-transparent white */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); /* Safari support */
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */  
   border: 1px solid var(--line-clr);
-
   position: sticky;
   top: 0;
   align-self: start;
@@ -69,6 +68,7 @@ body{
 
 #sidebar.close .logo span {
   opacity: 0; /* Hide text when collapsed */
+  transition: opacity 200ms ease-in-out;
 }
 
 /* hide logo when side bar is collapsed */
@@ -94,7 +94,12 @@ body{
 }
 
 #sidebar ul{
+  display: flex;
+  flex-direction: column;
   list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 100%; /* Ensures the ul fills the nav */
 }
 
 #sidebar > ul > li:first-child{
@@ -106,21 +111,8 @@ body{
   }
 }
 
-#sidebar > ul > li:last-child{
-  display: flex;
-  justify-content: space-between;
+#sidebar > ul > li:nth-last-child(2){
   margin-top: auto;
-  position: absolute;   
-  width: 250px;
-  bottom: 0;
-}
-
-.logo{
-  min-width: 100%;
-  display: flex;
-  justify-content: space-around;
-  padding: auto;
-  align-items: center;
 }
 
 .logo img{
@@ -135,16 +127,7 @@ body{
   z-index: 100;
   width: 25px;
   height: 25px;
-  border-radius: 50%;
-  cursor: pointer;
-  outline: 2px solid var(--text-clr);
-}
-
-#logo-txt-btn{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  cursor: pointer; 
 }
 
 #sidebar a, #sidebar .logo{
@@ -196,7 +179,93 @@ main p{
 
   h2, p { margin-top: 1em }
 }
+/* Dark Mode Toggle Button */
+/* Dark Mode Styles */
+.dark-mode {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --toggle-bg: #444;
+  --switch-color: #fff;
+}
 
+.light-mode {
+  --bg-color: #ffffff;
+  --text-color: #333;
+  --toggle-bg: #ccc;
+  --switch-color: #666;
+}
+/* .mode-toggle {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  cursor: pointer;
+} */
+
+.mode-toggle a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: var(--text-color);
+  gap: 10px;
+}
+
+/* Icons */
+.moon-sun {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.sun, .moon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sun {
+  opacity: 1;
+}
+
+.moon {
+  opacity: 0;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  width: 40px;
+  height: 20px;
+  background: var(--toggle-bg);
+  border-radius: 15px;
+  position: relative;
+  transition: background 0.3s;
+}
+
+.switch {
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 14px;
+  height: 14px;
+  background: var(--switch-color);
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.dark-mode .sun {
+  opacity: 0;
+}
+
+.dark-mode .moon {
+  opacity: 1;
+}
+
+.dark-mode .switch {
+  transform: translateX(11.5px);
+}
+
+
+/* Media Queries */
 @media(max-width: 800px){
   body{
     grid-template-columns: 1fr;

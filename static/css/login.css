@@ -1,3 +1,22 @@
+/* :root{
+    --base-clr: #11121a;
+    --line-clr: #42434a;
+    --hover-clr: #d4d4d4;
+    --text-clr: #333;
+    --accent-clr: #5e63ff;
+    --secondary-text-clr: #616161;
+} */
+
+:root{
+    --base-clr: #a0aa60; /* Deep brown, like rich soil and barn wood */
+    --line-clr: #657D6F; /* Warm brown, similar to wooden fences */
+    --hover-clr: #9CA099; /* Bright yellow, like corn and straw ........done*/
+    --text-clr: #746A5D; /* Deep green, representing lush farm fields ........*/
+    --accent-clr: #3B4E44; /* Bold red, inspired by barns and livestock markings */
+    --secondary-text-clr: #735D51; /* Vibrant orange, like ripe crops and farm produce */
+  }
+  
+  
 *{
     margin: 0;
     padding: 0;
@@ -9,34 +28,11 @@ html{
     scroll-behavior: auto
 }
 
-/* body{
-    color: #fff;
-    background-attachment: fixed;
-    background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
-    background-size: 300% 300%;
-    animation: gradientMove 120s ease infinite;
-} */
-/* @keyframes gradientMove {
-  0%{
-      background-position: 0% 50%; 
-  }
-  50%{ 
-      background-position: 100% 50%; 
-  }
-  100%{ 
-      background-position: 0% 50%; 
-  }
-} */
-
 body{
-    /* background: url(/static/assets/piglets.jpg);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed; */
     margin: 0;
     padding: 0;
-    color: #fff;
+    color: var(--text-clr);
+    background-color: #333;
 }
 .background{
     position: fixed;
@@ -49,6 +45,7 @@ body{
     background-attachment: fixed;
     background-repeat: no-repeat;
     z-index: -1;
+    filter: brightness(20%);
 }
 
 .mobile-background{
@@ -57,10 +54,10 @@ body{
 .sub-title{
     text-align: center;
     font-size: 36px;
-    color: #fff;
+    color: var(--secondary-text-clr);
     max-width: 100%;
     border-radius: 15px;
-    border: 2px solid #333;
+    border: 2px solid var(--line-clr);
     backdrop-filter: blur(10px);
 }
 
@@ -75,17 +72,17 @@ body{
 
 .btn{
     text-decoration: none;
-    color: #fff;
+    color: var(--secondary-text-clr);
     display: flex;
     text-align: center;
-    border: 2px solid #fff;
+    border: 1px solid var(--line-clr);
     border-radius: 5px;
     padding: 5px 10px;
     font-size: 16px;
 }
 
 .btn:hover{
-    background-color: black;
+    background-color: var(--hover-clr);
 }
 
 .header{
@@ -107,7 +104,7 @@ body{
 }
 
 .feature-list div{
-    background: #262626;
+    background: var(--accent-clr);
     padding: 40px;
     font-size: 13px;
     font-weight: 300;
@@ -130,7 +127,7 @@ body{
 }
 
 .feature-list div:hover{
-    background:#ff004f;
+    background: var(--hover-clr);
     transform: translateY(-10px);
 }
 
@@ -146,11 +143,11 @@ body{
 
 .header-txt p{
     font-size: 30px;
-    color: black;
+    color: var(--text-clr);
 }
 
 .header-txt span{
-    color: aqua;
+    color: var(--hover-clr);
 }
 
 .svg{
@@ -205,7 +202,7 @@ body{
 .layer {
     max-width: 100%;
     height: 0%;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), #ff004f);
+    background: linear-gradient(rgba(0, 0, 0, 0.6), var(--secondary-text-clr));
     border-radius: 10px;
     position: absolute;
     left: 0;
@@ -227,11 +224,11 @@ body{
 
 .layer a {
     margin-top: 20px;
-    color: #ff004f;
+    color: var(--accent-clr);
     text-decoration: none;
     font-size: 18px;
     line-height: 60px;
-    background: #fff;
+    background: var(--base-clr);
     max-width: 60px;
     height: 60px;
     border-radius: 50%;
@@ -246,29 +243,10 @@ body{
     height: 100%;
 }
 
-/* .btn {
-    display: block;
-    margin: 50px auto;
-    max-width: fit-content;
-    border: 1px solid #ff004f;
-    padding: 14px 50px;
-    border-radius: 6px;
-    text-decoration: none;
-    color: #fff;
-    transition: background 0.5s;
-}
-
-.btn:hover {
-    background: #ff004f;
-
-} */
-
 /* CALL TO ACTION */
 
 .cta{
-    /* background-color: #262626; */
     padding: 10% 0;
-    /* border: 2px solid white; */
     text-align: center;
 }
 
@@ -309,10 +287,10 @@ body{
     
     .btn{
         text-decoration: none;
-        color: #fff;
+        color: var(--text-clr);
         display: flex;
         text-align: center;
-        border: 2px solid #fff;
+        border: 2px solid var(--line-clr);
         border-radius: 5px;
         padding: 5px 10px;
     }

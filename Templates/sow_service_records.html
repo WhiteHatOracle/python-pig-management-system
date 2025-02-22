@@ -12,10 +12,10 @@
     <h2 id="header">Service Records for Sow: {{ sow.sowID }}</h2>
     <p>Date of Birth: {{ sow.DOB }}</p>
     <form method="post" class="container">
-        <label for="service_date">Service Date:</label>
-        <input type="date" id="service_date" name="service_date" required>
         <label for="boar_used">Boar Used:</label>
         <input type="text" id="boar_used" name="boar_used" autocomplete="off" required>
+        <label for="service_date">Service Date:</label>
+        <input type="date" id="service_date" name="service_date" required>
         <div class="submitBTN">
             <button type="submit" class="submit-btn" >Add Record</button>
         </div>
