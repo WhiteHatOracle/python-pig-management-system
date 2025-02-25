@@ -1,104 +1,149 @@
-body{
-    font-family: Arial, sans-serif;
+
+:root{
+    --background-color: #10a37f;
+    --secondary-color: #cfe1b9;
+    --primary-color: #b5c99a;
+    --text-color: #333;
+    --secondary-text-color: #0f8c6e;
+    --border-color: #252525;
+    --hover-color: #97a97c;
+}
+
+*{
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+}
+
+body{
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    color: #333;
-
-    background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
-    background-size: 300% 300%;
-    animation: gradientMove 15s ease infinite;
-}
-@keyframes gradientMove {
-    0%{
-        background-position: 0% 50%; 
-    }
-    50%{ 
-        background-position: 100% 50%; 
-    }
-    100%{ 
-        background-position: 0% 50%; 
-    }
+    height: 100vh;
+    margin: 0;
+    background-color: var(--secondary-color);
+    background: url(/static/assets/MotherPig2.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
-h1 {
+.container{
     text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-}
-
-form {
-    background: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-
-    background: rgba(255, 255, 255, 0.1); /* Semi-transparent white */
-    backdrop-filter: blur(10px);         /* Blur effect */
-    -webkit-backdrop-filter: blur(10px); /* Safari support */
-    border: 1px solid rgba(255, 255, 255, 0.3); /* Subtle border */
-    border-radius: 12px;                /* Rounded corners */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    padding: 20px;
-    width: 400px;
-    max-width: 400px;
-    box-sizing: border-box;
-    color: #ffffff;                     /* Text color for contrast */
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-input.form-control {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
+    width: 600px;
+    padding: 30px 10px;
+    backdrop-filter: blur(5px);
     border-radius: 4px;
-    font-size: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    /* backdrop-filter: blur(10px); */
+}
+
+h1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+input[type="email"], .form-control{
+    width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    outline: none;
+    font-size: 16px;
     box-sizing: border-box;
 }
 
-input.form-control:focus {
-    border-color: #007bff;
-    outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
 
-input.btn {
-    background-color: #007bff;
-    color: white;
+button, .btn{
+    width: 300px;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 16px;
     border: none;
-    padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
-    width: 100%;
 }
 
-input.btn:hover {
-    background-color: #0056b3;
+button:hover{
+    background-color: var(--hover-color);
 }
 
-a {
-    display: block;
-    text-align: center;
-    margin-top: 15px;
+.third-party{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column ;
+    align-items: center;
+}
+
+.third-party button{
+    width: 300px;
+    padding: 10px;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    cursor: pointer;
+    margin: 5px 0;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+    padding-left: 15px;
+}
+
+.third-party button img, 
+.third-party button svg{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+a{
+    color: var(--primary-color);
     text-decoration: none;
-    color: #007bff;
-    font-size: 14px;
 }
 
-a:hover {
-    text-decoration: underline;
+p{
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.separator{
+    width: 300px;  /* Fixed width */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center content inside */
+    margin: 20px auto; /* Center the separator horizontally */
+    text-align: center;
+}
+
+.separator hr{
+    flex: 1;
+    border: 1px solid rgb(0, 0, 0);
+    margin: auto 0px;
+}
+
+.separator span{
+    font-size: 16px;
+    margin: 0 4px;
+}
+
+.separator span{
+    font-size: 12px;
+    color: var(--text-color);
+}
+
+.terms{
+    margin-top: 40px;
+    color: var(--primary-color);
+    font-size: 13px;
 }
