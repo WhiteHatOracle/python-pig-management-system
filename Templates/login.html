@@ -3,41 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pig Management System</title>
-    <link rel="stylesheet" href="../static/css/login.css">
+    <title>Landing Page Loading</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .loading-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #007bff;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            /* background-color: #007bff; */
+            border: 1px solid black;
+            color: black;
+            /* border: none; */
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: grey;
+        }
+    </style>
 </head>
 <body>
-
-    <!-- Hero Section -->
-    <div class="header">
-        <div class="container">
-            <div class="welcome-message">
-                <h1>Pig Management <span>Software</span></h1>
-                <p> 
-                    Streamline Your Pig Farming with Ease
-                    Take control of your pig farm with our powerful, easy-to-use Pig Management Software. 
-                    Track your pigs, monitor growth, and stay on top of their health—all in one place. Effortlessly manage expenses and revenue while accessing your data from anywhere in the world.
-                    Make smarter decisions, save time, and boost your farm's productivity today!
-                </p>
-                    <a href="{{url_for('signin')}}">Get Started</a>
-                </div>
-        </div>
-        <div class="image-div">
-            <img src="/static/assets/logo.png" alt="">
-        </div>
-    </div>
-    <div class="how-it-works">
-        <h2>Keep Track of your Animals Birth Records</h2>
-        <div class="laptop-mockup">
-            <img src="/static/assets/1652c1231eb6f2ab2e6030ac4c6f0409.jpg" alt="">
-        </div>
-        <div class="cta">
-            <p>
-                Stay organized and never miss an important date! Keep track of your animals' birth records effortlessly. Whether for breeding, medical history, or just sentimental value, having accurate records is a game-changer.
-            </p>
-            <!-- <a href="#">Start tracking today! 📅✨</a> -->
-            <a href="#">Start tracking today!</a>
-        </div>  
-    </div>
+    <div class="loading-text">Landing Page Loading...</div>
+    <div class="loader"></div>
+    <a href="{{ url_for('signin') }}" class="button">Click here to continue.</a>
 </body>
 </html>
