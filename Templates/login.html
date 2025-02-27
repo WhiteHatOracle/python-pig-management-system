@@ -11,115 +11,33 @@
     <!-- Hero Section -->
     <div class="header">
         <div class="container">
-            <img src="{{ url_for('static', filename='assets/MotherPig.png')}}" alt="" class="background">
-            <img src="{{ url_for('static', filename='assets/mobile-piglets.jpg')}}" alt="" class="mobile-background">
-            <div class="header-txt">
-                <h2>Smart Pig <span>Management</span><br> for Profitable Farming!</h2>
-                <p>Track breeding, Manage growth, and Optimize productivity with ease.</p>
-            </div>
-            <div class="links">
-                <div onclick="scrollToWorks()">
-                <a href="#features" class="btn">Learn More</a>
+            <div class="welcome-message">
+                <h1>Pig Management <span>Software</span></h1>
+                <p> 
+                    Streamline Your Pig Farming with Ease
+                    Take control of your pig farm with our powerful, easy-to-use Pig Management Software. 
+                    Track your pigs, monitor growth, and stay on top of their health—all in one place. Effortlessly manage expenses and revenue while accessing your data from anywhere in the world.
+                    Make smarter decisions, save time, and boost your farm's productivity today!
+                </p>
+                    <a href="{{url_for('signin')}}">Get Started</a>
                 </div>
-                <div onclick="scrollToSignIn()">
-                <a href="#signup" class="btn primary">Get Started</a>
-                </div>
-            </div>
-            <div class="svg" onclick="scrollToNext()">
-                <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="#333"><path d="M480-200 240-440l42-42 198 198 198-198 42 42-240 240Zm0-253L240-693l42-42 198 198 198-198 42 42-240 240Z"/></svg>
-            </div>
+        </div>
+        <div class="image-div">
+            <img src="/static/assets/logo.png" alt="">
         </div>
     </div>
-
-    <!-- FEATURES -->
-    <div id="features" class="second-page">
-        <div class="container">
-            <h1 class="sub-title">Features</h1>
-            <div class="feature-list">
-                <div>
-                    <h2>Breed Tracking</h2>
-                    <p>Monitor mating dates, gestation, and farrowing predictions</p>
-                    <a href="#">Learn more</a>
-                </div>
-                <div>
-                    <h2>Vaccination Scheduling</h2>
-                    <p>Auto-reminders for derworming, vaccinations, and treatments</p>
-                    <a href="#">Learn more</a>
-                </div>
-                <div>
-                    <h2>Inventory & Sales</h2>
-                    <p>Manage pig counts, sales, and financial records</p>
-                    <a href="#">Learn more</a>
-                </div>
-            </div>
+    <div class="how-it-works">
+        <h2>Keep Track of your Animals Birth Records</h2>
+        <div class="laptop-mockup">
+            <img src="/static/assets/1652c1231eb6f2ab2e6030ac4c6f0409.jpg" alt="">
         </div>
+        <div class="cta">
+            <p>
+                Stay organized and never miss an important date! Keep track of your animals' birth records effortlessly. Whether for breeding, medical history, or just sentimental value, having accurate records is a game-changer.
+            </p>
+            <!-- <a href="#">Start tracking today! 📅✨</a> -->
+            <a href="#">Start tracking today!</a>
+        </div>  
     </div>
-
-    <!-- HOW IT WORKS -->
-    <div id="how-it-works" class="how-it-works">
-        <div class="container">
-            <h1 class="sub-title">How It Works</h1>
-            <div class="steps-list">
-                <!-- <img src="{{url_for('static', filename='/static/assests/piglet')}}" alt=""> -->
-                <div class="step">
-                    <img src="/static/assets/image-placeholder.jpg">
-                    <div class="layer">
-                        <h3>1. Register</h3>
-                        <p>Set up your farm details.</p>
-                        <a href="#">Learn more</a>
-                    </div>
-                </div>
-                <div class="step">
-                    <img src="/static/assets/image-placeholder.jpg">
-                    <div class="layer">
-                        <h3>2. Log data</h3>
-                        <p>Enter breeding, feeding and health records.</p>
-                        <a href="#">Learn more</a>
-                    </div>
-                </div>
-                <div class="step">
-                    <img src="/static/assets/image-placeholder.jpg">
-                    <div class="layer">
-                        <h3>3. Monitor & Optimize</h3>
-                        <p>Analyze reports and increase efficiency</p>
-                        <a href="#">Learn more</a>
-                    </div>
-                </div>
-            </div>
-            <!-- <a href="#" class="btn">See more</a> -->
-        </div>
-    </div>
-
-    <!-- Call-to-Action -->
-    <section id="signup" class="cta">
-        <div class="signup">
-            <h2>Start Managing Your Farm Today!</h2>
-            <div class="links">
-                <a href="{{url_for('signup')}}" class="btn primary">Sign Up for Free</a>
-                <a href="{{url_for('signin')}}" class="btn primary">Sign In</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <p>© 2025 Pig Management System. All rights reserved.</p>
-    </footer>
 </body>
-<script>
-    function scrollToNext() {
-    const nextPage = document.querySelector(".second-page");
-    nextPage.scrollIntoView({ behavior: "smooth" });
-    }
-
-    function scrollToWorks(){
-        const works = document.querySelector(".how-it-works");
-        works.scrollIntoView({ behavior: "smooth"});
-    }
-
-    function scrollToSignIn(){
-        const signIn = document.querySelector(".cta");
-        signIn.scrollIntoView({ behavior: "smooth"});
-    }
-</script>
 </html>

@@ -4,309 +4,163 @@
     --hover-clr: #d4d4d4;
     --text-clr: #333;
     --accent-clr: #5e63ff;
-    --secondary-text-clr: #616161;
+    --secondary-text-clr: #252525;
+    --background-clr-2: #F0F0F0; Light brown, reminiscent of the sun and harvests
 } */
-
 :root{
-    --base-clr: #a0aa60; /* Deep brown, like rich soil and barn wood */
-    --line-clr: #657D6F; /* Warm brown, similar to wooden fences */
-    --hover-clr: #9CA099; /* Bright yellow, like corn and straw ........done*/
-    --text-clr: #746A5D; /* Deep green, representing lush farm fields ........*/
-    --accent-clr: #3B4E44; /* Bold red, inspired by barns and livestock markings */
-    --secondary-text-clr: #735D51; /* Vibrant orange, like ripe crops and farm produce */
-  }
+    --background-clr:#FFFCE8;
+    --hover-clr:#31CB00;
+    --primary-clr:#119822;
+    --secondary-clr:#2A7221;
+    --secondary-text-clr:#0F1108;
+    --primary-text-clr:#3E363F;
+    --line-clr:#1E441E;
+}
   
 *{
     margin: 0;
     padding: 0;
-    font-family: monospace;
     box-sizing: border-box;
 }
 
 html{
-    scroll-behavior: auto
-}
-
+    font-family: Poppins, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.5rem;
+  }
 body{
     margin: 0;
     padding: 0;
-    color: var(--text-clr);
-    background-color: #333;
-}
-.background{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100dvh;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    z-index: -1;
-    filter: brightness(20%);
-}
-
-.mobile-background{
-    display: none;
-}
-.sub-title{
-    text-align: center;
-    font-size: 36px;
-    color: var(--secondary-text-clr);
-    max-width: 100%;
-    border-radius: 15px;
-    border: 2px solid var(--line-clr);
-    backdrop-filter: blur(10px);
-}
-
-.links{
-    display: flex;
-    align-items: center;
-    padding:30px 0;
-    justify-content: center;
-    margin: 0 10%;
-    gap: 20px;
-}
-
-.btn{
-    text-decoration: none;
-    color: var(--secondary-text-clr);
-    display: flex;
-    text-align: center;
-    border: 1px solid var(--line-clr);
-    border-radius: 5px;
-    padding: 5px 10px;
-    font-size: 16px;
-}
-
-.btn:hover{
-    background-color: var(--hover-clr);
+    color: var(--secondary-clr);
+    background: var(--background-clr);
 }
 
 .header{
-    max-width: 100%;
-    height: 100dvh;
+    padding: 10px 100px;
+    gap: 20px;
+    background: transparent;
+    display: flex;
+    height: 100vh;
 }
-
-/* FEATURES */
-
-#features{
-    padding: 30px;
-}
-
-.feature-list{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 40px;
-    margin-top: 50px;
-}
-
-.feature-list div{
-    background: var(--accent-clr);
-    padding: 40px;
-    font-size: 13px;
-    font-weight: 300;
-    border-radius: 10px;
-    transition: background 0.5s, transform 0.5s;
-}
-
-.feature-list div h2{
-    font-size: 30px;
-    font-weight: 500;
-    margin-bottom: 15px;
-}
-
-.feature-list div a{
-    text-decoration: none;
-    color: #fff;
-    font-size: 12px;
-    margin-top: 20px;
-    display: inline block;
-}
-
-.feature-list div:hover{
-    background: var(--hover-clr);
-    transform: translateY(-10px);
-}
-
-.header-txt{
-    padding-top: 10%;
-    font-size: 30px;
-}
-
-.header-txt h2{
-    font-size: 60px;
-    padding: 60px 0;
-}
-
-.header-txt p{
-    font-size: 30px;
-    color: var(--text-clr);
-}
-
-.header-txt span{
-    color: var(--hover-clr);
-}
-
-.svg{
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 30px;
-    cursor: pointer;
-    animation: bounce 1.5s infinite;
-}
-@keyframes bounce{
-    0%, 100%{transform: translateX(-50%) translateY(0);}
-    50%{transform: translateX(-50%) translateY(10px);}
-}
-
 
 .container{
-    padding: 10px 5%;
-}
-
-.links{
-    font-size: 20px;
-    text-decoration: none;
-}
-
-/* HOW IT WORKS */
-#how-it-works{
-    padding: 30px 0;
-}
-
-.steps-list{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 40px;
-    margin-top: 50px;
-}
-
-.step{
-    border-radius: 10px;
-    position: relative;
-    overflow: hidden;
-}
-
-.step img{
-    max-width: 100%;
-    border-radius: 10px;
-    display: block;
-    transition: transform 0.5s;
-}
-
-.layer {
-    max-width: 100%;
-    height: 0%;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), var(--secondary-text-clr));
-    border-radius: 10px;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    overflow: hidden;
     display: flex;
-    align-items: center;
+    flex-direction: column; /* Stack children vertically */
+    flex: 1;
+}
+
+.welcome-message, .cta-buttons{
+    flex: 1;
+}
+
+.welcome-message{
+    margin-top: 40%;
+    display: flex;
     justify-content: center;
     flex-direction: column;
-    padding: 0 40px;
-    text-align: center;
-    transition: height 0.5s;
+    a{
+        text-decoration: none;
+        border: 1px solid var(--line-clr);
+        padding: 4px 8px;
+        border-radius: 5px;
+        background: var(--primary-clr);
+        color: var(--secondary-text-clr);
+        width: 150px;
+        text-align: center;
+    }
+    a:hover{
+        background-color: var(--hover-clr);
+    }
+}
+.welcome-message h1{
+    font-size: 40px;
+    margin: 20px 0;
+    text-align: left;
+    color: var(--secondary-text-clr);
 }
 
-.layer h3 {
-    font-weight: 500;
-    margin-bottom: 20px;
-}
-
-.layer a {
-    margin-top: 20px;
-    color: var(--accent-clr);
-    text-decoration: none;
+.welcome-message p{
     font-size: 18px;
-    line-height: 60px;
-    background: var(--base-clr);
-    max-width: 60px;
-    height: 60px;
+    margin: 20px 0;
+    text-align: left;
+    color: var(--primary-text-clr);
+}
+
+.welcome-message h1 span{
+    color: var(--secondary-clr);
+}
+
+/* button div */
+.cta-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    align-items: center;
+    margin: 0 auto;
+    background-color: #11121a;
+    width: 100%;
+}
+
+.image-div{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100dvh;
+    flex: 1;
+}
+
+.image-div img{
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    height: 400px;
     border-radius: 50%;
+}
+
+.how-it-works{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
     text-align: center;
+    align-items: center;
 }
 
-.step:hover img {
-    transform: scale(1.1);
+.how-it-works h2{
+    grid-column: 1 / -1;
+    margin: 20px 0;
+    font-size: 40px;
 }
 
-.step:hover .layer {
-    height: 100%;
+.how-it-works p{
+    font-size: 18px;
+    margin: 20px 0;
+    text-align: left;
+    color: var(--primary-text-clr);
 }
 
-/* CALL TO ACTION */
+.laptop-mockup img{
+    mix-blend-mode: multiply;
+    width: 100%;
+    height: auto;
+    margin: 20px;
+    /* border: 2px solid var(--secondary-text-clr); */
+}
 
 .cta{
-    padding: 10% 0;
-    text-align: center;
-}
-
-.signup{
-    font-size: 20px;
-
-}
-
-@media (max-width: 800px){
-    body{
-        background: url(/static/assets/mobile-piglets.jpg);
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        height: 100dvh;
-    }
-    .header{
-        padding: 20% 0;
-    }
-    .header-txt h2{
-        font-size: 30px;
-    }
-    .header-txt p{
-        font-size: 15px;
-    }
-    .cta{
-        text-align: center;
-    }
-    .links{
-        display: flex;
-        align-items: center;
-        padding:0 auto;
-        justify-content: center;
-        margin: 0 auto;
-        gap: 10px;
-    }
-    
-    .btn{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    a{
         text-decoration: none;
-        color: var(--text-clr);
-        display: flex;
-        text-align: center;
-        border: 2px solid var(--line-clr);
+        border: 1px solid var(--line-clr);
+        padding: 4px 8px;
         border-radius: 5px;
-        padding: 5px 10px;
+        background: var(--primary-clr);
+        color: var(--secondary-text-clr);
+        width: 300px;
     }
-
-    .background{
-        display: none;
+    a:hover{
+        background: var(--hover-clr);
     }
-    .mobile-background{
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100dvh;
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        z-index: -1;
-    }    
 }
