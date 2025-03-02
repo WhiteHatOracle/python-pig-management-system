@@ -1,57 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Landing Page Loading</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .loading-text {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 5px solid #007bff;
-            border-top: 5px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 18px;
-            /* background-color: #007bff; */
-            border: 1px solid black;
-            color: black;
-            /* border: none; */
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-        .button:hover {
-            background-color: grey;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Farmigo</title>
+  <!-- Link to external CSS -->
+  <link rel="stylesheet" href="/static/css/login.css" />
 </head>
 <body>
-    <div class="loading-text">Landing Page Loading...</div>
-    <div class="loader"></div>
-    <a href="{{ url_for('signin') }}" class="button">Click here to continue.</a>
+  <!-- Header / Navigation -->
+  <header>
+    <div class="nav-logo">
+      <span class="brand-green">farm</span>brite
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">Learn &amp; Support</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <a href="{{url_for('signin')}}" class="login-link">Login</a>
+      <a href="#" class="cta-btn">Try for free</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Focus on your passion<br/> not your paperwork.</h1>
+    <p class="subtitle">
+      Join <strong>over 4,000 farmers worldwide</strong> who trust our all-in-one farm management 
+      software to streamline their operations enabling them to grow more food, 
+      more efficiently and sustainably for their communities.
+    </p>
+    <div class="hero-cta">
+      <a href="#" class="start-trial-btn">Start your free trial</a>
+      <a href="#" class="watch-demo-btn">Watch a demo</a>
+    </div>
+    <p class="trial-info">
+      ✓ 14 day free trial &nbsp; ✓ No credit card required &nbsp; ✓ Full access to all features
+    </p>
+  </section>
+
+  <!-- Carousel Section -->
+  <div class="carousel">
+    <div class="carousel__tracker-container">
+      <ul class="carousel__track">
+        <li class="carousel__slide"> 
+          <img class="carousel__image current-slide" src="/static/assets/laptop-mockup.png" alt="">
+        </li>
+        <li class="carousel__slide">
+          <img class="carousel__image" src="/static/assets/banner.jpg" alt="">
+        </li>
+        <li class="carousel__slide">
+          <img class="carousel__image" src="/static/assets/MotherPig2.png" alt="">
+        </li>
+        <li class="carousel__slide">
+          <img class="carousel__image" src="/static/assets/logo.png" alt="">
+        </li>
+      </ul>
+    </div>
+    <button class="prev">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+        <path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/>
+      </svg>
+    </button>
+    <button class="next">
+      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+        <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
+      </svg>
+    </button>
+    <div class="carousel__nav">
+      <button class="carousel__indicator current-slide"></button>
+      <button class="carousel__indicator"></button>
+      <button class="carousel__indicator"></button>
+      <button class="carousel__indicator"></button>
+    </div>
+  </div>
+  
+
+  <!-- JS File -->
+  <script src="/static/js/login.js"></script>
 </body>
 </html>
