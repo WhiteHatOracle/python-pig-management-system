@@ -10,74 +10,89 @@
 <body>
   <!-- Header / Navigation -->
   <header>
-    <div class="nav-logo">
-      <span class="brand-green">farm</span>brite
-    </div>
-    <nav>
-      <ul>
-        <li><a href="#">Features</a></li>
-        <li><a href="#">Pricing</a></li>
-        <li><a href="#">Learn &amp; Support</a></li>
-      </ul>
-    </nav>
-    <div class="nav-actions">
-      <a href="{{url_for('signin')}}" class="login-link">Login</a>
-      <a href="#" class="cta-btn">Try for free</a>
-    </div>
+        <div class="nav-logo">
+            <span class="brand-green">farm</span>brite
+            </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Learn &amp; Support</a></li>
+                    </ul>
+                </nav>
+            <div class="nav-actions">
+            <a href="{{url_for('signin')}}" class="login-link">Login</a>
+            <a href="#" class="cta-btn">Try for free</a>
+        </div>
   </header>
 
   <!-- Hero Section -->
   <section class="hero">
-    <h1>Focus on your passion<br/> not your paperwork.</h1>
-    <p class="subtitle">
-      Join <strong>over 4,000 farmers worldwide</strong> who trust our all-in-one farm management 
-      software to streamline their operations enabling them to grow more food, 
-      more efficiently and sustainably for their communities.
-    </p>
-    <div class="hero-cta">
-      <a href="#" class="start-trial-btn">Start your free trial</a>
-      <a href="#" class="watch-demo-btn">Watch a demo</a>
-    </div>
-    <p class="trial-info">
-      ✓ 14 day free trial &nbsp; ✓ No credit card required &nbsp; ✓ Full access to all features
-    </p>
+        <h1>Focus on your passion<br/> not your paperwork.</h1>
+        <p class="subtitle">
+            Join <strong>over 4,000 farmers worldwide</strong> who trust our all-in-one farm management 
+            software to streamline their operations enabling them to grow more food, 
+            more efficiently and sustainably for their communities.
+        </p>
+        <div class="hero-cta">
+            <a href="#" class="start-trial-btn">Start your free trial</a>
+            <a href="#" class="watch-demo-btn">Watch a demo</a>
+        </div>
   </section>
 
   <!-- Carousel Section -->
-  <div class="carousel">
-    <div class="carousel__tracker-container">
-      <ul class="carousel__track">
-        <li class="carousel__slide"> 
-          <img class="carousel__image current-slide" src="/static/assets/laptop-mockup.png" alt="">
-        </li>
-        <li class="carousel__slide">
-          <img class="carousel__image" src="/static/assets/banner.jpg" alt="">
-        </li>
-        <li class="carousel__slide">
-          <img class="carousel__image" src="/static/assets/MotherPig2.png" alt="">
-        </li>
-        <li class="carousel__slide">
-          <img class="carousel__image" src="/static/assets/logo.png" alt="">
-        </li>
-      </ul>
-    </div>
-    <button class="prev">
-      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-        <path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/>
-      </svg>
-    </button>
-    <button class="next">
-      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-        <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
-      </svg>
-    </button>
-    <div class="carousel__nav">
-      <button class="carousel__indicator current-slide"></button>
-      <button class="carousel__indicator"></button>
-      <button class="carousel__indicator"></button>
-      <button class="carousel__indicator"></button>
-    </div>
+    <div class="carousel">
+        <div class="carousel__tracker-container">
+            <ul class="carousel__track">
+                <li class="carousel__slide"> 
+                <img class="carousel__image current-slide" src="/static/assets/laptop-mockup.png" alt="">
+                </li>
+                <li class="carousel__slide">
+                <img class="carousel__image" src="/static/assets/banner.jpg" alt="">
+                </li>
+                <li class="carousel__slide">
+                <img class="carousel__image" src="/static/assets/MotherPig2.png" alt="">
+                </li>
+                <li class="carousel__slide">
+                <img class="carousel__image" src="/static/assets/logo.png" alt="">
+                </li>
+            </ul>
+        </div>
+        <button class="prev">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                <path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/>
+            </svg>
+        </button>
+        <button class="next">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
+                <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
+            </svg>
+        </button>
+        <div class="carousel__nav">
+            <button class="carousel__indicator current-slide"></button>
+            <button class="carousel__indicator"></button>
+            <button class="carousel__indicator"></button>
+            <button class="carousel__indicator"></button>
+        </div>
   </div>
+
+    <!-- Features -->
+    <div class="container">
+        <h2>The Tools You wil need all in one place</h2>
+        <div class="text-content">
+            <h1>Organize your farm work and get more done</h1>
+            <p>
+                Farm work & task management features help you organize, assign, and manage tasks 
+                from anywhere (even offline) so your team can see what they need to do, stay on 
+                top of priorities and track their time. Make it easy to focus on what’s important 
+                and track what needs to get done.
+            </p>
+            <button class="btn">Farm Management</button>
+        </div>
+        <div class="image-content">
+            <img src="/static/assets/features.jpg" alt="Farm Management Screenshot">
+    </div>
+    </div>
   
 
   <!-- JS File -->
