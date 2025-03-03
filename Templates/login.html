@@ -6,23 +6,26 @@
   <title>Farmigo</title>
   <!-- Link to external CSS -->
   <link rel="stylesheet" href="/static/css/login.css" />
+  <script type="text/javascript" src="{{ url_for('static', filename='js/login.js' )}}" defer></script>
 </head>
 <body>
   <!-- Header / Navigation -->
   <header>
         <div class="nav-logo">
-            <span class="brand-green">farm</span>brite
             </div>
                 <nav>
+                    <h2><span class="brand-green">farm</span>brite</h2>
                     <ul>
                         <li><a href="#">Features</a></li>
                         <li><a href="#">Pricing</a></li>
                         <li><a href="#">Learn &amp; Support</a></li>
                     </ul>
+                    <span>
+                        <a href="{{url_for('signin')}}" class="login-link">Login</a>
+                        <a href="#" class="cta-btn">Try for free</a>
+                    </span>
                 </nav>
-            <div class="nav-actions">
-            <a href="{{url_for('signin')}}" class="login-link">Login</a>
-            <a href="#" class="cta-btn">Try for free</a>
+            <div>
         </div>
   </header>
 
@@ -68,17 +71,11 @@
                 <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
             </svg>
         </button>
-        <div class="carousel__nav">
-            <button class="carousel__indicator current-slide"></button>
-            <button class="carousel__indicator"></button>
-            <button class="carousel__indicator"></button>
-            <button class="carousel__indicator"></button>
-        </div>
   </div>
 
     <!-- Features -->
-    <div class="container">
-        <h2>The Tools You wil need all in one place</h2>
+    <div class="features-container">
+        <h2>The Tools You will need all in one place</h2>
         <div class="text-content">
             <h1>Organize your farm work and get more done</h1>
             <p>
@@ -91,11 +88,8 @@
         </div>
         <div class="image-content">
             <img src="/static/assets/features.jpg" alt="Farm Management Screenshot">
+        </div>
     </div>
-    </div>
-  
 
-  <!-- JS File -->
-  <script src="/static/js/login.js"></script>
 </body>
 </html>

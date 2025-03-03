@@ -8,33 +8,20 @@
   
   body {
     font-family: Arial, sans-serif;
-    /* background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4); */
     background-size: 300% 300%;
-    /* animation: gradientMove 120s ease infinite; */
-
     background: linear-gradient(to right, #c2a7a7, #6fa3e1);
     padding: 60px 20px;
 }
-
-/* @keyframes gradientMove {
-  0%{
-      background-position: 0% 50%; 
-  }
-  50%{ 
-      background-position: 100% 50%; 
-  }
-  100%{ 
-      background-position: 0% 50%; 
-  }
-} */
   
   /* Header / Navigation */
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 40px;
-  }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 40px;
+      /* width: 100%; */
+      margin: 0 10px;
+    }
   
   .nav-logo {
     font-size: 24px;
@@ -47,7 +34,29 @@
   }
 
   nav{
+    /* display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: fixed;
+    top: 10px;
+    z-index: 10000;
     border: 1px solid black;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    padding: 20px 40px; 
+    margin: 0 auto; */
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: fixed;
+    top: 10px;
+    padding: 20px 40px;
+    box-shadow: 0px 4px 10px rgba( 0, 0, 0, .75);
+    width: 100%;
+    backdrop-filter: blur(10px);
+    z-index: 1000;
   }
   
   nav ul {
@@ -62,15 +71,14 @@
     font-weight: bold;
   }
   
-  .nav-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
   .login-link {
     text-decoration: none;
     color: #333;
+    border: 1px solid black;
+    border-radius: 5px;
+    backdrop-filter: blur(10px);
+    padding: 8px 14px;
+
   }
   
   .cta-btn {
@@ -209,30 +217,8 @@
     width: 100%;
 }
 
-.carousel__nav{
-   display: flex;
-   justify-content: center;
-   padding: 10px 0;
-}
-
-.carousel__indicator{
-    border: 0;
-    border-radius: 50%;
-    width:15px;
-    height: 15px;
-    background: rgba(0,0,0,0.3);
-    margin: 0 10px;
-    cursor: pointer;
-}
-
-.carousel__indicator.current-slide{
-    background: rgba( 0, 0, 0, .75);
-}
-
-/* Features  */
-
-/* Grid Layout */
-.container {
+/* Features  Grid layout */
+.features-container {
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two equal columns */
     align-items: center; /* Center content vertically */
@@ -243,7 +229,7 @@
     height: 100dvh;
 }
 
-.container h2{
+.features-container h2{
     grid-column: 1 / -1;
     text-align: center;
     font-size: 42px;
