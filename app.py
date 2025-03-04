@@ -1,19 +1,18 @@
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request
+from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
-from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
-from flask_bcrypt import Bcrypt
 from datetime import timedelta, datetime
-from sqlalchemy.exc import IntegrityError
-import dash
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request
 from dash import dcc, html
-# from dash.dependencies import Output, Input
+from fpdf import FPDF
+import dash
 import plotly.graph_objs as go
 import dash_bootstrap_components as dbc
-from fpdf import FPDF
 
 # Initalize Flask app
 app = Flask(__name__)
