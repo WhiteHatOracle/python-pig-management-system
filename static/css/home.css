@@ -111,7 +111,7 @@ body{
   }
 }
 
-#sidebar > ul > li:nth-last-child(2){
+#sidebar > ul > li:nth-last-child(1){
   margin-top: auto;
 }
 
@@ -193,75 +193,6 @@ main p{
   --text-color: #333;
   --toggle-bg: #ccc;
   --switch-color: #666;
-}
-/* .mode-toggle {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  cursor: pointer;
-} */
-
-.mode-toggle a {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: var(--text-color);
-  gap: 10px;
-}
-
-/* Icons */
-.moon-sun {
-  position: relative;
-  width: 24px;
-  height: 24px;
-}
-
-.sun, .moon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transition: opacity 0.3s ease;
-}
-
-.sun {
-  opacity: 1;
-}
-
-.moon {
-  opacity: 0;
-}
-
-/* Toggle Switch */
-.toggle-switch {
-  width: 40px;
-  height: 20px;
-  background: var(--toggle-bg);
-  border-radius: 15px;
-  position: relative;
-  transition: background 0.3s;
-}
-
-.switch {
-  position: absolute;
-  left: 3px;
-  top: 3px;
-  width: 14px;
-  height: 14px;
-  background: var(--switch-color);
-  border-radius: 50%;
-  transition: transform 0.3s;
-}
-
-.dark-mode .sun {
-  opacity: 0;
-}
-
-.dark-mode .moon {
-  opacity: 1;
-}
-
-.dark-mode .switch {
-  transform: translateX(11.5px);
 }
 
 

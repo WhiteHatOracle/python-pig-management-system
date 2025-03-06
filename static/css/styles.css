@@ -30,6 +30,17 @@ body{
     background-size: cover;
 }
 
+.alert{
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin: 20px auto;
+    padding: 5px 20px;
+    color: red;
+    border: 2px solid rgb(255, 0, 0);
+}
 .container{
     text-align: center;
     border: 1px solid var(--border-color);
@@ -60,6 +71,10 @@ input[type="email"], .form-control{
     box-sizing: border-box;
 }
 
+input:focus{
+    color: var(--background-color);
+    border: 4px solid var(--background-color);
+}
 
 button, .btn{
     width: 300px;

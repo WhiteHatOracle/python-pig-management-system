@@ -1,95 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Farmigo</title>
-  <!-- Link to external CSS -->
-  <link rel="stylesheet" href="/static/css/login.css" />
-  <script type="text/javascript" src="{{ url_for('static', filename='js/login.js' )}}" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/login.css') }}">
+    <script type="text/javascript" src="{{ url_for('static',filename='js/login.js') }}" defer></script>
 </head>
 <body>
-  <!-- Header / Navigation -->
-  <header>
-        <div class="nav-logo">
-            </div>
-                <nav>
-                    <h2><span class="brand-green">farm</span>brite</h2>
-                    <ul>
-                        <li><a href="#">Features</a></li>
-                        <li><a href="#">Pricing</a></li>
-                        <li><a href="#">Learn &amp; Support</a></li>
-                    </ul>
-                    <span>
-                        <a href="{{url_for('signin')}}" class="login-link">Login</a>
-                        <a href="#" class="cta-btn">Try for free</a>
-                    </span>
-                </nav>
-            <div>
-        </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-        <h1>Seamless Management, Effortless Success.</h1>
-        <p class="subtitle">
-            Join a network of <strong>forward-thinking farmers</strong> leveraging technology to produce more, with less effort and more sustainability. With this all-in-one farm management 
-            software you can streamline your operations enabling you to grow more animals, 
-            more efficiently and sustainably for your communities.
-        </p>
-        <div class="hero-cta">
-            <a href="#" class="start-trial-btn">Start your free trial</a>
-            <a href="#" class="watch-demo-btn">Watch a demo</a>
-        </div>
-  </section>
-
-  <!-- Carousel Section -->
-    <div class="carousel">
-        <div class="carousel__tracker-container">
-            <ul class="carousel__track">
-                <li class="carousel__slide"> 
-                <img class="carousel__image current-slide" src="/static/assets/laptop-mockup.png" alt="">
-                </li>
-                <li class="carousel__slide">
-                <img class="carousel__image" src="/static/assets/banner.jpg" alt="">
-                </li>
-                <li class="carousel__slide">
-                <img class="carousel__image" src="/static/assets/MotherPig2.png" alt="">
-                </li>
-                <li class="carousel__slide">
-                <img class="carousel__image" src="/static/assets/logo.png" alt="">
-                </li>
+    <div class="navigationPanel">
+        <nav class="navbar">
+            <div class="logo">Logo</div>
+            <ul class="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
             </ul>
-        </div>
-        <button class="prev">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                <path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/>
-            </svg>
-        </button>
-        <button class="next">
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed">
-                <path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z"/>
-            </svg>
-        </button>
-  </div>
-
-    <!-- Features -->
-    <div class="features-container">
-        <h2>The Tools You will need all in one place</h2>
-        <div class="text-content">
-            <h1>Organize your farm work and get more done</h1>
-            <p>
-                Farm work & task management features help you organize, assign, and manage tasks 
-                from anywhere (even offline) so your team can see what they need to do, stay on 
-                top of priorities and track their time. Make it easy to focus on what’s important 
-                and track what needs to get done.
-            </p>
-            <button class="btn">Farm Management</button>
-        </div>
-        <div class="image-content">
-            <img src="/static/assets/features.jpg" alt="Farm Management Screenshot">
-        </div>
+            <button class="login-btn"><a href="{{url_for('signin')}}">Login</a></button>
+            <div class="mobile-menu-icon" onclick="toggleMenu()">
+                <span id="menu-icon">&#9776;</span>
+                <span id="close-icon" class="hidden">&times;</span>
+            </div>
+        </nav>
+        <ul id="mobile-menu" class="mobile-menu hidden">
+            <li><a href="#" onclick="toggleMenu()">Home</a></li>
+            <li><a href="#" onclick="toggleMenu()">About</a></li>
+            <li><a href="#" onclick="toggleMenu()">Services</a></li>
+            <li><a href="#" onclick="toggleMenu()">Contact</a></li>
+        </ul>
     </div>
-
 </body>
 </html>
