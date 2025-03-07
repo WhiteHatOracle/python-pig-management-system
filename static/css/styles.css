@@ -1,4 +1,6 @@
-
+::-webkit-scrollbar{
+    display: none;
+}
 :root{
     --background-color: #10a37f;
     --secondary-color: #cfe1b9;
