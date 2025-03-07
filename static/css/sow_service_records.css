@@ -71,14 +71,39 @@ table thead tr th{
     padding: 8px;
 }
 .action-btn{
-    justify-content: center;
-    gap: 10px;
-    background:none ;
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Space between text and icon */
     border: none;
+    background: none;
     cursor: pointer;
-    padding: 8px 0 0 0 ;
+    font-size: 16px;
+    color: #333; /* Adjust color of the button */
+    .action-txt{
+        font-weight: 500;
+    }
 }
-
+.actions-column{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Adjust spacing between buttons and separator */
+}
+.form-btns{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    /* margin-top: 20px; */
+}
+.seperator{
+    font-size: 16px;
+    color: #333; /* Adjust color of the separator */
+    display: inline-block;
+    line-height: 1;
+}
+.icon{
+    display: none;
+}
 
 @media (max-width:800px) {
     .index{

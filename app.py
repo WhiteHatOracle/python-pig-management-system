@@ -1,4 +1,5 @@
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
+from dash.dependencies import Input, Output
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
@@ -8,7 +9,7 @@ from flask_wtf import FlaskForm
 from datetime import timedelta, datetime
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request
-from dash import dcc, html
+from dash import dcc, html, dash_table
 from fpdf import FPDF
 import dash
 import plotly.graph_objs as go
@@ -46,6 +47,13 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(20), nullable = False, unique=True, index = True) # Indexed for quick lookup
     password = db.Column(db.String(80), nullable = False)
 
+# Define the Boar model
+class Boars(db.Model):
+    __tablename__ = "boars"
+    id = db.Column(db.Integer, primary_key = True)
+    BoarId = db.Column(db.String(20), nullable = False, unique = True, index = True)
+    DOB = db.Column(db.Date)
+
 # Define the Sows model
 class Sows(db.Model):
     __tablename__ = "sows"
@@ -55,12 +63,6 @@ class Sows(db.Model):
     # Relationship with ServiceRecords
     service_records = db.relationship("ServiceRecords", back_populates="sow", cascade="all, delete-orphan")
 
-# Define the Boar model
-class Boars(db.Model):
-    __tablename__ = "boars"
-    id = db.Column(db.Integer, primary_key = True)
-    BoarId = db.Column(db.String(20), nullable = False, unique = True, index = True)
-    DOB = db.Column(db.Date)
 
 # Define the service Records
 class ServiceRecords(db.Model):
@@ -80,6 +82,8 @@ class ServiceRecords(db.Model):
 
     # Relationship back to Sows
     sow = db.relationship("Sows", back_populates="service_records")
+
+    
 
 # Define sow management form
 class SowForm(FlaskForm):
@@ -160,45 +164,96 @@ def get_pig_counts():
     total_pigs = num_sows + boars + pokers   
     return total_pigs, num_sows, boars, pokers
 
+# Function to Fetch Sow Service Records for Table
+def get_sow_service_records():
+    # Get latest service record for each sow
+    subquery = db.session.query(
+        ServiceRecords.sow_id,
+        db.func.max(ServiceRecords.service_date).label("latest_service")
+    ).group_by(ServiceRecords.sow_id).subquery()
+
+    # Query service_records and join with sows to get the actual sowID
+    query = db.session.query(ServiceRecords, Sows.sowID).join(
+        subquery,
+        (ServiceRecords.sow_id == subquery.c.sow_id) & 
+        (ServiceRecords.service_date == subquery.c.latest_service)
+    ).join(Sows, ServiceRecords.sow_id == Sows.id)  # Correct table join
+
+    # Optionally filter records based on due_date
+    query = query.filter(ServiceRecords.due_date >= datetime.today()).order_by(ServiceRecords.due_date)
+
+    records = query.all()
+    # Convert query results into a list of dictionaries for Dash DataTable
+    data = [
+        {
+            "sow_id": record[1],  # Sow's actual sowID from the sows table
+            "service_date": record[0].service_date.strftime("%Y-%m-%d"),
+            "litter_guard1_date": record[0].litter_guard1_date.strftime("%Y-%m-%d") if record[0].litter_guard1_date else "",
+            "litter_guard2_date": record[0].litter_guard2_date.strftime("%Y-%m-%d") if record[0].litter_guard2_date else "",
+            "due_date": record[0].due_date.strftime("%Y-%m-%d") if record[0].due_date else "",
+        }
+        for record in records
+    ]    
+    return data
+
 # Dashboard Layout
 dash_app.layout = dbc.Container([
     html.Div([
+        # Row for Summary Cards
         dbc.Row([
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Pigs"),
+                    html.H4("Total Pigs"), 
                     html.H2(id="total-pigs")
-                ], className="dash-card")
+                    ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Sows"),
+                    html.H4("Total Sows"), 
                     html.H2(id="total-sows")
-                ], className="dash-card")
+                    ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Boars"),
+                    html.H4("Total Boars"), 
                     html.H2(id="total-boars")
-                ], className="dash-card")
+                    ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Porkers"),
+                    html.H4("Total Porkers"), 
                     html.H2(id="total-pokers")
-                ], className="dash-card")
+                    ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
         ], className="card-grid"),
 
-        dcc.Interval(
-        id="interval-update",
-        interval=5000,  # Updates every 5 seconds (adjust as needed)
-        n_intervals=0
+        html.Hr(),
+
+        # Table for Sow Service Records
+        html.H3("Sow Service Records"),
+        dash_table.DataTable(
+            id="sow-service-table",
+            columns=[
+                {"name": "Sow ID", "id": "sow_id"},  # Now correctly shows sowID
+                {"name": "Service Date", "id": "service_date"},
+                {"name": "First Litter Guard", "id": "litter_guard1_date"},
+                {"name": "Second Litter Guard", "id": "litter_guard2_date"},
+                {"name": "Due Date", "id": "due_date"},
+            ],
+            style_table={"overflowX": "auto"},
+            style_header={"fontWeight": "bold", "backgroundColor": "#f8f9fa"},
+            style_data={"backgroundColor": "#ffffff", "color": "#000"},
+            sort_action="native"
         ),
 
+        dcc.Interval(
+            id="interval-update",
+            interval=5000,  # Updates every 5 seconds
+            n_intervals=0
+        ),
     ], className="dashboard-wrapper"),
 ], fluid=True)
 
@@ -208,9 +263,38 @@ dash_app.layout = dbc.Container([
         dash.Output("total-sows", "children"),
         dash.Output("total-boars", "children"),
         dash.Output("total-pokers", "children"),
+        dash.Output("sow-service-table", "data"),
         ],
     [dash.Input("interval-update", "n_intervals")]
 )
+def update_dashboard(n):
+    print("Updating dashboard...")  # Debugging
+
+    try:
+        total_pigs, total_sows, total_boars, total_porkers = get_total_counts()
+        service_records = get_sow_service_records()
+        return str(total_pigs), str(total_sows), str(total_boars), str(total_porkers), service_records
+    except Exception as e:
+        print("Error updating dashboard:", e)
+        return "Error", "Error", "Error", "Error", []
+
+
+
+def get_total_counts():
+    try:
+        # Fetch counts from database
+        total_sows = db.session.query(Sows.id).count()  # Count total sows from Sows table
+        total_boars = db.session.query(Boars.id).count()  # Count total boars from Boars table
+        total_porkers = 300  # Placeholder (Replace if you have a Porkers table)
+        
+        # Compute total pigs after defining all variables
+        total_pigs = total_sows + total_boars + total_porkers
+        return total_pigs, total_sows, total_boars, total_porkers
+
+    except Exception as e:
+        print("Error in get_total_counts:", e)
+        return 0, 0, 0, 0  # Return zeroes if there is an error
+
 
 def update_counts(n):
     try:
