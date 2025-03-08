@@ -48,18 +48,18 @@
         <tbody>
             {% for idx, boar in enumerate(boars, 1) %}
             <tr>
-                <td>{{ idx }}</td>
-                <td>{{ boar.BoarId }}</td>
-                <td>{{ boar.DOB.strftime('%d-%m-%Y') }}</td>
+                <th>{{ idx }}</th>
+                <th>{{ boar.BoarId }}</th>
+                <th>{{ boar.DOB.strftime('%d-%m-%Y') }}</th>
                 <th class="boar-btns actions-column">
-                    <form action="" class="form-btns">
+                    <!-- <form class="form-btns" action="">
                         {{ form.hidden_tag() }}
                         <button class="action-btn">
                             <span class="action-txt">View</span>
                             <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
                         </button>    
                     </form>
-                    <span class="seperator">|</span>
+                    <span class="separator">|</span> -->
                     <form class="form-btns" action="{{ url_for('delete_boar', BoarId=boar.BoarId) }}" method="POST" onsubmit="return confirmDelete();">
                         {{ form.hidden_tag() }}
                         <button type="submit" class="action-btn">

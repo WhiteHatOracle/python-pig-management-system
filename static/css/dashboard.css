@@ -46,47 +46,6 @@ body, .dash-app, .container {
     border-radius: 20px;
 }
 
-/* Style the entire table */
-.sow-service-table {
-    border-collapse: collapse;
-    width: 100%;
-    font-family: Arial, sans-serif;
-    backdrop-filter: blur(10px) !important;
-}
-
-/* Table header styling */
-.sow-service-table thead {
-    background-color: #4CAF50;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Table cell styling */
-.sow-service-table td, 
-.sow-service-table th {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-}
-
-/* Zebra striping effect */
-.sow-service-table tbody tr:nth-child(odd) {
-    background-color: #333;
-}
-
-/* Hover effect */
-.sow-service-table tbody tr:hover {
-    background-color: #ddd;
-}
-
-/* Make the "Due Date" column text red */
-.sow-service-table td:nth-child(8) { 
-    color: red;
-    font-weight: bold;
-}
-
-
 /* Desktop: Cards are in one row */
 @media (min-width: 768px) {
     .card-grid {

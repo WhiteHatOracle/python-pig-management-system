@@ -1,11 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-:root{
-  --base-clr: #11121a;
-  --line-clr: #42434a;
-  --hover-clr: #d4d4d4;
-  --text-clr: #333;
-  --accent-clr: #5e63ff;
-  --secondary-text-clr: #616161;
+/* :root{
+  --bacground-clr :    #f2fdf0;
+  --border-clr:        #e0fcdc;
+  --text-clr:          #c3f6bc;
+  --hover-clr:         #93ee87;
+  --button-clr:        #5bdc4c;
+  --line-clr:          #34c324;
+  --header-clr:        #26a118;
+  --img-background-clr:#227e17;
+  --text-priamary-clr: #1e6417;
+  --active-clr:        #1a5215;
+  --focus-clr:         #082d06;
+} */
+:root {
+  --bg-light:        #f2fdf0;
+  --bg-lighter:      #e0fcdc;
+  --bg-lightest:     #c3f6bc;
+  
+  --bg-primary:      #93ee87;
+  --bg-secondary:    #5bdc4c;
+  --bg-accent:       #34c324;
+  
+  --hover-primary:   #26a118;
+  --hover-secondary: #227e17;
+  --hover-accent:    #1e6417;
+  
+  --border-light:    #1a5215;
+  --border-dark:     #082d06;
+  
+  --text-light:      #f2fdf0;
+  --text-dark:       #082d06;
+  
+  --shadow-light:    rgba(26, 82, 21, 0.3);
+  --shadow-dark:     rgba(8, 45, 6, 0.6);
 }
 *{
   margin: 0;
@@ -17,15 +44,15 @@ html{
 }
 body{
   min-height: 100dvh;
-  color: var(--text-clr);
+  color: var(--text-light);
   display: grid;
   grid-template-columns: auto 1fr;
-  background: linear-gradient(90deg, #ff7e5f, #feb47b, #86a8e7, #91eae4);
+  background: linear-gradient(90deg, #5bdc4c, #c3f6bc, #e0fcdc);
   background-size: 300% 300%;
   animation: gradientMove 120s ease infinite;
 }
 
-@keyframes gradientMove {
+/* @keyframes gradientMove {
   0%{
       background-position: 0% 50%; 
   }
@@ -35,7 +62,7 @@ body{
   100%{ 
       background-position: 0% 50%; 
   }
-}
+} */
 
 #sidebar{
   box-sizing: border-box;
@@ -46,7 +73,7 @@ body{
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); /* Safari support */
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow */  
-  border: 1px solid var(--line-clr);
+  border: 1px solid var(--border-dark);
   position: sticky;
   top: 0;
   align-self: start;
@@ -134,7 +161,7 @@ body{
   border-radius: .5em;
   padding: .85em;
   text-decoration: none;
-  color: var(--text-clr);
+  color: var(--text-dark);
   display: flex;
   align-items: center;
   gap: 1em;
@@ -142,7 +169,7 @@ body{
 
 #sidebar svg{
   flex-shrink: 0;
-  fill: var(--text-clr);
+  fill: var(--text-dark);
 }
 
 #sidebar a span{
@@ -150,7 +177,7 @@ body{
 }
 
 #sidebar a:hover{
-  background-color: var(--hover-clr);
+  background-color: var(--bg-light);
 }
 
 #sidebar{
@@ -167,32 +194,17 @@ main{
   padding: min(30px, 7%);
 }
 main p{
-  color: var(--secondary-text-clr);
+  color: var(--text-dark);
   margin-top: 5px;
   margin-bottom: 15px;
 }
 .container{
-  border: 1px solid var(--line-clr);
+  border: 1px solid var(--bg-light);
   border-radius: 1em;
   margin-bottom: 20px;
   padding: min(3em, 15%);
 
   h2, p { margin-top: 1em }
-}
-/* Dark Mode Toggle Button */
-/* Dark Mode Styles */
-.dark-mode {
-  --bg-color: #121212;
-  --text-color: #ffffff;
-  --toggle-bg: #444;
-  --switch-color: #fff;
-}
-
-.light-mode {
-  --bg-color: #ffffff;
-  --text-color: #333;
-  --toggle-bg: #ccc;
-  --switch-color: #666;
 }
 
 
@@ -212,7 +224,7 @@ main p{
     height: 60px;
     width: 100%;
     border-right: none;
-    border-top: 1px solid var(--line-clr);
+    border-top: 1px solid var(--border-dark);
     padding: 0;
     position: fixed;
     top: unset;

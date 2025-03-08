@@ -232,10 +232,11 @@ dash_app.layout = dbc.Container([
 
         html.Hr(),
 
-        # Table for Sow Service Records
         html.H3("Sow Service Records"),
+        # Table for Sow Service Records
         dash_table.DataTable(
             id="sow-service-table",
+            # className='sow-service-table',
             columns=[
                 {"name": "Sow ID", "id": "sow_id"},  # Now correctly shows sowID
                 {"name": "Service Date", "id": "service_date"},
@@ -243,10 +244,41 @@ dash_app.layout = dbc.Container([
                 {"name": "Second Litter Guard", "id": "litter_guard2_date"},
                 {"name": "Due Date", "id": "due_date"},
             ],
-            style_table={"overflowX": "auto"},
-            style_header={"fontWeight": "bold", "backgroundColor": "#f8f9fa"},
-            style_data={"backgroundColor": "#ffffff", "color": "#000"},
-            sort_action="native"
+            # style_table={"overflowX": "auto"},
+            # style_header={"fontWeight": "bold", "backgroundColor": "#f8f9fa"},
+            # style_data={"backgroundColor": "transparent", "color": "#000"},
+                sort_action="native",
+                style_table={
+                    'width': '100%', 
+                    'backdropFilter': 'blur(10px)',# Apply backdrop blur
+                },  
+                style_header={
+                    'backgroundColor': '#4CAF50',
+                    'color': 'white',
+                    'textAlign': 'center',
+                    'fontWeight': 'bold'
+                },
+                style_cell={
+                    'border': '1px solid #ddd',
+                    'padding': '8px',
+                    'textAlign': 'center',
+                    'fontFamily': 'Arial, sans-serif'
+                },
+                style_data_conditional=[{
+                    'if': {'column_id': 'due_date'},
+                    'color': '#082d06',
+                    'fontWeight': 'bold'
+                },{
+                    'if': {'row_index': 'odd'},  # Zebra striping effect
+                    'backgroundColor': '#5bdc4c',
+                    'color': 'white'
+                }],
+            css=[{
+                "selector": ".dash-table-container", 
+                "rule": "border-collapse: collapse !important;"},
+                {"selector": "tbody tr:hover", 
+                 "rule": "background-color: #ddd !important;"
+                }]
         ),
 
         dcc.Interval(
@@ -285,7 +317,7 @@ def get_total_counts():
         # Fetch counts from database
         total_sows = db.session.query(Sows.id).count()  # Count total sows from Sows table
         total_boars = db.session.query(Boars.id).count()  # Count total boars from Boars table
-        total_porkers = 300  # Placeholder (Replace if you have a Porkers table)
+        total_porkers = 150  # Placeholder (Replace if you have a Porkers table)
         
         # Compute total pigs after defining all variables
         total_pigs = total_sows + total_boars + total_porkers
