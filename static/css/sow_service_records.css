@@ -1,6 +1,33 @@
+:root {
+    --bg-light:        #f2fdf0;
+    --bg-lighter:      #e0fcdc;
+    --bg-lightest:     #c3f6bc;
+    
+    --bg-primary:      #93ee87;
+    --bg-secondary:    #5bdc4c;
+    --bg-accent:       #34c324;
+    
+    --hover-primary:   #26a118;
+    --hover-secondary: #227e17;
+    --hover-accent:    #1e6417;
+    
+    --border-light:    #1a5215;
+    --border-dark:     #082d06;
+    
+    --text-light:      #f2fdf0;
+    --text-dark:       #082d06;
+    
+    --shadow-light:    rgba(26, 82, 21, 0.3);
+    --shadow-dark:     rgba(8, 45, 6, 0.6);
+}
+
+::-webkit-scrollbar{
+    display: none;
+}
+
 #header{
-    background-color: #333;
-    color: #fff;
+    background-color: var(--bg-accent);
+    color: var(--text-dark);
     text-align: center;
     padding: 10px;
     margin-bottom: 20px;
@@ -13,20 +40,22 @@ form{
 }
 label {
     font-weight: bold;
+    color: var(--text-dark);
     margin: 10px 0 0 0;
 }
 
 input[type="text"], input[type="date"] {
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-dark);
     border-radius: 5px;
     min-width: 100%;
     box-sizing: border-box;
 }   
 
 input[type="text"]:focus, input[type="date"]:focus {
-    border-color: #0056b3;
+    border-color: var(--border-dark);
     outline: none;
 }
 .submitBTN {
@@ -38,18 +67,70 @@ input[type="text"]:focus, input[type="date"]:focus {
 .submit-btn {
     padding: 10px 20px;
     font-size: 16px;
-    color: #fff;
-    background-color: #0056b3;
+    color: var(--text-dark);
+    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     width: 300px;
-    border: none;
+    border: 1px solid var(--border-dark);
+    border: 1px solid var(--hover-accent);
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 .submit-btn:hover {
-    transform: translateY(-3px);
-    background-color: #003d82;
+    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    border: 1px solid var(--border-light);
+}
+
+.text-n-button {
+    display: flex;
+    justify-content: space-between;  /* Space between text and button */
+    align-items: center;  /* Align items vertically */
+    padding: 10px;
+    background-color: var(--bg-accent); /* Light green background */
+    border-radius: 8px;
+    span{
+        color: var(--text-dark);
+    }
+}
+
+/* Button styling */
+.text-n-button button {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between text and icon */
+    padding: 10px 16px;
+    border: none;
+    background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
+    border: 1px solid var(--hover-accent);
+    color: var(--text-dark);
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+/* Hover effect */
+.text-n-button button:hover {
+    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    border: 1px solid var(--border-light);
+}
+
+/* SVG icon styling */
+.text-n-button button svg {
+    /* fill: white; */
+    transition: transform 0.3s ease;
+}
+
+/* Rotate icon slightly on hover */
+.text-n-button button:hover svg {
+    transform: translateX(-3px);
+}
+
+
+h2{
+    color: var(--text-dark);
 }
 
 table{
@@ -58,15 +139,16 @@ table{
     border-radius: 5px;
     box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
     margin: 25px auto;
+    color: var(--text-dark);
 }
 table tbody tr td{
     text-align: center;
 }
 table thead tr{
-    border-bottom: 1px dashed #333;
+    border-bottom: 1px dashed var(--border-light);
 }
 table thead tr th{
-    color: #4b4b4b;
+    color: var(--text-dark);
     font-size: 16px;
     padding: 8px;
 }
@@ -78,7 +160,7 @@ table thead tr th{
     background: none;
     cursor: pointer;
     font-size: 16px;
-    color: #333; /* Adjust color of the button */
+    color: var(--text-dark); /* Adjust color of the button */
     .action-txt{
         font-weight: 500;
     }
@@ -97,7 +179,7 @@ table thead tr th{
 }
 .seperator{
     font-size: 16px;
-    color: #333; /* Adjust color of the separator */
+    color: var(--text-dark); /* Adjust color of the separator */
     display: inline-block;
     line-height: 1;
 }
@@ -118,11 +200,11 @@ table thead tr th{
     }
     td:first-child{
         padding-top: 2rem;
-        border-top: 1px solid #333;
+        border-top: 1px solid var(--border-dark);
     }
     td:last-child{
         padding-bottom: 2rem;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid var(--border-dark);
     }
     td::before{
         content: attr(data-cell);

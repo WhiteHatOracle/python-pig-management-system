@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+<script type="text/javascript" src="{{ url_for('static', filename='js/sow-service-records.js')}}" defer></script>
 
 {% endblock %}
 {% block content %}
@@ -30,7 +31,13 @@
     {% endif %}
     {% endwith %}
 
-    <h2>Service Records</h2>
+    <div class="text-n-button">
+        <h2>Service Records</h2>
+        <button onclick="goBack()">
+            <span>back</span>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
+        </button>
+    </div>
     <table>
         <thead>
             <tr>
@@ -86,10 +93,5 @@
         </tbody>
         {% endif %}
     </table>
-    <script>
-        function confirmDelete() {
-        return confirm('Are you sure you want to delete this sow? This action cannot be undone.');
-    }
-    </script>
 </main>
 {% endblock %}

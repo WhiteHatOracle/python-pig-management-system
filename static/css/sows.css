@@ -33,7 +33,7 @@
     
     --shadow-light:    rgba(26, 82, 21, 0.3);
     --shadow-dark:     rgba(8, 45, 6, 0.6);
-  }
+}
 
 ::-webkit-scrollbar{
     display: none;
@@ -85,7 +85,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     color: var(--text-dark);
     background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     width: 300px;
-    border: 1px solid var(--border-dark);
+    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     border: 1px solid var(--hover-accent);
     border-radius: 5px;
     cursor: pointer;
@@ -130,6 +130,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     align-items: center;
     justify-content: center;
     gap: 8px; /* Adjust spacing between buttons and separator */
+    margin: 4px auto;
 }
 .action-btn{
     display: flex;
@@ -146,7 +147,6 @@ input[type="text"]:focus, input[type="date"]:focus {
     display: flex;
     justify-content: center;
     gap: 8px;
-    /* margin-top: 20px; */
 }
 
 .seperator{
@@ -154,6 +154,18 @@ input[type="text"]:focus, input[type="date"]:focus {
     color: var(--text-dark); /* Adjust color of the separator */
     display: inline-block;
     line-height: 1;
+}
+
+.edit{
+    line-height: 1;
+    font-size: 16px;
+    color: var(--text-dark);
+    cursor: pointer;
+    gap: 8px;
+}
+
+.edit:hover{
+    transform: translateY(-1px);
 }
 
 .icon{
