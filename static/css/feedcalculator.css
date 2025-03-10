@@ -94,6 +94,7 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     margin-top: 30px;
     max-width: 100%;
     color: var(--text-dark);
+    
 }
 #results label {
     display: block;
