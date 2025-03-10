@@ -12,6 +12,7 @@ from flask import Flask, render_template, url_for, redirect, flash, make_respons
 from dash import dcc, html, dash_table
 from fpdf import FPDF
 import dash
+import datetime  
 import plotly.graph_objs as go
 import dash_bootstrap_components as dbc
 
@@ -180,7 +181,7 @@ def get_sow_service_records():
     ).join(Sows, ServiceRecords.sow_id == Sows.id)  # Correct table join
 
     # Optionally filter records based on due_date
-    query = query.filter(ServiceRecords.due_date >= datetime.today()).order_by(ServiceRecords.due_date)
+    query = query.filter(ServiceRecords.due_date >= datetime.date.today()).order_by(ServiceRecords.due_date)
 
     records = query.all()
     # Convert query results into a list of dictionaries for Dash DataTable

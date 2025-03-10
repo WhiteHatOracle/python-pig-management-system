@@ -96,7 +96,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     background: linear-gradient(var(--hover-secondary),var(--hover-accent));
     border: 1px solid var(--border-light);
 }
-
+/* code for the table */
 .sow-table, .boar-table{
     border-collapse: collapse;
     min-width: 100%;
