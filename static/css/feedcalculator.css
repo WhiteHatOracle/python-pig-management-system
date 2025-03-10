@@ -43,6 +43,7 @@ form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+    color: var(--text-dark);
 }
 label {
     font-weight: bold;
@@ -76,7 +77,6 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     border: 1px solid var(--hover-accent);
     color: var(--text-dark);
     width: 300px;
-    border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
