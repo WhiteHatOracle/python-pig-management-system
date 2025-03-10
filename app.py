@@ -252,6 +252,8 @@ dash_app.layout = dbc.Container([
                 style_table={
                     'width': '100%', 
                     'backdropFilter': 'blur(10px)',# Apply backdrop blur
+                    'overflowX': 'auto',
+                    'bottom': '50px',
                 },  
                 style_header={
                     'backgroundColor': '#4CAF50',
@@ -448,7 +450,9 @@ def invoice_Generator():
         # Calculate prices based on weights
         invoice_data = []
         total_cost = 0
-        
+        total_weight = sum(weights)
+        average_weight = total_weight / len(weights) if weights else 0
+
         for weight in weights:
             if first_min <= weight <= first_max:
                 price = float(first_price)
@@ -473,7 +477,9 @@ def invoice_Generator():
                                form=form, 
                                company_name=company_name,
                                invoice_data=invoice_data, 
-                               total_cost=f"K{total_cost:,.2f}")
+                               total_cost=f"K{total_cost:,.2f}",
+                               total_weight=f"{total_weight:.2f}kg",
+                               average_weight=f"{average_weight:.2f}kg")
 
     return render_template('invoiceGenerator.html', form=form)
 
@@ -537,7 +543,7 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
     pdf.ln(5)
     pdf.cell(130, 10, "Total Cost:", border=0, align="R")
     pdf.cell(60, 10, f"K{total_cost:,.2f}", border=1, align="C")
-    pdf.ln(40)
+    pdf.ln(20)
 
     # Signatures Section
     pdf.set_font("Arial", "B", 10)
@@ -656,7 +662,7 @@ def sow_service_records(sow_id):
         if service_date and boar_used:
             try:
                 # Convert service_date to datetime
-                service_date = datetime.strptime(service_date, '%Y-%m-%d')
+                service_date = datetime.datetime.strptime(service_date, '%Y-%m-%d')
                 boar_used=boar_used.upper()    
 
                 # Calculate other dates
