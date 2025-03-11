@@ -66,14 +66,26 @@
                     {% endfor %}
                 </tbody>
                 <tfoot>
-                    <td colspan="3" align="right" >Total:</td>
-                    <td>{{ total_cost }}</td>
-                    <!-- <h3 class="totalCost">Total Cost: {{ total_cost }}</h3> -->
+                    <tr>
+                        <td class="left-text">Total Weight:</td>
+                        <td>{{ total_weight }}</td>
+                        <td class="right-text" align="right">Total:</td>
+                        <td align="right">{{ total_cost }}</td>
+                    </tr>
+                    <tr>
+                        <td class="left-text">Average Weight:</td>
+                        <td>{{ average_weight }}</td>
+                        <td></td> <!-- Empty cells to maintain alignment -->
+                        <td></td>
+                    </tr>
                 </tfoot>
+                
             </table>
             <form method="POST" action="/download-invoice" class="download_invoice">
                 <input type="hidden" name="company_name" value="{{ company_name }}">
                 <input type="hidden" name="invoice_data" value="{{ invoice_data }}">
+                <input type="hidden" name="total_weight" value="{{ total_weight }}">
+                <input type="hidden" name="average_weight" value="{{ average_weight }}">
                 <input type="hidden" name="total_cost" value="{{ total_cost }}">
                 <button type="submit" class="btn btn-success">
                     <span>Download PDF</span>

@@ -48,6 +48,7 @@ body{
   display: grid;
   grid-template-columns: auto 1fr;
   background: linear-gradient(90deg, #5bdc4c, #c3f6bc, #e0fcdc);
+  /* background: #c3f6bc; */
   background-size: 300% 300%;
   animation: gradientMove 120s ease infinite;
 }

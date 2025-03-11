@@ -58,6 +58,7 @@ input[type="text"], input[type="number"], select, textarea {
     border-radius: 5px;
     min-width: 100%;
     box-sizing: border-box;
+    background: var(--bg-primary);
 }   
 
 input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
@@ -163,6 +164,7 @@ form .btn:hover{
     color: var(--text-dark);
     font-weight: 700;
     padding: 8px;
+    text-align: right;
 }
 
 .invoice-table tbody tr td{

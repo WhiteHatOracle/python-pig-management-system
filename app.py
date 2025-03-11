@@ -253,7 +253,6 @@ dash_app.layout = dbc.Container([
                     'width': '100%', 
                     'backdropFilter': 'blur(10px)',# Apply backdrop blur
                     'overflowX': 'auto',
-                    'bottom': '50px',
                 },  
                 style_header={
                     'backgroundColor': '#4CAF50',
@@ -276,11 +275,11 @@ dash_app.layout = dbc.Container([
                     'backgroundColor': '#5bdc4c',
                     'color': 'white'
                 }],
-            css=[{
-                "selector": ".dash-table-container", 
-                "rule": "border-collapse: collapse !important;"},
-                {"selector": "tbody tr:hover", 
-                 "rule": "background-color: #ddd !important;"
+                css=[{
+                    "selector": ".dash-table-container", 
+                    "rule": "border-collapse: collapse !important;"},
+                   {"selector": "tbody tr:hover", 
+                    "rule": "background-color: #ddd !important;"
                 }]
         ),
 
@@ -471,15 +470,16 @@ def invoice_Generator():
                     "price": price,  # Keep raw price
                     "formatted_price": f"K{price:,.2f}",  # Format price as currency
                     "cost": cost,  # Keep raw cost
-                    "formatted_cost": f"K{cost:,.2f}"  # Format cost as currency
+                    "formatted_cost": f"K{cost:,.2f}",  # Format cost as currency
                 })
         return render_template('invoiceGenerator.html', 
                                form=form, 
                                company_name=company_name,
                                invoice_data=invoice_data, 
                                total_cost=f"K{total_cost:,.2f}",
-                               total_weight=f"{total_weight:.2f}kg",
-                               average_weight=f"{average_weight:.2f}kg")
+                               total_weight=f"{total_weight:,.2f}Kg",
+                               average_weight = f"{average_weight:,.2f}Kg"
+                               )
 
     return render_template('invoiceGenerator.html', form=form)
 
@@ -488,19 +488,22 @@ def invoice_Generator():
 def download_invoice():
     company_name = request.form.get("company_name")
     invoice_data = eval(request.form.get("invoice_data"))  # Parse invoice data passed from the form
+    total_weight = float(request.form.get("total_weight").replace("Kg", "").replace(",", ""))
+    # total_weight = float(request.form.get("total_weight"))
+    average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
     total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
     
     invoice_number = f"INV-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
-    pdf = generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
+    pdf = generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weight, average_weight, total_cost)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename={invoice_number}.pdf'
     return response
 
-def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost):
+def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weight, average_weight, total_cost):
     class PDF(FPDF):
         def header(self):
-            self.set_font("Arial", "B", 14)
+            self.set_font("Arial", "B", 20)
             self.cell(0, 10, "Invoice", align="C", ln=True)
             self.ln(10)
 
@@ -538,12 +541,27 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_cost)
         pdf.cell(60, 10, item["formatted_cost"], border=1, align="C")
         pdf.ln()
 
+    # Total weight
+    pdf.set_font("Arial","B", 12)
+    pdf.ln(5)
+    pdf.cell(130,10,"Total Weight:", border=0,align="R")
+    pdf.cell(60, 10, f"{total_weight:,.2f}Kg", border=1, align="C")
+    pdf.ln(8)
+
+    #Average weight
+    pdf.set_font("Arial","B",12)
+    pdf.ln(5)
+    pdf.cell(130, 10,"Average Weight:", border=0, align="R")
+    pdf.cell(60,10,f"{average_weight:,.2f}Kg",border=1,align="C")
+    pdf.ln(5)
+
     # Total Cost
     pdf.set_font("Arial", "B", 12)
-    pdf.ln(5)
+    pdf.ln(8)
     pdf.cell(130, 10, "Total Cost:", border=0, align="R")
     pdf.cell(60, 10, f"K{total_cost:,.2f}", border=1, align="C")
     pdf.ln(20)
+
 
     # Signatures Section
     pdf.set_font("Arial", "B", 10)
