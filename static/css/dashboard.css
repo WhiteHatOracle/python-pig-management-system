@@ -20,21 +20,23 @@
     --shadow-light:    rgba(26, 82, 21, 0.3);
     --shadow-dark:     rgba(8, 45, 6, 0.6);
   }
-.text-white {
+/* .text-white {
     color: var(--bg-light) !important;
-}
+} */
 
-.Title{
-    color: var(--text-dark);
-    text-align: center;
-    font-size: 26px;
-    padding-bottom: 15px;
+.h2{
+    border: 1px solid var(--border-dark);
+   color: var(--text-light);
+   text-align: center;
+   padding: 10px;
+   margin-bottom: 20px;
+   border-radius: 5px;
+   color: var(--text-dark);
 }
 
 main .dashboard-iframe{
     height: 100%;
     width: 100%;
-    /* border: 2px solid red; */
     bottom: 100px;
     height: 95%;
 }
@@ -47,7 +49,6 @@ body, .dash-app, .container {
     background-color: rgba(0, 0, 0, 0) !important; /* Transparent background */
     width: 100%;
     height: 100dvh;
-    /* border: 2px solid blue; */
     bottom: 40px;
 }
 
@@ -69,10 +70,14 @@ body, .dash-app, .container {
     text-align: center;
     padding: 20px;
     min-width: 200px;
-    border: 2px solid grey;
+    border: 2px solid var(--bg-accent);
     border-radius: 20px;
+    color: var(--text-dark);
 }
 
+#sow-service-table{
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+}
 /* Desktop: Cards are in one row */
 @media (min-width: 768px) {
     .card-grid {

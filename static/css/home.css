@@ -47,7 +47,7 @@ body{
   color: var(--text-light);
   display: grid;
   grid-template-columns: auto 1fr;
-  background: linear-gradient(90deg, #5bdc4c, #c3f6bc, #e0fcdc);
+  background: linear-gradient(90deg, #e0fcdc);
   /* background: #c3f6bc; */
   background-size: 300% 300%;
   animation: gradientMove 120s ease infinite;
@@ -214,6 +214,9 @@ main p{
 
 /* Media Queries */
 @media (max-width: 800px) {
+  .dont-display-on-mobile{
+    display: none;
+  }
   body {
     grid-template-columns: 1fr;
   }

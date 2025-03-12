@@ -12,6 +12,14 @@
 {% block content %}
 <main>
     <h2 id="header">Invoice Generator</h2>
+    <div class="invoice-buttons">
+        <button class=" invoice-btns generate-invoice">
+            <a href="{{ url_for('invoice_Generator') }}">Generate Invoices</a>
+        </button>
+        <button class=" invoice-btns view-invoices">
+            <a href="{{ url_for('invoices')}}">View Invoices</a>
+        </button>
+    </div>
     <form class="container" method="POST" action="?scroll=invoice">
         {{ form.hidden_tag()}}  
         <label for="company">Company Name</label>

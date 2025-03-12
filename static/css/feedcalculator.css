@@ -31,7 +31,8 @@ body {
 }
 
 h2{
-    background-color: var(--bg-accent);
+    /* background-color: var(--bg-accent); */
+    border: 1px solid var(--border-dark);
     color: var(--text-dark);
     text-align: center;
     padding: 10px;
@@ -44,6 +45,7 @@ form {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     color: var(--text-dark);
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
 }
 label {
     font-weight: bold;
@@ -55,7 +57,7 @@ input[type="text"], input[type="number"], select, textarea {
     padding: 10px;
     font-size: 16px;
     border: 1px solid var(--border-dark);
-    background: var(--bg-primary);
+    /* background: var(--bg-primary); */
     border-radius: 5px;
     min-width: 100%;
     box-sizing: border-box;
@@ -95,7 +97,8 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     margin-top: 30px;
     max-width: 100%;
     color: var(--text-dark);
-    
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+
 }
 #results label {
     display: block;
@@ -112,12 +115,14 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 
 u {
     text-decoration: none;
-    border-bottom: 2px dotted var(--bg-secondary);
+    border-bottom: 2px dotted var(--bg-secondary) ;
 }
 
 @media (max-width: 800px) {
     form, #results {
         grid-template-columns: 1fr;
+        label{
+            padding: 0px 5px;
+        }
     }
-
 }

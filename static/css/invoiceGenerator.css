@@ -32,7 +32,8 @@ body{
 }
 
 #header{
-    background-color: var(--bg-accent);
+    border: 1px solid var(--border-dark);
+    /* background-color: var(--bg-accent); */
     color: var(--text-dark);
     text-align: center;
     padding: 10px;
@@ -44,6 +45,9 @@ form{
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     color: var(--text-dark);
+    border: 1px solid var(--border-dark);
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+
 }
 label {
     font-weight: bold;
@@ -58,7 +62,7 @@ input[type="text"], input[type="number"], select, textarea {
     border-radius: 5px;
     min-width: 100%;
     box-sizing: border-box;
-    background: var(--bg-primary);
+    /* background: var(--bg-primary); */
 }   
 
 input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
@@ -177,7 +181,48 @@ form .btn:hover{
     text-align: right;
 }
 
+.invoice-buttons{
+    display: none;
+}
+
 @media (max-width: 800px){
+
+    .invoice-buttons{
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        align-items: center;
+    }
+
+    .invoice-btns{
+        width: 45%;
+        padding: 7px 5px;
+        border-radius: 5px;
+        outline: none;
+        a{
+            text-decoration: none;
+        }
+    }
+
+    .view-invoices{
+        font-size: 16px;
+        background: linear-gradient(var(--bg-primary),var(--bg-lightest));
+        border: 1px solid var(--hover-accent);
+        transition: background-color 0.3s;
+        a{
+            color: var(--text-dark);
+        }
+    }
+
+    .generate-invoice{
+        font-size: 16px;
+        background: linear-gradient(var(--hover-primary),var(--hover-secondary));
+        border: 1px solid var(--hover-accent);
+        transition: background-color 0.3s;
+        a{
+            color: var(--text-light);
+        }
+    }
     
     form{
         grid-template-columns: repeat(1, 1fr);

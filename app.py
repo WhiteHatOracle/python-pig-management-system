@@ -201,10 +201,10 @@ def get_sow_service_records():
     data = [
         {
             "sow_id": record[1],  # Sow's actual sowID from the sows table
-            "service_date": record[0].service_date.strftime("%Y-%m-%d"),
-            "litter_guard1_date": record[0].litter_guard1_date.strftime("%Y-%m-%d") if record[0].litter_guard1_date else "",
-            "litter_guard2_date": record[0].litter_guard2_date.strftime("%Y-%m-%d") if record[0].litter_guard2_date else "",
-            "due_date": record[0].due_date.strftime("%Y-%m-%d") if record[0].due_date else "",
+            "service_date": record[0].service_date.strftime("%d-%b-%Y"),
+            "litter_guard1_date": record[0].litter_guard1_date.strftime("%d-%b-%Y") if record[0].litter_guard1_date else "",
+            "litter_guard2_date": record[0].litter_guard2_date.strftime("%d-%b-%Y") if record[0].litter_guard2_date else "",
+            "due_date": record[0].due_date.strftime("%d-%b-%Y") if record[0].due_date else "",
         }
         for record in records
     ]    
@@ -246,7 +246,7 @@ dash_app.layout = dbc.Container([
 
         html.Hr(),
 
-        html.H3("Sow Service Records"),
+        html.H3("Upcoming deliveries"),
         # Table for Sow Service Records
         dash_table.DataTable(
             id="sow-service-table",
@@ -258,9 +258,6 @@ dash_app.layout = dbc.Container([
                 {"name": "Second Litter Guard", "id": "litter_guard2_date"},
                 {"name": "Due Date", "id": "due_date"},
             ],
-            # style_table={"overflowX": "auto"},
-            # style_header={"fontWeight": "bold", "backgroundColor": "#f8f9fa"},
-            # style_data={"backgroundColor": "transparent", "color": "#000"},
                 sort_action="native",
                 style_table={
                     'width': '100%', 
@@ -546,7 +543,7 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weigh
     pdf.set_font("Arial", "B", 12)
     pdf.cell(0, 10, f"Invoice Number: {invoice_number}", ln=True)
     pdf.cell(0, 10, f"Company Name: {company_name}", ln=True)
-    pdf.cell(0, 10, f"Date: {datetime.datetime.now().strftime('%Y-%m-%d')}", ln=True)
+    pdf.cell(0, 10, f"Date: {datetime.datetime.now().strftime('%d-%b-%Y')}", ln=True)
     pdf.ln(10)
 
     # Table Header
@@ -722,7 +719,7 @@ def sow_service_records(sow_id):
         if service_date and boar_used:
             try:
                 # Convert service_date to datetime
-                service_date = datetime.datetime.strptime(service_date, '%Y-%m-%d')
+                service_date = datetime.datetime.strptime(service_date, '%d-%b-%Y')
                 boar_used=boar_used.upper()    
 
                 # Calculate other dates

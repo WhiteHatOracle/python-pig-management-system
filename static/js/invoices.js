@@ -48,7 +48,7 @@ function filterInvoices() {
 
 // Function to highlight the entire row
 function highlightRow(row) {
-    row.style.backgroundColor = '#FFFF99'; // Light yellow highlight for the entire row
+    row.style.backgroundColor = '#c2bebe '; 
     row.style.fontWeight = 'bold';
 }
 
