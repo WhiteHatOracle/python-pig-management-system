@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
 from flask_wtf import FlaskForm
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request
 from dash import dcc, html, dash_table
@@ -83,6 +83,19 @@ class ServiceRecords(db.Model):
 
     # Relationship back to Sows
     sow = db.relationship("Sows", back_populates="service_records")
+
+class Invoice(db.Model):
+   __tablename__ = "Invoice"
+   id = db.Column(db.Integer, primary_key=True)
+   invoice_number = db.Column(db.String(50), unique=True, nullable=False)
+   company_name = db.Column(db.String(255), nullable=False)
+   date = db.Column(db.Date, default=lambda: datetime.now(timezone.utc), nullable=False)
+   total_weight = db.Column(db.Float, nullable=False)
+   average_weight = db.Column(db.Float, nullable=False)
+   total_price = db.Column(db.Float, nullable=False)
+
+   def __repr__(self):
+       return f"<Invoice {self.invoice_number}>"
 
     
 
@@ -489,11 +502,24 @@ def download_invoice():
     company_name = request.form.get("company_name")
     invoice_data = eval(request.form.get("invoice_data"))  # Parse invoice data passed from the form
     total_weight = float(request.form.get("total_weight").replace("Kg", "").replace(",", ""))
-    # total_weight = float(request.form.get("total_weight"))
     average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
     total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
     
+    #generate unique invoice number
     invoice_number = f"INV-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+    
+    #store invoice data in db just before downloading
+    new_invoice = Invoice(
+        invoice_number=invoice_number,
+        company_name=company_name,
+        date=datetime.datetime.now().date(),
+        total_weight=total_weight,
+        average_weight=average_weight,
+        total_price=total_cost
+    )
+    db.session.add(new_invoice)
+    db.session.commit()
+
     pdf = generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weight, average_weight, total_cost)
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
@@ -576,6 +602,22 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weigh
     pdf.cell(0, 10, "Thank you for your business!", align="C", ln=True)
 
     return pdf.output(dest='S').encode('latin1')
+
+@app.route('/invoices', methods=['GET','POST'])
+@login_required
+def invoices():
+    invoices = Invoice.query.order_by(Invoice.date.desc()).all()  # Get all invoices, newest first
+    return render_template('invoices.html', invoices=invoices)
+
+# Delete Invoice Route
+@app.route('/delete-invoice/<int:invoice_id>', methods=['POST'])
+@login_required
+def delete_invoice(invoice_id):
+    invoice = Invoice.query.get_or_404(invoice_id)
+    db.session.delete(invoice)
+    db.session.commit()
+    flash('Invoice deleted successfully', 'success')
+    return redirect(url_for('invoices'))
 
 @app.route('/boar-manager', methods=['GET','POST'])
 @login_required

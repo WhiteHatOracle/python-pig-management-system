@@ -1,0 +1,157 @@
+:root {
+    --bg-light:        #f2fdf0;
+    --bg-lighter:      #e0fcdc;
+    --bg-lightest:     #c3f6bc;
+    
+    --bg-primary:      #93ee87;
+    --bg-secondary:    #5bdc4c;
+    --bg-accent:       #34c324;
+    
+    --hover-primary:   #26a118;
+    --hover-secondary: #227e17;
+    --hover-accent:    #1e6417;
+    
+    --border-light:    #1a5215;
+    --border-dark:     #082d06;
+    
+    --text-light:      #f2fdf0;
+    --text-dark:       #082d06;
+    
+    --shadow-light:    rgba(26, 82, 21, 0.3);
+    --shadow-dark:     rgba(8, 45, 6, 0.6);
+}
+
+h2{
+    background-color: var(--bg-accent);
+    color: var(--text-light);
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: var(--text-dark);
+}
+
+#invoiceTable{
+    border-collapse: collapse;
+    min-width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+    margin: 10px auto;
+    text-align: center;
+    color: var(--text-dark);
+}
+
+/* Styling for the search input */
+.search-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    padding: 8px;
+    width: 50%;
+    max-width: 400px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Optional: Smooth transition for highlighted cells */
+td {
+    transition: background-color 0.3s ease, font-weight 0.3s ease;
+}
+
+
+.search-container {
+    padding: 20px 0;
+    position: relative;
+    display: inline-block;
+    width: 100%; /* Adjust as needed */
+    max-width: 400px; /* Adjust to match the width in the image */
+}
+
+#searchInput {
+    width: 100%;
+    padding: 8px 40px 8px 40px; /* Padding to make space for icons */
+    background-color: white; /* Dark background */
+    border: none;
+    border-radius: 20px; /* Rounded edges */
+    color: #333; /* Light gray text for placeholder and input */
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+#searchInput::placeholder {
+    color: #ccc; /* Placeholder text color */
+    opacity: 1; /* Ensure placeholder is fully visible */
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc; /* Icon color */
+    font-size: 18px;
+}
+
+.close-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ccc; /* Icon color */
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.close-icon:hover {
+    color: #fff; /* Brighter color on hover */
+}    
+
+.action-btn{
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Space between text and icon */
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-dark); /* Adjust color of the button */
+}
+
+.icon{
+    display: none;
+}
+
+
+
+@media (max-width:800px) {
+    #invoiceTable{
+        white-space: nowrap;
+    }
+    .action-txt{
+        display: none;
+    }
+    .icon{
+        display: inline-block;
+    }
+    .actions-column{
+        text-align: center;
+    }
+    form{
+        grid-template-columns:1fr;
+    }
+    table{
+        min-width: 100%;
+    }
+    .top-page{
+        display: none;
+    }
+}
+
