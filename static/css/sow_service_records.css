@@ -26,12 +26,13 @@
 }
 
 #header{
-    background-color: var(--bg-accent);
-    color: var(--text-dark);
-    text-align: center;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
+   border: 1px solid var(--border-dark);
+   color: var(--text-light);
+   text-align: center;
+   padding: 10px;
+   margin-bottom: 20px;
+   border-radius: 5px;
+   color: var(--text-dark);
 }
 form{
     display: grid;
@@ -47,7 +48,7 @@ label {
 input[type="text"], input[type="date"] {
     padding: 10px;
     font-size: 16px;
-    background-color: var(--bg-primary);
+    /* background-color: var(--bg-primary); */
     border: 1px solid var(--border-dark);
     border-radius: 5px;
     min-width: 100%;
@@ -70,7 +71,6 @@ input[type="text"]:focus, input[type="date"]:focus {
     color: var(--text-dark);
     background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     width: 300px;
-    border: 1px solid var(--border-dark);
     border: 1px solid var(--hover-accent);
     border-radius: 5px;
     cursor: pointer;
@@ -87,7 +87,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     justify-content: space-between;  /* Space between text and button */
     align-items: center;  /* Align items vertically */
     padding: 10px;
-    background-color: var(--bg-accent); /* Light green background */
+    border: 1px solid var(--hover-accent);
     border-radius: 8px;
     span{
         color: var(--text-dark);
@@ -140,6 +140,7 @@ table{
     box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
     margin: 25px auto;
     color: var(--text-dark);
+    white-space: nowrap;
 }
 table tbody tr td{
     text-align: right;
@@ -167,6 +168,9 @@ table thead tr th{
     .action-txt{
         font-weight: 500;
     }
+    span{
+        display: none;
+    }
 }
 .actions-column{
     display: flex;
@@ -185,9 +189,6 @@ table thead tr th{
     color: var(--text-dark); /* Adjust color of the separator */
     display: inline-block;
     line-height: 1;
-}
-.icon{
-    display: none;
 }
 
 @media (max-width:800px) {

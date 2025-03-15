@@ -24,7 +24,9 @@
 ::-webkit-scrollbar{
     display: none;
 }
-
+.alert{
+    color: var(--text-dark);
+}
 #header{
     border: 1px solid var(--border-dark);
     color: var(--text-light);
@@ -156,9 +158,15 @@ input[type="text"]:focus, input[type="date"]:focus {
 .icon{
     display: none;
 }
+.for-mobile{
+    display: none;
+}
+.mobile-span{
+    display: none;
+}
 
 @media (max-width:800px) {
-    .action-txt{
+    .for-desktop{
         display: none;
     }
     .icon{
@@ -176,4 +184,64 @@ input[type="text"]:focus, input[type="date"]:focus {
     .top-page{
         display: none;
     }
+    .for-mobile{
+        display: block;
+    }
+    .menu-btn {
+        background: none;
+        border: none;
+        font-size: 20px; /* Adjust size */
+        cursor: pointer;
+        padding: 5px;
+        position: relative; /* Ensures dropdown is positioned correctly */
+    }
+    .action-btn{
+        width: 60px;
+        height: 60px;
+        padding: 0;
+        border-radius: 0;
+        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: var(--text-dark);
+    }
+    .dropdown-menu {
+        position: absolute;
+        background: var(--bg-primary);
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        display: none; /* Initially hidden */
+        flex-direction: row;
+        min-width: 120px;
+        padding: 5px 5px 5px 0;
+        z-index: 100;
+        right: 0; /* Ensures menu stays inside the table cell */
+        transform: translateX(-10px); /* Adjust for small spacing */
+        span {
+            display: block;
+            font-size: 10px;
+            margin-bottom: 0px;
+            right: 0;
+            bottom: 0;
+            color: var(--text-dark);
+            }
+    }
+      
+      .dropdown-menu button {
+        background: none;
+        border: none;
+        width: 100%;
+        padding: 10px;
+        text-align: left;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      
+      .dropdown-menu button:hover {
+        background: #f0f0f0;
+      }
+      .dropdown-menu.show {
+        display: flex; /* Shows the menu */
+      }
 }

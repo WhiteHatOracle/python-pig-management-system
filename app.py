@@ -329,7 +329,7 @@ def get_total_counts():
         # Fetch counts from database
         total_sows = db.session.query(Sows.id).count()  # Count total sows from Sows table
         total_boars = db.session.query(Boars.id).count()  # Count total boars from Boars table
-        total_porkers = 150  # Placeholder (Replace if you have a Porkers table)
+        total_porkers = 162  # Placeholder (Replace if you have a Porkers table)
         
         # Compute total pigs after defining all variables
         total_pigs = total_sows + total_boars + total_porkers

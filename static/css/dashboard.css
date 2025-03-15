@@ -25,13 +25,21 @@
 } */
 
 .h2{
-    border: 1px solid var(--border-dark);
+    /* border: 1px solid var(--border-dark);
    color: var(--text-light);
    text-align: center;
    padding: 10px;
    margin-bottom: 20px;
    border-radius: 5px;
-   color: var(--text-dark);
+   color: var(--text-dark); */
+
+   border: 1px solid var(--border-dark);
+    color: var(--text-light);
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: var(--text-dark);
 }
 
 main .dashboard-iframe{
@@ -83,11 +91,19 @@ body, .dash-app, .container {
     .card-grid {
         grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
     }
+    #sow-service-table{
+        box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+        margin-bottom: 100px;
+    }
 }
 
 /* Mobile: Cards stack vertically */
 @media (max-width: 767px) {
     .card-grid {
         grid-template-columns: 1fr; /* 1 column, stacking cards */
+    }
+     #sow-service-table{
+        box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+        margin-bottom: 100px;
     }
 }
