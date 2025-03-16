@@ -24,6 +24,9 @@
 ::-webkit-scrollbar{
     display: none;
 }
+.alert{
+    color: var(--text-dark);
+}
 
 #header{
    border: 1px solid var(--border-dark);

@@ -23,7 +23,9 @@
 /* .text-white {
     color: var(--bg-light) !important;
 } */
-
+.alert{
+    color: var(--text-dark);
+}
 .h2{
     /* border: 1px solid var(--border-dark);
    color: var(--text-light);

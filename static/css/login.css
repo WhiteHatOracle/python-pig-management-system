@@ -3,9 +3,9 @@ body {
   font-family: Arial, sans-serif;
   background-color: aqua;
 }
-/* .navigationPanel{
-  background-color: red ;
-} */
+.alert{
+  color: var(--text-dark);
+}
 .navbar {
   display: flex;
   justify-content: space-between;

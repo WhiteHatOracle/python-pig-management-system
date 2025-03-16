@@ -1,166 +1,47 @@
-from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
-from dash.dependencies import Input, Output
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
-from flask_login import UserMixin, LoginManager, login_user, login_required, logout_user
-from flask_wtf import FlaskForm
-from datetime import timedelta, datetime, timezone
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
+from flask_login import LoginManager, login_user, login_required, logout_user
+from datetime import timedelta
+import datetime
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request
 from dash import dcc, html, dash_table
 from fpdf import FPDF
 import dash
-import datetime  
-import plotly.graph_objs as go
 import dash_bootstrap_components as dbc
 
-# Initalize Flask app
+# Import models and db
+from models import db, User, Boars, Sows, ServiceRecords, Invoice
+# Import the forms
+from forms import SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm
+
+# Initialize Flask app
 app = Flask(__name__)
-# Initialise Dash app
+# Initialize Dash app
 dash_app = dash.Dash(__name__, server=app, routes_pathname_prefix="/dashboard_internal/", external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
 
-# Load configuration from enviroment variables
+# Load configuration from environment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious' 
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)# auto-logout after inactivity
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 # Make `enumerate` available in Jinja2 templates
 app.jinja_env.globals.update(enumerate=enumerate)
 
-# Initalize database, bcrypt and login manager
-db = SQLAlchemy(app)
+# Initialize database, bcrypt, and login manager
+db.init_app(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "signin" # Redirect here if unauthorized access is attempted
+login_manager.login_view = "signin"  # Redirect here if unauthorized access is attempted
 
 # Load user for login management
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Define User model
-class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(20), nullable = False, unique=True, index = True) # Indexed for quick lookup
-    password = db.Column(db.String(80), nullable = False)
-
-# Define the Boar model
-class Boars(db.Model):
-    __tablename__ = "boars"
-    id = db.Column(db.Integer, primary_key = True)
-    BoarId = db.Column(db.String(20), nullable = False, unique = True, index = True)
-    DOB = db.Column(db.Date)
-
-# Define the Sows model
-class Sows(db.Model):
-    __tablename__ = "sows"
-    id = db.Column(db.Integer, primary_key=True)
-    sowID = db.Column(db.String(20), nullable=False, unique=True, index=True)
-    DOB = db.Column(db.Date)
-    # Relationship with ServiceRecords
-    service_records = db.relationship("ServiceRecords", back_populates="sow", cascade="all, delete-orphan")
-
-
-# Define the service Records
-class ServiceRecords(db.Model):
-    __tablename__ = "service_records"
-    id = db.Column(db.Integer, primary_key=True)
-    sow_id = db.Column(db.Integer, db.ForeignKey("sows.id"), nullable=False)
-    service_date = db.Column(db.Date, nullable=False)
-    boar_used = db.Column(db.String(50), nullable=False)
-
-    # New calculated date fields
-    checkup_date = db.Column(db.Date)
-    litter_guard1_date = db.Column(db.Date)
-    litter_guard2_date = db.Column(db.Date)
-    feed_up_date = db.Column(db.Date)
-    due_date = db.Column(db.Date)
-    action_date = db.Column(db.Date)
-
-    # Relationship back to Sows
-    sow = db.relationship("Sows", back_populates="service_records")
-
-class Invoice(db.Model):
-   __tablename__ = "Invoice"
-   id = db.Column(db.Integer, primary_key=True)
-   invoice_number = db.Column(db.String(50), unique=True, nullable=False)
-   company_name = db.Column(db.String(255), nullable=False)
-   date = db.Column(db.Date, default=lambda: datetime.now(timezone.utc), nullable=False)
-   total_weight = db.Column(db.Float, nullable=False)
-   average_weight = db.Column(db.Float, nullable=False)
-   total_price = db.Column(db.Float, nullable=False)
-
-   def __repr__(self):
-       return f"<Invoice {self.invoice_number}>"
-
-    
-
-# Define sow management form
-class SowForm(FlaskForm):
-    sowID = StringField(validators=[InputRequired(), Length(min=3,max=20)])
-    DOB = DateField(validators=[InputRequired()])
-    submit = SubmitField("Add Sow")
-        
-    def validate_sowID(self, sowID):
-        existing_sow = Sows.query.filter_by(sowID = sowID.data).first()
-        if existing_sow:
-            raise ValidationError('The sow already exists. Please choose a different sow ID')
-
-# Define Boar Form
-class BoarForm(FlaskForm):
-    BoarId = StringField(validators = [InputRequired(), Length(min = 3, max = 20)])
-    DOB = DateField(validators=[InputRequired()])
-    submit = SubmitField("Add Boar")
-
-    def validate_BoarId(self, BoarId):
-        existing_boar = Boars.query.filter_by(BoarId = BoarId.data).first()
-        if existing_boar:
-            raise ValidationError('The Boar already exists. Please Choose a dfferent ID')
-
-# Define registration form
-class RegisterForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min = 4, max = 20)], render_kw={"Placeholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min = 4, max = 20)], render_kw={"Placeholder": "Password"})
-    submit = SubmitField("Register")
-
-    # Custom Validator to check for existing username
-    def validate_username(self, username):
-        existing_user_name = User.query.filter_by(username = username.data).first()
-        if existing_user_name:
-            raise ValidationError('The username alredy exists. Please choose a different username')
-
-# Define login form
-class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min = 4, max = 20)], render_kw={"Placeholder": "Username"})
-    password = PasswordField(validators=[InputRequired(), Length(min = 4, max = 20)], render_kw={"Placeholder": "Password"})
-    remember = BooleanField("Remember Me") # Optional remember me checkbox
-    submit = SubmitField("Login")
-
-# Define feed calculation form
-class FeedCalculatorForm(FlaskForm):
-    days = IntegerField(validators=[InputRequired()], render_kw=({"Placeholder": "Number of days (e.g 21)"}))
-    feed = StringField(validators=[InputRequired(),Length(min = 4, max = 20)], render_kw=({"Placeholder":"Feed Name(e.g weaner)"}))
-    feed_cost = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Cost of Concentrate(e.g 850)"}))
-    num3_meal_cost = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Cost of Number 3 Meal(e.g 5.35)"}))
-    pigs = IntegerField(validators=[InputRequired()], render_kw=({"Placeholder":"Number of pigs(e.g 4)"}))
-    feed_consumption = DecimalField(validators=[InputRequired()], render_kw=({"Placeholder":"Feed consumption per animal(e.g 1.5)"}))
-    submit = SubmitField("Calculate")
-
-# Define Invoice generator form
-class InvoiceGeneratorForm(FlaskForm):
-    company = StringField(validators=[InputRequired(), Length(min=4, max=50)], render_kw={"placeholder": "Company Name"})
-    firstBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
-    firstBandPrice = DecimalField(validators=[InputRequired()], render_kw={"placeholder": "60.0 or 60"})
-    secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
-    secondBandPrice = DecimalField(validators=[InputRequired()], render_kw={"placeholder": "60.0 or 60"})
-    thirdBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"placeholder": "e.g., 65-109.9"})
-    thirdBandPrice = DecimalField(validators=[InputRequired()], render_kw={"placeholder": "60.0 or 60"})
-    weights = TextAreaField(validators=[DataRequired()], render_kw={"placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
-    submit = SubmitField("Generate Invoice")
+# Your routes and application logic go here...
 
 # Utility function to parse weight ranges/ this is for the invoice generator
 def parse_range(range_str):
@@ -710,52 +591,39 @@ def delete_sow(sow_id):
 @login_required
 def sow_service_records(sow_id):
     sow = Sows.query.get_or_404(sow_id)
+    form = ServiceRecordForm()
 
-    if request.method == 'POST':
-        service_date = request.form.get('service_date')
-        boar_used = request.form.get('boar_used')
+    if form.validate_on_submit():  # Checks if the form was submitted and is valid
+        service_date = form.service_date.data
+        boar_used = form.boar_used.data.upper()
 
-        # Validate and add service record
-        if service_date and boar_used:
-            try:
-                # Convert service_date to datetime
-                service_date = datetime.datetime.strptime(service_date, '%d-%b-%Y')
-                boar_used=boar_used.upper()    
+        # Calculate other dates
+        checkup_date = service_date + timedelta(days=21)
+        litter_guard1_date = service_date + timedelta(days=68)
+        feed_up_date = service_date + timedelta(days=90)
+        litter_guard2_date = service_date + timedelta(days=100)
+        action_date = service_date + timedelta(days=109)
+        due_date = service_date + timedelta(days=114)
 
-                # Calculate other dates
-                checkup_date = service_date + timedelta(days=21)
-                litter_guard1_date = service_date + timedelta(days=68)
-                feed_up_date = service_date + timedelta(days=90)
-                litter_guard2_date = service_date + timedelta(days=100)
-                action_date = service_date + timedelta(days=109)
-                due_date = service_date + timedelta(days=114)
+        # Create and add new service record
+        new_record = ServiceRecords(
+            sow_id=sow.id,
+            service_date=service_date,
+            boar_used=boar_used,
+            checkup_date=checkup_date,
+            litter_guard1_date=litter_guard1_date,
+            litter_guard2_date=litter_guard2_date,
+            feed_up_date=feed_up_date,
+            due_date=due_date,
+            action_date=action_date
+        )
 
-                # Create and add new service record
-                new_record = ServiceRecords(
-                    sow_id=sow.id,
-                    service_date=service_date,
-                    boar_used=boar_used,
-                    checkup_date=checkup_date,
-                    litter_guard1_date=litter_guard1_date,
-                    litter_guard2_date=litter_guard2_date,
-                    feed_up_date=feed_up_date,
-                    due_date=due_date,
-                    action_date=action_date
-                )
-                db.session.add(new_record)
-                db.session.commit()
-                flash('Service record added successfully!', 'success')
-            except ValueError:
-                flash('Invalid date format!', 'error')
-            except Exception as e:
-                db.session.rollback()
-                flash(f"An error occurred: {str(e)}", "error")
-        else:
-            flash('All fields are required!', 'error')
-
+        db.session.add(new_record)
+        db.session.commit()
+        flash('Service record added successfully!', 'success')
         return redirect(url_for('sow_service_records', sow_id=sow.id))
 
-    return render_template('sow_service_records.html', sow=sow)
+    return render_template('sow_service_records.html', sow=sow, form=form)
 
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
 @login_required

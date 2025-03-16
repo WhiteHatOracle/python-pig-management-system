@@ -25,6 +25,10 @@
     display: none;
 }
 
+.alert{
+    color: var(--text-dark);
+}
+
 body{
    margin: 0;
    padding: 0;
