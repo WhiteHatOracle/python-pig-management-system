@@ -29,7 +29,6 @@
 }
 #header{
     border: 1px solid var(--border-dark);
-    color: var(--text-light);
     text-align: center;
     padding: 10px;
     margin-bottom: 20px;
@@ -181,9 +180,9 @@ input[type="text"]:focus, input[type="date"]:focus {
     table{
         min-width: 100%;
     }
-    .top-page{
+    /* .top-page{
         display: none;
-    }
+    } */
     .for-mobile{
         display: block;
     }

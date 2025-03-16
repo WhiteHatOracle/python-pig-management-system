@@ -11,9 +11,9 @@ import dash
 import dash_bootstrap_components as dbc
 
 # Import models and db
-from models import db, User, Boars, Sows, ServiceRecords, Invoice
+from models import db, User, Boars, Sows, ServiceRecords, Invoice, Expense
 # Import the forms
-from forms import SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm
+from forms import SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -642,6 +642,46 @@ def delete_service_record(record_id):
     
     # Redirect back to the sow's service records page
     return redirect(url_for('sow_service_records', sow_id=record.sow_id))
+
+@app.route('/expenses', methods=['GET', 'POST'])
+@login_required
+def expenses():
+    form = ExpenseForm()
+
+    if form.validate_on_submit():
+        expense = Expense(
+            date=form.date.data,
+            amount=form.amount.data,
+            category=form.category.data,
+            vendor=form.vendor.data,
+            description=form.description.data
+        )
+        db.session.add(expense)
+        db.session.commit()
+        flash('Expense logged successfully!', 'success')
+        return redirect(url_for('expenses'))
+
+    expenses = Expense.query.all()
+    return render_template('expenses.html', form=form, expenses=expenses)
+
+@app.route('/delete-expense/<int:expense_id>', methods=['POST'])
+@login_required
+def delete_expense(expense_id):
+    #Query the expense id
+    expense = Expense.query.get_or_404(expense_id)
+
+    try:
+        #Delete the record
+        db.session.delete(expense)
+        db.session.commit()
+        flash('Expense record deleted successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'An error occurred while deleting the record: {str(e)}', 'error')
+
+    #Redirect back to the expenses record page
+    return redirect(url_for('expenses'))
+
 
 # Run the Dashboard
 if dash_app.layout is None:

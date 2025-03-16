@@ -55,3 +55,15 @@ class Invoice(db.Model):
 
     def __repr__(self):
         return f"<Invoice {self.invoice_number}>"
+
+class Expense(db.Model):
+    __tablename__="Expense"
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
+    amount = db.Column(db.Float, nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    vendor = db.Column(db.String(100))
+    description = db.Column(db.String(200))
+
+    def __repr__(self):
+        return f'<Expense {self.id} - {self.category}>'

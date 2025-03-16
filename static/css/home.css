@@ -38,6 +38,10 @@
   margin: 0;
   padding: 0;
 }
+input::placeholder, textarea::placeholder {
+  color: var(--bg-lightest); /* Replace with your desired color */
+  opacity: 1; /* Optional: make the placeholder fully opaque */
+}
 .alert{
   color: var(--text-dark);
 }

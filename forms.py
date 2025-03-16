@@ -1,4 +1,4 @@
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
 from flask_wtf import FlaskForm
 from models import Sows, Boars, User  # Importing the models for validation
@@ -70,3 +70,11 @@ class InvoiceGeneratorForm(FlaskForm):
     thirdBandPrice = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "60.0 or 60"})
     weights = TextAreaField(validators=[DataRequired()], render_kw={"Placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
     submit = SubmitField("Generate Invoice")
+
+class ExpenseForm(FlaskForm):
+    date = DateField( validators=[InputRequired()])
+    amount = FloatField(validators=[InputRequired()])
+    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment')], validators=[DataRequired()])
+    vendor = StringField(validators=[InputRequired()])
+    description = StringField()
+    submit = SubmitField("Add Expense")

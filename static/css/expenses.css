@@ -20,7 +20,7 @@
     --shadow-light:    rgba(26, 82, 21, 0.3);
     --shadow-dark:     rgba(8, 45, 6, 0.6);
 }
-
+  
 ::-webkit-scrollbar{
     display: none;
 }
@@ -28,136 +28,96 @@
     color: var(--text-dark);
 }
 
+
 #header{
-   border: 1px solid var(--border-dark);
-   color: var(--text-light);
-   text-align: center;
-   padding: 10px;
-   margin-bottom: 20px;
-   border-radius: 5px;
-   color: var(--text-dark);
+    border: 1px solid var(--border-dark);
+    color: var(--text-dark);
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
 }
+
 form{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
 }
 label {
     font-weight: bold;
     color: var(--text-dark);
-    margin: 10px 0 0 0;
+    margin: 25px 0 0 0;
 }
 
-input[type="text"], input[type="date"] {
+input[type="text"], input[type="date"], select {
     padding: 10px;
     font-size: 16px;
     /* background-color: var(--bg-primary); */
     border: 1px solid var(--border-dark);
     border-radius: 5px;
     min-width: 100%;
+    margin: 10px 0 0 0;
     box-sizing: border-box;
 }   
 
-input[type="text"]:focus, input[type="date"]:focus {
+input[type="text"]:focus, input[type="date"]:focus, select:focus {
     border-color: var(--border-dark);
     outline: none;
 }
 .submitBTN {
-    grid-column: 1 / -1; /* Make the div span across all columns */
-    display: flex; /* Use flexbox for centering the button */
-    justify-content: center; /* Center horizontally */
-    margin-top: 1rem; /* Optional spacing above the button */
+    grid-column: 1 / -1;     /* Make the div span across all columns */
+    display: flex;           /* Use flexbox for centering the button */
+    justify-content: center; /* Center horizontally                  */
+    margin-top: 1rem;        /* Optional spacing above the button    */
 }
-.submit-btn {
+.submitBTN input[type="submit"] {
     padding: 10px 20px;
     font-size: 16px;
     color: var(--text-dark);
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     width: 300px;
+    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     border: 1px solid var(--hover-accent);
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.submit-btn:hover {
+.submitBTN input[type="submit"]:hover {
     background: linear-gradient(var(--hover-secondary),var(--hover-accent));
     border: 1px solid var(--border-light);
 }
 
-.text-n-button {
-    display: flex;
-    justify-content: space-between;  /* Space between text and button */
-    align-items: center;  /* Align items vertically */
-    padding: 10px;
-    border: 1px solid var(--hover-accent);
-    border-radius: 8px;
-    span{
-        color: var(--text-dark);
-    }
-}
+/* style the table */
 
-/* Button styling */
-.text-n-button button {
-    display: flex;
-    align-items: center;
-    gap: 8px; /* Space between text and icon */
-    padding: 10px 16px;
-    border: none;
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
-    border: 1px solid var(--hover-accent);
-    color: var(--text-dark);
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-/* Hover effect */
-.text-n-button button:hover {
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
-    border: 1px solid var(--border-light);
-}
-
-/* SVG icon styling */
-.text-n-button button svg {
-    /* fill: white; */
-    transition: transform 0.3s ease;
-}
-
-/* Rotate icon slightly on hover */
-.text-n-button button:hover svg {
-    transform: translateX(-3px);
-}
-
-
-h2{
-    color: var(--text-dark);
-}
-
-table{
+.expense-table{
     border-collapse: collapse;
     min-width: 100%;
     border-radius: 5px;
     box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
     margin: 25px auto;
+    text-align: center;
     color: var(--text-dark);
-    white-space: nowrap;
 }
-table tbody tr td{
-    text-align: right;
-    padding: 8px 5px;
-    color: var(--border-dark);
-}
-table thead tr{
+
+.expense-table thead tr{
     border-bottom: 1px dashed var(--border-light);
-    text-align: right;
 }
-table thead tr th{
+.expense-table thead tr th{
     color: var(--text-dark);
     font-size: 16px;
+    letter-spacing: 1px;
     padding: 8px;
+}
+
+.expense-table tbody tr th{
+    padding: 8px;
+}
+
+.actions-column{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Adjust spacing between buttons and separator */
+    margin: 4px auto;
 }
 .action-btn{
     display: flex;
@@ -168,25 +128,14 @@ table thead tr th{
     cursor: pointer;
     font-size: 16px;
     color: var(--text-dark); /* Adjust color of the button */
-    .action-txt{
-        font-weight: 500;
-    }
-    span{
-        display: none;
-    }
 }
-.actions-column{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px; /* Adjust spacing between buttons and separator */
-}
+
 .form-btns{
     display: flex;
     justify-content: center;
     gap: 8px;
-    /* margin-top: 20px; */
 }
+
 .seperator{
     font-size: 16px;
     color: var(--text-dark); /* Adjust color of the separator */
@@ -194,9 +143,39 @@ table thead tr th{
     line-height: 1;
 }
 
-@media (max-width:800px) {
-    .index{
-        display: none;
+.edit{
+    line-height: 1;
+    font-size: 16px;
+    color: var(--text-dark);
+    cursor: pointer;
+    gap: 8px;
+}
+
+.edit:hover{
+    transform: translateY(-1px);
+}
+
+.icon{
+    display: none;
+}
+.for-mobile{
+    display: none;
+}
+.mobile-span{
+    display: none;
+}
+
+input::placeholder {
+    color: #333; /* Change to the color you want */
+    opacity: 1; /* Make sure it's not transparent */
+}
+
+@media (max-width:800px){
+    form{
+        grid-template-columns:1fr;
+    }
+    table{
+        min-width: 100%;
     }
     th{
         display: none;
@@ -207,15 +186,15 @@ table thead tr th{
     td{
         display: grid;
         grid-template-columns: repeat(2, 1fr); 
-        text-align: left;
+        text-align: right;
     }
     td:first-child{
         margin-top: 2rem;
-        border-top: 1px solid var(--border-dark);
+        border-top: 1px solid var(--border-light);
     }
     td:last-child{
         margin-bottom: 2rem;
-        border-bottom: 1px solid var(--border-dark);
+        border-bottom: 1px solid var(--border-light);
     }
     td::before{
         content: attr(data-cell);
