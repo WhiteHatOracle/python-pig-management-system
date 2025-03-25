@@ -19,9 +19,9 @@
     
     --shadow-light:    rgba(26, 82, 21, 0.3);
     --shadow-dark:     rgba(8, 45, 6, 0.6);
-  }
+}
 
-  ::-webkit-scrollbar{
+::-webkit-scrollbar{
     display: none;
 }
 .alert{
@@ -50,14 +50,12 @@ form{
     color: var(--text-dark);
     border: 1px solid var(--border-dark);
     box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-
 }
 label {
     font-weight: bold;
     margin: 10px 0 0 0;
     color: var(--text-dark);
 }
-
 input[type="text"], input[type="number"], select, textarea {
     padding: 10px;
     font-size: 16px;
@@ -67,7 +65,6 @@ input[type="text"], input[type="number"], select, textarea {
     box-sizing: border-box;
     /* background: var(--bg-primary); */
 }   
-
 input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
     
     outline: none;
