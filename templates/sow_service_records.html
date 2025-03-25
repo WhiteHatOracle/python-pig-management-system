@@ -1,0 +1,99 @@
+{% extends 'home.html' %}
+{% block title %}Service Records for {{ sow.sowID }}{% endblock %}
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+<script type="text/javascript" src="{{ url_for('static', filename='js/sow-service-records.js')}}" defer></script>
+
+{% endblock %}
+{% block content %}
+<main>
+    <h2 id="header">Service Records for Sow: {{ sow.sowID }}</h2>
+    <p>Date of Birth: {{ sow.DOB }}</p>
+    <form class="container" method="POST" action="{{ url_for('sow_service_records', sow_id=sow.id) }}">
+        {{ form.hidden_tag() }}
+            <label for="boar_used">Boar Used</label>
+            {{ form.boar_used() }}
+
+            <label for="service_date">Service Date</label>
+            {{ form.service_date() }}
+        <div class="submitBTN">
+            <button type="submit" class="submit-btn" >Add Record</button>
+        </div>
+    </form>
+    
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    <div class="text-n-button">
+        <h2>Service Records</h2>
+        <button onclick="goBack()">
+            <span>back</span>
+            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
+        </button>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Service Date</th>
+                <th>Boar Used</th>
+                <th>Checkup Date</th>
+                <th>Litter Guard 1</th>
+                <th>Feed Up</th>
+                <th>Litter Guard 2</th>
+                <th>Action Date</th>
+                <th>Due Date</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        {% if sow.service_records %}  
+        <tbody> 
+            {% for record in sow.service_records %}
+            <tr>
+                <td class="index">{{ loop.index }}</td> <!-- Use loop.index for a 1-based index -->
+                <td data-cell="Boar Used">{{ record.boar_used }}</td>
+                <td data-cell="Service Date:">{{ record.service_date.strftime('%d-%b-%Y') }}</td>
+                <td data-cell="Check-up Date:">{{ record.checkup_date.strftime('%d-%b-%Y') }}</td>
+                <td data-cell="Litter Guard 1:">{{ record.litter_guard1_date.strftime('%d-%b-%Y') }}</td>
+                <td data-cell="90 days Feed up:">{{ record.feed_up_date.strftime('%d-%b-%Y') }}</td>
+                <td data-cell="Litter Guard 2:">{{ record.litter_guard2_date.strftime('%d-%b-%Y') }}</td>
+                <td data-cell="Action Date:">{{ record.action_date.strftime('%d-%b-%Y') }}</td>
+                <td data-cell="Due Date:">{{ record.due_date.strftime('%d-%b-%Y') }}</td>
+                <td class="actions-column">
+                    <form class="form-btns" action="">
+                        <button class="action-btn">
+                            <span class="action-txt">Details</span>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+                        </button>  
+                    </form> 
+                    <span class="separator">|</span>
+                    <form class="form-btns" action="{{ url_for('delete_service_record', record_id=record.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">                       
+                        <button class="action-btn" >
+                            <span>Delete</span>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        {% else %}
+        <tbody class="no_records_found">
+            <tr>
+                <td colspan="10" style="text-align: center;">No records found.</td>
+            </tr>
+        </tbody>
+        {% endif %}
+    </table>
+</main>
+{% endblock %}

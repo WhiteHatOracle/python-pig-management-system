@@ -1,0 +1,118 @@
+{% extends "home.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/invoiceGenerator.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2 id="header">Invoice Generator</h2>
+    <div class="invoice-buttons">
+        <button class=" invoice-btns generate-invoice">
+            <a href="{{ url_for('invoice_Generator') }}">Generate Invoices</a>
+        </button>
+        <button class=" invoice-btns view-invoices">
+            <a href="{{ url_for('invoices')}}">View Invoices</a>
+        </button>
+    </div>
+    <form class="container" method="POST" action="?scroll=invoice">
+        {{ form.hidden_tag()}}  
+        <label for="company">Company Name</label>
+        {{ form.company(autocomplete="off") }}
+
+        <label for="firstBandRange">First band range</label>
+        {{ form.firstBandRange(autocomplete="off") }}
+
+        <label for="firstBandPrice">First band price</label>
+        {{ form.firstBandPrice(autocomplete="off") }}
+
+        <label for="secondBandRange">Second band range</label>
+        {{ form.secondBandRange(autocomplete="off") }}
+
+        <label for="secondBandPrice">Second band price</label>
+        {{ form.secondBandPrice(autocomplete="off") }}
+        
+        <label for="thirdBandRange">Third band range</label>
+        {{ form.thirdBandRange(autocomplete="off") }}
+
+        <label for="thirdBandPrice">Third band price</label>
+        {{ form.thirdBandPrice(autocomplete="off") }}
+
+        <label for="weights">Weights</label>
+        {{ form.weights(autocomplete="off") }}
+        
+        <div class="submitBTN">
+            {{ form.submit }}
+        </div>
+    </form>    
+    
+    <div class="container" id="invoice">
+        {% if invoice_data %}
+            <h2>Invoice for {{ company_name }}</h2>
+            <table class="invoice-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Weight</th>
+                        <th>Price per Kg</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for idx, item in enumerate(invoice_data, start=1) %}
+                    <tr>
+                        <td>{{ idx }}</td>
+                        <td>{{ item.formatted_weight }}</td>
+                        <td>{{ item.formatted_price }}</td>
+                        <td>{{ item.formatted_cost }}</td> <!-- Format cost -->
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="left-text">Total Weight:</td>
+                        <td>{{ total_weight }}</td>
+                        <td class="right-text" align="right">Total:</td>
+                        <td align="right">{{ total_cost }}</td>
+                    </tr>
+                    <tr>
+                        <td class="left-text">Average Weight:</td>
+                        <td>{{ average_weight }}</td>
+                        <td></td> <!-- Empty cells to maintain alignment -->
+                        <td></td>
+                    </tr>
+                </tfoot>
+                
+            </table>
+            <form method="POST" action="/download-invoice" class="download_invoice">
+                <input type="hidden" name="company_name" value="{{ company_name }}">
+                <input type="hidden" name="invoice_data" value="{{ invoice_data }}">
+                <input type="hidden" name="total_weight" value="{{ total_weight }}">
+                <input type="hidden" name="average_weight" value="{{ average_weight }}">
+                <input type="hidden" name="total_cost" value="{{ total_cost }}">
+                <button type="submit" class="btn btn-success">
+                    <span>Download PDF</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                </button>
+            </form>
+        {% endif %}
+    </div>
+    <script>
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('scroll') === 'invoice') {
+                const resultsDiv = document.getElementById('invoice');
+                if (resultsDiv) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+</main>
+
+{% endblock %}

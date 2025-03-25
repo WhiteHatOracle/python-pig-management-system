@@ -1,0 +1,20 @@
+{% extends "home.html" %}
+
+{% block title %}Pig Inventory Dashboard{% endblock %}
+
+{% block head %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" defer src="{{ url_for('static', filename='js/home.js')}}" ></script>
+  <script type="text/javascript" defer src="{{ url_for('static', filename='js/dashboard.js')}}" ></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">    
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css' )}}">
+
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2 class="h2">Dashboard</h2>
+    <iframe class="dashboard-iframe" src="/dashboard_internal/" frameBorder="0"></iframe>
+</main>
+    
+{% endblock %}
