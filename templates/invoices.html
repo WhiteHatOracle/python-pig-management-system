@@ -46,7 +46,8 @@
             {% for invoice in invoices %}
             <tr>
                 <td data-cell="Invoice number: ">{{ invoice.invoice_number }}</td>
-                <td data-cell="Company Name: ">{{ invoice.company_name }}</td>
+                <td data-cell="Quantity:">{{ invoice.quantity }} </td>
+                <td data-cell="Company: ">{{ invoice.company_name }}</td>
                 <td data-cell="Date: ">{{ invoice.date.strftime('%d-%b-%Y') }}</td>
                 <td data-cell="Total Weight: ">{{ invoice.total_weight }}Kg</td>
                 <td data-cell="Average Weight: ">{{ invoice.average_weight }}Kg</td>
@@ -65,6 +66,24 @@
             </tr>
             {% endfor %}
         </tbody>
+        <tfoot class="footer">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="totalWeight">
+                    <p>Total Weight: </p>
+                </td>
+                <td class="averageWeight">
+                    <p>Average Weight: </p>
+                </td>
+                <td class="totalRevenue">
+                    <p>Total Revenue: </p>
+                </td>
+                <td></td>
+            </tr>
+        </tfoot>
     </table>
 </div>
     <script>

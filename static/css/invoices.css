@@ -108,6 +108,11 @@ hr{
     color: var(--border-dark);
 }
 
+.footer tr td{
+    border-top: 1px dashed var(--border-dark);
+    /* background: var(--bg-accent); */
+}
+
 .invoice-buttons{
     display: none;
 }
