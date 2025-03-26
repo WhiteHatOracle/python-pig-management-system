@@ -16,16 +16,22 @@
         {{ form.hidden_tag()}}
         <label for="feed">Name of Feed: </label>
         {{ form.feed(autocomplete="off") }}
+
         <label for="days">Number of days: </label>
         {{ form.days(autocomplete="off") }}
+
         <label for="feed_cost">Cost of feed: </label>
         {{ form.feed_cost(autocomplete="off") }}
+
         <label for="num3_meal_cost">Cost of Number 3 Meal: </label>
         {{ form.num3_meal_cost(autocomplete="off")}}
+
         <label for="pigs">Number of pigs: </label>
         {{ form.pigs(autocomplete="off")}}
+
         <label for="feed_consumption">consumption per animal per day: </label>
         {{ form.feed_consumption (autocomplete="off")}}
+        
         <div class="submitBTN">
             {{ form.submit }}
         </div>

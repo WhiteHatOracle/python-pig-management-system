@@ -53,6 +53,11 @@ h2{
     margin-bottom: 20px;
 }
 
+input::placeholder{
+    color: var(--text-dark) !important;
+    opacity: 1;
+}
+
 #searchInput {
     padding: 8px 40px 8px 40px;
     background-color: var(--bg-lighter); 
