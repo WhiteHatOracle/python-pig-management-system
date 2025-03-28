@@ -70,6 +70,11 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
     outline: none;
 }
 
+input::placeholder{
+    color: var(--text-dark);
+    opacity: 1;
+}
+
 .submitBTN {
     grid-column: 1 / -1; /* Make the div span across all columns */
     display: flex; /* Use flexbox for centering the button */

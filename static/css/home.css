@@ -200,7 +200,6 @@ body{
 
 main{
   padding: min(30px, 7%);
-  
 }
 main p{
   color: var(--text-dark);

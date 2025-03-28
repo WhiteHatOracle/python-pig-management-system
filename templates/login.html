@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Winky+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <!-- ----- -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+<body>
+    <nav class="navigation-panel">
+        <div class="logo">Farmer<span>100</span></div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Services</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+
+        <div class="action-btns">
+
+            <a class="login-button" href="{{url_for('signin')}}">
+                <button>
+                    <span>Login</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
+                </button>
+            </a>
+            
+            <a class="signup-button" href="{{url_for('signup')}}"><button>Sign Up</button></a>
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            ☰
+        </div>
+    </nav>
+    <div class="hero-section">
+        <h2>Website</h2>
+        <div class="hero-text">
+            <p class="winky">This is a smart, data-driven tool that helps manage pig farming operations more efficiently, streamlining tasks like breeding management, financial tracking, and overall farm analytics. It's great for anyone looking to automate and optimize farm operations with modern web technologies!</p>
+        </div>
+        <div class="hero-image">
+            <img src="/static/assets/logo.png" alt="">
+        </div>
+    </div>
+    
+</body>
+</html>

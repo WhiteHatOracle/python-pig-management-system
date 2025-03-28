@@ -27,7 +27,6 @@
 .alert{
     color: var(--text-dark);
 }
-
 #header{
    border: 1px solid var(--border-dark);
    color: var(--text-light);

@@ -1,0 +1,84 @@
+{% extends "home.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">    
+  <link rel="stylesheet" href="{{url_for('static',filename='css/feedcalculator.css')}}">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2>Feed Calculator</h2>
+    <form class="container" method="POST" action="?scroll=results">
+        {{ form.hidden_tag()}}
+        <label for="feed">Name of Feed: </label>
+        {{ form.feed(autocomplete="off") }}
+
+        <label for="days">Number of days: </label>
+        {{ form.days(autocomplete="off") }}
+
+        <label for="feed_cost">Cost of feed: </label>
+        {{ form.feed_cost(autocomplete="off") }}
+
+        <label for="num3_meal_cost">Cost of Number 3 Meal: </label>
+        {{ form.num3_meal_cost(autocomplete="off")}}
+
+        <label for="pigs">Number of pigs: </label>
+        {{ form.pigs(autocomplete="off")}}
+
+        <label for="feed_consumption">consumption per animal per day: </label>
+        {{ form.feed_consumption (autocomplete="off")}}
+        
+        <div class="submitBTN">
+            {{ form.submit }}
+        </div>
+    </form>
+
+    <h2>Feed Calculation</h2>
+    <div id="results" class="container">
+        
+        <label for="feed">Name of Feed: </label>
+        {{ result.feed|default('N/A') }}
+
+        <label for="pigs">Number of Animals: </label>
+        {{ result.pigs|default(0) }}
+
+        <label for="days">Number of Days: </label>
+        {{ result.days|default(0) }}
+
+        <label for="totalFeed">Total required feed for {{ result.days|default(0) }} days: </label>
+        <b>{{ "{:,.2f}".format(result.totalFeed|default(0)) }} Kg</b>
+
+        <label for="numOfBags">Total Number of Bags: </label>
+        {{ "{:,.2f}".format(result.numOfBags|default(0)) }}
+
+        <label for="concCost">Total Cost of Concentrate: </label>
+        <u>K{{ "{:,.2f}".format(result.concCost|default(0)) }}</u>
+
+        <label for="num3Meal">Total Required Number 3 Meal for {{ result.days|default(0) }} days: </label>
+        <b>{{ "{:,.2f}".format(result.num3Meal|default(0)) }} Kg</b>
+
+        <label for="num3MealTotalCost">Total Cost of Number 3 Meal: </label>
+        <u>K{{ "{:,.2f}".format(result.num3MealTotalCost|default(0)) }}</u>
+
+        <label for="totalCost">Total Cost of Feed for {{ result.pigs|default(0) }} Pigs for {{ result.days|default(0) }} days: </label>
+        <b><u>K{{ "{:,.2f}".format(result.totalCost|default(0)) }}</u></b>
+    </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('scroll') === 'results') {
+                const resultsDiv = document.getElementById('results');
+                if (resultsDiv) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+</main>
+{% endblock %}
+</html>
