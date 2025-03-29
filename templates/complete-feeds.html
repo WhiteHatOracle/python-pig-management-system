@@ -1,0 +1,74 @@
+{% extends 'home.html' %}
+
+{% block title %}Complete Feeds{% endblock %}
+
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/feedcalculator.css' )}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2>Feed Calculator</h2>
+    <div class="feed-type-btn">
+        <a class="feed-calculator-btns Concentrats" href="{{url_for('calculate')}}"><button class="feed-calc">Concentrate Feeds</button></a>
+        <a class="feed-calculator-btns Complete" href="{{url_for('complete_feeds')}}"><button class="feed-calc">Complete Feeds</button></a>
+    </div>
+    <form method="POST" action="?scroll=results" class="container">
+        {{ form.hidden_tag() }}
+
+        <label for="feedName">Name of Feed: </label>
+        {{ form.feedName(autocomplete="off") }}
+
+        <label for="costOfFeed">Cost of Feed: </label>
+        {{ form.costOfFeed(autocomplete="off") }}
+
+        <label for="numberOfPigs">numberOfPigs: </label>
+        {{ form.numberOfPigs(autocomplete="off") }}
+
+        <label for="consumption">Consumption per animal per day: </label>
+        {{ form.consumption(autocomplete="off") }}
+
+        <label for="numberOfDays">Number of days: </label>
+        {{ form.numberOfDays(autocomplete="off") }}
+
+        <div class="submitBTN">
+            {{ form.submit }}
+        </div>
+    </form>
+
+    <h2>Feed Calculation</h2>
+    <div id="results" class="container">
+
+        <label for="feed">Name of Feed: </label>
+        {{ result.feed|default('N/A') }}
+
+        <label for="numOfPigs">Number of pigs: </label>
+        {{ result.numOfPigs|default(0) }}
+
+        <label for="totalFeed">Total required feed for {{ result.numOfDays|default(0) }} days: </label>
+        <b>{{ "{:,.2f}".format(result.totalFeed|default(0)) }} Kg</b>
+
+        <label for="numOfBags">Total Number of Bags: </label>
+        {{ "{:,.2f}".format(result.numOfBags|default(0)) }}
+
+        <label for="totalCost">Total Cost of Feed for {{ result.numOfPigs|default(0) }} Pigs for {{ result.numOfDays|default(0) }} days: </label>
+        <b><u>K{{ "{:,.2f}".format(result.totalCost|default(0)) }}</u></b>
+    </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('scroll') === 'results') {
+                const resultsDiv = document.getElementById('results');
+                if (resultsDiv) {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+    </script>
+
+</main>
+{% endblock %}

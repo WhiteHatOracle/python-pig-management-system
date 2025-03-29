@@ -59,6 +59,15 @@ class FeedCalculatorForm(FlaskForm):
     feed_consumption = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Feed consumption per animal (e.g 1.5)"})
     submit = SubmitField("Calculate")
 
+class CompleteFeedForm(FlaskForm):
+    feedName = StringField(validators=[InputRequired()])
+    numberOfDays = IntegerField(validators=[InputRequired()])
+    consumption = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Feed consumption per animal (e.g 1.5)"})
+    costOfFeed = DecimalField(validators=[InputRequired()])
+    # consumption = DecimalField(validators=[InputRequired()])
+    numberOfPigs = IntegerField(validators=[InputRequired()])
+    submit = SubmitField("Calculate")
+
 # Define Invoice Generator Form
 class InvoiceGeneratorForm(FlaskForm):
     company = StringField(validators=[InputRequired(), Length(min=4, max=50)], render_kw={"Placeholder": "Company Name"})
