@@ -22,6 +22,7 @@ class ServiceRecordForm(FlaskForm):
 # Define Boar Form
 class BoarForm(FlaskForm):
     BoarId = StringField(validators=[InputRequired(), Length(min=3, max=20)])
+    Breed = StringField(validators=[InputRequired(), Length(min=3, max=50)])
     DOB = DateField(validators=[InputRequired()])
     submit = SubmitField("Add Boar")
 
@@ -57,6 +58,14 @@ class FeedCalculatorForm(FlaskForm):
     num3_meal_cost = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Cost of Number 3 Meal (e.g 5.35)"})
     pigs = IntegerField(validators=[InputRequired()], render_kw={"Placeholder": "Number of pigs (e.g 4)"})
     feed_consumption = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Feed consumption per animal (e.g 1.5)"})
+    submit = SubmitField("Calculate")
+
+class CompleteFeedForm(FlaskForm):
+    feedName = StringField(validators=[InputRequired()])
+    numberOfDays = IntegerField(validators=[InputRequired()])
+    consumption = DecimalField(validators=[InputRequired()])
+    costOfFeed = DecimalField(validators=[InputRequired()])
+    numberOfPigs = IntegerField(validators=[InputRequired()])
     submit = SubmitField("Calculate")
 
 # Define Invoice Generator Form

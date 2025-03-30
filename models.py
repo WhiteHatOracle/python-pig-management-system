@@ -16,6 +16,7 @@ class Boars(db.Model):
     __tablename__ = "boars"
     id = db.Column(db.Integer, primary_key=True)
     BoarId = db.Column(db.String(20), nullable=False, unique=True, index=True)
+    Breed = db.Column(db.String(50), nullable=False, index=True)
     DOB = db.Column(db.Date)
 
 # Define the Sows model

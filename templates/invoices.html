@@ -46,7 +46,7 @@
             {% for invoice in invoices %}
             <tr>
                 <td data-cell="Invoice number: ">{{ invoice.invoice_number }}</td>
-                <td data-cell="Quantity:">{{ invoice.quantity }} </td>
+                <!-- <td data-cell="Quantity:">{{ invoice.quantity }} </td> -->
                 <td data-cell="Company: ">{{ invoice.company_name }}</td>
                 <td data-cell="Date: ">{{ invoice.date.strftime('%d-%b-%Y') }}</td>
                 <td data-cell="Total Weight: ">{{ invoice.total_weight }}Kg</td>
@@ -68,7 +68,6 @@
         </tbody>
         <tfoot class="footer">
             <tr>
-                <td></td>
                 <td></td>
                 <td></td>
                 <td></td>

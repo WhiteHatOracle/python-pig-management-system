@@ -19,6 +19,9 @@
         <label for="BoarId">Boar ID</label>
         {{ form.BoarId(autocomplete="off") }}
 
+        <label for="Breed">Breed: </label>
+        {{ form.Breed(autocomplete="off") }}
+
         <label for="DOB">Date of Birth</label>
         {{ form.DOB(autocomplete="off") }}
 
@@ -41,6 +44,7 @@
             <tr>
                 <th>#</th>
                 <th>Boar ID</th>
+                <th>Breed</th>
                 <th>Date of Birth</th>
                 <th>Action</th>
                 <!-- <th></th> -->
@@ -52,6 +56,7 @@
             <tr>
                 <th>{{ idx }}</th>
                 <th>{{ boar.BoarId }}</th>
+                <th>{{ boar.Breed }}</th>
                 <th>{{ boar.DOB.strftime('%d-%b-%Y') }}</th>
                 <th class="for-desktop boar-btns actions-column">
                     <form class="form-btns" action="{{ url_for('delete_boar', BoarId=boar.BoarId) }}" method="POST" onsubmit="return confirmDelete();">

@@ -43,6 +43,37 @@ h2{
     border-radius: 5px;
 }
 
+.feed-type-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.feed-calculator-btns{
+    padding: 8px 20px;
+    font-size: 16px;
+    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
+    border: 1px solid var(--hover-accent);
+    color: var(--text-dark);
+    width: 150px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    margin: 0 0 10px 0;
+    .feed-calc{
+        background: transparent;
+        border: none;
+        cursor: pointer;
+    }
+}
+
+.feed-calculator-btns:hover {
+    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    border: 1px solid var(--border-light);
+}
+
 form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

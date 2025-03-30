@@ -3,17 +3,17 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
 from datetime import timedelta
-import datetime
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request
 from dash import dcc, html, dash_table
 from fpdf import FPDF
+import datetime
 import dash
 import dash_bootstrap_components as dbc
 
 # Import models and db
 from models import db, User, Boars, Sows, ServiceRecords, Invoice, Expense
 # Import the forms
-from forms import SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm
+from forms import SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -282,7 +282,33 @@ def signup():
         except Exception as e:
             db.session.rollback()
             flash("An error occurred during registration. Please try again.", "Error")
-    return render_template('signup.html', form = form)
+    return render_template('signup.html', form=form)
+
+@app.route('/complete-feeds-calculator', methods=['GET','POST'])
+@login_required
+def complete_feeds():
+    #Get input from the front end
+    form = CompleteFeedForm()
+    result = None #initialize result
+    if form.validate_on_submit():
+        #perfom calculations
+        dailyConsumption = form.numberOfPigs.data * float(form.consumption.data)
+        total_feed = dailyConsumption * form.numberOfDays.data
+        num_of_bags = round(total_feed/50)
+        total_cost = num_of_bags*form.costOfFeed.data
+
+        result={
+            "totalFeed": total_feed,
+            "numOfBags": num_of_bags,
+            "totalCost": total_cost,
+            "totalFeed": total_feed,
+            "numOfDays": form.numberOfDays.data,
+            "numOfPigs": form.numberOfPigs.data,
+            "feed": form.feedName.data
+        }
+
+    return render_template('complete-feeds.html', form=form, result=result)
+
 
 # Feed management route
 @app.route('/calculate', methods=['GET','POST'])
@@ -505,6 +531,7 @@ def boars():
 
     if form.validate_on_submit():
         boar_id = form.BoarId.data.upper()
+        breed = form.Breed.data.upper()
         boar_dob = form.DOB.data
 
         # check if boar already exists
@@ -514,7 +541,7 @@ def boars():
         else:
             #add boar to the database
             try:
-                new_boar = Boars(BoarId = boar_id, DOB = boar_dob)
+                new_boar = Boars(BoarId = boar_id, DOB = boar_dob, Breed=breed)
                 db.session.add(new_boar)
                 db.session.commit()
                 flash('Boar added successfully!', 'success')
