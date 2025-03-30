@@ -530,6 +530,7 @@ def boars():
 
     if form.validate_on_submit():
         boar_id = form.BoarId.data.upper()
+        breed = form.Breed.data.upper()
         boar_dob = form.DOB.data
 
         # check if boar already exists
@@ -539,7 +540,7 @@ def boars():
         else:
             #add boar to the database
             try:
-                new_boar = Boars(BoarId = boar_id, DOB = boar_dob)
+                new_boar = Boars(BoarId = boar_id, DOB = boar_dob, Breed=breed)
                 db.session.add(new_boar)
                 db.session.commit()
                 flash('Boar added successfully!', 'success')

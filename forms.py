@@ -22,6 +22,7 @@ class ServiceRecordForm(FlaskForm):
 # Define Boar Form
 class BoarForm(FlaskForm):
     BoarId = StringField(validators=[InputRequired(), Length(min=3, max=20)])
+    Breed = StringField(validators=[InputRequired(), Length(min=3, max=50)])
     DOB = DateField(validators=[InputRequired()])
     submit = SubmitField("Add Boar")
 
