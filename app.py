@@ -485,6 +485,7 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weigh
 @login_required
 def invoices():
     invoices = Invoice.query.order_by(Invoice.date.desc()).all()  # Get all invoices, newest first
+    
     return render_template('invoices.html', invoices=invoices)
 
 # Delete Invoice Route
