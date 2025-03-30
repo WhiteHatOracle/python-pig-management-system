@@ -62,9 +62,8 @@ class FeedCalculatorForm(FlaskForm):
 class CompleteFeedForm(FlaskForm):
     feedName = StringField(validators=[InputRequired()])
     numberOfDays = IntegerField(validators=[InputRequired()])
-    consumption = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Feed consumption per animal (e.g 1.5)"})
+    consumption = DecimalField(validators=[InputRequired()])
     costOfFeed = DecimalField(validators=[InputRequired()])
-    # consumption = DecimalField(validators=[InputRequired()])
     numberOfPigs = IntegerField(validators=[InputRequired()])
     submit = SubmitField("Calculate")
 
