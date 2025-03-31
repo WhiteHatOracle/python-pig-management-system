@@ -112,6 +112,14 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     padding: 8px;
 }
 
+.expense-table tfoot tr{
+    border-top: 2px dashed black;
+    span, p{
+        font-weight: bold;
+        font-size: 20px
+    };
+}
+
 .actions-column{
     display: flex;
     align-items: center;

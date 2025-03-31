@@ -3,7 +3,7 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
 from datetime import timedelta
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
 from fpdf import FPDF
 import datetime
@@ -514,6 +514,19 @@ def invoices():
     
     return render_template('invoices.html', invoices=invoices)
 
+@app.route('/invoice_totals', methods=['GET'])
+@login_required
+def invoice_totals():
+    total_weight = db.session.query(db.func.sum(Invoice.total_weight)).scalar() or 0
+    total_revenue = db.session.query(db.func.sum(Invoice.total_price)).scalar() or 0
+    avg_weight = db.session.query(db.func.avg(Invoice.average_weight)).scalar() or 0
+
+    return jsonify({
+        'total_weight': f"{total_weight:,.2f}Kg",
+        'total_revenue': f"K{total_revenue:,.2f}",
+        'average_weight': f"{avg_weight:,.2f}Kg"
+    })
+
 # Delete Invoice Route
 @app.route('/delete-invoice/<int:invoice_id>', methods=['POST'])
 @login_required
@@ -691,6 +704,12 @@ def expenses():
 
     expenses = Expense.query.all()
     return render_template('expenses.html', form=form, expenses=expenses)
+
+@app.route('/expense_totals', methods=['GET'])
+@login_required
+def expense_totals():
+    total_expenses = db.session.query(db.func.sum(Expense.amount)).scalar() or 0
+    return jsonify({'total_expenses': f"K{total_expenses:,.2f}"})
 
 @app.route('/delete-expense/<int:expense_id>', methods=['POST'])
 @login_required

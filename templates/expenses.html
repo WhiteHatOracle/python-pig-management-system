@@ -82,6 +82,18 @@
                 </tr>
                 {% endfor %}
             </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                        <p>Total Expense:</p>
+                    </td>
+                    <td>
+                        <p> <span id="totalExpense">Loading...</span> </p>
+
+                        <!-- <p><span id="totalExpense">Loading...</span></p> -->
+                    </td>
+                </tr>
+            </tfoot>
         {% else %}
             <tbody class="no_records_found">
                 <tr>
