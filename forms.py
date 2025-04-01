@@ -6,6 +6,7 @@ from models import Sows, Boars, User  # Importing the models for validation
 # Define Sow Management Form
 class SowForm(FlaskForm):
     sowID = StringField(validators=[InputRequired(), Length(min=3, max=20)])
+    Breed = StringField(validators=[InputRequired(), Length(min=3, max=50)])
     DOB = DateField(validators=[InputRequired()])
     submit = SubmitField("Add Sow")
         

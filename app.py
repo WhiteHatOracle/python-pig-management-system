@@ -2,6 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
@@ -30,6 +31,7 @@ app.jinja_env.globals.update(enumerate=enumerate)
 
 # Initialize database, bcrypt, and login manager
 db.init_app(app)
+# db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
@@ -594,13 +596,14 @@ def sows():
 
     if form.validate_on_submit():
         sow_id = form.sowID.data.upper()
+        breed = form.Breed.data.upper()
         dob_str = form.DOB.data
         print(f"Sow ID: {sow_id}, DOB: {dob_str}")  # Debug print to see submitted values
 
 
         try:
             # Add sow to the database
-            new_sow = Sows(sowID=sow_id, DOB=dob_str)
+            new_sow = Sows(sowID=sow_id, DOB=dob_str, Breed=breed)
             db.session.add(new_sow)
             db.session.commit()
             flash('Sow added successfully!', 'success')

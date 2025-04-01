@@ -24,6 +24,8 @@ class Sows(db.Model):
     __tablename__ = "sows"
     id = db.Column(db.Integer, primary_key=True)
     sowID = db.Column(db.String(20), nullable=False, unique=True, index=True)
+    # Breed = db.Column(db.String(50), nullable=False, unique=True, index=True)
+    Breed = db.Column(db.String(50), nullable=False, unique=True, index=True, server_default='UNKNOWN')
     DOB = db.Column(db.Date)
     service_records = db.relationship("ServiceRecords", back_populates="sow", cascade="all, delete-orphan")
 
