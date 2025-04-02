@@ -12,7 +12,7 @@ class SowForm(FlaskForm):
         
     def validate_sowID(self, sowID):
         existing_sow = Sows.query.filter_by(sowID=sowID.data).first()
-        if existing_sow:
+        if existing_sow and existing_sow.id != self.sow_id:
             raise ValidationError('The sow already exists. Please choose a different sow ID')
 
 #Defin sow service record Form

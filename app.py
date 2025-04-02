@@ -9,6 +9,7 @@ from dash import dcc, html, dash_table
 from fpdf import FPDF
 import datetime
 import dash
+from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
 
 # Import models and db
@@ -31,7 +32,6 @@ app.jinja_env.globals.update(enumerate=enumerate)
 
 # Initialize database, bcrypt, and login manager
 db.init_app(app)
-# db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
@@ -598,8 +598,6 @@ def sows():
         sow_id = form.sowID.data.upper()
         breed = form.Breed.data.upper()
         dob_str = form.DOB.data
-        print(f"Sow ID: {sow_id}, DOB: {dob_str}")  # Debug print to see submitted values
-
 
         try:
             # Add sow to the database
@@ -617,6 +615,36 @@ def sows():
 
     sows = Sows.query.all()
     return render_template('sows.html', sows=sows, form=form)
+
+@app.route('/edit-sow/<int:sow_id>', methods=['GET', 'POST'])
+@login_required
+def edit_sow(sow_id):
+    print(f"Received sow_id: {sow_id}") #  Debugging
+
+    sow = Sows.query.get_or_404(sow_id)
+    form = SowForm(obj=sow)  # Pre-fill form with existing data
+    form.sow_id = sow.id #prevents false validation errors
+
+    if form.validate_on_submit():
+        print("Form validated successfully!")  # Debugging
+
+        # Update the sow with new values
+        sow.sowID = form.sowID.data.upper()
+        sow.Breed = form.Breed.data.upper()
+        sow.DOB = form.DOB.data
+
+        try:
+            db.session.commit()
+            flash('Sow updated successfully!', 'success')
+            return redirect(url_for('sows'))  # Redirect to the main sow manager
+        except IntegrityError:
+            db.session.rollback()
+            flash(f'Sow with ID {sow.sowID} already exists!', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+
+    return render_template('edit_sow.html', form=form, sow=sow)
 
 @app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])
 @login_required

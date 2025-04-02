@@ -1,0 +1,42 @@
+{% extends 'home.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block head %}
+<title>Sows</title>  <!-- Fixed Title Casing -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+<script type="text/javascript" src="{{ url_for('static', filename='js/sows.js')}}" defer></script>  
+{% endblock %}
+
+{% block content %}
+<main>
+    <h2>Edit Sow</h2>
+
+    <form method="POST" action="{{ url_for('edit_sow', sow_id=sow.id) }}">
+
+        {{ form.hidden_tag() }}
+        
+        <label for="sowID">Sow ID:</label>
+        {{ form.sowID(class="form-control") }}
+
+        <label for="Breed">Breed:</label>
+        {{ form.Breed(class="form-control") }}
+
+        <label for="DOB">Date of Birth:</label>
+        {{ form.DOB(class="form-control") }}
+
+        <button type="submit" class="btn btn-primary">Update</button>
+        <a href="{{ url_for('sows') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</main>
+{% endblock %}
