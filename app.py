@@ -619,14 +619,12 @@ def sows():
 @app.route('/edit-sow/<int:sow_id>', methods=['GET', 'POST'])
 @login_required
 def edit_sow(sow_id):
-    print(f"Received sow_id: {sow_id}") #  Debugging
 
     sow = Sows.query.get_or_404(sow_id)
     form = SowForm(obj=sow)  # Pre-fill form with existing data
     form.sow_id = sow.id #prevents false validation errors
 
     if form.validate_on_submit():
-        print("Form validated successfully!")  # Debugging
 
         # Update the sow with new values
         sow.sowID = form.sowID.data.upper()
