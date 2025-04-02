@@ -27,9 +27,8 @@
         {{ form.DOB(class="form-control") }}
 
         <div class="submitBTN">
-            {{ form.submit(class="btn btn-primary") }}
-        <a class="btn btn-primary" href="{{ url_for('sows') }}" class="btn btn-secondary">Cancel</a>
-
+            <button class="btn btn-primary" type="submit"> Edit</button>
+            <button class="btn btn-secondary"><a href="{{ url_for('sows')}}">Cancel</a></button>
         </div>
 
         <!-- <button type="submit" class="submitBTN">Update</button> -->

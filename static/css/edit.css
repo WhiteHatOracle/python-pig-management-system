@@ -33,8 +33,14 @@ form{
     border-radius: 5px;
 }
 h2{
+    border: 1px solid var(--border-dark);
+    color: var(--text-light);
     text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
     color: var(--text-dark);
+
 }
 label{
     color: var(--text-dark);
@@ -59,20 +65,24 @@ input[type="text"]:focus, input[type="date"]:focus {
     display: flex;           /* Use flexbox for centering the button */
     justify-content: center; /* Center horizontally                  */
     margin-top: 1rem;        /* Optional spacing above the button    */
-}
-.submitBTN input[type="submit"] {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: var(--text-dark);
-    width: 300px;
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
-    border: 1px solid var(--hover-accent);
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    gap: 20px;
 }
 
-.submitBTN input[type="submit"]:hover {
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
-    border: 1px solid var(--border-light);
+.btn{
+    background: var(--bg-primary);
+    color: var(--text-dark);
+    padding: 10px 20px;
+    border: 2px solid black;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 0 2px 3px var(--shadow-dark);
+    width: 200px;
+}
+.btn:hover{
+    background:var(--bg-secondary);
+}
+a{
+    text-decoration: none;
+    color: var(--text-dark);
 }
