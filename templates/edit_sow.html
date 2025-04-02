@@ -1,13 +1,12 @@
 {% extends 'home.html' %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}sow edit form{% endblock %}
 
 {% block head %}
-<title>Sows</title>  <!-- Fixed Title Casing -->
+<title>Sows</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
-<script type="text/javascript" src="{{ url_for('static', filename='js/sows.js')}}" defer></script>  
+<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -27,8 +26,13 @@
         <label for="DOB">Date of Birth:</label>
         {{ form.DOB(class="form-control") }}
 
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a href="{{ url_for('sows') }}" class="btn btn-secondary">Cancel</a>
+        <div class="submitBTN">
+            {{ form.submit(class="btn btn-primary") }}
+        <a class="btn btn-primary" href="{{ url_for('sows') }}" class="btn btn-secondary">Cancel</a>
+
+        </div>
+
+        <!-- <button type="submit" class="submitBTN">Update</button> -->
     </form>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
