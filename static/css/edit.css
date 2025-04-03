@@ -23,7 +23,17 @@
 ::-webkit-scrollbar{
     display: none;
 }
-
+.alert{
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 300px;
+    margin: 20px auto;
+    padding: 5px 20px;
+    color: red;
+    border: 2px solid rgb(255, 0, 0);
+}
 form{
     display: grid;
     grid-template-columns: repeat(2, 1fr);

@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
-from flask_sqlalchemy import SQLAlchemy
+# from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
@@ -588,6 +588,34 @@ def delete_boar(BoarId):
         flash(f'Error deleting boar: {str(e)}', 'error')
 
     return redirect(url_for('boars'))
+
+@app.route('/edit-boar/<int:boar_id>', methods=['GET', 'POST'])
+@login_required
+def edit_boar(boar_id):
+
+    boar = Boars.query.get_or_404(boar_id)
+    form = BoarForm(obj=boar)  # Pre-fill form with existing data
+    form.boar_id = boar.id #prevents false validation errors
+
+    if form.validate_on_submit():
+
+        # Update the boar with new values
+        boar.BoarId = form.BoarId.data.upper()
+        boar.Breed = form.Breed.data.upper()
+        boar.DOB = form.DOB.data
+
+        try:
+            db.session.commit()
+            flash('Boar updated successfully!', 'success')
+            return redirect(url_for('boars'))  # Redirect to the main boar manager
+        except IntegrityError:
+            db.session.rollback()
+            flash(f'Boar with ID {boar.boarId} already exists!', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+
+    return render_template('edit_boar.html', form=form, boar=boar)
 
 @app.route('/sow-manager', methods=['GET', 'POST'])
 @login_required

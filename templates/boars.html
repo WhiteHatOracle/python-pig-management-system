@@ -70,7 +70,7 @@
                     
                     <span class="separator">|</span>
                     
-                    <form class="form-btns" action="">
+                    <form class="form-btns" action="{{ url_for('edit_boar', boar_id = boar.id)}}">
                         {{ form.hidden_tag() }}
                         <button class="action-btn" >
                             <span class="action-txt">Edit</span>
@@ -89,7 +89,7 @@
                             </button>
                         </form>   
                 
-                        <form action="">
+                        <form action="{{ url_for ('edit_boar', boar_id=boar.id)}}">
                             {{ form.hidden_tag() }}
                                 <button class="action-btn">
                                     <span class="action-txt">Edit</span>
