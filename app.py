@@ -722,6 +722,11 @@ def sow_service_records(sow_id):
 
     return render_template('sow_service_records.html', sow=sow, form=form)
 
+@app.route('/litter-records', methods=['POST','GET'])
+@login_required
+def litter_records():
+    return render_template('litterRecord.html')
+
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
 @login_required
 def delete_service_record(record_id):
