@@ -84,7 +84,7 @@ class InvoiceGeneratorForm(FlaskForm):
 class ExpenseForm(FlaskForm):
     date = DateField( validators=[InputRequired()])
     amount = FloatField(validators=[InputRequired()])
-    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment')], validators=[DataRequired()])
+    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment'),('transport', 'Transport'),('utilities','Utilities')], validators=[DataRequired()])
     vendor = StringField(validators=[InputRequired()])
     description = StringField()
     submit = SubmitField("Add Expense")
