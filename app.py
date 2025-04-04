@@ -2,7 +2,6 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
-# from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
@@ -786,6 +785,10 @@ def delete_expense(expense_id):
     #Redirect back to the expenses record page
     return redirect(url_for('expenses'))
 
+@app.route('/settings',methods=['POST','GET'])
+@login_required
+def settings():
+    return render_template('settings.html')
 
 # Run the Dashboard
 if dash_app.layout is None:
