@@ -16,9 +16,6 @@
     margin: 0;
     padding: 0;
 }
-.alert{
-    color: var(--text-dark);
-}
 body{
     box-sizing: border-box;
     font-family: Arial, sans-serif;

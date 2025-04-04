@@ -116,7 +116,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     align-items: center;
     justify-content: center;
     gap: 8px; /* Adjust spacing between buttons and separator */
-    margin: 4px auto;
+    /* margin: 4px auto; */
 }
 .action-btn{
     display: flex;
@@ -180,9 +180,18 @@ input[type="text"]:focus, input[type="date"]:focus {
     table{
         min-width: 100%;
     }
-    /* .top-page{
+    .sow-table thead tr th:last-child,
+    .boar-table thead tr th:last-child{
         display: none;
-    } */
+    }
+    .sow-table thead tr th,
+    .boar-table thead tr th{
+        font-size: 14px;
+    }
+    .sow-table tbody tr th,
+    .boar-table tbody tr th{
+        font-size: 12px;
+    }
     .for-mobile{
         display: block;
     }

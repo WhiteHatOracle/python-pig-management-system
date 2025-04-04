@@ -3,11 +3,12 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
 from datetime import timedelta
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
 from fpdf import FPDF
 import datetime
 import dash
+from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
 
 # Import models and db
@@ -511,7 +512,21 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weigh
 @login_required
 def invoices():
     invoices = Invoice.query.order_by(Invoice.date.desc()).all()  # Get all invoices, newest first
+    
     return render_template('invoices.html', invoices=invoices)
+
+@app.route('/invoice_totals', methods=['GET'])
+@login_required
+def invoice_totals():
+    total_weight = db.session.query(db.func.sum(Invoice.total_weight)).scalar() or 0
+    total_revenue = db.session.query(db.func.sum(Invoice.total_price)).scalar() or 0
+    avg_weight = db.session.query(db.func.avg(Invoice.average_weight)).scalar() or 0
+
+    return jsonify({
+        'total_weight': f"{total_weight:,.2f}Kg",
+        'total_revenue': f"K{total_revenue:,.2f}",
+        'average_weight': f"{avg_weight:,.2f}Kg"
+    })
 
 # Delete Invoice Route
 @app.route('/delete-invoice/<int:invoice_id>', methods=['POST'])
@@ -573,6 +588,34 @@ def delete_boar(BoarId):
 
     return redirect(url_for('boars'))
 
+@app.route('/edit-boar/<int:boar_id>', methods=['GET', 'POST'])
+@login_required
+def edit_boar(boar_id):
+
+    boar = Boars.query.get_or_404(boar_id)
+    form = BoarForm(obj=boar)  # Pre-fill form with existing data
+    form.boar_id = boar.id #prevents false validation errors
+
+    if form.validate_on_submit():
+
+        # Update the boar with new values
+        boar.BoarId = form.BoarId.data.upper()
+        boar.Breed = form.Breed.data.upper()
+        boar.DOB = form.DOB.data
+
+        try:
+            db.session.commit()
+            flash('Boar updated successfully!', 'success')
+            return redirect(url_for('boars'))  # Redirect to the main boar manager
+        except IntegrityError:
+            db.session.rollback()
+            flash(f'Boar with ID {boar.boarId} already exists!', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+
+    return render_template('edit_boar.html', form=form, boar=boar)
+
 @app.route('/sow-manager', methods=['GET', 'POST'])
 @login_required
 def sows():
@@ -580,13 +623,12 @@ def sows():
 
     if form.validate_on_submit():
         sow_id = form.sowID.data.upper()
+        breed = form.Breed.data.upper()
         dob_str = form.DOB.data
-        print(f"Sow ID: {sow_id}, DOB: {dob_str}")  # Debug print to see submitted values
-
 
         try:
             # Add sow to the database
-            new_sow = Sows(sowID=sow_id, DOB=dob_str)
+            new_sow = Sows(sowID=sow_id, DOB=dob_str, Breed=breed)
             db.session.add(new_sow)
             db.session.commit()
             flash('Sow added successfully!', 'success')
@@ -600,6 +642,34 @@ def sows():
 
     sows = Sows.query.all()
     return render_template('sows.html', sows=sows, form=form)
+
+@app.route('/edit-sow/<int:sow_id>', methods=['GET', 'POST'])
+@login_required
+def edit_sow(sow_id):
+
+    sow = Sows.query.get_or_404(sow_id)
+    form = SowForm(obj=sow)  # Pre-fill form with existing data
+    form.sow_id = sow.id #prevents false validation errors
+
+    if form.validate_on_submit():
+
+        # Update the sow with new values
+        sow.sowID = form.sowID.data.upper()
+        sow.Breed = form.Breed.data.upper()
+        sow.DOB = form.DOB.data
+
+        try:
+            db.session.commit()
+            flash('Sow updated successfully!', 'success')
+            return redirect(url_for('sows'))  # Redirect to the main sow manager
+        except IntegrityError:
+            db.session.rollback()
+            flash(f'Sow with ID {sow.sowID} already exists!', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+
+    return render_template('edit_sow.html', form=form, sow=sow)
 
 @app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])
 @login_required
@@ -691,6 +761,12 @@ def expenses():
     expenses = Expense.query.all()
     return render_template('expenses.html', form=form, expenses=expenses)
 
+@app.route('/expense_totals', methods=['GET'])
+@login_required
+def expense_totals():
+    total_expenses = db.session.query(db.func.sum(Expense.amount)).scalar() or 0
+    return jsonify({'total_expenses': f"K{total_expenses:,.2f}"})
+
 @app.route('/delete-expense/<int:expense_id>', methods=['POST'])
 @login_required
 def delete_expense(expense_id):
@@ -709,6 +785,10 @@ def delete_expense(expense_id):
     #Redirect back to the expenses record page
     return redirect(url_for('expenses'))
 
+@app.route('/settings',methods=['POST','GET'])
+@login_required
+def settings():
+    return render_template('settings.html')
 
 # Run the Dashboard
 if dash_app.layout is None:

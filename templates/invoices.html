@@ -34,7 +34,7 @@
         <thead>
             <tr>
                 <th>Invoice Number</th>
-                <th>Company Name</th>
+                <th>Company</th>
                 <th>Date</th>
                 <th>Total Weight (Kg)</th>
                 <th>Average Weight (Kg)</th>
@@ -68,18 +68,15 @@
         </tbody>
         <tfoot class="footer">
             <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td class="totalWeight">
-                    <p>Total Weight: </p>
+                <td colspan="2" class="totalWeight">
+                    <p>Total Weight: <span id="totalWeight">Loading...</span></p>
                 </td>
-                <td class="averageWeight">
-                    <p>Average Weight: </p>
+                <td colspan="2" class="averageWeight">
+                    <p>Average Weight: <span id="averageWeight">Loading...</span></p>
                 </td>
-                <td class="totalRevenue">
-                    <p>Total Revenue: </p>
-                </td>
+                <td colspan="2" class="totalRevenue">
+                    <p>Total Revenue: <span id="totalRevenue">Loading...</span></p>
+                </td>     
                 <td></td>
             </tr>
         </tfoot>
@@ -93,6 +90,23 @@
         function confirmDelete() {
             return confirm("Are you sure you want to delete this invoice?");
         }
+    
+        function fetchTotals() {
+            fetch('/invoice_totals')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalWeight').innerText = data.total_weight;
+                    document.getElementById('totalRevenue').innerText = data.total_revenue;
+                    document.getElementById('averageWeight').innerText = data.average_weight;
+                })
+                .catch(error => console.error('Error fetching totals:', error));
+        }
+    
+        // Fetch totals on page load
+        document.addEventListener('DOMContentLoaded', fetchTotals);
+    
+        // Refresh every 10 seconds
+        setInterval(fetchTotals, 10000);
     </script>
 </main>
 </html>

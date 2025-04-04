@@ -6,15 +6,16 @@ from models import Sows, Boars, User  # Importing the models for validation
 # Define Sow Management Form
 class SowForm(FlaskForm):
     sowID = StringField(validators=[InputRequired(), Length(min=3, max=20)])
+    Breed = StringField(validators=[InputRequired(), Length(min=3, max=50)])
     DOB = DateField(validators=[InputRequired()])
     submit = SubmitField("Add Sow")
         
     def validate_sowID(self, sowID):
         existing_sow = Sows.query.filter_by(sowID=sowID.data).first()
-        if existing_sow:
+        if existing_sow and existing_sow.id != self.sow_id:
             raise ValidationError('The sow already exists. Please choose a different sow ID')
 
-#Defin sow service record Form
+#Define sow service record Form
 class ServiceRecordForm(FlaskForm):
     service_date = DateField('Service Date', validators=[InputRequired()])
     boar_used = StringField('Boar Used', validators=[InputRequired()])
@@ -28,7 +29,7 @@ class BoarForm(FlaskForm):
 
     def validate_BoarId(self, BoarId):
         existing_boar = Boars.query.filter_by(BoarId=BoarId.data).first()
-        if existing_boar:
+        if existing_boar and existing_boar.id != self.boar_id:
             raise ValidationError('The Boar already exists. Please Choose a different ID')
 
 # Define Registration Form
@@ -83,7 +84,7 @@ class InvoiceGeneratorForm(FlaskForm):
 class ExpenseForm(FlaskForm):
     date = DateField( validators=[InputRequired()])
     amount = FloatField(validators=[InputRequired()])
-    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment')], validators=[DataRequired()])
+    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment'),('transport', 'Transport'),('utilities','Utilities')], validators=[DataRequired()])
     vendor = StringField(validators=[InputRequired()])
     description = StringField()
     submit = SubmitField("Add Expense")

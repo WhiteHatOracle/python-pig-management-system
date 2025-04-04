@@ -17,6 +17,9 @@
 
         <label for="sowID">Sow ID</label>
         {{ form.sowID(autocomplete="off") }}
+
+        <label for="Breed">Breed: </label>
+        {{ form.Breed(autocomplete="off") }}
         
         <label for="DOB">Date Of Birth</label>
         {{ form.DOB(autocomplete="off") }}
@@ -40,6 +43,7 @@
             <tr>
                 <th>#</th>
                 <th>Sow ID</th>
+                <th>Breed</th>
                 <th>Date of Birth</th>
                 <th>Action</th>
             </tr>
@@ -50,6 +54,7 @@
             <tr>
                 <th>{{ idx }}</th>
                 <th>{{ sow.sowID }}</th>
+                <th>{{ sow.Breed }}</th>
                 <th>{{ sow.DOB.strftime('%d-%b-%Y') }}</th>
                 <th class="for-desktop sow-btns actions-column">
 
@@ -63,7 +68,7 @@
 
                     <span class="separator">|</span>
 
-                    <form class="form-btns" action="">
+                    <form class="form-btns" action="{{ url_for('edit_sow', sow_id=sow.id) }}">
                         {{ form.hidden_tag() }}
                     <button class="action-btn" >
                         <span class="action-txt">Edit</span>
@@ -102,7 +107,7 @@
                             </button>
                         </form>
 
-                        <form action="">
+                        <form action="{{ url_for('edit_sow', sow_id=sow.id) }}">
                             {{ form.hidden_tag() }}
                             <button class="action-btn">
                                     <span class="action-txt">Edit</span>
