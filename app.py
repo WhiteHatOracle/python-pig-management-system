@@ -12,9 +12,9 @@ from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
 
 # Import models and db
-from models import db, User, Boars, Sows, ServiceRecords, Invoice, Expense
+from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 # Import the forms
-from forms import SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
+from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -722,10 +722,53 @@ def sow_service_records(sow_id):
 
     return render_template('sow_service_records.html', sow=sow, form=form)
 
-@app.route('/litter-records', methods=['POST','GET'])
+@app.route('/litter-records/<int:service_id>', methods=['POST','GET'])
 @login_required
-def litter_records():
-    return render_template('litterRecord.html')
+def litter_records(service_id):
+    form = LitterForm()
+    serviceRecord = ServiceRecords.query.get_or_404(service_id)
+
+    if form.validate_on_submit():
+        farrowDate = form.farrowDate.data
+        totalBorn = form.totalBorn.data
+        bornAlive = form.bornAlive.data
+        stillBorn = form.stillBorn.data
+        weights = [float(w.strip()) for w in form.weights.data.split(',')]          
+        if len(weights) != totalBorn:
+            flash('Number of weights must match the number of piglets born!', 'error')
+            return redirect(url_for('litter_records', service_id=service_id))
+    
+        totalWeight = sum(weights)
+        averageWeight = totalWeight / len(weights) if weights else 0
+
+        # calculate other dates
+        iron_injection_date = farrowDate + timedelta(days=3)
+        tail_dorking_date = farrowDate + timedelta(days=3)
+        castration_date = farrowDate + timedelta(days=3)
+        teeth_clipping_date = farrowDate + timedelta(days=3)
+        wean_date = farrowDate + timedelta(days=21)
+    
+        new_litter = Litter(
+            service_record_id=serviceRecord.id,
+            farrowDate=farrowDate,
+            totalBorn=totalBorn,
+            bornAlive=bornAlive,   
+            stillBorn=stillBorn,
+            averageWeight=averageWeight,
+            iron_injection_date=iron_injection_date,
+            tail_dorking_date=tail_dorking_date,
+            castration_date=castration_date,
+            wean_date=wean_date,
+            teeth_clipping_date=teeth_clipping_date,
+        )
+        
+        # try:
+        db.session.add(new_litter)
+        db.session.commit()
+        flash('Litter Recorded successfully!', 'success')
+        return redirect(url_for('litter_records', serviceRecord=serviceRecord))
+            
+    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord)
 
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
 @login_required

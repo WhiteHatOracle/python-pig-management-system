@@ -52,7 +52,6 @@ label {
 input[type="text"], input[type="date"] {
     padding: 10px;
     font-size: 16px;
-    /* background-color: var(--bg-primary); */
     border: 1px solid var(--border-dark);
     border-radius: 5px;
     min-width: 100%;
@@ -119,7 +118,6 @@ input[type="text"]:focus, input[type="date"]:focus {
     align-items: center;
     justify-content: center;
     gap: 8px; /* Adjust spacing between buttons and separator */
-    /* margin: 4px auto; */
 }
 .action-btn{
     display: flex;

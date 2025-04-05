@@ -41,6 +41,10 @@ form{
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
 }
+.container{
+    box-shadow:0 10px 15px 5px var(--shadow-light);
+
+}
 label {
     font-weight: bold;
     color: var(--text-dark);
