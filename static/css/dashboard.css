@@ -54,50 +54,139 @@ body, .dash-app, .container {
     bottom: 40px;
 }
 
+/* Dashboard container */
 .dashboard-wrapper {
-    padding-bottom: 50px;
     padding: 20px;
 }
 
+/* Card grid setup for summary cards */
 .card-grid {
     display: grid;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
+/* Individual card styling */
 .dash-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     text-align: center;
-    padding: 20px;
-    min-width: 200px;
-    border: 2px solid var(--bg-accent);
-    border-radius: 20px;
-    color: var(--text-dark);
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
 }
 
-#sow-service-table{
-    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-}
-/* Desktop: Cards are in one row */
-@media (min-width: 768px) {
-    .card-grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
-    }
-    #sow-service-table{
-        box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-        margin-bottom: 100px;
-    }
+/* Hover effect on cards */
+.dash-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Mobile: Cards stack vertically */
-@media (max-width: 767px) {
+/* Title inside cards (Total Pigs, Total Sows, etc.) */
+.dash-card h4 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+/* Values inside cards (Total numbers) */
+.dash-card h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c7a3f;
+}
+
+/* Horizontal line separator */
+hr {
+    border-top: 2px solid #ddd;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Heading for Upcoming deliveries */
+html.H3 {
+    color: #333;
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Data table styling */
+.dash-table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+    border-radius: 8px;
+    margin-bottom: 50px;
+}
+
+.dash-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dash-table-container th,
+.dash-table-container td {
+    padding: 12px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    border: 1px solid #ddd;
+}
+
+/* Header and cell styling */
+.dash-table-container th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+/* Zebra striping effect for table rows */
+.dash-table-container tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+/* Hover effect for table rows */
+.dash-table-container tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling for due date column */
+.dash-table-container .due-date {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+/* Styling for conditional formatting (e.g., odd rows) */
+.dash-table-container .dash-table-row-odd {
+    background-color: #e6f7e6;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
     .card-grid {
-        grid-template-columns: 1fr; /* 1 column, stacking cards */
+        grid-template-columns: 1fr; /* Single column on mobile */
     }
-     #sow-service-table{
-        box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-        margin-bottom: 100px;
+
+    .dash-card h4 {
+        font-size: 0.9rem;
+    }
+
+    .dash-card h2 {
+        font-size: 1.5rem;
+    }
+
+    .dash-table-container {
+        margin-top: 20px;
+    }
+
+    /* Reduce padding for smaller screens */
+    .dash-card {
+        padding: 0.8rem;
+    }
+
+    /* Table cell padding adjustment for smaller screens */
+    .dash-table-container th, 
+    .dash-table-container td {
+        padding: 6px;
     }
 }

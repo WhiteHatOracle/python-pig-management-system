@@ -11,7 +11,7 @@ import dash
 from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
 from sqlalchemy import func
-
+from dash.exceptions import PreventUpdate
 # Import models and db
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 # Import the forms
@@ -20,7 +20,12 @@ from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCa
 # Initialize Flask app
 app = Flask(__name__)
 # Initialize Dash app
-dash_app = dash.Dash(__name__, server=app, routes_pathname_prefix="/dashboard_internal/", external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
+dash_app = dash.Dash(
+    __name__, 
+    server=app,
+    url_base_pathname='/dashboard_internal/',  # This sets the base path for Dash
+    external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
+
 
 # Load configuration from environment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -107,7 +112,7 @@ dash_app.layout = dbc.Container([
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Sows"), 
+                    html.H4("Total Sows"),
                     html.H2(id="total-sows")
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
@@ -121,15 +126,44 @@ dash_app.layout = dbc.Container([
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Porkers"), 
-                    html.H2(id="total-pokers")
+                    html.H4("Total Births"), 
+                    html.H2(id="total-porkers")
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Pre-Weaners"), 
+                    html.H2(id="pre_weaners")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Weaners"), 
+                    html.H2(id="weaners")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Growers"), 
+                    html.H2(id="growers")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Finishers"), 
+                    html.H2(id="finishers")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
         ], className="card-grid"),
 
         html.Hr(),
 
-        html.H3("Upcoming deliveries"),
+        html.H3("Upcoming Farrowings"),
         # Table for Sow Service Records
         dash_table.DataTable(
             id="sow-service-table",
@@ -178,9 +212,10 @@ dash_app.layout = dbc.Container([
 
         dcc.Interval(
             id="interval-update",
-            interval=5000,  # Updates every 5 seconds
+            interval=30 * 1000, # Updates every 30 seconds
             n_intervals=0
         ),
+         dcc.Location(id='url', refresh=True),
     ], className="dashboard-wrapper"),
 ], fluid=True)
 
@@ -189,47 +224,77 @@ dash_app.layout = dbc.Container([
         dash.Output("total-pigs", "children"),
         dash.Output("total-sows", "children"),
         dash.Output("total-boars", "children"),
-        dash.Output("total-pokers", "children"),
-        dash.Output("sow-service-table", "data"),
-        ],
-    [dash.Input("interval-update", "n_intervals")]
+        dash.Output("total-porkers", "children"),
+        dash.Output("pre_weaners", "children"),
+        dash.Output("weaners", "children"),
+        dash.Output("growers", "children"),
+        dash.Output("finishers", "children"),
+        dash.Output("sow-service-table", "data")
+    ],
+    [
+        dash.Input("interval-update", "n_intervals")
+    ],
+    
 )
 def update_dashboard(n):
-    print("Updating dashboard...")  # Debugging
-
     try:
-        total_pigs, total_sows, total_boars, total_porkers = get_total_counts()
+        total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers = get_total_counts()
         service_records = get_sow_service_records()
-        return str(total_pigs), str(total_sows), str(total_boars), str(total_porkers), service_records
+        return (
+            str(total_pigs),
+            str(total_sows),
+            str(total_boars),
+            str(total_porkers),
+            str(pre_weaners),
+            str(weaners),
+            str(growers),
+            str(finishers),
+            service_records
+        )
+    
     except Exception as e:
         print("Error updating dashboard:", e)
         return "Error", "Error", "Error", "Error", []
 
-
-
 def get_total_counts():
+    today=date.today()
+
     try:
         # Fetch counts from database
         total_sows = db.session.query(Sows.id).count()  # Count total sows from Sows table
         total_boars = db.session.query(Boars.id).count()  # Count total boars from Boars table
         total_porkers = db.session.query(func.sum(Litter.bornAlive)).scalar() or 0 # Placeholder (Replace if you have a Porkers table)
-        
+                # Pre-weaners (0–20 days)
+        pre_weaners = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate >= today - timedelta(days=20)) \
+            .scalar() or 0
+
+        # Weaners (21–91 days)
+        weaners = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate >= today - timedelta(days=91)) \
+            .filter(Litter.farrowDate < today - timedelta(days=20)) \
+            .scalar() or 0
+
+        # Growers (92–112 days)
+        growers = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate >= today - timedelta(days=112)) \
+            .filter(Litter.farrowDate < today - timedelta(days=91)) \
+            .scalar() or 0
+
+        # Finishers (113+ days)
+        finishers = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate < today - timedelta(days=112)) \
+            .scalar() or 0
+
         # Compute total pigs after defining all variables
+        total_porkers = pre_weaners + weaners + finishers + growers
         total_pigs = total_sows + total_boars + total_porkers
-        return total_pigs, total_sows, total_boars, total_porkers
+        return total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers,
 
     except Exception as e:
         print("Error in get_total_counts:", e)
         return 0, 0, 0, 0  # Return zeroes if there is an error
 
-
-def update_counts(n):
-    try:
-        total_pigs, num_sows, boars, pokers = get_pig_counts()
-        return str(total_pigs), str(num_sows), str(boars), str(pokers)
-    except Exception as e:
-        print("Error fetching pig data:", e)
-        return "Error", "Error", "Error", "Error"
 
 # Flask Route for Dash App (to embed in iframe)
 @app.route("/dashboard/")
