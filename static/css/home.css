@@ -1,17 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
-/* :root{
-  --bacground-clr :    #f2fdf0;
-  --border-clr:        #e0fcdc;
-  --text-clr:          #c3f6bc;
-  --hover-clr:         #93ee87;
-  --button-clr:        #5bdc4c;
-  --line-clr:          #34c324;
-  --header-clr:        #26a118;
-  --img-background-clr:#227e17;
-  --text-priamary-clr: #1e6417;
-  --active-clr:        #1a5215;
-  --focus-clr:         #082d06;
-} */
+
 :root {
   --bg-light:        #f2fdf0;
   --bg-lighter:      #e0fcdc;
@@ -63,22 +51,9 @@ body{
   display: grid;
   grid-template-columns: auto 1fr;
   background: linear-gradient(90deg, #e0fcdc);
-  /* background: #c3f6bc; */
   background-size: 300% 300%;
   animation: gradientMove 120s ease infinite;
 }
-
-/* @keyframes gradientMove {
-  0%{
-      background-position: 0% 50%; 
-  }
-  50%{ 
-      background-position: 100% 50%; 
-  }
-  100%{ 
-      background-position: 0% 50%; 
-  }
-} */
 
 #sidebar{
   box-sizing: border-box;
@@ -236,7 +211,7 @@ main p{
 
   main{
     padding: min(30px, 7%);
-    margin-top: 30px;
+    /* margin-top: 30px; */
   }
   .dont-display-on-mobile{
     display: none;

@@ -140,13 +140,14 @@ h2{
 }
 
 table{
+    white-space: nowrap;
     border-collapse: collapse;
     min-width: 100%;
     border-radius: 5px;
     box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
     margin: 25px auto;
+    text-align: center;
     color: var(--text-dark);
-    white-space: nowrap;
 }
 table tbody tr td{
     text-align: right;

@@ -81,13 +81,13 @@ Litter Records for {{ sow.sowID }}
         {% for litter in litters %}
         <tr
                 {% if litter.stage == 'pre-weaning' %}
-                    style="background-color: #fef3c7;"  <!-- yellow -->
+                    style="background-color: #fef3c7;" 
                 {% elif litter.stage == 'weaner' %}
-                    style="background-color: #bfdbfe;"  <!-- blue -->
+                    style="background-color: #bfdbfe;"  
                 {% elif litter.stage == 'grower' %}
-                    style="background-color: #bbf7d0;"  <!-- green -->
+                    style="background-color: #bbf7d0;"
                 {% elif litter.stage == 'finisher' %}
-                    style="background-color: #fecaca;"  <!-- red -->
+                    style="background-color: #fecaca;" 
                 {% endif %}
             >
         
@@ -123,8 +123,5 @@ Litter Records for {{ sow.sowID }}
         
 </table>
 </main>
-<script>
-    // Pass the sowId to the global JavaScript variable for use in scripts.js
-    window.sowId = {{ sow_id | tojson }};
-</script>
+
 {% endblock %}
