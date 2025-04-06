@@ -134,26 +134,26 @@ textarea::placeholder {
 /* LEGEND */
 .legend-container {
     display: flex;
-    align-items: center;
+    justify-content: space-around; /* Center the legend horizontally */
     gap: 20px;
-    font-size: 14px;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    margin-top: 10px;
     color: black;
-  }
+}
 
-  .legend-box {
-    display: inline-block;
+.legend-item {
+    display: flex;
+    flex-direction: column; /* Stack the color box and text vertically */
+    align-items: center; /* Center align the items */
+    gap: 4px; /* Space between the color box and text */
+    font-size: 12px; /* Adjust font size for better readability */
+}
+
+.legend-box {
     width: 16px;
     height: 16px;
     border: 1px solid #999;
-    margin-right: 6px;
-    vertical-align: middle;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+}
 
 /* Table styling */
 table{
@@ -181,6 +181,19 @@ table thead tr th{
 }
 
 @media (max-width:800px) {
+    .legend-container {
+        gap: 10px; /* Reduce gap between legend items */
+    }
+
+    .legend-item {
+        font-size: 10px; /* Reduce font size for smaller screens */
+        gap: 2px; /* Reduce space between the color box and text */
+    }
+
+    .legend-box {
+        width: 12px; /* Reduce the size of the legend box */
+        height: 12px;
+    }
     th{
         padding: 10px;
         display: none;

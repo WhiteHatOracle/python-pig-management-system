@@ -47,17 +47,18 @@ Litter Records for {{ sow.sowID }}
 
     <div class="text-n-button">
         <h2>Service Records</h2>
-        <div class="legend-container">
-            <strong>Stage Color Legend:</strong>
-            <div class="legend-item"><span class="legend-box" style="background-color: #fef3c7;"></span>Pre-weaning</div>
-            <div class="legend-item"><span class="legend-box" style="background-color: #bfdbfe;"></span>Weaners</div>
-            <div class="legend-item"><span class="legend-box" style="background-color: #bbf7d0;"></span>Growers</div>
-            <div class="legend-item"><span class="legend-box" style="background-color: #fecaca;"></span>Finishers</div>
-        </div>
-        <button onclick="goBack(service_id)">
+        
+        <button onclick="goBackToServiceRecords()">
             <span>back</span>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
         </button>
+    </div>
+    <div class="legend-container">
+        <!-- <strong>Stage Color Legend:</strong> -->
+        <div class="legend-item"><span class="legend-box" style="background-color: #fef3c7;"></span>Pre-weaning</div>
+        <div class="legend-item"><span class="legend-box" style="background-color: #bfdbfe;"></span>Weaners</div>
+        <div class="legend-item"><span class="legend-box" style="background-color: #bbf7d0;"></span>Growers</div>
+        <div class="legend-item"><span class="legend-box" style="background-color: #fecaca;"></span>Finishers</div>
     </div>
       
 <table>
@@ -119,6 +120,11 @@ Litter Records for {{ sow.sowID }}
             </tr>
         </tbody>
         {% endif %}
+        
 </table>
 </main>
+<script>
+    // Pass the sowId to the global JavaScript variable for use in scripts.js
+    window.sowId = {{ sow_id | tojson }};
+</script>
 {% endblock %}

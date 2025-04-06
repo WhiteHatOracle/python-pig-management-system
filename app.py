@@ -804,6 +804,7 @@ def get_litter_stage(farrow_date):
 def litter_records(service_id):
     form = LitterForm()
     serviceRecord = ServiceRecords.query.get_or_404(service_id)
+    sow_id = serviceRecord.sow_id
 
         # Fetch all litters for this service record
     litters = Litter.query.filter_by(service_record_id=service_id).all()
@@ -852,7 +853,7 @@ def litter_records(service_id):
         flash('Litter Recorded successfully!', 'success')
         return redirect(url_for('litter_records', service_id=serviceRecord.id))
 
-    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord, litters=litters)
+    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord, litters=litters, sow_id=sow_id)
 
 @app.route('/delete-litter/<int:litter_id>', methods=['POST'])
 @login_required
