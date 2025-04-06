@@ -47,11 +47,19 @@ Litter Records for {{ sow.sowID }}
 
     <div class="text-n-button">
         <h2>Service Records</h2>
+        <div class="legend-container">
+            <strong>Stage Color Legend:</strong>
+            <div class="legend-item"><span class="legend-box" style="background-color: #fef3c7;"></span>Pre-weaning</div>
+            <div class="legend-item"><span class="legend-box" style="background-color: #bfdbfe;"></span>Weaners</div>
+            <div class="legend-item"><span class="legend-box" style="background-color: #bbf7d0;"></span>Growers</div>
+            <div class="legend-item"><span class="legend-box" style="background-color: #fecaca;"></span>Finishers</div>
+        </div>
         <button onclick="goBack(service_id)">
             <span>back</span>
             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
         </button>
     </div>
+      
 <table>
     <thead>
         <tr>
@@ -69,20 +77,40 @@ Litter Records for {{ sow.sowID }}
     </thead>
     {% if serviceRecord.Litter_records %}
     <tbody>
-            {% for data in serviceRecord.Litter_records %}
-            <tr>
-                <td data-cell="Farrow Date:">   {{ data.farrowDate.strftime('%d-%b-%Y') }}</td>
-                <td data-cell="Total Born:">    {{ data.totalBorn }}</td>
-                <td data-cell="Born Alive:">    {{ data.bornAlive }}</td>
-                <td data-cell="Still Born:">    {{ data.stillBorn }}</td>
-                <td data-cell="Average Weight:">{{ data.averageWeight }}</td>
-                <td data-cell="Iron Injection:">{{ data.iron_injection_date.strftime("%d-%b-%Y") }}</td>
-                <td data-cell="Teeth Clipping:">{{ data.teeth_clipping_date.strftime("%d-%b-%Y") }}</td>
-                <td data-cell="Tail Dorking:">  {{ data.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
-                <td data-cell="Castration:">    {{ data.castration_date.strftime("%d-%b-%Y") }}</td>
-                <td data-cell="Weaning:">       {{ data.wean_date.strftime('%d-%b-%Y') }}</td>
-            </tr>
-            {% endfor %}
+        {% for litter in litters %}
+        <tr
+                {% if litter.stage == 'pre-weaning' %}
+                    style="background-color: #fef3c7;"  <!-- yellow -->
+                {% elif litter.stage == 'weaner' %}
+                    style="background-color: #bfdbfe;"  <!-- blue -->
+                {% elif litter.stage == 'grower' %}
+                    style="background-color: #bbf7d0;"  <!-- green -->
+                {% elif litter.stage == 'finisher' %}
+                    style="background-color: #fecaca;"  <!-- red -->
+                {% endif %}
+            >
+        
+            <td data-cell="Farrow Date:">   {{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
+            <td data-cell="Total Born:">    {{ litter.totalBorn }}</td>
+            <td data-cell="Born Alive:">    {{ litter.bornAlive }}</td>
+            <td data-cell="Still Born:">    {{ litter.stillBorn }}</td>
+            <td data-cell="Average Weight:">{{ litter.averageWeight }}</td>
+            <td data-cell="Iron Injection:">{{ litter.iron_injection_date.strftime("%d-%b-%Y") }}</td>
+            <td data-cell="Teeth Clipping:">{{ litter.teeth_clipping_date.strftime("%d-%b-%Y") }}</td>
+            <td data-cell="Tail Dorking:">  {{ litter.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
+            <td data-cell="Castration:">    {{ litter.castration_date.strftime("%d-%b-%Y") }}</td>
+            <td data-cell="Weaning:">       {{ litter.wean_date.strftime('%d-%b-%Y') }}</td>
+            <td>
+                <form action="{{ url_for('delete_litter', litter_id=litter.id) }}" method="POST" onsubmit="return confirmDelete();">
+                    {{ form.hidden_tag() }}
+                    <button class="action-btn" >
+                        <!-- <span class="action-txt">Delete</span> -->
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
         </tbody>
         {% else %}
         <tbody class="no_records_found">

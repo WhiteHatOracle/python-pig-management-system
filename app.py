@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
-from datetime import timedelta
+from datetime import timedelta, date
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
 from fpdf import FPDF
@@ -10,6 +10,7 @@ import datetime
 import dash
 from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
+from sqlalchemy import func
 
 # Import models and db
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
@@ -211,7 +212,7 @@ def get_total_counts():
         # Fetch counts from database
         total_sows = db.session.query(Sows.id).count()  # Count total sows from Sows table
         total_boars = db.session.query(Boars.id).count()  # Count total boars from Boars table
-        total_porkers = 162  # Placeholder (Replace if you have a Porkers table)
+        total_porkers = db.session.query(func.sum(Litter.bornAlive)).scalar() or 0 # Placeholder (Replace if you have a Porkers table)
         
         # Compute total pigs after defining all variables
         total_pigs = total_sows + total_boars + total_porkers
@@ -722,11 +723,29 @@ def sow_service_records(sow_id):
 
     return render_template('sow_service_records.html', sow=sow, form=form)
 
+def get_litter_stage(farrow_date):
+    age_days = (date.today() - farrow_date).days
+    if age_days < 21:
+        return 'pre-weaning'
+    elif age_days < 85:
+        return 'weaner'
+    elif age_days < 113:
+        return 'grower'
+    else:
+        return 'finisher'
+
 @app.route('/litter-records/<int:service_id>', methods=['POST','GET'])
 @login_required
 def litter_records(service_id):
     form = LitterForm()
     serviceRecord = ServiceRecords.query.get_or_404(service_id)
+
+        # Fetch all litters for this service record
+    litters = Litter.query.filter_by(service_record_id=service_id).all()
+
+    # Attach dynamic stage info to each litter (not saved to DB)
+    for litter in litters:
+        litter.stage = get_litter_stage(litter.farrowDate)
 
     if form.validate_on_submit():
         farrowDate = form.farrowDate.data
@@ -734,12 +753,12 @@ def litter_records(service_id):
         bornAlive = form.bornAlive.data
         stillBorn = form.stillBorn.data
         weights = [float(w.strip()) for w in form.weights.data.split(',')]          
-        if len(weights) != totalBorn:
+        if len(weights) != bornAlive:
             flash('Number of weights must match the number of piglets born!', 'error')
             return redirect(url_for('litter_records', service_id=service_id))
     
         totalWeight = sum(weights)
-        averageWeight = totalWeight / len(weights) if weights else 0
+        averageWeight = round (totalWeight / len(weights),1) if weights else 0
 
         # calculate other dates
         iron_injection_date = farrowDate + timedelta(days=3)
@@ -766,9 +785,23 @@ def litter_records(service_id):
         db.session.add(new_litter)
         db.session.commit()
         flash('Litter Recorded successfully!', 'success')
-        return redirect(url_for('litter_records', serviceRecord=serviceRecord))
-            
-    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord)
+        return redirect(url_for('litter_records', service_id=serviceRecord.id))
+
+    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord, litters=litters)
+
+@app.route('/delete-litter/<int:litter_id>', methods=['POST'])
+@login_required
+def delete_litter(litter_id):
+    litter = Litter.query.get_or_404(litter_id)
+
+    # Optional: Add a confirmation check here if needed
+    db.session.delete(litter)
+    db.session.commit()
+    flash('Litter record deleted successfully!', 'success')
+    
+    # Redirect back to the litter records page or wherever you want
+    return redirect(url_for('litter_records', service_id=litter.service_record_id))
+
 
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
 @login_required

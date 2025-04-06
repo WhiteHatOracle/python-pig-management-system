@@ -85,10 +85,15 @@ textarea::placeholder {
     justify-content: space-between;  /* Space between text and button */
     align-items: center;  /* Align items vertically */
     padding: 10px;
-    border: 1px solid var(--hover-accent);
     border-radius: 8px;
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+
     span{
         color: var(--text-dark);
+    }
+    h2{
+    border: none;
+    margin: auto 0;
     }
 }
 
@@ -126,8 +131,31 @@ textarea::placeholder {
     transform: translateX(-3px);
 }
 
-/* Table styling */
+/* LEGEND */
+.legend-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    color: black;
+  }
 
+  .legend-box {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #999;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+/* Table styling */
 table{
     border-collapse: collapse;
     min-width: 100%;
