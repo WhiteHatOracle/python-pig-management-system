@@ -35,6 +35,7 @@
             <tr>
                 <th>Invoice Number</th>
                 <th>Company</th>
+                <th>Num. Pigs</th>
                 <th>Date</th>
                 <th>Total Weight (Kg)</th>
                 <th>Average Weight (Kg)</th>
@@ -46,8 +47,8 @@
             {% for invoice in invoices %}
             <tr>
                 <td data-cell="Invoice number: ">{{ invoice.invoice_number }}</td>
-                <!-- <td data-cell="Quantity:">{{ invoice.quantity }} </td> -->
                 <td data-cell="Company: ">{{ invoice.company_name }}</td>
+                <td data-cell="Number of pigs: ">{{invoice.num_of_pigs}}</td>
                 <td data-cell="Date: ">{{ invoice.date.strftime('%d-%b-%Y') }}</td>
                 <td data-cell="Total Weight: ">{{ invoice.total_weight }}Kg</td>
                 <td data-cell="Average Weight: ">{{ invoice.average_weight }}Kg</td>
@@ -68,7 +69,10 @@
         </tbody>
         <tfoot class="footer">
             <tr>
-                <td colspan="2" class="totalWeight">
+                <td colspan="1" class="totalPigs">
+                    <p>Total Pigs: <span id="totalPigs">Loading...</span></p>
+                </td>
+                <td colspan="3" class="totalWeight">
                     <p>Total Weight: <span id="totalWeight">Loading...</span></p>
                 </td>
                 <td colspan="2" class="averageWeight">
@@ -98,6 +102,7 @@
                     document.getElementById('totalWeight').innerText = data.total_weight;
                     document.getElementById('totalRevenue').innerText = data.total_revenue;
                     document.getElementById('averageWeight').innerText = data.average_weight;
+                    document.getElementById('totalPigs').innerText = data.total_pigs;
                 })
                 .catch(error => console.error('Error fetching totals:', error));
         }

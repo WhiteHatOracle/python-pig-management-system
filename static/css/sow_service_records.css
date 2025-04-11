@@ -93,10 +93,15 @@ input[type="text"]:focus, input[type="date"]:focus {
     justify-content: space-between;  /* Space between text and button */
     align-items: center;  /* Align items vertically */
     padding: 10px;
-    border: 1px solid var(--hover-accent);
     border-radius: 8px;
+    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+
     span{
         color: var(--text-dark);
+    }
+    h2{
+    border: none;
+    margin: auto 0;
     }
 }
 
@@ -125,7 +130,6 @@ input[type="text"]:focus, input[type="date"]:focus {
 
 /* SVG icon styling */
 .text-n-button button svg {
-    /* fill: white; */
     transition: transform 0.3s ease;
 }
 
@@ -139,8 +143,20 @@ h2{
     color: var(--text-dark);
 }
 
+.no_records_found{
+    background-color: blue;
+}
+
+.no_records_found tr{
+    background-color: red;
+}
+
+.no_records_found tr td{
+    background-color: yellow;
+}
+
 table{
-    white-space: nowrap;
+    /* white-space: nowrap; */
     border-collapse: collapse;
     min-width: 100%;
     border-radius: 5px;

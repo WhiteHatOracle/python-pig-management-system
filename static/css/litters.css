@@ -121,7 +121,6 @@ textarea::placeholder {
 
 /* SVG icon styling */
 .text-n-button button svg {
-    /* fill: white; */
     transition: transform 0.3s ease;
 }
 
@@ -136,6 +135,7 @@ textarea::placeholder {
     align-items: center;
     gap: 20px;
     font-size: 14px;
+    margin-bottom: 1rem;
     color: black;
   }
 
@@ -162,7 +162,7 @@ table{
     box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
     margin: 25px auto;
     color: var(--text-dark);
-    white-space: nowrap;
+    /* white-space: nowrap; */
 }
 table tbody tr td{
     text-align: center;
@@ -215,6 +215,28 @@ table thead tr th{
             padding: 0px 5px;
         }
     }
+    .delete-btn{
+        display: grid;
+        align-items: center;
+        justify-content: center;
+        grid-column: 1 / -1;
+    }
+    .action-btn{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 3px 6px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        margin: 4px auto;
+    }
+    .action-btn:hover{
+        border-radius: 50%;
+        background: var(--bg-light);
+    }
+    
     .submitBTN{
         margin: 5px 0;
     }

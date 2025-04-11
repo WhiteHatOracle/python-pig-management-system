@@ -51,7 +51,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField("Remember Me")  # Optional remember me checkbox
     submit = SubmitField("Login")
 
-# Define Feed Calculation Form
+# Define Feed Calculation Forms
 class FeedCalculatorForm(FlaskForm):
     days = IntegerField(validators=[InputRequired()], render_kw={"Placeholder": "Number of days (e.g 21)"})
     feed = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Feed Name (e.g weaner)"})

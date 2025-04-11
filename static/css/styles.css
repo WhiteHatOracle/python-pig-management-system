@@ -11,6 +11,29 @@
     --hover-color: #97a97c;
 }
 
+:root {
+    --bg-light:        #f2fdf0;
+    --bg-lighter:      #e0fcdc;
+    --bg-lightest:     #c3f6bc;
+    
+    --bg-primary:      #93ee87;
+    --bg-secondary:    #5bdc4c;
+    --bg-accent:       #34c324;
+    
+    --hover-primary:   #26a118;
+    --hover-secondary: #227e17;
+    --hover-accent:    #1e6417;
+    
+    --border-light:    #1a5215;
+    --border-dark:     #082d06;
+    
+    --text-light:      #f2fdf0;
+    --text-dark:       #082d06;
+    
+    --shadow-light:    rgba(26, 82, 21, 0.3);
+    --shadow-dark:     rgba(8, 45, 6, 0.6);
+  }
+
 *{
     box-sizing: border-box;
     margin: 0;
@@ -87,6 +110,15 @@ button, .btn{
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.signup{
+    background: var(--bg-light);
+    color: black;
+}
+
+.signup a{
+    text-align: none;
 }
 
 button:hover{

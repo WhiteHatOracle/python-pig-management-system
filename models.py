@@ -51,6 +51,7 @@ class Invoice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     invoice_number = db.Column(db.String(50), unique=True, nullable=False)
     company_name = db.Column(db.String(255), nullable=False)
+    num_of_pigs = db.Column(db.Integer, nullable=False)
     date = db.Column(db.Date, default=lambda: datetime.now(timezone.utc), nullable=False)
     total_weight = db.Column(db.Float, nullable=False)
     average_weight = db.Column(db.Float, nullable=False)

@@ -435,6 +435,8 @@ def invoice_Generator():
         total_cost = 0
         total_weight = sum(weights)
         average_weight = total_weight / len(weights) if weights else 0
+        total_pigs = len(weights)
+        print(total_pigs)
 
         for weight in weights:
             if first_min <= weight <= first_max:
@@ -455,11 +457,13 @@ def invoice_Generator():
                     "formatted_price": f"K{price:,.2f}",  # Format price as currency
                     "cost": cost,  # Keep raw cost
                     "formatted_cost": f"K{cost:,.2f}",  # Format cost as currency
+                    "Number_of_Pigs": f"K{total_pigs}",
                 })
         return render_template('invoiceGenerator.html', 
                                form=form, 
                                company_name=company_name,
                                invoice_data=invoice_data, 
+                               total_pigs=total_pigs,
                                total_cost=f"K{total_cost:,.2f}",
                                total_weight=f"{total_weight:,.2f}Kg",
                                average_weight = f"{average_weight:,.2f}Kg"
@@ -470,18 +474,19 @@ def invoice_Generator():
 @app.route('/download-invoice', methods=['POST'])
 @login_required
 def download_invoice():
-    company_name = request.form.get("company_name")
     invoice_data = eval(request.form.get("invoice_data"))  # Parse invoice data passed from the form
+    company_name = request.form.get("company_name")
     total_weight = float(request.form.get("total_weight").replace("Kg", "").replace(",", ""))
     average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
     total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
-    
+    total_pigs = int(request.form.get("total_pigs"))
     #generate unique invoice number
     invoice_number = f"INV-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
     
     #store invoice data in db just before downloading
     new_invoice = Invoice(
         invoice_number=invoice_number,
+        num_of_pigs=total_pigs,
         company_name=company_name,
         date=datetime.datetime.now().date(),
         total_weight=total_weight,
@@ -587,11 +592,13 @@ def invoice_totals():
     total_weight = db.session.query(db.func.sum(Invoice.total_weight)).scalar() or 0
     total_revenue = db.session.query(db.func.sum(Invoice.total_price)).scalar() or 0
     avg_weight = db.session.query(db.func.avg(Invoice.average_weight)).scalar() or 0
+    total_pigs = db.session.query(db.func.sum(Invoice.num_of_pigs)).scalar() or 0
 
     return jsonify({
         'total_weight': f"{total_weight:,.2f}Kg",
         'total_revenue': f"K{total_revenue:,.2f}",
-        'average_weight': f"{avg_weight:,.2f}Kg"
+        'average_weight': f"{avg_weight:,.2f}Kg",
+        'total_pigs': f"{total_pigs:,.2f}"
     })
 
 # Delete Invoice Route

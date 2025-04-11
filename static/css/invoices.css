@@ -186,11 +186,11 @@ tfoot.footer {
     background-color: var(--bg-primary);
 }
 
-.totalWeight, .averageWeight, .totalRevenue {
+.totalWeight, .averageWeight, .totalRevenue, .totalPigs {
     padding-left: 20px;
 }
 
-#totalWeight, #averageWeight, #totalRevenue {
+#totalWeight, #averageWeight, #totalRevenue, #totalPigs {
     font-weight: normal;
     color: #333;
     display: inline-block;

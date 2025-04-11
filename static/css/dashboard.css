@@ -20,9 +20,29 @@
     --shadow-light:    rgba(26, 82, 21, 0.3);
     --shadow-dark:     rgba(8, 45, 6, 0.6);
   }
-/* .text-white {
-    color: var(--bg-light) !important;
-} */
+  body.dark-mode {
+    --bg-light:        #121a12;
+    --bg-lighter:      #1a261a;
+    --bg-lightest:     #203020;
+    
+    --bg-primary:      #5bdc4c;   /* same or slightly dimmed */
+    --bg-secondary:    #34c324;   /* same */
+    --bg-accent:       #26a118;   /* same */
+  
+    --hover-primary:   #227e17;
+    --hover-secondary: #1e6417;
+    --hover-accent:    #184d14;
+    
+    --border-light:    #3c593b;
+    --border-dark:     #1a3015;
+    
+    --text-light:      #f2fdf0;   /* same */
+    --text-dark:       #ffffff;   /* override to ensure readability */
+  
+    --shadow-light:    rgba(0, 0, 0, 0.3);
+    --shadow-dark:     rgba(0, 0, 0, 0.6);
+  }
+  
 .alert{
     color: var(--text-dark);
 }

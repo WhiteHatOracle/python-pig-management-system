@@ -155,8 +155,8 @@ ul li a:hover{
   padding: 10px 5px;
   border-radius: 5px;
   margin: 10px;
-  font-size: 30px;
-  box-shadow: 0 2px 3px var(--shadow-light);
+  font-size: 1.5rem;
+  /* box-shadow: 0 2px 3px var(--shadow-light); */
   /* width: 500px; */
 }
 
@@ -175,7 +175,7 @@ ul li a:hover{
   backdrop-filter: blur(10px);
   border-radius: 15px;
   line-height: 2rem;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .hero-image{
@@ -210,11 +210,11 @@ ul li a:hover{
     justify-content: space-between;
     padding: 20px 10px;
   }
-  .action-btns{
+  /* .action-btns{
     border: 1px solid yellow;
-  }
+  } */
   .hamburger{
-    display: block;
+    display: none;
     border: 1px solid red;
   }
   .nav-links{
@@ -225,12 +225,16 @@ ul li a:hover{
   }
   .login-button{
     span{
-      display: none;
+      color: black;
     }
 
     svg{
+      display: block;
       color: var(--text-dark);
     }
+  }
+  .login-button:hover{
+    background: none;
   }
   
   .hero-section{

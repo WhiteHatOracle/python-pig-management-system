@@ -90,6 +90,7 @@
                 
             </table>
             <form method="POST" action="/download-invoice" class="download_invoice">
+                <input type="hidden" name="total_pigs" value="{{ total_pigs }}">
                 <input type="hidden" name="company_name" value="{{ company_name }}">
                 <input type="hidden" name="invoice_data" value="{{ invoice_data }}">
                 <input type="hidden" name="total_weight" value="{{ total_weight }}">
