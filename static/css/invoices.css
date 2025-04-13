@@ -1,25 +1,25 @@
 :root {
-    --bg-light:        #f2fdf0;
-    --bg-lighter:      #e0fcdc;
-    --bg-lightest:     #c3f6bc;
-    
-    --bg-primary:      #93ee87;
-    --bg-secondary:    #5bdc4c;
-    --bg-accent:       #34c324;
-    
-    --hover-primary:   #26a118;
-    --hover-secondary: #227e17;
-    --hover-accent:    #1e6417;
-    
-    --border-light:    #1a5215;
-    --border-dark:     #082d06;
-    
-    --text-light:      #f2fdf0;
-    --text-dark:       #082d06;
-    
-    --shadow-light:    rgba(26, 82, 21, 0.3);
-    --shadow-dark:     rgba(8, 45, 6, 0.6);
-}
+    --bg-light:        #f7f8f9;
+    --bg-lighter:      #ffffff;
+    --bg-lightest:     #fbfbfc;
+  
+    --bg-primary:      #10a37f;   /* professional green */
+    --bg-secondary:    #ececec;
+    --bg-accent:       #e0f3ec;
+  
+    --hover-primary:   #0e8e72;
+    --hover-secondary: #e2e2e2;
+    --hover-accent:    #c8e9dc;
+  
+    --border-light:    #d1d5db;
+    --border-dark:     #94a3b8;
+  
+    --text-light:      #4b5563;
+    --text-dark:       #1f2937;
+  
+    --shadow-light:    rgba(0, 0, 0, 0.05);
+    --shadow-dark:     rgba(0, 0, 0, 0.15);
+  }
 
 ::-webkit-scrollbar{
     display: none;
@@ -35,8 +35,7 @@ body{
    box-sizing: border-box;
 }
 
-h2{
-   /* background-color: var(--bg-accent); */    
+h2{   
    border: 1px solid var(--border-dark);
    color: var(--text-light);
    text-align: center;
@@ -59,9 +58,9 @@ input::placeholder{
 }
 
 #searchInput {
-    padding: 8px 40px 8px 40px;
-    background-color: var(--bg-lighter); 
-    border: none;
+    padding: 8px 40px ;
+    background: var(--bg-lightest); 
+    border: var(--bg-accent);
     border-radius: 20px; 
     font-size: 16px;
     box-sizing: border-box;
@@ -69,7 +68,6 @@ input::placeholder{
 }
 
 #searchInput:focus{
-    border:1px solid var(--border-light);
     color: var(--text-dark);
 }
 
@@ -77,6 +75,7 @@ input::placeholder{
     position: relative;
     left: 35px;
     padding: 5px;
+    fill: var(--text-dark) !important;
 }
 
 .close-icon{
@@ -84,26 +83,26 @@ input::placeholder{
     right: 35px;
     padding:5px;
     cursor: pointer;
+    fill: var(--text-dark);
 }
 
 hr{
     margin: 10px auto;
 }
 
-
 #invoiceTable {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-lightest);
+    box-shadow: 0 2px 10px var(--shadow-dark);
+    border-radius: 15px;
 }
-
 #invoiceTable thead tr th{
     padding: 8px 5px;
     color: var(--text-dark);
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border-light);
     background-color: var(--bg-accent);
     color: var(--text-dark);
     font-weight: bold;
@@ -113,12 +112,11 @@ hr{
     text-align: right;
     padding: 8px 5px;
     color: var(--border-dark);
-
     font-size: 14px;
-    color: #333;
+    color: var(--text-dark);
     padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--border-dark);
 }
 
 .footer tr td{
@@ -136,7 +134,6 @@ hr{
     padding: 3px 6px;
     border: none;
 }
-
 .action-btn{
     display: flex;
     align-items: center;
@@ -144,9 +141,8 @@ hr{
     cursor: pointer;
     gap: 8px;
     border-radius: 5px;
+    background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
     border: 1px solid var(--border-light);
-
-    background-color: var(--bg-primary);
     color: var(--text-light);
     padding: 8px 12px;
     font-size: 14px;
@@ -155,7 +151,8 @@ hr{
 }
 
 .action-btn:hover{
-    background-color: var(--bg-accent);
+    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    border: 1px solid var(--border-light);
 }
 
 
@@ -180,10 +177,19 @@ hr{
 }
 
 /* Table Footer */
-tfoot.footer {
-    font-size: 16px;
-    font-weight: bold;
-    background-color: var(--bg-primary);
+.footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2em; /* space between items */
+    text-align: center;
+    padding: 1em;
+    flex-wrap: wrap; /* optional: helps with responsiveness */
+}
+
+.footer-data {
+    margin: 0; /* removes default block spacing */
+    white-space: nowrap; /* prevents line breaks inside each p */
 }
 
 .totalWeight, .averageWeight, .totalRevenue, .totalPigs {
@@ -192,7 +198,7 @@ tfoot.footer {
 
 #totalWeight, #averageWeight, #totalRevenue, #totalPigs {
     font-weight: normal;
-    color: #333;
+    color: var(--text-dark);
     display: inline-block;
 }
 
@@ -254,7 +260,7 @@ tfoot.footer {
     }
 
     tr:nth-of-type(2n){
-        background-color: rgba(0,0,0, 0.1);
+        background-color: var(--bg-primary);
     }
 
     td:first-child{
@@ -290,9 +296,9 @@ tfoot.footer {
         justify-content: center;
         gap: 8px;
         padding: 6px 10px;
-        background: rgba(255, 255, 255, 0.2);
+        background: var(--bg-primary); 
         font-size: 12px;
-        color: black;
+        color: var(--text-dark);
         background: var(--bg-lightest);
     }
     .action-btn svg{
