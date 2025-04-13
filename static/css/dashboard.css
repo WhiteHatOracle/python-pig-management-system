@@ -1,66 +1,71 @@
 :root {
-    --bg-light:        #f2fdf0;
-    --bg-lighter:      #e0fcdc;
-    --bg-lightest:     #c3f6bc;
-    
-    --bg-primary:      #93ee87;
-    --bg-secondary:    #5bdc4c;
-    --bg-accent:       #34c324;
-    
-    --hover-primary:   #26a118;
-    --hover-secondary: #227e17;
-    --hover-accent:    #1e6417;
-    
-    --border-light:    #1a5215;
-    --border-dark:     #082d06;
-    
-    --text-light:      #f2fdf0;
-    --text-dark:       #082d06;
-    
-    --shadow-light:    rgba(26, 82, 21, 0.3);
-    --shadow-dark:     rgba(8, 45, 6, 0.6);
-  }
-  body.dark-mode {
-    --bg-light:        #121a12;
-    --bg-lighter:      #1a261a;
-    --bg-lightest:     #203020;
-    
-    --bg-primary:      #5bdc4c;   /* same or slightly dimmed */
-    --bg-secondary:    #34c324;   /* same */
-    --bg-accent:       #26a118;   /* same */
+    --bg-light:        #f7f8f9;
+    --bg-lighter:      #ffffff;
+    --bg-lightest:     #fbfbfc;
   
-    --hover-primary:   #227e17;
-    --hover-secondary: #1e6417;
-    --hover-accent:    #184d14;
-    
-    --border-light:    #3c593b;
-    --border-dark:     #1a3015;
-    
-    --text-light:      #f2fdf0;   /* same */
-    --text-dark:       #ffffff;   /* override to ensure readability */
+    --bg-primary:      #10a37f;   /* professional green */
+    --bg-secondary:    #ececec;
+    --bg-accent:       #e0f3ec;
   
-    --shadow-light:    rgba(0, 0, 0, 0.3);
-    --shadow-dark:     rgba(0, 0, 0, 0.6);
+    --hover-primary:   #0e8e72;
+    --hover-secondary: #e2e2e2;
+    --hover-accent:    #c8e9dc;
+  
+    --border-light:    #d1d5db;
+    --border-dark:     #94a3b8;
+  
+    --text-light:      #4b5563;
+    --text-dark:       #1f2937;
+  
+    --shadow-light:    rgba(0, 0, 0, 0.05);
+    --shadow-dark:     rgba(0, 0, 0, 0.15);
   }
+  
+  .dark-mode {
+    --bg-light:        #202123;
+    --bg-lighter:      #2a2b2d;
+    --bg-lightest:     #343541;
+  
+    --bg-primary:      #10a37f;
+    --bg-secondary:    #3f4042;
+    --bg-accent:       #1e342d;
+  
+    --hover-primary:   #0e8e72;
+    --hover-secondary: #4b4c4e;
+    --hover-accent:    #2a4a40;
+  
+    --border-light:    #3e3f42;
+    --border-dark:     #6b7280;
+  
+    --text-light:      #d1d5db;
+    --text-dark:       #f9fafb;
+  
+    --shadow-light:    rgba(0, 0, 0, 0.2);
+    --shadow-dark:     rgba(0, 0, 0, 0.4);
+  }
+  
   
 .alert{
     color: var(--text-dark);
 }
 .h2{
     border: 1px solid var(--border-dark);
-    color: var(--text-light);
     text-align: center;
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
     color: var(--text-dark);
 }
-
+main{
+    background: var(--bg-lighter);
+}
 main .dashboard-iframe{
     height: 100%;
     width: 100%;
     bottom: 100px;
     height: 95%;
+    color: var(--text-dark);
+    background:var(--bg-lighter);
 }
 
 ::-webkit-scrollbar{
@@ -125,7 +130,7 @@ hr {
 }
 
 /* Heading for Upcoming deliveries */
-html.H3 {
+H3 {
     color: #333;
     font-size: 1.6rem;
     font-weight: bold;

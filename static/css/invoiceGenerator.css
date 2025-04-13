@@ -36,7 +36,6 @@ body{
 
 #header{
     border: 1px solid var(--border-dark);
-    /* background-color: var(--bg-accent); */
     color: var(--text-dark);
     text-align: center;
     padding: 10px;
@@ -49,7 +48,7 @@ form{
     gap: 1rem;
     color: var(--text-dark);
     border: 1px solid var(--border-dark);
-    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px 5px var(--shadow-dark);
 }
 label {
     font-weight: bold;

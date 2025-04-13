@@ -20,6 +20,28 @@
     --shadow-light:    rgba(26, 82, 21, 0.3);
     --shadow-dark:     rgba(8, 45, 6, 0.6);
 }
+.darkmode {
+    --bg-light:        #082d06;
+    --bg-lighter:      #0f3e0c;
+    --bg-lightest:     #1a5215;
+  
+    --bg-primary:      #227e17;
+    --bg-secondary:    #34c324;
+    --bg-accent:       #5bdc4c;
+  
+    --hover-primary:   #93ee87;
+    --hover-secondary: #c3f6bc;
+    --hover-accent:    #e0fcdc;
+  
+    --border-light:    #c3f6bc;
+    --border-dark:     #f2fdf0;
+  
+    --text-light:      #f2fdf0;
+    --text-dark:       #c3f6bc;
+  
+    --shadow-light:    rgba(243, 255, 240, 0.15);
+    --shadow-dark:     rgba(91, 220, 76, 0.3);
+  }
   
 ::-webkit-scrollbar{
     display: none;
@@ -34,7 +56,6 @@ body {
 }
 
 h2{
-    /* background-color: var(--bg-accent); */
     border: 1px solid var(--border-dark);
     color: var(--text-dark);
     text-align: center;
@@ -66,6 +87,7 @@ h2{
         background: transparent;
         border: none;
         cursor: pointer;
+        color: var(--text-dark);
     }
 }
 
@@ -79,7 +101,7 @@ form {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
     color: var(--text-dark);
-    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px 5px var(--shadow-dark);
 }
 label {
     font-weight: bold;
@@ -91,7 +113,6 @@ input[type="text"], input[type="number"], select, textarea {
     padding: 10px;
     font-size: 16px;
     border: 1px solid var(--border-dark);
-    /* background: var(--bg-primary); */
     border-radius: 5px;
     min-width: 100%;
     box-sizing: border-box;
@@ -136,7 +157,7 @@ input::placeholder{
     margin-top: 30px;
     max-width: 100%;
     color: var(--text-dark);
-    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 30px 5px var(--shadow-dark);
 
 }
 #results label {
