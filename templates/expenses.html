@@ -3,9 +3,9 @@
 {% block head %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/expenses.css' )}}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/expenses.js')}}" defer></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
-<script type="text/javascript" src="{{ url_for('static', filename='js/expenses.js')}}" defer></script>
 
 {% endblock %}
 {% block content %}
@@ -84,6 +84,10 @@
             </tbody>
             <tfoot>
                 <tr>
+<<<<<<< HEAD
+=======
+                    <td></td>
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
                     <td>
                         <p>Total Expense: <span id="totalExpense">Loading...</span> </p>
 

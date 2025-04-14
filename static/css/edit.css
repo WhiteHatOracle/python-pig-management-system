@@ -1,4 +1,5 @@
 :root {
+<<<<<<< HEAD
     --bg-light:        #f2fdf0;
     --bg-lighter:      #e0fcdc;
     --bg-lightest:     #c3f6bc;
@@ -20,6 +21,29 @@
     --shadow-light:    rgba(26, 82, 21, 0.3);
     --shadow-dark:     rgba(8, 45, 6, 0.6);
 }
+=======
+    --bg-light:        #f7f8f9;
+    --bg-lighter:      #ffffff;
+    --bg-lightest:     #fbfbfc;
+  
+    --bg-primary:      #10a37f;   /* professional green */
+    --bg-secondary:    #ececec;
+    --bg-accent:       #e0f3ec;
+  
+    --hover-primary:   #0e8e72;
+    --hover-secondary: #e2e2e2;
+    --hover-accent:    #c8e9dc;
+  
+    --border-light:    #d1d5db;
+    --border-dark:     #94a3b8;
+  
+    --text-light:      #4b5563;
+    --text-dark:       #1f2937;
+  
+    --shadow-light:    rgba(0, 0, 0, 0.05);
+    --shadow-dark:     rgba(0, 0, 0, 0.15);
+  }
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 ::-webkit-scrollbar{
     display: none;
 }
@@ -31,8 +55,13 @@
     width: 300px;
     margin: 20px auto;
     padding: 5px 20px;
+<<<<<<< HEAD
     color: red;
     border: 2px solid rgb(255, 0, 0);
+=======
+    color: rgb(242, 140, 140);
+    border: 2px solid rgb(242, 140, 140);
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 form{
     display: grid;
@@ -58,7 +87,10 @@ label{
 input[type="text"], input[type="date"] {
     padding: 10px;
     font-size: 16px;
+<<<<<<< HEAD
     /* background-color: var(--bg-primary); */
+=======
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     border: 1px solid var(--border-dark);
     border-radius: 5px;
     min-width: 100%;
@@ -79,10 +111,17 @@ input[type="text"]:focus, input[type="date"]:focus {
 }
 
 .btn{
+<<<<<<< HEAD
     background: var(--bg-primary);
     color: var(--text-dark);
     padding: 10px 20px;
     border: 2px solid black;
+=======
+    background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
+    color: var(--text-dark);
+    padding: 10px 20px;
+    border: 2px solid var(--border-light);
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
@@ -90,7 +129,12 @@ input[type="text"]:focus, input[type="date"]:focus {
     width: 200px;
 }
 .btn:hover{
+<<<<<<< HEAD
     background:var(--bg-secondary);
+=======
+    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    border: 1px solid var(--border-light);
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 a{
     text-decoration: none;

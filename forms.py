@@ -51,7 +51,7 @@ class LoginForm(FlaskForm):
     remember = BooleanField("Remember Me")  # Optional remember me checkbox
     submit = SubmitField("Login")
 
-# Define Feed Calculation Form
+# Define Feed Calculation Forms
 class FeedCalculatorForm(FlaskForm):
     days = IntegerField(validators=[InputRequired()], render_kw={"Placeholder": "Number of days (e.g 21)"})
     feed = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Feed Name (e.g weaner)"})
@@ -88,3 +88,12 @@ class ExpenseForm(FlaskForm):
     vendor = StringField(validators=[InputRequired()])
     description = StringField()
     submit = SubmitField("Add Expense")
+
+# litter management form:
+class LitterForm(FlaskForm):
+    farrowDate = DateField(validators=[InputRequired()])
+    totalBorn = IntegerField(validators=[InputRequired()])
+    bornAlive = IntegerField(validators=[InputRequired()])
+    stillBorn = IntegerField(validators=[InputRequired()])
+    weights = TextAreaField(validators=[DataRequired()], render_kw={"Placeholder": "e.g: 2.1, 3, 1.2, 2, ..."})
+    submit = SubmitField("Add Litter")

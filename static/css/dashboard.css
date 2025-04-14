@@ -1,46 +1,75 @@
 :root {
-    --bg-light:        #f2fdf0;
-    --bg-lighter:      #e0fcdc;
-    --bg-lightest:     #c3f6bc;
-    
-    --bg-primary:      #93ee87;
-    --bg-secondary:    #5bdc4c;
-    --bg-accent:       #34c324;
-    
-    --hover-primary:   #26a118;
-    --hover-secondary: #227e17;
-    --hover-accent:    #1e6417;
-    
-    --border-light:    #1a5215;
-    --border-dark:     #082d06;
-    
-    --text-light:      #f2fdf0;
-    --text-dark:       #082d06;
-    
-    --shadow-light:    rgba(26, 82, 21, 0.3);
-    --shadow-dark:     rgba(8, 45, 6, 0.6);
+    --bg-light:        #f7f8f9;
+    --bg-lighter:      #ffffff;
+    --bg-lightest:     #fbfbfc;
+  
+    --bg-primary:      #10a37f;   /* professional green */
+    --bg-secondary:    #ececec;
+    --bg-accent:       #e0f3ec;
+  
+    --hover-primary:   #0e8e72;
+    --hover-secondary: #e2e2e2;
+    --hover-accent:    #c8e9dc;
+  
+    --border-light:    #d1d5db;
+    --border-dark:     #94a3b8;
+  
+    --text-light:      #4b5563;
+    --text-dark:       #1f2937;
+  
+    --shadow-light:    rgba(0, 0, 0, 0.05);
+    --shadow-dark:     rgba(0, 0, 0, 0.15);
   }
-/* .text-white {
-    color: var(--bg-light) !important;
-} */
+  
+  .dark-mode {
+    --bg-light:        #202123;
+    --bg-lighter:      #2a2b2d;
+    --bg-lightest:     #343541;
+  
+    --bg-primary:      #10a37f;
+    --bg-secondary:    #3f4042;
+    --bg-accent:       #1e342d;
+  
+    --hover-primary:   #0e8e72;
+    --hover-secondary: #4b4c4e;
+    --hover-accent:    #2a4a40;
+  
+    --border-light:    #3e3f42;
+    --border-dark:     #6b7280;
+  
+    --text-light:      #d1d5db;
+    --text-dark:       #f9fafb;
+  
+    --shadow-light:    rgba(0, 0, 0, 0.2);
+    --shadow-dark:     rgba(0, 0, 0, 0.4);
+  }
+  
+  
 .alert{
     color: var(--text-dark);
 }
 .h2{
     border: 1px solid var(--border-dark);
+<<<<<<< HEAD
     color: var(--text-light);
+=======
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     text-align: center;
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
     color: var(--text-dark);
 }
-
+main{
+    background: var(--bg-lighter);
+}
 main .dashboard-iframe{
     height: 100%;
     width: 100%;
     bottom: 100px;
     height: 95%;
+    color: var(--text-dark);
+    background:var(--bg-lighter);
 }
 
 ::-webkit-scrollbar{
@@ -54,50 +83,139 @@ body, .dash-app, .container {
     bottom: 40px;
 }
 
+/* Dashboard container */
 .dashboard-wrapper {
-    padding-bottom: 50px;
     padding: 20px;
 }
 
+/* Card grid setup for summary cards */
 .card-grid {
     display: grid;
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
+/* Individual card styling */
 .dash-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
     text-align: center;
-    padding: 20px;
-    min-width: 200px;
-    border: 2px solid var(--bg-accent);
-    border-radius: 20px;
-    color: var(--text-dark);
+    padding: 1rem;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
 }
 
-#sow-service-table{
-    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-}
-/* Desktop: Cards are in one row */
-@media (min-width: 768px) {
-    .card-grid {
-        grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
-    }
-    #sow-service-table{
-        box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-        margin-bottom: 100px;
-    }
+/* Hover effect on cards */
+.dash-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Mobile: Cards stack vertically */
-@media (max-width: 767px) {
+/* Title inside cards (Total Pigs, Total Sows, etc.) */
+.dash-card h4 {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+/* Values inside cards (Total numbers) */
+.dash-card h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c7a3f;
+}
+
+/* Horizontal line separator */
+hr {
+    border-top: 2px solid #ddd;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Heading for Upcoming deliveries */
+H3 {
+    color: #333;
+    font-size: 1.6rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+/* Data table styling */
+.dash-table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+    border-radius: 8px;
+    margin-bottom: 50px;
+}
+
+.dash-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dash-table-container th,
+.dash-table-container td {
+    padding: 12px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    border: 1px solid #ddd;
+}
+
+/* Header and cell styling */
+.dash-table-container th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+/* Zebra striping effect for table rows */
+.dash-table-container tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+/* Hover effect for table rows */
+.dash-table-container tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling for due date column */
+.dash-table-container .due-date {
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+/* Styling for conditional formatting (e.g., odd rows) */
+.dash-table-container .dash-table-row-odd {
+    background-color: #e6f7e6;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
     .card-grid {
-        grid-template-columns: 1fr; /* 1 column, stacking cards */
+        grid-template-columns: 1fr; /* Single column on mobile */
     }
-     #sow-service-table{
-        box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-        margin-bottom: 100px;
+
+    .dash-card h4 {
+        font-size: 0.9rem;
+    }
+
+    .dash-card h2 {
+        font-size: 1.5rem;
+    }
+
+    .dash-table-container {
+        margin-top: 20px;
+    }
+
+    /* Reduce padding for smaller screens */
+    .dash-card {
+        padding: 0.8rem;
+    }
+
+    /* Table cell padding adjustment for smaller screens */
+    .dash-table-container th, 
+    .dash-table-container td {
+        padding: 6px;
     }
 }

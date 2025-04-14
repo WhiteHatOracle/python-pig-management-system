@@ -2,7 +2,11 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
+<<<<<<< HEAD
 from datetime import timedelta
+=======
+from datetime import timedelta, date
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
 from fpdf import FPDF
@@ -10,16 +14,22 @@ import datetime
 import dash
 from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
-
+from sqlalchemy import func
+from dash.exceptions import PreventUpdate
 # Import models and db
-from models import db, User, Boars, Sows, ServiceRecords, Invoice, Expense
+from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 # Import the forms
-from forms import SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
+from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 
 # Initialize Flask app
 app = Flask(__name__)
 # Initialize Dash app
-dash_app = dash.Dash(__name__, server=app, routes_pathname_prefix="/dashboard_internal/", external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
+dash_app = dash.Dash(
+    __name__, 
+    server=app,
+    url_base_pathname='/dashboard_internal/',  # This sets the base path for Dash
+    external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
+
 
 # Load configuration from environment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -106,7 +116,7 @@ dash_app.layout = dbc.Container([
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Sows"), 
+                    html.H4("Total Sows"),
                     html.H2(id="total-sows")
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
@@ -120,15 +130,44 @@ dash_app.layout = dbc.Container([
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Porkers"), 
-                    html.H2(id="total-pokers")
+                    html.H4("Total Births"), 
+                    html.H2(id="total-porkers")
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Pre-Weaners"), 
+                    html.H2(id="pre_weaners")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Weaners"), 
+                    html.H2(id="weaners")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Growers"), 
+                    html.H2(id="growers")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
+            dbc.Col(dbc.Card([
+                dbc.CardBody([
+                    html.H4("Finishers"), 
+                    html.H2(id="finishers")
+                    ],className = "dash-card")
+            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+
         ], className="card-grid"),
 
         html.Hr(),
 
-        html.H3("Upcoming deliveries"),
+        html.H3("Upcoming Farrowings"),
         # Table for Sow Service Records
         dash_table.DataTable(
             id="sow-service-table",
@@ -177,9 +216,10 @@ dash_app.layout = dbc.Container([
 
         dcc.Interval(
             id="interval-update",
-            interval=5000,  # Updates every 5 seconds
+            interval=30 * 1000, # Updates every 30 seconds
             n_intervals=0
         ),
+         dcc.Location(id='url', refresh=True),
     ], className="dashboard-wrapper"),
 ], fluid=True)
 
@@ -188,47 +228,77 @@ dash_app.layout = dbc.Container([
         dash.Output("total-pigs", "children"),
         dash.Output("total-sows", "children"),
         dash.Output("total-boars", "children"),
-        dash.Output("total-pokers", "children"),
-        dash.Output("sow-service-table", "data"),
-        ],
-    [dash.Input("interval-update", "n_intervals")]
+        dash.Output("total-porkers", "children"),
+        dash.Output("pre_weaners", "children"),
+        dash.Output("weaners", "children"),
+        dash.Output("growers", "children"),
+        dash.Output("finishers", "children"),
+        dash.Output("sow-service-table", "data")
+    ],
+    [
+        dash.Input("interval-update", "n_intervals")
+    ],
+    
 )
 def update_dashboard(n):
-    print("Updating dashboard...")  # Debugging
-
     try:
-        total_pigs, total_sows, total_boars, total_porkers = get_total_counts()
+        total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers = get_total_counts()
         service_records = get_sow_service_records()
-        return str(total_pigs), str(total_sows), str(total_boars), str(total_porkers), service_records
+        return (
+            str(total_pigs),
+            str(total_sows),
+            str(total_boars),
+            str(total_porkers),
+            str(pre_weaners),
+            str(weaners),
+            str(growers),
+            str(finishers),
+            service_records
+        )
+    
     except Exception as e:
         print("Error updating dashboard:", e)
         return "Error", "Error", "Error", "Error", []
 
-
-
 def get_total_counts():
+    today=date.today()
+
     try:
         # Fetch counts from database
         total_sows = db.session.query(Sows.id).count()  # Count total sows from Sows table
         total_boars = db.session.query(Boars.id).count()  # Count total boars from Boars table
-        total_porkers = 162  # Placeholder (Replace if you have a Porkers table)
-        
+        total_porkers = db.session.query(func.sum(Litter.bornAlive)).scalar() or 0 # Placeholder (Replace if you have a Porkers table)
+                # Pre-weaners (0–20 days)
+        pre_weaners = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate >= today - timedelta(days=20)) \
+            .scalar() or 0
+
+        # Weaners (21–91 days)
+        weaners = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate >= today - timedelta(days=91)) \
+            .filter(Litter.farrowDate < today - timedelta(days=20)) \
+            .scalar() or 0
+
+        # Growers (92–112 days)
+        growers = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate >= today - timedelta(days=112)) \
+            .filter(Litter.farrowDate < today - timedelta(days=91)) \
+            .scalar() or 0
+
+        # Finishers (113+ days)
+        finishers = db.session.query(func.sum(Litter.bornAlive)) \
+            .filter(Litter.farrowDate < today - timedelta(days=112)) \
+            .scalar() or 0
+
         # Compute total pigs after defining all variables
+        total_porkers = pre_weaners + weaners + finishers + growers
         total_pigs = total_sows + total_boars + total_porkers
-        return total_pigs, total_sows, total_boars, total_porkers
+        return total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers,
 
     except Exception as e:
         print("Error in get_total_counts:", e)
         return 0, 0, 0, 0  # Return zeroes if there is an error
 
-
-def update_counts(n):
-    try:
-        total_pigs, num_sows, boars, pokers = get_pig_counts()
-        return str(total_pigs), str(num_sows), str(boars), str(pokers)
-    except Exception as e:
-        print("Error fetching pig data:", e)
-        return "Error", "Error", "Error", "Error"
 
 # Flask Route for Dash App (to embed in iframe)
 @app.route("/dashboard/")
@@ -369,6 +439,8 @@ def invoice_Generator():
         total_cost = 0
         total_weight = sum(weights)
         average_weight = total_weight / len(weights) if weights else 0
+        total_pigs = len(weights)
+        print(total_pigs)
 
         for weight in weights:
             if first_min <= weight <= first_max:
@@ -389,11 +461,13 @@ def invoice_Generator():
                     "formatted_price": f"K{price:,.2f}",  # Format price as currency
                     "cost": cost,  # Keep raw cost
                     "formatted_cost": f"K{cost:,.2f}",  # Format cost as currency
+                    "Number_of_Pigs": f"K{total_pigs}",
                 })
         return render_template('invoiceGenerator.html', 
                                form=form, 
                                company_name=company_name,
                                invoice_data=invoice_data, 
+                               total_pigs=total_pigs,
                                total_cost=f"K{total_cost:,.2f}",
                                total_weight=f"{total_weight:,.2f}Kg",
                                average_weight = f"{average_weight:,.2f}Kg"
@@ -404,18 +478,19 @@ def invoice_Generator():
 @app.route('/download-invoice', methods=['POST'])
 @login_required
 def download_invoice():
-    company_name = request.form.get("company_name")
     invoice_data = eval(request.form.get("invoice_data"))  # Parse invoice data passed from the form
+    company_name = request.form.get("company_name")
     total_weight = float(request.form.get("total_weight").replace("Kg", "").replace(",", ""))
     average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
     total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
-    
+    total_pigs = int(request.form.get("total_pigs"))
     #generate unique invoice number
     invoice_number = f"INV-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
     
     #store invoice data in db just before downloading
     new_invoice = Invoice(
         invoice_number=invoice_number,
+        num_of_pigs=total_pigs,
         company_name=company_name,
         date=datetime.datetime.now().date(),
         total_weight=total_weight,
@@ -521,11 +596,20 @@ def invoice_totals():
     total_weight = db.session.query(db.func.sum(Invoice.total_weight)).scalar() or 0
     total_revenue = db.session.query(db.func.sum(Invoice.total_price)).scalar() or 0
     avg_weight = db.session.query(db.func.avg(Invoice.average_weight)).scalar() or 0
+<<<<<<< HEAD
+=======
+    total_pigs = db.session.query(db.func.sum(Invoice.num_of_pigs)).scalar() or 0
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 
     return jsonify({
         'total_weight': f"{total_weight:,.2f}Kg",
         'total_revenue': f"K{total_revenue:,.2f}",
+<<<<<<< HEAD
         'average_weight': f"{avg_weight:,.2f}Kg"
+=======
+        'average_weight': f"{avg_weight:,.2f}Kg",
+        'total_pigs': f"{total_pigs:,.2f}"
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     })
 
 # Delete Invoice Route
@@ -721,6 +805,87 @@ def sow_service_records(sow_id):
         return redirect(url_for('sow_service_records', sow_id=sow.id))
 
     return render_template('sow_service_records.html', sow=sow, form=form)
+
+def get_litter_stage(farrow_date):
+    age_days = (date.today() - farrow_date).days
+    if age_days < 21:
+        return 'pre-weaning'
+    elif age_days < 85:
+        return 'weaner'
+    elif age_days < 113:
+        return 'grower'
+    else:
+        return 'finisher'
+
+@app.route('/litter-records/<int:service_id>', methods=['POST','GET'])
+@login_required
+def litter_records(service_id):
+    form = LitterForm()
+    serviceRecord = ServiceRecords.query.get_or_404(service_id)
+    sow_id = serviceRecord.sow_id
+
+        # Fetch all litters for this service record
+    litters = Litter.query.filter_by(service_record_id=service_id).all()
+
+    # Attach dynamic stage info to each litter (not saved to DB)
+    for litter in litters:
+        litter.stage = get_litter_stage(litter.farrowDate)
+
+    if form.validate_on_submit():
+        farrowDate = form.farrowDate.data
+        totalBorn = form.totalBorn.data
+        bornAlive = form.bornAlive.data
+        stillBorn = form.stillBorn.data
+        weights = [float(w.strip()) for w in form.weights.data.split(',')]          
+        if len(weights) != bornAlive:
+            flash('Number of weights must match the number of piglets born!', 'error')
+            return redirect(url_for('litter_records', service_id=service_id))
+    
+        totalWeight = sum(weights)
+        averageWeight = round (totalWeight / len(weights),1) if weights else 0
+
+        # calculate other dates
+        iron_injection_date = farrowDate + timedelta(days=3)
+        tail_dorking_date = farrowDate + timedelta(days=3)
+        castration_date = farrowDate + timedelta(days=3)
+        teeth_clipping_date = farrowDate + timedelta(days=3)
+        wean_date = farrowDate + timedelta(days=21)
+    
+        new_litter = Litter(
+            service_record_id=serviceRecord.id,
+            farrowDate=farrowDate,
+            totalBorn=totalBorn,
+            bornAlive=bornAlive,   
+            stillBorn=stillBorn,
+            averageWeight=averageWeight,
+            iron_injection_date=iron_injection_date,
+            tail_dorking_date=tail_dorking_date,
+            castration_date=castration_date,
+            wean_date=wean_date,
+            teeth_clipping_date=teeth_clipping_date,
+        )
+        
+        # try:
+        db.session.add(new_litter)
+        db.session.commit()
+        flash('Litter Recorded successfully!', 'success')
+        return redirect(url_for('litter_records', service_id=serviceRecord.id))
+
+    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord, litters=litters, sow_id=sow_id)
+
+@app.route('/delete-litter/<int:litter_id>', methods=['POST'])
+@login_required
+def delete_litter(litter_id):
+    litter = Litter.query.get_or_404(litter_id)
+
+    # Optional: Add a confirmation check here if needed
+    db.session.delete(litter)
+    db.session.commit()
+    flash('Litter record deleted successfully!', 'success')
+    
+    # Redirect back to the litter records page or wherever you want
+    return redirect(url_for('litter_records', service_id=litter.service_record_id))
+
 
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
 @login_required

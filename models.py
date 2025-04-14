@@ -43,6 +43,7 @@ class ServiceRecords(db.Model):
     due_date = db.Column(db.Date)
     action_date = db.Column(db.Date)
 
+    Litter_records = db.relationship('Litter', backref='service_record', lazy=True)
     sow = db.relationship("Sows", back_populates="service_records")
 
 class Invoice(db.Model):
@@ -50,6 +51,7 @@ class Invoice(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     invoice_number = db.Column(db.String(50), unique=True, nullable=False)
     company_name = db.Column(db.String(255), nullable=False)
+    num_of_pigs = db.Column(db.Integer, nullable=False)
     date = db.Column(db.Date, default=lambda: datetime.now(timezone.utc), nullable=False)
     total_weight = db.Column(db.Float, nullable=False)
     average_weight = db.Column(db.Float, nullable=False)
@@ -69,3 +71,19 @@ class Expense(db.Model):
 
     def __repr__(self):
         return f'<Expense {self.id} - {self.category}>'
+    
+class Litter(db.Model):
+    __tablename__="Litter"
+    id = db.Column(db.Integer, primary_key=True)
+    service_record_id = db.Column(db.Integer, db.ForeignKey('service_records.id'), nullable=False)
+    farrowDate = db.Column(db.Date, nullable=False)
+    totalBorn = db.Column(db.Integer, nullable=False)
+    stillBorn = db.Column(db.Integer,nullable=False)
+    bornAlive = db.Column(db.Integer, nullable=False)
+    
+    iron_injection_date = db.Column(db.Date, nullable=False)
+    tail_dorking_date = db.Column(db.Date, nullable=False)
+    teeth_clipping_date = db.Column(db.Date, nullable=False)
+    castration_date = db.Column(db.Date, nullable=False)
+    wean_date = db.Column(db.Date, nullable=False)
+    averageWeight = db.Column(db.Float)

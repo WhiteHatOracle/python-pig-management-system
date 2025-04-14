@@ -5,8 +5,8 @@
 {% block head %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/invoices.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
   <script type="text/javascript" src="{{ url_for('static', filename='js/invoices.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
   <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}" defer></script>
 {% endblock %}
 
@@ -31,10 +31,14 @@
     <!-- Table -->
 <div class="table-container">
     <table id="invoiceTable">
-        <thead>
+        <thead class="table-header">
             <tr>
                 <th>Invoice Number</th>
                 <th>Company</th>
+<<<<<<< HEAD
+=======
+                <th>Num. Pigs</th>
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
                 <th>Date</th>
                 <th>Total Weight (Kg)</th>
                 <th>Average Weight (Kg)</th>
@@ -46,8 +50,8 @@
             {% for invoice in invoices %}
             <tr>
                 <td data-cell="Invoice number: ">{{ invoice.invoice_number }}</td>
-                <!-- <td data-cell="Quantity:">{{ invoice.quantity }} </td> -->
                 <td data-cell="Company: ">{{ invoice.company_name }}</td>
+                <td data-cell="Number of pigs: ">{{invoice.num_of_pigs}}</td>
                 <td data-cell="Date: ">{{ invoice.date.strftime('%d-%b-%Y') }}</td>
                 <td data-cell="Total Weight: ">{{ invoice.total_weight }}Kg</td>
                 <td data-cell="Average Weight: ">{{ invoice.average_weight }}Kg</td>
@@ -68,6 +72,7 @@
         </tbody>
         <tfoot class="footer">
             <tr>
+<<<<<<< HEAD
                 <td colspan="2" class="totalWeight">
                     <p>Total Weight: <span id="totalWeight">Loading...</span></p>
                 </td>
@@ -78,6 +83,19 @@
                     <p>Total Revenue: <span id="totalRevenue">Loading...</span></p>
                 </td>     
                 <td></td>
+=======
+                <td colspan="8" style="text-align: center; padding: 1em;">
+                    <div class="footer-row">
+                        <p class="totalPigs footer-data">Total Pigs: <span id="totalPigs">Loading...</span></p>
+                    
+                        <p class="totalWeight footer-data">Total Weight: <span id="totalWeight">Loading...</span></p>
+                    
+                        <p class="averageWeight footer-data">Average Weight: <span id="averageWeight">Loading...</span></p>
+                    
+                        <p class="totalRevenue footer-data">Total Revenue: <span id="totalRevenue">Loading...</span></p>
+                    </div>
+                </td>
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
             </tr>
         </tfoot>
     </table>
@@ -98,6 +116,10 @@
                     document.getElementById('totalWeight').innerText = data.total_weight;
                     document.getElementById('totalRevenue').innerText = data.total_revenue;
                     document.getElementById('averageWeight').innerText = data.average_weight;
+<<<<<<< HEAD
+=======
+                    document.getElementById('totalPigs').innerText = data.total_pigs;
+>>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
                 })
                 .catch(error => console.error('Error fetching totals:', error));
         }
