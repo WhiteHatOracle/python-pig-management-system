@@ -24,12 +24,12 @@
 
 .dark-mode {
   --bg-light:        #202123;
-  --bg-lighter:      #2a2b2d;
-  --bg-lightest:     #343541;
+  --bg-lighter:      #171821;
+  --bg-lightest:     #43434c;
 
   --bg-primary:      #10a37f;
   --bg-secondary:    #3f4042;
-  --bg-accent:       #1e342d;
+  --bg-accent:       #286451;
 
   --hover-primary:   #0e8e72;
   --hover-secondary: #4b4c4e;
@@ -45,8 +45,6 @@
   --shadow-dark:     rgba(0, 0, 0, 0.4);
 }
 
-
-
 *{
   margin: 0;
   padding: 0;
@@ -58,13 +56,10 @@ h2{
   padding: 10px;
   margin-bottom: 20px;
   border-radius: 5px;
-<<<<<<< HEAD
 }
 input::placeholder, textarea::placeholder {
   color: var(--bg-lightest); /* Replace with your desired color */
   opacity: 1; /* Optional: make the placeholder fully opaque */
-=======
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 .alert{
   color: var(--text-dark);
@@ -207,7 +202,7 @@ body{
 }
 
 main{
-  /* margin-top: 30px; */
+  margin-top: 30px;
   padding: min(30px, 7%);
 }
 main p{

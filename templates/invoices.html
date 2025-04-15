@@ -35,10 +35,7 @@
             <tr>
                 <th>Invoice Number</th>
                 <th>Company</th>
-<<<<<<< HEAD
-=======
                 <th>Num. Pigs</th>
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
                 <th>Date</th>
                 <th>Total Weight (Kg)</th>
                 <th>Average Weight (Kg)</th>
@@ -72,18 +69,6 @@
         </tbody>
         <tfoot class="footer">
             <tr>
-<<<<<<< HEAD
-                <td colspan="2" class="totalWeight">
-                    <p>Total Weight: <span id="totalWeight">Loading...</span></p>
-                </td>
-                <td colspan="2" class="averageWeight">
-                    <p>Average Weight: <span id="averageWeight">Loading...</span></p>
-                </td>
-                <td colspan="2" class="totalRevenue">
-                    <p>Total Revenue: <span id="totalRevenue">Loading...</span></p>
-                </td>     
-                <td></td>
-=======
                 <td colspan="8" style="text-align: center; padding: 1em;">
                     <div class="footer-row">
                         <p class="totalPigs footer-data">Total Pigs: <span id="totalPigs">Loading...</span></p>
@@ -95,7 +80,6 @@
                         <p class="totalRevenue footer-data">Total Revenue: <span id="totalRevenue">Loading...</span></p>
                     </div>
                 </td>
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
             </tr>
         </tfoot>
     </table>
@@ -116,10 +100,7 @@
                     document.getElementById('totalWeight').innerText = data.total_weight;
                     document.getElementById('totalRevenue').innerText = data.total_revenue;
                     document.getElementById('averageWeight').innerText = data.average_weight;
-<<<<<<< HEAD
-=======
                     document.getElementById('totalPigs').innerText = data.total_pigs;
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
                 })
                 .catch(error => console.error('Error fetching totals:', error));
         }

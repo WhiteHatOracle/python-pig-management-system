@@ -113,6 +113,22 @@ textarea::placeholder {
     transition: background 0.3s ease;
 }
 
+.delete-btn{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+.action-btn{
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Space between text and icon */
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-dark); /* Adjust color of the button */
+}
+
 /* Hover effect */
 .text-n-button button:hover {
     background: linear-gradient(var(--hover-secondary),var(--hover-accent));
@@ -135,8 +151,12 @@ textarea::placeholder {
     align-items: center;
     gap: 20px;
     font-size: 14px;
-    margin-bottom: 1rem;
+    margin: 1rem;
     color: var(--text-dark);
+    padding: 10px;
+    justify-content: center;
+    box-shadow: 0 10px 30px 5px var(--shadow-dark);
+    border-radius:5px;
   }
 
   .legend-box {
@@ -166,7 +186,7 @@ table{
 table tbody tr td{
     text-align: center;
     padding: 8px 5px;
-    color: var(--border-dark);
+    color: var(--text-dark);
 }
 table thead tr{
     border-bottom: 1px dashed var(--border-light);

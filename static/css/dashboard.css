@@ -50,10 +50,7 @@
 }
 .h2{
     border: 1px solid var(--border-dark);
-<<<<<<< HEAD
     color: var(--text-light);
-=======
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     text-align: center;
     padding: 10px;
     margin-bottom: 20px;
@@ -61,15 +58,15 @@
     color: var(--text-dark);
 }
 main{
-    background: var(--bg-lighter);
+    background: var(--bg-lighter) !important;
 }
 main .dashboard-iframe{
-    height: 100%;
+    /* height: 100%; */
     width: 100%;
     bottom: 100px;
     height: 95%;
-    color: var(--text-dark);
-    background:var(--bg-lighter);
+    color: var(--text-dark) !important;
+    background:red !important;
 }
 
 ::-webkit-scrollbar{
@@ -78,6 +75,7 @@ main .dashboard-iframe{
 
 body, .dash-app, .container {
     background-color: rgba(0, 0, 0, 0) !important; /* Transparent background */
+    background: var(--bg-lighter) !important;
     width: 100%;
     height: 100dvh;
     bottom: 40px;
@@ -100,22 +98,23 @@ body, .dash-app, .container {
 .dash-card {
     text-align: center;
     padding: 1rem;
-    background-color: #ffffff;
+    background-color: var(--bg-lightest);
+    color: var(--text-dark);
     border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px var(--shadow-dark);
     transition: transform 0.3s ease-in-out;
 }
 
 /* Hover effect on cards */
 .dash-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 16px var(--shadow-dark);
 }
 
 /* Title inside cards (Total Pigs, Total Sows, etc.) */
 .dash-card h4 {
     font-size: 1rem;
-    color: #333;
+    color: var(--text-dark) !important;
     margin-bottom: 0.5rem;
 }
 
@@ -128,14 +127,14 @@ body, .dash-app, .container {
 
 /* Horizontal line separator */
 hr {
-    border-top: 2px solid #ddd;
+    border-top: 2px solid var(--border-dark);
     margin-top: 2rem;
     margin-bottom: 2rem;
 }
 
 /* Heading for Upcoming deliveries */
 H3 {
-    color: #333;
+    color: var(--text-light);
     font-size: 1.6rem;
     font-weight: bold;
     margin-bottom: 1rem;
@@ -159,35 +158,35 @@ H3 {
     padding: 12px;
     text-align: center;
     font-family: Arial, sans-serif;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-light);
 }
 
 /* Header and cell styling */
 .dash-table-container th {
-    background-color: #4CAF50;
-    color: white;
+    background-color: var(--bg-primary);
+    color: var(--text-dark);
     font-weight: bold;
 }
 
 /* Zebra striping effect for table rows */
 .dash-table-container tbody tr:nth-child(odd) {
-    background-color: #f9f9f9;
+    background-color: var(--border-light);
 }
 
 /* Hover effect for table rows */
 .dash-table-container tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: var(--bg-accent);
 }
 
 /* Styling for due date column */
 .dash-table-container .due-date {
     font-weight: bold;
-    color: #4CAF50;
+    color: var(--bg-accent);
 }
 
 /* Styling for conditional formatting (e.g., odd rows) */
 .dash-table-container .dash-table-row-odd {
-    background-color: #e6f7e6;
+    background-color: var(--bg-primary);
 }
 
 /* Mobile responsiveness */

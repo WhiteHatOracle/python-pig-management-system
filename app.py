@@ -2,11 +2,8 @@ from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
-<<<<<<< HEAD
 from datetime import timedelta
-=======
 from datetime import timedelta, date
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
 from dash import dcc, html, dash_table
 from fpdf import FPDF
@@ -199,7 +196,8 @@ dash_app.layout = dbc.Container([
                 },
                 style_data_conditional=[{
                     'if': {'column_id': 'due_date'},
-                    'color': '#082d06',
+                    # 'color': '#082d06',
+                    'color': 'var(--text-dark)',
                     'fontWeight': 'bold'
                 },{
                     'if': {'row_index': 'odd'},  # Zebra striping effect
@@ -596,20 +594,14 @@ def invoice_totals():
     total_weight = db.session.query(db.func.sum(Invoice.total_weight)).scalar() or 0
     total_revenue = db.session.query(db.func.sum(Invoice.total_price)).scalar() or 0
     avg_weight = db.session.query(db.func.avg(Invoice.average_weight)).scalar() or 0
-<<<<<<< HEAD
-=======
     total_pigs = db.session.query(db.func.sum(Invoice.num_of_pigs)).scalar() or 0
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 
     return jsonify({
         'total_weight': f"{total_weight:,.2f}Kg",
         'total_revenue': f"K{total_revenue:,.2f}",
-<<<<<<< HEAD
-        'average_weight': f"{avg_weight:,.2f}Kg"
-=======
+        'average_weight': f"{avg_weight:,.2f}Kg",
         'average_weight': f"{avg_weight:,.2f}Kg",
         'total_pigs': f"{total_pigs:,.2f}"
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     })
 
 # Delete Invoice Route

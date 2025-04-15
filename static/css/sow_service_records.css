@@ -173,6 +173,21 @@ table thead tr th{
     font-size: 16px;
     padding: 8px;
 }
+
+.actions-column{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* Adjust spacing between buttons and separator */
+}
+.icon{
+    color: var(--text-light);
+}
+.form-btns{
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
 .action-btn{
     display: flex;
     align-items: center;
@@ -188,20 +203,6 @@ table thead tr th{
     span{
         display: none;
     }
-}
-.actions-column{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px; /* Adjust spacing between buttons and separator */
-}
-.icon{
-    color: var(--text-light);
-}
-.form-btns{
-    display: flex;
-    justify-content: center;
-    gap: 8px;
 }
 .seperator{
     font-size: 16px;

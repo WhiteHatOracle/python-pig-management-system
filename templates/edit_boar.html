@@ -4,13 +4,10 @@
 {% block head %}
 <title>Boar</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
-=======
 <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
@@ -37,7 +34,6 @@
         
     </form>
 
-<<<<<<< HEAD
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -46,8 +42,8 @@
         {% endfor %}
     {% endif %}
     {% endwith %}
-=======
-    <div class="container mt-3">
+
+    <!-- <div class="container mt-3">
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
             {% for category, message in messages %}
@@ -57,7 +53,6 @@
             {% endfor %}
           {% endif %}
         {% endwith %}
-      </div>
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
+      </div> -->
 </main>
 {% endblock %}

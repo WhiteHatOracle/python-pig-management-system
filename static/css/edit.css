@@ -1,27 +1,4 @@
 :root {
-<<<<<<< HEAD
-    --bg-light:        #f2fdf0;
-    --bg-lighter:      #e0fcdc;
-    --bg-lightest:     #c3f6bc;
-    
-    --bg-primary:      #93ee87;
-    --bg-secondary:    #5bdc4c;
-    --bg-accent:       #34c324;
-    
-    --hover-primary:   #26a118;
-    --hover-secondary: #227e17;
-    --hover-accent:    #1e6417;
-    
-    --border-light:    #1a5215;
-    --border-dark:     #082d06;
-    
-    --text-light:      #f2fdf0;
-    --text-dark:       #082d06;
-    
-    --shadow-light:    rgba(26, 82, 21, 0.3);
-    --shadow-dark:     rgba(8, 45, 6, 0.6);
-}
-=======
     --bg-light:        #f7f8f9;
     --bg-lighter:      #ffffff;
     --bg-lightest:     #fbfbfc;
@@ -43,25 +20,12 @@
     --shadow-light:    rgba(0, 0, 0, 0.05);
     --shadow-dark:     rgba(0, 0, 0, 0.15);
   }
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 ::-webkit-scrollbar{
     display: none;
 }
+
 .alert{
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 300px;
-    margin: 20px auto;
-    padding: 5px 20px;
-<<<<<<< HEAD
-    color: red;
-    border: 2px solid rgb(255, 0, 0);
-=======
-    color: rgb(242, 140, 140);
-    border: 2px solid rgb(242, 140, 140);
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
+   color: red;
 }
 form{
     display: grid;
@@ -87,10 +51,6 @@ label{
 input[type="text"], input[type="date"] {
     padding: 10px;
     font-size: 16px;
-<<<<<<< HEAD
-    /* background-color: var(--bg-primary); */
-=======
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     border: 1px solid var(--border-dark);
     border-radius: 5px;
     min-width: 100%;
@@ -111,30 +71,25 @@ input[type="text"]:focus, input[type="date"]:focus {
 }
 
 .btn{
-<<<<<<< HEAD
     background: var(--bg-primary);
     color: var(--text-dark);
     padding: 10px 20px;
-    border: 2px solid black;
-=======
+    border: 2px solid var(--border-dark);
     background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
     color: var(--text-dark);
     padding: 10px 20px;
     border: 2px solid var(--border-light);
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     box-shadow: 0 2px 3px var(--shadow-dark);
     width: 200px;
+    outline: none   ;
 }
 .btn:hover{
-<<<<<<< HEAD
     background:var(--bg-secondary);
-=======
     background: linear-gradient(var(--hover-secondary),var(--hover-accent));
     border: 1px solid var(--border-light);
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 a{
     text-decoration: none;

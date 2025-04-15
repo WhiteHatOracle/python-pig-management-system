@@ -1,12 +1,12 @@
 
-  
-::-webkit-scrollbar{
-    display: none;
-}
+
 .alert{
     color: var(--text-dark);
 }
 
+::-webkit-scrollbar{
+    display:none;
+}
 
 #header{
     border: 1px solid var(--border-dark);
@@ -70,11 +70,8 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     align-items: center;
     justify-content: center;
     gap: 8px; 
-<<<<<<< HEAD
     margin: 4px auto;
-=======
     margin: 0 auto;
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 
 .form-btns{
@@ -85,30 +82,24 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 
 /* Table Container */
 table.expense-table {
-<<<<<<< HEAD
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     background-color: #f9f9f9;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-=======
     color: var(--text-dark);
     min-width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     background-color: var(--bg-light);
     box-shadow: 0 2px 10px var(--shadow-dark);
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 
 table.expense-table th, table.expense-table td {
     padding: 12px 15px;
     text-align: left;
-<<<<<<< HEAD
     border-bottom: 1px solid #ddd;
-=======
     border-bottom: 1px solid var(--border-light);
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 
 table.expense-table th {
@@ -130,41 +121,6 @@ table.expense-table td.actions-column {
     text-align: center;
 }
 
-<<<<<<< HEAD
-table.expense-table td .edit {
-=======
-/* table.expense-table td .edit{
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
-    background-color: var(--bg-accent);
-    border: none;
-    border-radius: 5px;
-    color: var(--text-light);
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-<<<<<<< HEAD
-}
-table.expense-table td .delete {
-    background-color: var(--bg-accent);
-    border: none;
-    border-radius: 5px;
-    color: var(--text-light);
-    padding: 8px 12px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-table.expense-table td .edit:hover {
-    background-color: var(--hover-secondary);
-    border-radius: 5px;
-}
-table.expense-table td .delete:hover {
-    background-color: var(--hover-secondary);
-    border-radius: 5px;
-=======
-} */
 table.expense-table td .delete,table.expense-table td .edit  {
     background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
     color: var(--text-dark);
@@ -178,8 +134,6 @@ table.expense-table td .delete,table.expense-table td .edit  {
 
 table.expense-table td .delete:hover,table.expense-table td .edit:hover {
     background: linear-gradient(var(--hover-secondary),var(--hover-accent));
-    /* border: 1px solid var(--border-light); */
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 }
 
 table.expense-table td .separator {
