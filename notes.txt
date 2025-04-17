@@ -2,6 +2,8 @@
 #DESCRIPTION#
 Overall, This app is a smart, data-driven tool that helps manage pig farming operations more efficiently, streamlining tasks like breeding management, financial tracking, and overall farm analytics. It's great for anyone looking to automate and optimize farm operations with modern web technologies!
 
+This is a smart, data-driven tool that helps manage pig farming operations more efficiently, streamlining tasks like breeding management, financial tracking, and overall farm analytics. It's great for anyone looking to automate and optimize farm operations with modern web technologies!
+
 #Command to add requirements
 
 ##########creating the db's##########

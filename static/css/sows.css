@@ -1,26 +1,3 @@
-:root {
-    --bg-light:        #f7f8f9;
-    --bg-lighter:      #ffffff;
-    --bg-lightest:     #fbfbfc;
-  
-    --bg-primary:      #10a37f;   /* professional green */
-    --bg-secondary:    #ececec;
-    --bg-accent:       #e0f3ec;
-  
-    --hover-primary:   #0e8e72;
-    --hover-secondary: #e2e2e2;
-    --hover-accent:    #c8e9dc;
-  
-    --border-light:    #d1d5db;
-    --border-dark:     #94a3b8;
-  
-    --text-light:      #4b5563;
-    --text-dark:       #1f2937;
-  
-    --shadow-light:    rgba(0, 0, 0, 0.05);
-    --shadow-dark:     rgba(0, 0, 0, 0.15);
-  }
-
 ::-webkit-scrollbar{
     display: none;
 }
@@ -36,6 +13,8 @@
 form{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    background: var(--bg-light);
+    box-shadow: 0 10px 30px 5px var(--shadow-dark);
 }
 .container{
     box-shadow:0 10px 15px 5px var(--shadow-light);
@@ -43,7 +22,7 @@ form{
 label {
     font-weight: bold;
     color: var(--text-dark);
-    margin: 25px 0 0 0;
+    margin: 25px 5px 0 5px;
 }
 
 input[type="text"], input[type="date"] {
@@ -51,10 +30,13 @@ input[type="text"], input[type="date"] {
     font-size: 16px;
     border: 1px solid var(--border-dark);
     border-radius: 5px;
-    min-width: 100%;
-    margin: 10px 0 0 0;
+    max-width: 100%;
+    margin: 0 5px 0 5px;
     box-sizing: border-box;
 }   
+input[type="date"]{
+    max-width: 100%;
+}
 
 input[type="text"]:focus, input[type="date"]:focus {
     border-color: var(--border-dark);
@@ -64,7 +46,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     grid-column: 1 / -1;     /* Make the div span across all columns */
     display: flex;           /* Use flexbox for centering the button */
     justify-content: center; /* Center horizontally                  */
-    margin-top: 1rem;        /* Optional spacing above the button    */
+    margin: 1rem;        /* Optional spacing above the button    */
 }
 .submitBTN input[type="submit"] {
     padding: 10px 20px;
@@ -72,7 +54,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     color: var(--text-dark);
     width: 300px;
     background: linear-gradient(var(--hover-primary),var(--hover-secondary));
-    border: 1px solid var(--hover-accent);
+    border: 1px solid var(--border-dark);
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -91,6 +73,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     margin: 25px auto;
     text-align: center;
     color: var(--text-dark);
+    background: none !important;
 }
 
 .sow-table thead tr, 
@@ -113,18 +96,19 @@ input[type="text"]:focus, input[type="date"]:focus {
 .actions-column{
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px; /* Adjust spacing between buttons and separator */
+    justify-content: space-around;
+    gap: 8px; 
 }
 .action-btn{
     display: flex;
     align-items: center;
     gap: 4px; /* Space between text and icon */
     border: none;
-    background: none;
     cursor: pointer;
     font-size: 16px;
     color: var(--text-dark); /* Adjust color of the button */
+    background: transparent !important;
+    /* padding: 5px; */
 }
 
 .form-btns{
@@ -214,7 +198,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     }
     .dropdown-menu {
         position: absolute;
-        background: var(--bg-primary);
+        background: var(--bg-lighter);
         box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
         border-radius: 5px;
         display: none; /* Initially hidden */
@@ -224,15 +208,15 @@ input[type="text"]:focus, input[type="date"]:focus {
         z-index: 100;
         right: 0; /* Ensures menu stays inside the table cell */
         transform: translateX(-10px); /* Adjust for small spacing */
-        span {
-            display: block;
-            font-size: 10px;
-            margin-bottom: 0px;
-            right: 0;
-            bottom: 0;
-            color: var(--text-dark);
-            }
     }
+    .dropdown-menu span {
+        display: block;
+        font-size: 10px;
+        margin-bottom: 0px;
+        right: 0;
+        bottom: 0;
+        color: var(--text-dark);
+        }
       
       .dropdown-menu button {
         background: none;

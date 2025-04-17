@@ -70,3 +70,52 @@ document.addEventListener("DOMContentLoaded", () => {
         slides.forEach(setSlidePosition);
     });
 });
+
+/* script.js */
+/* script.js */
+document.addEventListener('DOMContentLoaded', () => {
+    const features = document.querySelectorAll('.feature');
+    features.forEach((el, index) => {
+      el.style.animationDelay = `${0.3 * index}s`;
+    });
+  
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+  
+    document.querySelectorAll('.section-scroll').forEach(section => {
+      observer.observe(section);
+    });
+  
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    let isMenuOpen = false;
+  
+    hamburger.addEventListener('click', () => {
+      isMenuOpen = !isMenuOpen;
+      mobileMenu.classList.toggle('show');
+      hamburger.classList.toggle('open');
+    });
+  
+    document.addEventListener('click', (e) => {
+      if (isMenuOpen && !mobileMenu.contains(e.target) && e.target !== hamburger) {
+        mobileMenu.classList.remove('show');
+        hamburger.classList.remove('open');
+        isMenuOpen = false;
+      }
+    });
+  
+    window.addEventListener('scroll', () => {
+      if (isMenuOpen) {
+        mobileMenu.classList.remove('show');
+        hamburger.classList.remove('open');
+        isMenuOpen = false;
+      }
+    });
+  });
+  
+  

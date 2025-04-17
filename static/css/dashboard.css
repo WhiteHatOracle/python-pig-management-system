@@ -23,12 +23,12 @@
   
   .dark-mode {
     --bg-light:        #202123;
-    --bg-lighter:      #2a2b2d;
-    --bg-lightest:     #343541;
+    --bg-lighter:      #171821;
+    --bg-lightest:     #43434c;
   
     --bg-primary:      #10a37f;
     --bg-secondary:    #3f4042;
-    --bg-accent:       #1e342d;
+    --bg-accent:       #286451;
   
     --hover-primary:   #0e8e72;
     --hover-secondary: #4b4c4e;
@@ -43,8 +43,6 @@
     --shadow-light:    rgba(0, 0, 0, 0.2);
     --shadow-dark:     rgba(0, 0, 0, 0.4);
   }
-  
-  
 .alert{
     color: var(--text-dark);
 }
@@ -66,7 +64,6 @@ main .dashboard-iframe{
     bottom: 100px;
     height: 95%;
     color: var(--text-dark) !important;
-    background:red !important;
 }
 
 ::-webkit-scrollbar{
@@ -74,7 +71,6 @@ main .dashboard-iframe{
 }
 
 body, .dash-app, .container {
-    background-color: rgba(0, 0, 0, 0) !important; /* Transparent background */
     background: var(--bg-lighter) !important;
     width: 100%;
     height: 100dvh;
@@ -92,23 +88,25 @@ body, .dash-app, .container {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
+    background-color: var(--bg-lightest) !important;
 }
 
 /* Individual card styling */
 .dash-card {
     text-align: center;
     padding: 1rem;
-    background-color: var(--bg-lightest);
-    color: var(--text-dark);
+    background: var(--bg-lighter) !important;
+    color: var(--text-dark) !important;
     border-radius: 12px;
-    box-shadow: 0 4px 8px var(--shadow-dark);
+    box-shadow: 0 4px 8px var(--shadow-dark) !important;
+    border: var(--border-dark) !important;
     transition: transform 0.3s ease-in-out;
 }
 
 /* Hover effect on cards */
 .dash-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px var(--shadow-dark);
+    box-shadow: 0 8px 16px var(--shadow-dark) !important;
 }
 
 /* Title inside cards (Total Pigs, Total Sows, etc.) */
@@ -163,30 +161,30 @@ H3 {
 
 /* Header and cell styling */
 .dash-table-container th {
-    background-color: var(--bg-primary);
-    color: var(--text-dark);
+    background-color: var(--bg-primary) !important;
+    color: var(--text-dark) !important;
     font-weight: bold;
 }
 
 /* Zebra striping effect for table rows */
 .dash-table-container tbody tr:nth-child(odd) {
-    background-color: var(--border-light);
+    background-color: var(--border-light) !important;
 }
 
 /* Hover effect for table rows */
 .dash-table-container tbody tr:hover {
-    background-color: var(--bg-accent);
+    background-color: var(--bg-accent) !important;
 }
 
 /* Styling for due date column */
 .dash-table-container .due-date {
     font-weight: bold;
-    color: var(--bg-accent);
+    color: var(--bg-accent) !important;
 }
 
 /* Styling for conditional formatting (e.g., odd rows) */
 .dash-table-container .dash-table-row-odd {
-    background-color: var(--bg-primary);
+    background-color: var(--bg-primary) !important;
 }
 
 /* Mobile responsiveness */

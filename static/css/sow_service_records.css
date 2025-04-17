@@ -1,25 +1,3 @@
-:root {
-    --bg-light:        #f7f8f9;
-    --bg-lighter:      #ffffff;
-    --bg-lightest:     #fbfbfc;
-  
-    --bg-primary:      #10a37f;   /* professional green */
-    --bg-secondary:    #ececec;
-    --bg-accent:       #e0f3ec;
-  
-    --hover-primary:   #0e8e72;
-    --hover-secondary: #e2e2e2;
-    --hover-accent:    #c8e9dc;
-  
-    --border-light:    #d1d5db;
-    --border-dark:     #94a3b8;
-  
-    --text-light:      #4b5563;
-    --text-dark:       #1f2937;
-  
-    --shadow-light:    rgba(0, 0, 0, 0.05);
-    --shadow-dark:     rgba(0, 0, 0, 0.15);
-  }
 
 ::-webkit-scrollbar{
     display: none;

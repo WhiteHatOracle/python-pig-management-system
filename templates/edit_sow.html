@@ -4,13 +4,10 @@
 {% block head %}
 <title>Sows</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
-=======
 <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
@@ -37,7 +34,6 @@
         </div>
 
         <!-- <button type="submit" class="submitBTN">Update</button> -->
-<<<<<<< HEAD
     </form>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -47,7 +43,6 @@
             {% endfor %}
         {% endif %}
     {% endwith %}
-=======
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-messages">
@@ -61,6 +56,5 @@
 
 
     
->>>>>>> 0fa0214ccb7a74187a76fd79acbe8c13625e627d
 </main>
 {% endblock %}
