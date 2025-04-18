@@ -37,9 +37,10 @@ input::placeholder{
 }
 
 #searchInput {
-    padding: 8px 40px ;
+    padding: 8px 40px;
     background: var(--bg-lightest); 
     border: var(--bg-accent);
+    border: 1px solid var(--bg-accent);
     border-radius: 20px; 
     font-size: 16px;
     box-sizing: border-box;
@@ -47,20 +48,21 @@ input::placeholder{
 }
 
 #searchInput:focus{
-    color: var(--text-dark);
+    color: var(--bg-primary);
+    border-color: var(--bg-primary);
 }
 
 .search-icon{
     position: relative;
     left: 35px;
-    padding: 5px;
+    margin: 5px;
     fill: var(--text-dark) !important;
 }
 
 .close-icon{
     position: relative;
     right: 35px;
-    padding:5px;
+    margin: 5px;
     cursor: pointer;
     fill: var(--text-dark);
 }
@@ -73,10 +75,9 @@ hr{
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: var(--bg-accent);
+    box-shadow: 10px 2px 10px var(--shadow-dark);
     background-color: var(--bg-lightest);
-    box-shadow: 0 2px 10px var(--shadow-dark);
     border-radius: 15px;
 }
 #invoiceTable thead tr th{
@@ -107,7 +108,7 @@ hr{
 }
 
 .footer tr td{
-    border-top: 1px dashed var(--border-dark);
+    border:none;
 }
 
 .invoice-buttons{
@@ -153,7 +154,6 @@ hr{
     margin: 20px 0;
 }
 
-
 #invoiceTable tr:nth-child(even) {
     background-color: var(--bg-lightest);
 }
@@ -170,7 +170,7 @@ hr{
 tfoot.footer {
     font-size: 16px;
     font-weight: bold;
-    background-color: var(--bg-primary);
+    /* background-color: var(--bg-primary); */
     .footer-row {
         display: flex;
         justify-content: space-between;
@@ -203,7 +203,7 @@ tfoot.footer {
 
 #totalWeight, #averageWeight, #totalRevenue {
     font-weight: normal;
-    color: #333;
+    color: var(--text-dark);
     display: inline-block;
 }
 
@@ -304,7 +304,7 @@ tfoot.footer {
         background: rgba(255, 255, 255, 0.2);
         font-size: 12px;
         color: black;
-        background: var(--bg-primary); 
+        /* background: var(--bg-primary);  */
         font-size: 12px;
         color: var(--text-dark);
         background: var(--bg-lightest);
@@ -316,5 +316,7 @@ tfoot.footer {
     tfoot.footer {
         font-size: 14px;
     }
-    
+    tfoot.footer tr{
+        color:red;
+    }
 }

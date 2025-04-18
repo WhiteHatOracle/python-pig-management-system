@@ -4,22 +4,28 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user
 from datetime import timedelta
 from datetime import timedelta, date
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session
+from dotenv import load_dotenv
 from dash import dcc, html, dash_table
 from fpdf import FPDF
 import datetime
+import os
 import dash
 from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
 from sqlalchemy import func
-from dash.exceptions import PreventUpdate
-# Import models and db
+# from dash.exceptions import PreventUpdate
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
-# Import the forms
 from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
+from authlib.integrations.flask_client import OAuth
+
+#Load enviroment variables 
+load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
+app.secret_key= os.getenv("SECRET_KEY")
+
 # Initialize Dash app
 dash_app = dash.Dash(
     __name__, 
@@ -27,6 +33,20 @@ dash_app = dash.Dash(
     url_base_pathname='/dashboard_internal/',  # This sets the base path for Dash
     external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
 
+#configure OAuth
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    access_token_url='https://oauth2.googleapis.com/token',
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    client_kwargs={'scope': 'openid email profile'}
+)
 
 # Load configuration from environment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -238,6 +258,7 @@ dash_app.layout = dbc.Container([
     ],
     
 )
+
 def update_dashboard(n):
     try:
         total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers = get_total_counts()
@@ -352,6 +373,31 @@ def signup():
             db.session.rollback()
             flash("An error occurred during registration. Please try again.", "Error")
     return render_template('signup.html', form=form)
+
+# Google login route
+@app.route('/google-login')
+def google_login():
+    redirect_uri = url_for('google_auth', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+#google auth callback route
+@app.route('/auth')
+def google_auth():
+    token = google.authorize_access_token()
+    user_info = google.get('userinfo').json()
+    
+    # Optional: Match with your own users
+    user = User.query.filter_by(username=user_info['email']).first()
+    
+    if user is None:
+        # Optional: auto-register the user
+        user = User(username=user_info['email'], password="OAuth")  # Dummy password
+        db.session.add(user)
+        db.session.commit()
+
+    login_user(user)
+    flash("Logged in successfully with Google!", "Success")
+    return redirect(url_for('dashboard'))
 
 @app.route('/complete-feeds-calculator', methods=['GET','POST'])
 @login_required

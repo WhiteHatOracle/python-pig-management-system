@@ -59,7 +59,7 @@ h2{
   border-radius: 5px;
 }
 input::placeholder, textarea::placeholder {
-  color: var(--bg-lightest); /* Replace with your desired color */
+  color: var(--bg-primary); /* Replace with your desired color */
   opacity: 1; /* Optional: make the placeholder fully opaque */
 }
 .alert{
@@ -184,7 +184,7 @@ body{
 
 #sidebar svg{
   flex-shrink: 0;
-  fill: var(--text-dark);
+  fill: var(--bg-primary);
 }
 
 #sidebar a span{
@@ -241,12 +241,14 @@ main p{
     display: none;
   }
   .phone-top-nav-bar{
+    padding: 0;
     display: flex;
     justify-content: flex-end;
     position: fixed;
-    top: -8px;
+    height: 60px;
+    top: 5px;
     width: 100%;
-    border: 1px solid var(--border-dark);
+    border-bottom: 1px solid var(--border-dark);
     list-style: none;
     backdrop-filter: blur(10px);
     color: var(--text-dark);
@@ -254,7 +256,8 @@ main p{
   .phone-top-nav-bar .mobile-span {
     display: block;
     font-size: 10px;
-    margin-bottom: -20px;
+    margin-top: 10px;
+    margin: 0 auto;
     bottom: 0;
     color: var(--text-dark);
   }
@@ -270,7 +273,7 @@ main p{
     color: var(--text-dark);
   }
   .phone-top-nav-bar svg{
-    padding-left: 8px;
+    margin: 0 auto;
     fill: var(--text-dark);
   }
 
@@ -284,7 +287,7 @@ main p{
   }
 
   main {
-    padding: 2em 1em 60px 1em;
+    padding: 3em 1em 60px 1em;
   }
 
   .container {
@@ -301,6 +304,8 @@ main p{
     border-top: 1px solid var(--border-dark);
     border-right: none;
     padding: 0;
+    backdrop-filter: blur(10px);
+    color: var(--text-dark);
   }
 
   #sidebar ul {
@@ -311,15 +316,16 @@ main p{
     justify-content: center;
     overflow-x: scroll;
     padding: 0;
+    margin-top: 5px;
   }
 
   #sidebar ul li {
     height: 100%;
   }
 
-  #sidebar ul li svg{
+  /* #sidebar ul li svg{
     padding-top: 5px;
-  }
+  } */
   
   #sidebar ul a {
     width: 60px;
