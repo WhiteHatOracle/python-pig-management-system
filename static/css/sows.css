@@ -14,10 +14,9 @@ form{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     background: var(--bg-light);
-    box-shadow: 0 10px 30px 5px var(--shadow-dark);
 }
 .container{
-    box-shadow:0 10px 15px 5px var(--shadow-light);
+    box-shadow: 0 10px 30px 5px var(--shadow-dark);
 }
 label {
     font-weight: bold;
@@ -98,7 +97,6 @@ input[type="text"]:focus, input[type="date"]:focus {
     align-items: center;
     justify-content: space-around;
     gap: 1px; 
-    background-color: red;
 }
 .action-btn{
     display: flex;
