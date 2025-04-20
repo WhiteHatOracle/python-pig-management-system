@@ -15,7 +15,7 @@
             {{ form.password(id="password", class="form-control") }}
             {{ form.submit(class="btn btn-primary", type='submit', value='Continue') }}         
         </form>
-        <p>Don't have an account? <a href="{{ url_for('signup')}}">Sign Up</a> </p>
+        <p>Don't have an account? <a href="{{ url_for('signup')}}" class="dont-have-an-account">Sign Up</a> </p>
         
         <div class="separator">
             <hr>
@@ -38,8 +38,13 @@
             </button>
         </div> -->
         <div class="third-party">
-            <a href="{{url_for('google_login')}}">Continue with google</a>
+            <a href="{{url_for('google_login')}}" >
+                <img src="https://www.google.com/favicon.ico" alt="Google"> 
+                <span>Continue With Google</span>
+            </a>
         </div>
+       
+
         <div class="terms">
             <a href="#" class="terms">Terms of Use </a> | 
             <a href="#" class="terms">Privacy Policy</a>

@@ -1,25 +1,26 @@
 :root {
-    --bg-light:        #f7f8f9;
-    --bg-lighter:      #ffffff;
-    --bg-lightest:     #fbfbfc;
-  
-    --bg-primary:      #10a37f;   /* professional green */
-    --bg-secondary:    #ececec;
-    --bg-accent:       #e0f3ec;
-  
-    --hover-primary:   #0e8e72;
-    --hover-secondary: #e2e2e2;
-    --hover-accent:    #c8e9dc;
-  
-    --border-light:    #d1d5db;
-    --border-dark:     #94a3b8;
-  
-    --text-light:      #4b5563;
-    --text-dark:       #1f2937;
-  
-    --shadow-light:    rgba(0, 0, 0, 0.05);
-    --shadow-dark:     rgba(0, 0, 0, 0.15);
-  }
+  --bg-light:        #f7f8f9;
+  --bg-lighter:      #ffffff;
+  --bg-lightest:     #fbfbfc;
+
+  --bg-primary:      #10a37f;   /* professional green */
+  --bg-secondary:    #ececec;
+  --bg-accent:       #e0f3ec;
+
+  --hover-primary:   #0e8e72;
+  --hover-secondary: #e2e2e2;
+  --hover-accent:    #c8e9dc;
+
+  --border-light:    #d1d5db;
+  --border-dark:     #94a3b8;
+
+  --text-light:      #4b5563;
+  --text-dark:       #1f2937;
+
+  --shadow-light:    rgba(0, 0, 0, 0.05);
+  --shadow-dark:     rgba(0, 0, 0, 0.15);
+}
+
   
 ::-webkit-scrollbar{
     display: none;
@@ -39,7 +40,7 @@ body{
     height: 100vh;
     margin: 0;
     background-color: var(--secondary-color);
-    background: url(/static/assets/MotherPig2.png);
+    background: url(/static/assets/Desktop-login.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -60,9 +61,9 @@ body{
     text-align: center;
     width: 600px;
     padding: 30px 10px;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(3px);
     border-radius: 4px;
-    border: 1px solid var(--border-dark);
+    /* border: 1px solid var(--border-dark); */
 }
 
 h1{
@@ -72,6 +73,10 @@ h1{
     width: 300px;
     margin: 20px auto;
     text-align: center;
+
+    line-height: 2.5rem;
+    font-size: 2rem;
+    font-weight: 500;
 }
 
 input[type="email"], .form-control{
@@ -89,8 +94,7 @@ input:focus{
     color: var(--background-color);
     border: 4px solid var(--background-color);
 }
-
-button, .btn{
+.btn{
     width: 300px;
     padding: 10px;
     margin: 10px 0;
@@ -102,46 +106,46 @@ button, .btn{
     cursor: pointer;
 }
 
+.third-party{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.third-party a{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    width: 300px;
+}
+
+.third-party a:hover{
+    background: var(--hover-secondary);
+    border: 1px solid var(--bg-primary);
+}
+
+.third-party span{
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    color: black;
+}
+
+.third-party img{
+    height: 20px;
+    margin-right: 8px;
+}
+
 .signup{
     background: var(--bg-light);
-    color: black;
+    color: var(--text-);
 }
 
 .signup a{
     text-align: none;
-}
-
-button:hover{
-    background-color: var(--hover-color);
-}
-
-.third-party{
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column ;
-    align-items: center;
-}
-
-.third-party button{
-    width: 300px;
-    padding: 10px;
-    background-color: var(--secondary-color);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    cursor: pointer;
-    margin: 5px 0;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    text-align: left;
-    padding-left: 15px;
-}
-
-.third-party button img, 
-.third-party button svg{
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
 }
 
 a{
@@ -153,6 +157,13 @@ p{
     font-size: 12px;
     color: var(--text-color);
 }
+
+.dont-have-an-account{
+    color: var(--bg-primary);
+    font-size: 12px;
+    padding: 10px 8px;
+}
+
 
 .separator{
     width: 300px;  /* Fixed width */

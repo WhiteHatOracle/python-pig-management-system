@@ -1,0 +1,25 @@
+::-webkit-scrollbar{
+    display: none;
+}
+.alert{
+    color: var(--text-dark);
+}
+
+hr{
+    color: var(--bg-accent);
+}
+
+.dark-mode-toggle{
+    border: 1px solid red;
+}
+
+.icon{
+    /* background: blue; */
+    border: 1px solid green;
+    fill: var(--bg-accent);
+    margin-top: 5px;
+}
+
+.theme-txt{
+    background: yellow;
+}

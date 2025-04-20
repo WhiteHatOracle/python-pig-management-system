@@ -95,6 +95,7 @@ body{
   text-wrap: nowrap;
   z-index: 100;
   background: transparent;
+  transition: all 0.5s ease;
 }
 
 #sidebar.close{
@@ -105,12 +106,14 @@ body{
 /* Hide text when collapsed */
 #sidebar.close ul li span {
   opacity: 0;
-  transition: opacity 200ms ease-in-out;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
 }
 
 #sidebar.close .logo span {
   opacity: 0; /* Hide text when collapsed */
-  transition: opacity 200ms ease-in-out;
+  /* transition: opacity 200ms ease-in-out; */
+  transition: opacity 0.3s ease;
 }
 
 /* hide logo when side bar is collapsed */
@@ -153,7 +156,7 @@ body{
   }
 }
 
-#sidebar > ul > li:nth-last-child(2){
+#sidebar > ul > li:nth-last-child(3){
   margin-top: auto;
 }
 
@@ -231,6 +234,14 @@ main p{
   display: none;
 }
 
+.hr-nav-seperator{
+  display: inline-block;
+  width: 100%;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
 /* Media Queries */
 @media (max-width: 800px) {
 
@@ -274,7 +285,8 @@ main p{
   }
   .phone-top-nav-bar svg{
     margin: 0 auto;
-    fill: var(--text-dark);
+    fill: var(--bg-primary);
+
   }
 
   #sidebar .settings,
@@ -323,9 +335,9 @@ main p{
     height: 100%;
   }
 
-  /* #sidebar ul li svg{
-    padding-top: 5px;
-  } */
+  .hr-nav-seperator{
+    display: none;
+  }
   
   #sidebar ul a {
     width: 60px;

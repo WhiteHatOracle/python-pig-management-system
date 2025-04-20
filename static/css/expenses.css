@@ -97,7 +97,7 @@ table.expense-table {
 
 table.expense-table th, table.expense-table td {
     padding: 12px 15px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid #ddd;
     border-bottom: 1px solid var(--border-light);
 }
