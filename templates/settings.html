@@ -5,14 +5,203 @@
 {% block head %}
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css' )}}">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/settings.js')}}" defer></script>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
   <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
 <main>
-    <h2>Settings</h2>
-    <hr>
-      
+  <h2>Settings</h2>
+    <div class="container">
+      <h1>⚙️ Settings</h1>
+  
+      <h2>🔐 Account Settings</h2>
+      <div class="setting-group">
+        <label>Change Password</label>
+        <input type="password" placeholder="New Password">
+  
+        <label>Update Email / Phone</label>
+        <input type="text" placeholder="Email">
+        <input type="text" placeholder="Phone">
+  
+        <label>Profile Picture</label>
+        <input type="file">
+  
+        <label>Two-Factor Authentication</label>
+        <div class="toggle">
+          <input type="checkbox" id="2fa">
+          <label for="2fa">Enable</label>
+        </div>
+  
+        <label>Login Activity & Security Logs</label>
+        <button>View Logs</button>
+      </div>
+  
+      <h2>🌍 Farm Configuration</h2>
+      <div class="setting-group">
+        <label>Farm Info</label>
+        <input type="text" placeholder="Name">
+        <input type="text" placeholder="Location">
+        <input type="text" placeholder="Owner">
+        <input type="text" placeholder="Contact">
+  
+        <label>Herd Size Defaults</label>
+        <input type="number" placeholder="Max number of sows/boars">
+  
+        <label>Breeding Cycle Settings</label>
+        <input type="text" placeholder="Gestation period">
+        <input type="text" placeholder="Weaning time">
+  
+        <label>Pig ID Settings</label>
+        <input type="text" placeholder="ID Prefix">
+        <input type="text" placeholder="ID Suffix">
+  
+        <label>Custom Tags/Labels</label>
+        <textarea placeholder="Comma-separated tags"></textarea>
+      </div>
+  
+      <h2>📊 Data Preferences</h2>
+      <div class="setting-group">
+        <label>Units of Measurement</label>
+        <select>
+          <option>kg / Celsius</option>
+          <option>lb / Fahrenheit</option>
+        </select>
+  
+        <label>Time & Date Format</label>
+        <select>
+          <option>DD/MM/YYYY</option>
+          <option>MM/DD/YYYY</option>
+        </select>
+  
+        <label>Data Export Format</label>
+        <select multiple>
+          <option>CSV</option>
+          <option>PDF</option>
+          <option>Excel</option>
+        </select>
+  
+        <label>Data Backup & Restore</label>
+        <button>Backup Now</button>
+        <button>Restore</button>
+  
+        <label>Auto-Save / Auto-Backup</label>
+        <div class="toggle">
+          <input type="checkbox" id="autosave">
+          <label for="autosave">Enable Auto-Save</label>
+        </div>
+      </div>
+  
+      <h2>🐷 Animal Management</h2>
+      <div class="setting-group">
+        <label>Default Feed Ratios</label>
+        <input type="text" placeholder="e.g. 3kg corn : 1kg soy">
+  
+        <label>Health Record Categories</label>
+        <textarea></textarea>
+  
+        <label>Medication/Injection Templates</label>
+        <textarea></textarea>
+  
+        <label>Breeding Templates</label>
+        <textarea></textarea>
+  
+        <label>Cull/Death Reason Lists</label>
+        <textarea></textarea>
+      </div>
+  
+      <h2>📧 Notifications</h2>
+      <div class="setting-group">
+        <label>Email/SMS Alerts</label>
+        <textarea placeholder="Health, Feed, Breeding Events..."></textarea>
+  
+        <label>Notification Frequency</label>
+        <select>
+          <option>Immediately</option>
+          <option>Daily</option>
+          <option>Weekly</option>
+        </select>
+  
+        <label>Reports</label>
+        <div class="toggle">
+          <input type="checkbox" id="reports">
+          <label for="reports">Enable Daily/Weekly Reports</label>
+        </div>
+      </div>
+  
+      <h2>👥 User Management</h2>
+      <div class="setting-group">
+        <label>Add/Remove Users</label>
+        <button>Add User</button>
+        <button>Remove User</button>
+  
+        <label>Roles & Permissions</label>
+        <textarea></textarea>
+  
+        <label>Audit Logs / Activity Tracking</label>
+        <button>View Audit Logs</button>
+      </div>
+  
+      <h2>🎨 Interface & Theme</h2>
+      <div class="setting-group">
+        <label>Theme</label>
+        <select>
+          <option>Light</option>
+          <option>Dark</option>
+        </select>
+  
+        <label>Language</label>
+        <select>
+          <option>English</option>
+          <option>Spanish</option>
+          <option>French</option>
+        </select>
+  
+        <label>Font Size</label>
+        <select>
+          <option>Small</option>
+          <option>Medium</option>
+          <option>Large</option>
+        </select>
+      </div>
+  
+      <h2>💼 Integration Settings</h2>
+      <div class="setting-group">
+        <label>Accounting Software</label>
+        <input type="text" placeholder="Enter API Key">
+  
+        <label>Cloud Sync</label>
+        <select>
+          <option>Google Drive</option>
+          <option>Dropbox</option>
+        </select>
+  
+        <label>API Access Keys</label>
+        <input type="text" placeholder="Generate / Paste API Key">
+  
+        <label>RFID/Barcode Integration</label>
+        <div class="toggle">
+          <input type="checkbox" id="rfid">
+          <label for="rfid">Enable</label>
+        </div>
+      </div>
+  
+      <h2>🧪 Experimental / Beta Features</h2>
+      <div class="setting-group">
+        <div class="toggle">
+          <input type="checkbox" id="beta">
+          <label for="beta">Enable Early Access</label>
+        </div>
+      </div>
+  
+      <h2>🧹 Maintenance & Tools</h2>
+      <div class="setting-group">
+        <button>Clear Cache</button>
+        <button>Reset to Defaults</button>
+        <button>Download Logs</button>
+        <button>System Health Check</button>
+      </div>
+    </div>
 </main>
 {% endblock %}

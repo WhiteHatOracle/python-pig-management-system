@@ -4,22 +4,43 @@
 .alert{
     color: var(--text-dark);
 }
-
-hr{
-    color: var(--bg-accent);
-}
-
-.dark-mode-toggle{
-    border: 1px solid red;
-}
-
-.icon{
-    /* background: blue; */
-    border: 1px solid green;
-    fill: var(--bg-accent);
-    margin-top: 5px;
-}
-
-.theme-txt{
-    background: yellow;
-}
+      
+      .container {
+        max-width: 1000px;
+        margin: 20px auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 5px;
+        margin-top: 30px;
+      }
+      .setting-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin: 10px 0 5px;
+      }
+      input, select, textarea, button {
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      .toggle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .flex {
+        display: flex;
+        gap: 10px;
+      }
+      .half {
+        flex: 1;
+      }

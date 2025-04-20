@@ -14,7 +14,6 @@ import dash
 from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
 from sqlalchemy import func
-# from dash.exceptions import PreventUpdate
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 from authlib.integrations.flask_client import OAuth
@@ -339,9 +338,10 @@ def login():
 def signin():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        username = form.username.data.strip()
+        user = User.query.filter_by(username=username).first()
         if user:
-            if bcrypt.check_password_hash(user.password, form.password.data):
+            if bcrypt.check_password_hash(user.password,form.password.data):
                 login_user(user, remember=form.remember.data) # Log in the user
                 return redirect(url_for('dashboard'))
             else:
@@ -466,7 +466,7 @@ def invoice_Generator():
     form = InvoiceGeneratorForm()
     if form.validate_on_submit():
         company_name = form.company.data
-        weights = [float(w.strip()) for w in form.weights.data.split(',')]
+        weights = [float(w.strip()) for w in form.weights.data.split(',')if w.strip() != '']
 
         # Parse weight ranges and prices
         first_min, first_max = parse_range(form.firstBandRange.data)
@@ -874,7 +874,7 @@ def litter_records(service_id):
         totalBorn = form.totalBorn.data
         bornAlive = form.bornAlive.data
         stillBorn = form.stillBorn.data
-        weights = [float(w.strip()) for w in form.weights.data.split(',')]          
+        weights = [float(w.strip()) for w in form.weights.data.split(',')if w.strip() != '']
         if len(weights) != bornAlive:
             flash('Number of weights must match the number of piglets born!', 'error')
             return redirect(url_for('litter_records', service_id=service_id))
