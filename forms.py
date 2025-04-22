@@ -1,5 +1,5 @@
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError, DataRequired
+from wtforms.validators import InputRequired, Length, ValidationError, InputRequired
 from flask_wtf import FlaskForm
 from models import Sows, Boars, User  # Importing the models for validation
 
@@ -12,7 +12,7 @@ class SowForm(FlaskForm):
         
     def validate_sowID(self, sowID):
         existing_sow = Sows.query.filter_by(sowID=sowID.data).first()
-        if existing_sow and existing_sow.id != self.sow_id:
+        if existing_sow and existing_sow.id != self.sowID.data:
             raise ValidationError('The sow already exists. Please choose a different sow ID')
 
 #Define sow service record Form
@@ -29,8 +29,9 @@ class BoarForm(FlaskForm):
 
     def validate_BoarId(self, BoarId):
         existing_boar = Boars.query.filter_by(BoarId=BoarId.data).first()
-        if existing_boar and existing_boar.id != self.boar_id:
+        if existing_boar and existing_boar.id != self.BoarId.data:
             raise ValidationError('The Boar already exists. Please Choose a different ID')
+
 
 # Define Registration Form
 class RegisterForm(FlaskForm):
@@ -78,13 +79,13 @@ class InvoiceGeneratorForm(FlaskForm):
     secondBandPrice = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "60.0 or 60"})
     thirdBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"Placeholder": "e.g., 65-109.9"})
     thirdBandPrice = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "60.0 or 60"})
-    weights = TextAreaField(validators=[DataRequired()], render_kw={"Placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
+    weights = TextAreaField(validators=[InputRequired()], render_kw={"Placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
     submit = SubmitField("Generate Invoice")
 
 class ExpenseForm(FlaskForm):
     date = DateField( validators=[InputRequired()])
     amount = FloatField(validators=[InputRequired()])
-    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment'),('transport', 'Transport'),('utilities','Utilities')], validators=[DataRequired()])
+    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment'),('transport', 'Transport'),('utilities','Utilities')], validators=[InputRequired()])
     vendor = StringField(validators=[InputRequired()])
     description = StringField()
     submit = SubmitField("Add Expense")
@@ -95,5 +96,5 @@ class LitterForm(FlaskForm):
     totalBorn = IntegerField(validators=[InputRequired()])
     bornAlive = IntegerField(validators=[InputRequired()])
     stillBorn = IntegerField(validators=[InputRequired()])
-    weights = TextAreaField(validators=[DataRequired()], render_kw={"Placeholder": "e.g: 2.1, 3, 1.2, 2, ..."})
+    weights = TextAreaField(validators=[InputRequired()], render_kw={"Placeholder": "e.g: 2.1, 3, 1.2, 2, ..."})
     submit = SubmitField("Add Litter")

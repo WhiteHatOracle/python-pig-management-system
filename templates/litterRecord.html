@@ -13,28 +13,32 @@ Litter Records for {{ sow.sowID }}
 {% block content %}
 <main>
     <h2>Litter Records</h2>
-    <form class="container" method="POST" action="">
-        {{form.hidden_tag()}}
+    {% if existing_litter %}
+    <div class="alert alert-warning">This service record already has a litter. You cannot add another.</div>
+    {% else %}
+        <form class="container" method="POST" action="">
+            {{form.hidden_tag()}}
 
-        <label for="farrowDate">Farrow Date</label>
-        {{ form.farrowDate(autocomplete="off") }}
+            <label for="farrowDate">Farrow Date</label>
+            {{ form.farrowDate(autocomplete="off") }}
 
-        <label for="totalBorn">Total Born</label>
-        {{ form.totalBorn(autocomplete="off") }}
+            <label for="totalBorn">Total Born</label>
+            {{ form.totalBorn(autocomplete="off") }}
 
-        <label for="bornAlive">Born Alive</label>
-        {{ form.bornAlive(autocomplete="off") }}
+            <label for="bornAlive">Born Alive</label>
+            {{ form.bornAlive(autocomplete="off") }}
 
-        <label for="stillBorn">Still Born</label>
-        {{ form.stillBorn(autocomplete="off") }}
+            <label for="stillBorn">Still Born</label>
+            {{ form.stillBorn(autocomplete="off") }}
 
-        <label for="weights">Weights </label>
-        {{ form.weights(autocomplete="off") }}
+            <label for="weights">Weights </label>
+            {{ form.weights(autocomplete="off") }}
 
-        <div class="submitBTN">
-            {{form.submit}}
-        </div>
-    </form>
+            <div class="submitBTN">
+                {{form.submit}}
+            </div>
+        </form>
+    {% endif %}
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
@@ -47,11 +51,15 @@ Litter Records for {{ sow.sowID }}
 
     <div class="text-n-button">
         <h2>Service Records</h2>
+                
+        <a href="{{ url_for('sow_service_records', sow_id=sow_id) }}" class="back-btn button">
+            <button>
+                <span>back</span>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
+                <!-- your SVG icon -->
+            </button>
+        </a>
         
-        <button onclick="goBackToServiceRecords()">
-            <span>back</span>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
-        </button>
     </div>
     <div class="legend-container">
         <!-- <strong>Stage Color Legend:</strong> -->
@@ -76,7 +84,7 @@ Litter Records for {{ sow.sowID }}
             <th>Weaning</th>
         </tr>
     </thead>
-    {% if serviceRecord.Litter_records %}
+    {% if litters %}
     <tbody>
         {% for litter in litters %}
         <tr

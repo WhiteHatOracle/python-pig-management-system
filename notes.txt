@@ -18,3 +18,7 @@ with app.app_context():
      db.session.execute(text("DROP TABLE IF EXISTS boars"))
      db.session.commit()
 
+from app import db, app
+
+with app.app_context():
+    db.engine.execute("DROP TABLE IF EXISTS alembic_version")

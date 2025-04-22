@@ -1,19 +1,21 @@
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, login_user, login_required, logout_user
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from datetime import timedelta
 from datetime import timedelta, date
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
 from dotenv import load_dotenv
 from dash import dcc, html, dash_table
 from fpdf import FPDF
 import datetime
 import os
+import logging
 import dash
 from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
-from sqlalchemy import func
+from sqlalchemy import func, event
+from sqlalchemy.engine import Engine
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 from authlib.integrations.flask_client import OAuth
@@ -21,9 +23,17 @@ from authlib.integrations.flask_client import OAuth
 #Load enviroment variables 
 load_dotenv()
 
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
+
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key= os.getenv("SECRET_KEY")
+
+
 
 # Initialize Dash app
 dash_app = dash.Dash(
@@ -39,12 +49,13 @@ google = oauth.register(
     client_id=os.getenv("GOOGLE_CLIENT_ID"),
     client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
     access_token_url='https://oauth2.googleapis.com/token',
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     access_token_params=None,
     authorize_url='https://accounts.google.com/o/oauth2/auth',
     authorize_params=None,
     api_base_url='https://www.googleapis.com/oauth2/v1/',
-    client_kwargs={'scope': 'openid email profile'}
+    userinfo_endpoint='https://openidconnect.googleapis.com/userinfo',
+    client_kwargs={'scope': 'openid email profile'},
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration'
 )
 
 # Load configuration from environment variables
@@ -68,20 +79,23 @@ login_manager.login_view = "signin"  # Redirect here if unauthorized access is a
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Your routes and application logic go here...
+
 
 # Utility function to parse weight ranges/ this is for the invoice generator
 def parse_range(range_str):
     try:
-        min_weight, max_weight = map(float, range_str.split('-'))
+        parts = range_str.strip().replace(' ', '').split('-')
+        if len(parts) != 2:
+            return None, None
+        min_weight, max_weight = map(float, parts)
         return min_weight, max_weight
-    except ValueError:
+    except (ValueError, AttributeError):
         return None, None
 
 # Funnction to fetch data
 def get_pig_counts():
-    num_sows = Sows.query.count()
-    boars = Boars.query.count()
+    num_sows = Sows.query.filter_by(user_id=current_user.id).count()
+    boars = Boars.query.filter_by(user_id=current_user.id).count()
     pokers = 98
     total_pigs = num_sows + boars + pokers   
     return total_pigs, num_sows, boars, pokers
@@ -95,11 +109,17 @@ def get_sow_service_records():
     ).group_by(ServiceRecords.sow_id).subquery()
 
     # Query service_records and join with sows to get the actual sowID
-    query = db.session.query(ServiceRecords, Sows.sowID).join(
+    query = db.session.query(
+        ServiceRecords, 
+        Sows.sowID
+    ).join(
         subquery,
         (ServiceRecords.sow_id == subquery.c.sow_id) & 
         (ServiceRecords.service_date == subquery.c.latest_service)
-    ).join(Sows, ServiceRecords.sow_id == Sows.id)  # Correct table join
+    ).join(
+        Sows, 
+        ServiceRecords.sow_id == Sows.id
+    )  # Correct table join
 
     # Optionally filter records based on due_date
     query = query.filter(ServiceRecords.due_date >= datetime.date.today()).order_by(ServiceRecords.due_date)
@@ -108,11 +128,11 @@ def get_sow_service_records():
     # Convert query results into a list of dictionaries for Dash DataTable
     data = [
         {
-            "sow_id": record[1],  # Sow's actual sowID from the sows table
-            "service_date": record[0].service_date.strftime("%d-%b-%Y"),
-            "litter_guard1_date": record[0].litter_guard1_date.strftime("%d-%b-%Y") if record[0].litter_guard1_date else "",
-            "litter_guard2_date": record[0].litter_guard2_date.strftime("%d-%b-%Y") if record[0].litter_guard2_date else "",
-            "due_date": record[0].due_date.strftime("%d-%b-%Y") if record[0].due_date else "",
+            "sow_id":               record[1],  # Sow's actual sowID from the sows table
+            "service_date":         record[0].service_date.strftime("%d-%b-%Y") if record[0].service_date else "", 
+            "litter_guard1_date":   record[0].litter_guard1_date.strftime("%d-%b-%Y") if record[0].litter_guard1_date else "",
+            "litter_guard2_date":   record[0].litter_guard2_date.strftime("%d-%b-%Y") if record[0].litter_guard2_date else "",
+            "due_date":             record[0].due_date.strftime("%d-%b-%Y") if record[0].due_date else "",
         }
         for record in records
     ]    
@@ -276,46 +296,59 @@ def update_dashboard(n):
     
     except Exception as e:
         print("Error updating dashboard:", e)
-        return "Error", "Error", "Error", "Error", []
+        return "Error", "Error", "Error", "Error", "Error", "Error", "Error", "Error", []
+
+import logging
+from datetime import date, timedelta
+from flask_login import current_user
+from sqlalchemy import func
+
+# Configure logging to show in console
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def get_total_counts():
     today=date.today()
 
     try:
-        # Fetch counts from database
-        total_sows = db.session.query(Sows.id).count()  # Count total sows from Sows table
-        total_boars = db.session.query(Boars.id).count()  # Count total boars from Boars table
-        total_porkers = db.session.query(func.sum(Litter.bornAlive)).scalar() or 0 # Placeholder (Replace if you have a Porkers table)
-                # Pre-weaners (0–20 days)
+        # Count total sows and boars
+        total_sows = db.session.query(Sows.id).filter_by(user_id=current_user.id).count()
+        total_boars = db.session.query(Boars.id).filter_by(user_id=current_user.id).count()
+
+        # Calculate pigs by age group with user filtering
         pre_weaners = db.session.query(func.sum(Litter.bornAlive)) \
+            .join(Sows, Sows.id == Litter.sow_id) \
+            .filter(Sows.user_id == current_user.id) \
             .filter(Litter.farrowDate >= today - timedelta(days=20)) \
             .scalar() or 0
 
-        # Weaners (21–91 days)
         weaners = db.session.query(func.sum(Litter.bornAlive)) \
+            .join(Sows, Sows.id == Litter.sow_id) \
+            .filter(Sows.user_id == current_user.id) \
             .filter(Litter.farrowDate >= today - timedelta(days=91)) \
             .filter(Litter.farrowDate < today - timedelta(days=20)) \
             .scalar() or 0
 
-        # Growers (92–112 days)
         growers = db.session.query(func.sum(Litter.bornAlive)) \
+            .join(Sows, Sows.id == Litter.sow_id) \
+            .filter(Sows.user_id == current_user.id) \
             .filter(Litter.farrowDate >= today - timedelta(days=112)) \
             .filter(Litter.farrowDate < today - timedelta(days=91)) \
             .scalar() or 0
 
-        # Finishers (113+ days)
         finishers = db.session.query(func.sum(Litter.bornAlive)) \
+            .join(Sows, Sows.id == Litter.sow_id) \
+            .filter(Sows.user_id == current_user.id) \
             .filter(Litter.farrowDate < today - timedelta(days=112)) \
             .scalar() or 0
 
-        # Compute total pigs after defining all variables
-        total_porkers = pre_weaners + weaners + finishers + growers
+        # Sum all piglets from age groups
+        total_porkers = pre_weaners + weaners + growers + finishers
         total_pigs = total_sows + total_boars + total_porkers
-        return total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers,
-
+    
+        return total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers
     except Exception as e:
-        print("Error in get_total_counts:", e)
-        return 0, 0, 0, 0  # Return zeroes if there is an error
+        logging.error(f"Error in get_total_counts: {e}")
+        return 0, 0, 0, 0, 0, 0, 0, 0  # Return zeroes if there is an error
 
 
 # Flask Route for Dash App (to embed in iframe)
@@ -341,13 +374,18 @@ def signin():
         username = form.username.data.strip()
         user = User.query.filter_by(username=username).first()
         if user:
-            if bcrypt.check_password_hash(user.password,form.password.data):
-                login_user(user, remember=form.remember.data) # Log in the user
-                return redirect(url_for('dashboard'))
+            if user.password is not None:
+                # Check password for local users
+                if bcrypt.check_password_hash(user.password, form.password.data):
+                    login_user(user, remember=form.remember.data)
+                    return redirect(url_for('dashboard'))
+                else:
+                    flash("Invalid Password, Please try again.", "Error")
             else:
-                flash("Invalid Password, Please try again.", "Error") # Invalid password feedback
+                # Handle Google users
+                flash("This account is set up for Google login. Please use Google to log in.", "Error")
         else:
-            flash("User does not exist. Please register.","Error") # User not found feedback
+            flash("User does not exist. Please register.","Error")
     return render_template('signin.html', form=form)
 
 # Logout route
@@ -386,15 +424,22 @@ def google_auth():
     token = google.authorize_access_token()
     user_info = google.get('userinfo').json()
     
-    # Optional: Match with your own users
+    # Check if user already exists by email (username)
     user = User.query.filter_by(username=user_info['email']).first()
     
     if user is None:
-        # Optional: auto-register the user
-        user = User(username=user_info['email'], password="OAuth")  # Dummy password
+        # Create a new user with Google info
+        user = User(
+            username=user_info['email'],
+            google_id=user_info['id'],
+            name=user_info.get('name'),
+            profile_pic=user_info.get('picture'),
+            password=None  # No password for Google users
+        )
         db.session.add(user)
         db.session.commit()
-
+    
+    # Log in the user
     login_user(user)
     flash("Logged in successfully with Google!", "Success")
     return redirect(url_for('dashboard'))
@@ -405,7 +450,13 @@ def complete_feeds():
     #Get input from the front end
     form = CompleteFeedForm()
     result = None #initialize result
+
     if form.validate_on_submit():
+        # Validate inputs for non-negative values
+        if form.numberOfPigs.data <= 0 or form.consumption.data <= 0 or form.costOfFeed.data <= 0 or form.numberOfDays.data <= 0:
+            flash("Please enter positive values for all fields.", "error")
+            return redirect(url_for('complete_feeds'))
+        
         #perfom calculations
         dailyConsumption = form.numberOfPigs.data * float(form.consumption.data)
         total_feed = dailyConsumption * form.numberOfDays.data
@@ -416,14 +467,12 @@ def complete_feeds():
             "totalFeed": total_feed,
             "numOfBags": num_of_bags,
             "totalCost": total_cost,
-            "totalFeed": total_feed,
             "numOfDays": form.numberOfDays.data,
             "numOfPigs": form.numberOfPigs.data,
             "feed": form.feedName.data
         }
 
     return render_template('complete-feeds.html', form=form, result=result)
-
 
 # Feed management route
 @app.route('/calculate', methods=['GET','POST'])
@@ -433,6 +482,11 @@ def calculate():
     form = FeedCalculatorForm()
     result = None #initialize result
     if form.validate_on_submit():
+        # validate inputs are non negative numbers
+        if form.days.data <= 0 or form.pigs.data <= 0 or form.feed_consumption.data <= 0 or form.feed_cost.data <= 0 or form.num3_meal_cost.data <= 0:
+            flash("Please enter positive values for all fields.", "error")
+            return redirect(url_for('calculate'))
+
         # Perform calculations
         total_feed = form.days.data * form.pigs.data * float(form.feed_consumption.data)
 
@@ -467,6 +521,11 @@ def invoice_Generator():
     if form.validate_on_submit():
         company_name = form.company.data
         weights = [float(w.strip()) for w in form.weights.data.split(',')if w.strip() != '']
+
+        #Ensure there are weights provided
+        if not weights:
+            flash("Please enter valid weights.", "Error")
+            return redirect(url_for('invoice_Generator'))
 
         # Parse weight ranges and prices
         first_min, first_max = parse_range(form.firstBandRange.data)
@@ -505,7 +564,7 @@ def invoice_Generator():
                     "formatted_price": f"K{price:,.2f}",  # Format price as currency
                     "cost": cost,  # Keep raw cost
                     "formatted_cost": f"K{cost:,.2f}",  # Format cost as currency
-                    "Number_of_Pigs": f"K{total_pigs}",
+                    "Number_of_Pigs": f"{total_pigs}",
                 })
         return render_template('invoiceGenerator.html', 
                                form=form, 
@@ -539,7 +598,8 @@ def download_invoice():
         date=datetime.datetime.now().date(),
         total_weight=total_weight,
         average_weight=average_weight,
-        total_price=total_cost
+        total_price=total_cost,
+        user_id=current_user.id
     )
     db.session.add(new_invoice)
     db.session.commit()
@@ -630,35 +690,45 @@ def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weigh
 @app.route('/invoices', methods=['GET','POST'])
 @login_required
 def invoices():
-    invoices = Invoice.query.order_by(Invoice.date.desc()).all()  # Get all invoices, newest first
+    # Pagination setup
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Number of invoices per page
+    invoices = Invoice.query.filter_by(user_id=current_user.id).order_by(Invoice.date.desc()).paginate(page, per_page, False)  # Get all invoices, newest first
     
-    return render_template('invoices.html', invoices=invoices)
+    invoices_list = invoices.items
+
+    return render_template('invoices.html', invoices=invoices_list, pagination=invoices)
 
 @app.route('/invoice_totals', methods=['GET'])
 @login_required
 def invoice_totals():
-    total_weight = db.session.query(db.func.sum(Invoice.total_weight)).scalar() or 0
-    total_revenue = db.session.query(db.func.sum(Invoice.total_price)).scalar() or 0
-    avg_weight = db.session.query(db.func.avg(Invoice.average_weight)).scalar() or 0
-    total_pigs = db.session.query(db.func.sum(Invoice.num_of_pigs)).scalar() or 0
+    total_weight    = db.session.query(db.func.sum(Invoice.total_weight)).scalar() or 0
+    total_revenue   = db.session.query(db.func.sum(Invoice.total_price)).scalar() or 0
+    avg_weight      = db.session.query(db.func.avg(Invoice.average_weight)).scalar() or 0
+    total_pigs      = db.session.query(db.func.sum(Invoice.num_of_pigs)).scalar() or 0
 
     return jsonify({
         'total_weight': f"{total_weight:,.2f}Kg",
         'total_revenue': f"K{total_revenue:,.2f}",
         'average_weight': f"{avg_weight:,.2f}Kg",
-        'average_weight': f"{avg_weight:,.2f}Kg",
-        'total_pigs': f"{total_pigs:,.2f}"
+        'total_pigs': f"{total_pigs:,.0f}"
     })
 
 # Delete Invoice Route
 @app.route('/delete-invoice/<int:invoice_id>', methods=['POST'])
 @login_required
 def delete_invoice(invoice_id):
-    invoice = Invoice.query.get_or_404(invoice_id)
-    db.session.delete(invoice)
-    db.session.commit()
-    flash('Invoice deleted successfully', 'success')
-    return redirect(url_for('invoices'))
+    invoice = Invoice.query.filter_by(id=invoice_id, user_id=current_user.id).first_or_404()
+    
+    try:
+        db.session.delete(invoice)
+        db.session.commit()
+        flash('Invoice deleted successfully', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting invoice: {str(e)}', 'error')
+
+    return redirect(url_for('invoices'))    
 
 @app.route('/boar-manager', methods=['GET','POST'])
 @login_required
@@ -671,13 +741,18 @@ def boars():
         boar_dob = form.DOB.data
 
         # check if boar already exists
-        if Boars.query.filter_by(BoarId = boar_id).first():
+        if Boars.query.filter_by(BoarId = boar_id, user_id=current_user.id).first():
             flash('Boar ID already exists! Please use a different ID.', 'error')
         
         else:
             #add boar to the database
             try:
-                new_boar = Boars(BoarId = boar_id, DOB = boar_dob, Breed=breed)
+                new_boar = Boars(
+                    BoarId = boar_id,
+                    DOB = boar_dob,
+                    Breed=breed,
+                    user_id=current_user.id
+                    )
                 db.session.add(new_boar)
                 db.session.commit()
                 flash('Boar added successfully!', 'success')
@@ -689,13 +764,13 @@ def boars():
                 db.session.rollback()
                 flash(f'An error occurred: {str(e)}', 'error')
 
-    boars = Boars.query.all()
+    boars = Boars.query.filter_by(user_id=current_user.id).all()  # Only show the boars owned by the current user
     return render_template('boars.html', boars=boars, form=form)  
   
 @app.route('/delete-boar/<string:BoarId>', methods=['POST'])
 @login_required
 def delete_boar(BoarId):
-    boar = Boars.query.filter_by(BoarId = BoarId.upper()).first()
+    boar = Boars.query.filter_by(BoarId = BoarId.upper(), user_id=current_user.id).first_or_404()
     if not boar:
         flash('Boar not found!', 'error')
         return redirect(url_for('boars'))
@@ -714,7 +789,7 @@ def delete_boar(BoarId):
 @login_required
 def edit_boar(boar_id):
 
-    boar = Boars.query.get_or_404(boar_id)
+    boar = Boars.query.filter_by(id = boar_id, user_id=current_user.id).first_or_404()
     form = BoarForm(obj=boar)  # Pre-fill form with existing data
     form.boar_id = boar.id #prevents false validation errors
 
@@ -750,7 +825,11 @@ def sows():
 
         try:
             # Add sow to the database
-            new_sow = Sows(sowID=sow_id, DOB=dob_str, Breed=breed)
+            new_sow = Sows(
+                sowID=sow_id,
+                DOB=dob_str,
+                Breed=breed,
+                user_id=current_user.id)
             db.session.add(new_sow)
             db.session.commit()
             flash('Sow added successfully!', 'success')
@@ -762,14 +841,14 @@ def sows():
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
 
-    sows = Sows.query.all()
+    sows = Sows.query.filter_by(user_id=current_user.id).all()
     return render_template('sows.html', sows=sows, form=form)
 
 @app.route('/edit-sow/<int:sow_id>', methods=['GET', 'POST'])
 @login_required
 def edit_sow(sow_id):
 
-    sow = Sows.query.get_or_404(sow_id)
+    sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
     form = SowForm(obj=sow)  # Pre-fill form with existing data
     form.sow_id = sow.id #prevents false validation errors
 
@@ -796,7 +875,7 @@ def edit_sow(sow_id):
 @app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])
 @login_required
 def delete_sow(sow_id):
-    sow = Sows.query.filter_by(sowID=sow_id).first()
+    sow = Sows.query.filter_by(sowID=sow_id.upper(), user_id=current_user.id).first_or_404()
     if not sow:
         flash('Sow not found!', 'error')
         return redirect(url_for('sows'))
@@ -810,6 +889,7 @@ def delete_sow(sow_id):
 @login_required
 def sow_service_records(sow_id):
     sow = Sows.query.get_or_404(sow_id)
+    sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
     form = ServiceRecordForm()
 
     if form.validate_on_submit():  # Checks if the form was submitted and is valid
@@ -855,45 +935,59 @@ def get_litter_stage(farrow_date):
     else:
         return 'finisher'
 
-@app.route('/litter-records/<int:service_id>', methods=['POST','GET'])
+@app.route('/litter-records/<int:service_id>', methods=['GET', 'POST'])
 @login_required
 def litter_records(service_id):
     form = LitterForm()
+
     serviceRecord = ServiceRecords.query.get_or_404(service_id)
+
+    if serviceRecord.sow.user_id != current_user.id:
+        abort(403)
+
     sow_id = serviceRecord.sow_id
+    existing_litter = serviceRecord.litter
 
-        # Fetch all litters for this service record
-    litters = Litter.query.filter_by(service_record_id=service_id).all()
-
-    # Attach dynamic stage info to each litter (not saved to DB)
+    # Add stage if there's a litter
+    litters = [existing_litter] if existing_litter else []
     for litter in litters:
-        litter.stage = get_litter_stage(litter.farrowDate)
+        if litter:
+            litter.stage = get_litter_stage(litter.farrowDate)
 
     if form.validate_on_submit():
+        if existing_litter:
+            flash("This service record already has an associated litter. You can't add another.", "error")
+            return redirect(url_for('litter_records', service_id=service_id))
+
         farrowDate = form.farrowDate.data
         totalBorn = form.totalBorn.data
         bornAlive = form.bornAlive.data
         stillBorn = form.stillBorn.data
-        weights = [float(w.strip()) for w in form.weights.data.split(',')if w.strip() != '']
-        if len(weights) != bornAlive:
-            flash('Number of weights must match the number of piglets born!', 'error')
-            return redirect(url_for('litter_records', service_id=service_id))
-    
-        totalWeight = sum(weights)
-        averageWeight = round (totalWeight / len(weights),1) if weights else 0
 
-        # calculate other dates
+        try:
+            weights = [float(w.strip()) for w in form.weights.data.split(',') if w.strip()]
+        except ValueError:
+            flash('Please enter valid numeric weight values separated by commas.', 'error')
+            return redirect(url_for('litter_records', service_id=service_id))
+
+        if not weights or len(weights) != bornAlive:
+            flash('Number of weights must match the number of piglets born alive!', 'error')
+            return redirect(url_for('litter_records', service_id=service_id))
+
+        averageWeight = round(sum(weights) / len(weights), 1)
+
+        # Date calculations
         iron_injection_date = farrowDate + timedelta(days=3)
         tail_dorking_date = farrowDate + timedelta(days=3)
         castration_date = farrowDate + timedelta(days=3)
         teeth_clipping_date = farrowDate + timedelta(days=3)
         wean_date = farrowDate + timedelta(days=21)
-    
+
         new_litter = Litter(
             service_record_id=serviceRecord.id,
             farrowDate=farrowDate,
             totalBorn=totalBorn,
-            bornAlive=bornAlive,   
+            bornAlive=bornAlive,
             stillBorn=stillBorn,
             averageWeight=averageWeight,
             iron_injection_date=iron_injection_date,
@@ -901,20 +995,37 @@ def litter_records(service_id):
             castration_date=castration_date,
             wean_date=wean_date,
             teeth_clipping_date=teeth_clipping_date,
+            sow_id=sow_id
         )
-        
-        # try:
-        db.session.add(new_litter)
-        db.session.commit()
-        flash('Litter Recorded successfully!', 'success')
-        return redirect(url_for('litter_records', service_id=serviceRecord.id))
 
-    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord, litters=litters, sow_id=sow_id)
+        try:
+            db.session.add(new_litter)
+            db.session.commit()
+            flash('Litter recorded successfully!', 'success')
+            return redirect(url_for('litter_records', service_id=service_id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred while saving the litter: {str(e)}', 'error')
+
+    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord, litters=litters, sow_id=sow_id, existing_litter=existing_litter)
+
 
 @app.route('/delete-litter/<int:litter_id>', methods=['POST'])
 @login_required
 def delete_litter(litter_id):
     litter = Litter.query.get_or_404(litter_id)
+     # Fetch the litter and join with the service record to check ownership
+    # litter = (
+    #     db.session.query(Litter)
+    #     .join(ServiceRecords, Litter.service_record_id == ServiceRecords.id)
+    #     .filter(Litter.id == litter_id, ServiceRecords.user_id == current_user.id)
+    #     .first()
+    # )
+
+    # if not litter:
+    #     abort(403) # Unauthorized access
+
+    service_id = litter.service_record_id
 
     # Optional: Add a confirmation check here if needed
     db.session.delete(litter)
@@ -922,15 +1033,23 @@ def delete_litter(litter_id):
     flash('Litter record deleted successfully!', 'success')
     
     # Redirect back to the litter records page or wherever you want
-    return redirect(url_for('litter_records', service_id=litter.service_record_id))
+    return redirect(url_for('litter_records', service_id=service_id))
 
 
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
 @login_required
 def delete_service_record(record_id):
     # Query the record by ID
-    record = ServiceRecords.query.get_or_404(record_id)
-    
+    record = (
+        db.session.query(ServiceRecords)
+        .join(Sows, ServiceRecords.sow_id == Sows.id)
+        .filter(ServiceRecords.id == record_id, Sows.user_id == current_user.id)
+        .first_or_404()
+    )
+
+    if not record:
+        abort(403) # Unauthorized access
+
     try:
         # Delete the record
         db.session.delete(record)
@@ -954,14 +1073,15 @@ def expenses():
             amount=form.amount.data,
             category=form.category.data,
             vendor=form.vendor.data,
-            description=form.description.data
+            description=form.description.data,
+            user_id = current_user.id
         )
         db.session.add(expense)
         db.session.commit()
         flash('Expense logged successfully!', 'success')
         return redirect(url_for('expenses'))
 
-    expenses = Expense.query.all()
+    expenses = Expense.query.filter_by(user_id=current_user.id).all()
     return render_template('expenses.html', form=form, expenses=expenses)
 
 @app.route('/expense_totals', methods=['GET'])
@@ -974,7 +1094,7 @@ def expense_totals():
 @login_required
 def delete_expense(expense_id):
     #Query the expense id
-    expense = Expense.query.get_or_404(expense_id)
+    expense = Expense.query.filter_by(id=expense_id, user_id=current_user.id).first_or_404()
 
     try:
         #Delete the record

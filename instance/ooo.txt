@@ -1,1 +1,0 @@
-SELECT SUM(total_weight) total_weight,SUM(average_weight),SUM(tota_price) FROM invoice
