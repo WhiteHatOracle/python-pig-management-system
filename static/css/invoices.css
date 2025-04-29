@@ -222,7 +222,23 @@ tfoot.footer {
         }
     }
 
-    .view-invoices:hover{
+    
+    .generate-invoice{
+        font-size: 16px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid var(--border-dark);
+        cursor: pointer;
+        transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+        background-color: #e0e0e0;
+        border-radius: 40px;
+        a{
+            color: black;
+        }
+    }
+
+    .view-invoices:active, .generate-invoice:active{
         transform: scale(0.95);
     }
 
@@ -237,21 +253,6 @@ tfoot.footer {
         background-color: #e0e0e0;
         border-radius: 40px;
         color: black;
-    }
-
-    .generate-invoice{
-        font-size: 16px;
-        padding: 10px 20px;
-        font-size: 16px;
-        border: 1px solid var(--border-dark);
-        cursor: pointer;
-        transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-        background-color: #e0e0e0;
-        border-radius: 40px;
-        a{
-            color: black;
-        }
     }
     
     .search-container{

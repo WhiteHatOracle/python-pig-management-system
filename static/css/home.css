@@ -283,7 +283,10 @@ main p{
   user-select: none;
 }
 
-
+button:focus{
+  outline: none;
+  box-shadow: none;
+}
 /* Media Queries */
 @media (max-width: 800px) {
 

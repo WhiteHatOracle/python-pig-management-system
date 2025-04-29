@@ -197,22 +197,35 @@ form .btn:hover{
 
     .view-invoices{
         font-size: 16px;
-        background: linear-gradient(var(--bg-primary),var(--bg-lightest));
-        border: 1px solid var(--hover-accent);
-        transition: background-color 0.3s;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid var(--border-dark);
+        cursor: pointer;
+        transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+        background-color: #e0e0e0;
+        border-radius: 40px;
         a{
-            color: var(--text-dark);
+            color: black;
+        }
+    }
+    .generate-invoice{
+        font-size: 16px;
+        padding: 10px 20px;
+        font-size: 16px;
+        border: 1px solid var(--border-dark);
+        cursor: pointer;
+        transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+        background-color: #e0e0e0;
+        border-radius: 40px;
+        a{
+            color: black;
         }
     }
 
-    .generate-invoice{
-        font-size: 16px;
-        background: linear-gradient(var(--hover-primary),var(--hover-secondary));
-        border: 1px solid var(--hover-accent);
-        transition: background-color 0.3s;
-        a{
-            color: var(--text-light);
-        }
+    .view-invoices:active, .generate-invoice:active{
+        transform: scale(0.95);
     }
     
     form{
