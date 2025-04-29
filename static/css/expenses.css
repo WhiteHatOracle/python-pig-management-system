@@ -50,17 +50,19 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 .submitBTN input[type="submit"] {
     padding: 10px 20px;
     font-size: 16px;
-    color: var(--text-dark);
     min-width: 300px;
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     border: 1px solid var(--hover-accent);
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+
+    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+    background-color: #e0e0e0;
+    border-radius: 40px;
+    color: black;
 }
 
 .submitBTN input[type="submit"]:hover {
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    transform: scale(0.95);
     border: 1px solid var(--border-light);
 }
 
@@ -81,163 +83,129 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 
 /* Table Container */
-table.expense-table {
+.expense-table{
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
-    background-color: #f9f9f9;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    color: var(--text-dark);
-    min-width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    background-color: var(--bg-light);
-    box-shadow: 0 2px 10px var(--shadow-dark);
-}
-
-table.expense-table th, table.expense-table td {
-    padding: 12px 15px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    border-bottom: 1px solid var(--border-light);
-}
-
-table.expense-table th {
-    background-color: var(--bg-secondary);
-    color: var(--text-light);
-    font-weight: bold;
-}
-
-table.expense-table td {
-    font-size: 14px;
-    color: var(--text-dark);
-}
-
-table.expense-table tr:nth-child(even) {
+    margin: 20px auto;
+    background-color: var(--bg-accent);
+    box-shadow: 10px 2px 10px var(--shadow-dark);
     background-color: var(--bg-lightest);
+    border-radius: 15px;
 }
 
-table.expense-table td.actions-column {
-    text-align: center;
-}
-
-table.expense-table td .delete,table.expense-table td .edit  {
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
+.expense-table thead tr th{
+    padding: 8px 5px;
     color: var(--text-dark);
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    box-shadow: 0 2px 3px var(--shadow-dark);
-}
-
-table.expense-table td .delete:hover,table.expense-table td .edit:hover {
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
-}
-
-table.expense-table td .separator {
-    margin: 0 10px;
-    color: var(--text-dark);
-}
-
-/* Action Buttons */
-table.expense-table td .icon {
-    width: 18px;
-    height: 18px;
-    fill: var(--bg-lightest);
-}
-
-/* Total Expense in Footer */
-tfoot p {
-    font-weight: bold;
-    font-size: 20px;
-    color: var(--text-dark);
-}
-
-tfoot td {
     text-align: left;
-    padding-left: 20px;
-}
-
-/* When No Records Found */
-.no_records_found td {
-    font-size: 16px;
+    border-bottom: 1px solid red;
+    background-color: var(--bg-accent);
     color: var(--text-dark);
-    text-align: center;
-    padding: 20px;
+    font-weight: bold;
 }
 
-
-.icon{
-    display: none;
+.expense-table thead tr{
+    border-bottom: 1px dashed var(--border-light);
+    display: table-row;
+    text-align: left ;
 }
 
+.expense-table tbody tr td{
+    font-size: 14px;
+    color: var(--text-dark);
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-dark);
+    display: table-cell;
+}
 
+.expense-table tbody tr td .actions-column{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 auto;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.expense-table .actions-column .buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.expense-table .actions-column .buttons button{
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 4px 8px;
+}
+
+.expense-table .actions-column .action-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    outline: none;
+    border: none;
+}
+.expense-table .actions-column .action-btn:hover{
+    transform: scale(0.95);
+    
+}
 @media (max-width:800px){
     form{
         grid-template-columns:1fr;
     }
-    table{
-        min-width: 100%;
-    }
-    th{
+
+    .expense-table thead tr th{
         display: none;
     }
-    tr:nth-of-type(2n){
-        background-color: rgba(0,0,0, 0.1);
+    .expense-table tr{
+        border: 2px double var(--border-dark);
     }
-    td{
+
+    .expense-table tr:nth-of-type(even){
+        background:var(--bg-accent);
+    }
+    
+    .expense-table tbody tr td{
         display: grid;
-        grid-template-columns: repeat(2, 1fr); 
-        font-size: 12px;
-        text-align: right;
         padding: 10px;
-    }
-    td:first-child{
-        margin-top: 2rem;
-        border-top: 1px solid var(--border-light);
-    }
-    td:last-child{
-        margin-bottom: 2rem;
-        border-bottom: 1px solid var(--border-light);
-    }
-    td::before{
+        font-size: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        border: none !important;
+    }  
+    .expense-table tbody tr td::before{
         content: attr(data-cell);
         float: left;
         font-weight: bold;
+    }  
+    .expense-table .actions-column::before{
+        display: none;
     }
     .actions-column{
         display: flex;
-        align-items: center;
-        justify-content: center
+        justify-content: center;
+        align-items: center
+    
+    }
+    .expense-table tbody .actions-column .buttons{
+        grid-column: 1 / -1;
+        gap: 8px;
     }
     .action-btn{
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 8px;
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
         padding: 6px 10px;
-        font-size: 12px;
-    }
-    
-    .form-btns{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-    }
-
-    tfoot p {
-        font-size: 20px;
-    }
-
-    table.expense-table {
-        overflow-x: scroll;
-    }
-    .icon{
-        display: block;
+        font-size: 14px;
+        border: 1px solid var(--border-dark) !important;
+        gap: 8px !important;
+        border-radius: 40px;
+        color: var(--text-dark);
+        background: transparent;
     }
 }

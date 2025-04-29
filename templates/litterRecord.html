@@ -14,7 +14,7 @@ Litter Records for {{ sow.sowID }}
 <main>
     <h2>Litter Records</h2>
     {% if existing_litter %}
-    <div class="alert alert-warning">This service record already has a litter. You cannot add another.</div>
+    <div class="alert alert-warning"></div>
     {% else %}
         <form class="container" method="POST" action="">
             {{form.hidden_tag()}}
@@ -109,10 +109,11 @@ Litter Records for {{ sow.sowID }}
             <td data-cell="Tail Dorking:">  {{ litter.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
             <td data-cell="Castration:">    {{ litter.castration_date.strftime("%d-%b-%Y") }}</td>
             <td data-cell="Weaning:">       {{ litter.wean_date.strftime('%d-%b-%Y') }}</td>
-            <td>
+            <td class="actions-column">
                 <form class="delete-btn" action="{{ url_for('delete_litter', litter_id=litter.id) }}" method="POST" onsubmit="return confirmDelete();">
                     {{ form.hidden_tag() }}
                     <button class="action-btn" >
+                        <span>Delete</span>
                         <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
                     </button>
                 </form>

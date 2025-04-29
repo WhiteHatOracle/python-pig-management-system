@@ -25,25 +25,26 @@ h2{
 .feed-calculator-btns{
     padding: 8px 20px;
     font-size: 16px;
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     border: 1px solid var(--hover-accent);
-    color: var(--text-dark);
     width: 170px;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
     text-align: center;
     margin: 0 0 10px 0;
+
+    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+    background-color: #e0e0e0;
+    border-radius: 30px;
     .feed-calc{
         background: transparent;
         border: none;
         cursor: pointer;
-        color: var(--text-dark);
+        color: black;        
     }
 }
 
 .feed-calculator-btns:hover {
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    transform: scale(0.95);
     border: 1px solid var(--border-light);
 }
 
@@ -87,17 +88,19 @@ input::placeholder{
 .submitBTN input[type="submit"] {
     padding: 10px 20px;
     font-size: 16px;
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));
     border: 1px solid var(--hover-accent);
-    color: var(--text-dark);
     width: 300px;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
+
+    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+    background-color: #e0e0e0;
+    border-radius: 40px;
+    color: black;
 }
 
 .submitBTN input[type="submit"]:hover {
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    transform: scale(0.95);
     border: 1px solid var(--border-light);
 }
 

@@ -49,27 +49,24 @@ input[type="text"]:focus, input[type="date"]:focus {
 }
 
 .btn{
-    background: var(--bg-primary);
-    color: var(--text-dark);
-    padding: 10px 20px;
-    border: 2px solid var(--border-dark);
-    background: linear-gradient(var(--hover-primary),var(--hover-secondary));    /* Green button */
-    color: var(--text-dark);
     padding: 10px 20px;
     border: 2px solid var(--border-light);
-    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    box-shadow: 0 2px 3px var(--shadow-dark);
     width: 200px;
-    outline: none   ;
+    outline: none;
+
+    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+    background-color: #e0e0e0;
+    border-radius: 40px;
+    color: black;
 }
 .btn:hover{
-    background:var(--bg-secondary);
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+    transform: scale(0.95);
     border: 1px solid var(--border-light);
 }
 a{
     text-decoration: none;
-    color: var(--text-dark);
+    color: black;
 }
