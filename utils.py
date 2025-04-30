@@ -55,8 +55,6 @@ def get_sow_service_records():
 
 
     # Optionally filter records based on due_date
-    # query = query.filter(ServiceRecords.due_date >= datetime.date.today()).order_by(ServiceRecords.due_date)
-
     records = query.all()
     # Convert query results into a list of dictionaries for Dash DataTable
     data = [

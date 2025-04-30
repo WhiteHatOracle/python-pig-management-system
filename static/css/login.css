@@ -221,7 +221,7 @@ body {
   gap: 1rem;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 800px) {
   .features {
     grid-template-columns: repeat(3, 1fr);
   }

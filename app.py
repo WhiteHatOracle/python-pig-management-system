@@ -847,6 +847,7 @@ def expenses():
         expense = Expense(
             date=form.date.data,
             amount=form.amount.data,
+            invoice_number=form.invoice_number.data,
             category=form.category.data,
             vendor=form.vendor.data,
             description=form.description.data,
@@ -859,6 +860,34 @@ def expenses():
 
     expenses = Expense.query.filter_by(user_id=current_user.id).all()
     return render_template('expenses.html', form=form, expenses=expenses)
+
+@app.route('/edit_expense/<int:expense_id>', methods=['GET','POST'])
+@login_required
+def edit_expense(expense_id):
+    
+    expense = Expense.query.filter_by(id=expense_id, user_id=current_user.id).first_or_404()
+    form = ExpenseForm(obj=expense) #pre fill the data
+    form.expense_id = expense.id
+
+    if form.validate_on_submit():
+        expense.date = form.date.data
+        expense.amount = form.amount.data
+        expense.invoice_number = form.invoice_number.data
+        expense.category = form.category.data
+        expense.vendor = form.vendor.data
+        expense.description = form.description.data
+
+        try:
+            db.session.commit()
+            flash('Expense Updated','success')
+            return redirect(url_for('expenses'))
+        except IntegrityError:
+            db.session.rollback()
+            flash(f'Expense with receipt number {expense.invoice_number} already exists', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+    return render_template('edit_expense.html', form=form, expense=expense)
 
 @app.route('/expense_totals', methods=['GET'])
 @login_required

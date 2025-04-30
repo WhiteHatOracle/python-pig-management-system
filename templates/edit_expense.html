@@ -4,6 +4,7 @@
 {% block head %}
 <title>Sows</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/expenses.css')}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
@@ -13,26 +14,31 @@
 <main>
     <h2>Edit Sow</h2>
 
-    <form method="POST" action="{{ url_for('edit_sow', sow_id=sow.id) }}">
-
+    <form class="form-fields" method="POST">
         {{ form.hidden_tag() }}
+        <label for="date">Date: </label>    
+        {{ form.date(autocomplete="off") }}
+                    
+        <label for="Amount">Amount: <br><p style="font-size:12px; color: #999;margin: 0;">*without currency symbol or points. e.g 2000</p></label>
+        {{ form.amount(autocomplete="off") }}
         
-        <label for="sowID">Sow ID:</label>
-        {{ form.sowID(class="form-control") }}
+        <label for="invoice_number">Invoice Number:</label>
+        {{ form.invoice_number(autocomplete="off") }}
 
-        <label for="Breed">Breed:</label>
-        {{ form.Breed(class="form-control") }}
-
-        <label for="DOB">Date of Birth:</label>
-        {{ form.DOB(class="form-control") }}
+        <label for="Category">Category: </label>
+        {{ form.category(autocomplete="off") }}
+        
+        <label for="Vendor">Vendor: </label>
+        {{ form.vendor(autocomplete="off") }}
+        
+        <label for="Description">Description: </label>
+        {{ form.description(autocomplete="off") }}
 
         <div class="submitBTN">
             <button class="btn btn-primary" type="submit"> Edit</button>
             <button class="btn btn-secondary"><a href="{{ url_for('sows')}}">Cancel</a></button>
         </div>
-
-        <!-- <button type="submit" class="submitBTN">Update</button> -->
-    </form>
+</form>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}

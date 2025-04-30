@@ -11,20 +11,23 @@
 {% block content %}
 <main>
     <h2 id="header">Expenses</h2>
-    <form method="POST">
+    <form class="form-fields" method="POST">
             {{ form.hidden_tag() }}
             <label for="date">Date: </label>    
             {{ form.date(autocomplete="off") }}
-            <!-- <br> -->            
+                        
             <label for="Amount">Amount: <br><p style="font-size:12px; color: #999;margin: 0;">*without currency symbol or points. e.g 2000</p></label>
             {{ form.amount(autocomplete="off") }}
-            <!-- <br> -->
+            
+            <label for="invoice_number">Invoice Number:</label>
+            {{ form.invoice_number(autocomplete="off") }}
+
             <label for="Category">Category: </label>
             {{ form.category(autocomplete="off") }}
-            <!-- <br> -->
+            
             <label for="Vendor">Vendor: </label>
             {{ form.vendor(autocomplete="off") }}
-            <!-- <br> -->
+            
             <label for="Description">Description: </label>
             {{ form.description(autocomplete="off") }}
             <div class="submitBTN">
@@ -45,6 +48,7 @@
             <tr>
                 <th>Date</th>
                 <th>Amount</th>
+                <th>Reciept number</th>
                 <th>Category</th>
                 <th>Vendor</th>
                 <th>Description</th>
@@ -57,13 +61,14 @@
                 <tr>
                     <td data-cell="Date: ">{{ expense.date.strftime('%d-%b-%y') }}</td>
                     <td data-cell="Amount: ">K{{ "{:,.2f}".format(expense.amount) }}</td>
+                    <td data-cell="Reciept Number: ">{{ expense.invoice_number }}</td>
                     <td data-cell="Category: ">{{ expense.category }}</td>
                     <td data-cell="Vendor: ">{{ expense.vendor }}</td>
                     <td data-cell="Description: ">{{ expense.description }}</td>
                     <td class="actions-column">
                         
                             <div class="buttons">
-                                <form class="form-btns" action="">
+                                <form class="form-btns" method="POST" action="{{ url_for('edit_expense', expense_id=expense.id)}}">
                                     {{ form.hidden_tag() }}
                                     <button class="action-btn edit" >
                                         <span class="action-txt">Edit</span>

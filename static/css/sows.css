@@ -144,7 +144,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     display: none;
 }
 
-@media (max-width:768px) {
+@media (max-width:800px) {
     .for-desktop{
         display: none;
     }

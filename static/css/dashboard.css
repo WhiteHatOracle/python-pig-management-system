@@ -188,7 +188,7 @@ H3 {
 }
 
 /* Mobile responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .card-grid {
         grid-template-columns: 1fr; /* Single column on mobile */
     }

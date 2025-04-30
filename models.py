@@ -108,17 +108,17 @@ class Expense(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date, nullable=False)
     amount = db.Column(db.Float, nullable=False)
+    invoice_number = db.Column(db.String(100),nullable=False)
     category = db.Column(db.String(50), nullable=False)
     vendor = db.Column(db.String(100))
     description = db.Column(db.String(200))
-    receipt_number = db.Column(db.String(100))  # Add this
 
     # Link to owner
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     owner = db.relationship("User", back_populates="expenses")
 
     __table_args__ = (
-        db.UniqueConstraint('user_id', 'receipt_number', name='uix_user_receipt'),  # Optional constraint
+        db.UniqueConstraint('user_id', 'invoice_number', name='uix_user_receipt'),  # Optional constraint
     )
 
     def __repr__(self):
