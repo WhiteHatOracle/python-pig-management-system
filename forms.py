@@ -18,7 +18,7 @@ class SowForm(FlaskForm):
 #Define sow service record Form
 class ServiceRecordForm(FlaskForm):
     service_date = DateField('Service Date', validators=[InputRequired()])
-    boar_used = StringField('Boar Used', validators=[InputRequired()])
+    boar_used = SelectField('Boar Used', choices=[], coerce=str)
 
 # Define Boar Form
 class BoarForm(FlaskForm):

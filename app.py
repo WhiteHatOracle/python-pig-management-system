@@ -689,7 +689,15 @@ def delete_sow(sow_id):
 def sow_service_records(sow_id):
     sow = Sows.query.get_or_404(sow_id)
     sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
+    boars = Boars.query.filter_by(user_id=current_user.id).all()  # Only show the boars owned by the current user
     form = ServiceRecordForm()
+
+    if not boars:
+        form.boar_used.choices = [('ai','Artificial Insemination')]
+    else:
+        boar_choices = [(str(boar.id),boar.BoarId)for boar in boars]
+        boar_choices.append(('ai','Artificial Insemination'))
+        form.boar_used.choices = boar_choices
 
     if form.validate_on_submit():  # Checks if the form was submitted and is valid
         service_date = form.service_date.data
