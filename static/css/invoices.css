@@ -329,9 +329,19 @@ tfoot.footer {
     }
 
     .footer-row{
+        margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
         grid-column: 1 / -1;
     }
+
+    tfoot .footer{
+        position: sticky;
+        bottom: 60px;
+        box-shadow: 10px 2px 10px var(--shadow-dark);
+        background-color: var(--bg-primary);
+        z-index: 1000;
+        border-radius: 40px;
+      }
 }

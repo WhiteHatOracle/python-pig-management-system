@@ -301,8 +301,8 @@ button:focus{
     display: flex;
     justify-content: flex-end;
     position: fixed;
-    height: 60px;
-    top: 5px;
+    height: 55px;
+    top: 0;
     width: 100%;
     border-bottom: 1px solid var(--border-dark);
     list-style: none;
@@ -353,7 +353,7 @@ button:focus{
   }
 
   #sidebar {
-    height: 60px;
+    height: 55px;
     width: 100%;
     position: fixed;
     top: unset;
@@ -406,7 +406,7 @@ button:focus{
     bottom: 0;
     color: var(--text-dark);
     text-align: center;
-  }
+  }        
 }
 
 
