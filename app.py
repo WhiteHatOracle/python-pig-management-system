@@ -492,7 +492,6 @@ def invoices():
     # Pagination setup
     page = request.args.get('page', 1, type=int)
     per_page = 10  # Number of invoices per page
-    # invoices = Invoice.query.filter_by(user_id=current_user.id).order_by(Invoice.date.desc()).paginate(page, per_page, False)  # Get all invoices, newest first
     invoices = Invoice.query.filter_by(user_id=current_user.id).order_by(Invoice.date.desc()).paginate(page=page,per_page=per_page, error_out=False)
     invoices_list = invoices.items
 
@@ -865,9 +864,12 @@ def expenses():
         db.session.commit()
         flash('Expense logged successfully!', 'success')
         return redirect(url_for('expenses'))
-
-    expenses = Expense.query.filter_by(user_id=current_user.id).all()
-    return render_template('expenses.html', form=form, expenses=expenses)
+    
+    page = request.args.get('page', 1, type=int)
+    per_page = 10  # Number of Exepenses per page
+    expenses = Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).paginate(page=page,per_page=per_page, error_out=False)
+    expenses_list = expenses.items
+    return render_template('expenses.html', form=form, expenses=expenses_list, pagination=expenses)
 
 @app.route('/edit_expense/<int:expense_id>', methods=['GET','POST'])
 @login_required
