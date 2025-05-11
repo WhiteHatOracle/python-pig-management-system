@@ -902,7 +902,11 @@ def edit_expense(expense_id):
 @app.route('/expense_totals', methods=['GET'])
 @login_required
 def expense_totals():
-    total_expenses = db.session.query(db.func.sum(Expense.amount)).scalar() or 0
+    total_expenses = (
+        db.session.query(db.func.sum(Expense.amount))
+        .filter_by(user_id = current_user.id)
+        .scalar()
+    ) or 0
     return jsonify({'total_expenses': f"K{total_expenses:,.2f}"})
 
 @app.route('/delete-expense/<int:expense_id>', methods=['POST'])
