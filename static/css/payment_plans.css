@@ -1,0 +1,148 @@
+/* static/css/styles.css */
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: #fff;
+}
+
+body {
+    background: #1a1a1a;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+}
+
+.pricing-container {
+    padding: 50px auto;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.justify-content-center{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    margin: 0 auto;
+    gap: 10px;
+    min-width: 100%;
+    background-color: green;
+}
+
+.pricing-card {
+    width: 350px;
+    background-color: #2a2a2a;
+    border-radius: 15px;
+    padding: 10px;
+    margin: 15px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #fff;
+}
+
+.pricing-card h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.pricing-card h1 span {
+    font-size: 1rem;
+    font-weight: normal;
+    color: #ccc;
+}
+
+.includes {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.pricing-card ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 30px;
+}
+
+.pricing-card ul li {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.pricing-card ul li:before {
+    content: '✔';
+    color: #fff;
+    margin-right: 10px;
+}
+
+.info-icon {
+    color: #888;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.get-started-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background-color: #fff;
+    color: #000;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.pro-card .get-started-btn {
+    background: linear-gradient(90deg, #ff00ff, #ffaa00);
+    color: #fff;
+}
+
+.get-started-btn:hover {
+    opacity: 0.9;
+}
+
+/* Responsive adjustments */
+@media (max-width: 800px) {
+    .pricing-card {
+        margin: 10px 0;
+        padding: 20px;
+    }
+
+    .pricing-card h1 {
+        font-size: 2.5rem;
+    }
+
+    .pricing-card h2 {
+        font-size: 1.3rem;
+    }
+
+    .includes {
+        font-size: 1rem;
+    }
+
+    .pricing-card ul li {
+        font-size: 0.9rem;
+    }
+
+    .get-started-btn {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    .justify-content-center{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        margin: 0 auto;
+        gap: 10px;
+        max-width: 100%;
+        background-color: green;
+    }
+}

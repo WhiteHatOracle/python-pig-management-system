@@ -242,6 +242,11 @@ def home():
 def login():
     return render_template('login.html')  # Displays Homepage
 
+#payement route
+@app.route('/payment_plans', methods=['GET','POST'])
+def payment_plans():
+    return render_template('payment_plans.html')
+
 # Sign in route
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
