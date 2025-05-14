@@ -1,27 +1,23 @@
+from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from datetime import timedelta
+from sqlalchemy import func, event
 from datetime import timedelta, date
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
 from dotenv import load_dotenv
 from dash import dcc, html, dash_table
+from authlib.integrations.flask_client import OAuth
 import datetime
 import os
 import logging
 import dash
-from sqlalchemy.exc import IntegrityError
 import dash_bootstrap_components as dbc
-from sqlalchemy import func, event
-from sqlalchemy.engine import Engine
-from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
-from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
-from authlib.integrations.flask_client import OAuth
 import logging
-from datetime import date, timedelta
-from flask_login import current_user
-from sqlalchemy import func
+
+from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
+from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 from utils import get_sow_service_records, get_pig_counts, parse_range, update_dashboard, get_total_counts, generate_invoice_pdf, get_litter_stage
 
 # Configure logging to show in console
