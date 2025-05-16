@@ -22,22 +22,25 @@ body {
 
 
 .justify-content-center{
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    margin: 0 auto;
-    gap: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 20px;
     min-width: 100%;
-    background-color: green;
 }
 
 .pricing-card {
     width: 350px;
+    height: 450px;
     background-color: #2a2a2a;
     border-radius: 15px;
     padding: 10px;
     margin: 15px;
     text-align: left;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .pricing-card h2 {
@@ -83,7 +86,7 @@ body {
 }
 
 .info-icon {
-    color: #888;
+    color: #888;    
     margin-left: 5px;
     cursor: pointer;
 }
