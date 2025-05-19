@@ -59,11 +59,12 @@ body{
 }
 .container{
     text-align: center;
+    background-color: rgba(255,255,255,0.2);
+    border: var(--border-dark);
     width: 600px;
     padding: 30px 10px;
     backdrop-filter: blur(3px);
     border-radius: 4px;
-    /* border: 1px solid var(--border-dark); */
 }
 
 h1{
@@ -73,7 +74,6 @@ h1{
     width: 300px;
     margin: 20px auto;
     text-align: center;
-
     line-height: 2.5rem;
     font-size: 2rem;
     font-weight: 500;

@@ -3,21 +3,6 @@ function confirmDelete() {
 }
 
 function fetchTotals() {
-    $.ajax({
-        url: '/api/expenses/totals',
-        type: 'GET',
-        success: function(data) {
-            $('#total-expenses').text(data.total_expenses);
-            $('#total-revenue').text(data.total_revenue);
-            $('#net-profit').text(data.net_profit);
-        },
-        error: function(xhr, status, error) {
-            console.error('Error fetching totals:', error);
-        }
-    });
-}
-
-function fetchTotals() {
     fetch('/expense_totals')
         .then(response => response.json())
         .then(data => {

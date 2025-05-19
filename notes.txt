@@ -22,3 +22,21 @@ from app import db, app
 
 with app.app_context():
     db.engine.execute("DROP TABLE IF EXISTS alembic_version")
+
+
+"""
+# js for normalizing sow and boar id input:
+
+document.querySelector('.container').addEventListener('submit', function(event){
+    const fieldsToNormalize = ['BoarId', 'sowID'];
+
+        //remove all white spaces and convert to upper case
+        fieldsToNormalize.forEach(name => {
+            const input = document.querySelector(`input[name="${name}"]`);
+            if (input && input.value){
+                input.value = input.value.replace(/\s+/g, '').toUpperCase();
+            }
+        });
+});
+
+"""

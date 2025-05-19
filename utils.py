@@ -89,8 +89,6 @@ def update_dashboard(n):
         print("Error updating dashboard:", e)
         return "Error", "Error", "Error", "Error", "Error", "Error", "Error", "Error", []
 
-
-
 def get_total_counts():
     today=date.today()
 

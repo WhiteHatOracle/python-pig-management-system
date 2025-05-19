@@ -9,6 +9,7 @@ db = SQLAlchemy()
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)  # usually email
+    email = db.Column(db.String(200), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
 
     # NEW FIELDS for Google login
@@ -22,7 +23,6 @@ class User(db.Model, UserMixin):
     sows = db.relationship("Sows", back_populates="owner", cascade="all, delete-orphan")
     invoices = db.relationship("Invoice", back_populates="owner", cascade="all, delete-orphan")
     expenses = db.relationship("Expense", back_populates="owner", cascade="all, delete-orphan")
-
 
 # Define the Boar model
 class Boars(db.Model):
@@ -79,7 +79,6 @@ class ServiceRecords(db.Model):
         db.UniqueConstraint('sow_id', 'service_date', name='uix_sow_service_date'),
     )
     
-
 class Invoice(db.Model):
     __tablename__ = "invoice"
     id = db.Column(db.Integer, primary_key=True)
@@ -123,7 +122,6 @@ class Expense(db.Model):
 
     def __repr__(self):
         return f'<Expense {self.id} - {self.category}>'
-
 
 class Litter(db.Model):
     __tablename__="litter"

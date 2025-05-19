@@ -1,4 +1,4 @@
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
+from wtforms import EmailField,StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError, InputRequired
 from flask_wtf import FlaskForm
 from models import Sows, Boars, User  # Importing the models for validation
@@ -36,18 +36,19 @@ class BoarForm(FlaskForm):
 # Define Registration Form
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Username"})
+    email = EmailField(validators=[InputRequired()], render_kw={"Placeholder": "E-mail"})
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Password"})
     submit = SubmitField("Register")
 
     # Custom Validator to check for existing username
-    def validate_username(self, username):
-        existing_user_name = User.query.filter_by(username=username.data).first()
-        if existing_user_name:
-            raise ValidationError('The username already exists. Please choose a different username')
+    def validate_email(self, email):
+        existing_email = User.query.filter_by(email=email.data).first()
+        if existing_email:
+            raise ValidationError('The email already exists. Please choose a different email')
 
 # Define Login Form
 class LoginForm(FlaskForm):
-    username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Username"})
+    identifier = StringField('username or Email', validators=[InputRequired()], render_kw={"Placeholder":"Username or E-mail"})
     password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Password"})
     remember = BooleanField("Remember Me")  # Optional remember me checkbox
     submit = SubmitField("Login")

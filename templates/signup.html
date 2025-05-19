@@ -12,6 +12,7 @@
         <form class="form-class" action="" method="POST" >
             {{ form.hidden_tag() }}
             {{ form.username(id="username", class="form-control", autocomplete="off") }}
+            {{ form.email(id="email", class="form-control", autocomplete="off")}}
             {{ form.password(id="password", class="form-control") }}
             {{ form.submit(class="btn btn-primary", type='submit', value='Continue') }}         
         </form>
@@ -26,12 +27,12 @@
         <div class="third-party">
             <a href="{{url_for('google_login')}}" >
                 <img src="https://www.google.com/favicon.ico" alt="Google"> 
-                <span>Continue With Google</span>
+                <span>sign up With Google</span>
             </a>
-            <a href="{{url_for('payment_plans')}}" >
+            <!-- <a href="{{url_for('payment_plans')}}" >
                 <img src="https://www.google.com/favicon.ico" alt="Google"> 
                 <span>start your free trial</span>
-            </a>
+            </a> -->
         </div>
         <div class="terms">
             <a href="#" class="terms">Terms of Use </a> | 

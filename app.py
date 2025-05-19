@@ -10,6 +10,7 @@ from dash import dcc, html, dash_table
 from authlib.integrations.flask_client import OAuth
 import datetime
 import os
+import re
 import logging
 import dash
 import dash_bootstrap_components as dbc
@@ -248,8 +249,13 @@ def payment_plans():
 def signin():
     form = LoginForm()
     if form.validate_on_submit():
-        username = form.username.data.strip()
-        user = User.query.filter_by(username=username).first()
+        username = form.identifier.data.strip()
+
+        if re.match(r"[^@]+@[^@]+\.[^@]+", username):
+            user = User.query.filter_by(email=username).first()
+        else:
+            user =User.query.filter_by(username=username).first()
+            
         if user:
             if user.password is not None:
                 # Check password for local users
@@ -265,20 +271,12 @@ def signin():
             flash("User does not exist. Please register.","Error")
     return render_template('signin.html', form=form)
 
-# Logout route
-@app.route('/logout', methods=['POST','GET'])
-@login_required
-def logout():
-    logout_user() # Logout the current user
-    flash("You have been logged out.","Success")
-    return redirect(url_for('login'))
-
 @app.route('/signup', methods = ['GET', 'POST'])
 def signup():
     form = RegisterForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') # Hash the password
-        new_user = User(username=form.username.data, password=hashed_password)
+        new_user = User(username=form.username.data, email=form.email.data ,password=hashed_password)
         try:
             db.session.add(new_user)
             db.session.commit() 
@@ -308,6 +306,7 @@ def google_auth():
         # Create a new user with Google info
         user = User(
             username=user_info['email'],
+            email=user_info['email'],
             google_id=user_info['id'],
             name=user_info.get('name'),
             profile_pic=user_info.get('picture'),
@@ -320,6 +319,14 @@ def google_auth():
     login_user(user)
     flash("Logged in successfully with Google!", "Success")
     return redirect(url_for('dashboard'))
+
+# Logout route
+@app.route('/logout', methods=['POST','GET'])
+@login_required
+def logout():
+    logout_user() # Logout the current user
+    flash("You have been logged out.","Success")
+    return redirect(url_for('login'))
 
 @app.route('/complete-feeds-calculator', methods=['GET','POST'])
 @login_required
@@ -535,8 +542,8 @@ def boars():
     form = BoarForm()
 
     if form.validate_on_submit():
-        boar_id = form.BoarId.data.upper()
-        breed = form.Breed.data.upper()
+        boar_id = re.sub(r'\s+', '', form.BoarId.data).upper()
+        breed = re.sub(r'\s+', '', form.Breed.data).upper()
         boar_dob = form.DOB.data
 
         # check if boar already exists
@@ -618,8 +625,8 @@ def sows():
     form = SowForm()
 
     if form.validate_on_submit():
-        sow_id = form.sowID.data.upper()
-        breed = form.Breed.data.upper()
+        sow_id = re.sub(r'\s+', '', form.sowID.data).upper()
+        breed = re.sub(r'\s+', '', form.Breed.data).upper()
         dob_str = form.DOB.data
 
         try:
@@ -700,8 +707,12 @@ def sow_service_records(sow_id):
         form.boar_used.choices = boar_choices
 
     if form.validate_on_submit():  # Checks if the form was submitted and is valid
+        
+        boar_used_id = form.boar_used.data.upper() #get boar id used from form
+        boar = Boars.query.filter_by(id=boar_used_id, user_id=current_user.id).first_or_404() # query the boar from the current logged in user
+
         service_date = form.service_date.data
-        boar_used = form.boar_used.data.upper()
+        boar_used = boar.BoarId.upper() # get the boar "name"
 
         # Calculate other dates
         checkup_date = service_date + timedelta(days=21)
@@ -769,6 +780,12 @@ def litter_records(service_id):
         if not weights or len(weights) != bornAlive:
             flash('Number of weights must match the number of piglets born alive!', 'error')
             return redirect(url_for('litter_records', service_id=service_id))
+        
+        if stillBorn + bornAlive != totalBorn:
+            flash('The total  number of piglets born are not equal to the still born and born alive')
+            return redirect(url_for('litter_records', service_id=service_id))
+            
+
 
         averageWeight = round(sum(weights) / len(weights), 1)
 
