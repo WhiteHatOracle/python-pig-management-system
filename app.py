@@ -569,9 +569,10 @@ def boars():
             except Exception as e:
                 db.session.rollback()
                 flash(f'An error occurred: {str(e)}', 'error')
-
-    boars = Boars.query.filter_by(user_id=current_user.id).all()  # Only show the boars owned by the current user
-    return render_template('boars.html', boars=boars, form=form)  
+    page =request.args.get('page',1,type=int)
+    per_page = 10
+    boars = Boars.query.filter_by(user_id=current_user.id).order_by(Boars.DOB).paginate(page=page, per_page=per_page,error_out=False)  # Only show the boars owned by the current user
+    return render_template('boars.html', boars=boars, form=form, pagination=boars)  
   
 @app.route('/delete-boar/<string:BoarId>', methods=['POST'])
 @login_required
@@ -646,9 +647,11 @@ def sows():
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
-
-    sows = Sows.query.filter_by(user_id=current_user.id).all()
-    return render_template('sows.html', sows=sows, form=form)
+    
+    page =request.args.get('page',1,type=int)
+    per_page = 10
+    sows = Sows.query.filter_by(user_id=current_user.id).order_by(Sows.DOB).paginate(page=page, per_page=per_page,error_out=False)
+    return render_template('sows.html', sows=sows, form=form, pagination=sows)
 
 @app.route('/edit-sow/<int:sow_id>', methods=['GET', 'POST'])
 @login_required
