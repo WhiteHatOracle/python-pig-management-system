@@ -57,3 +57,44 @@ toggleButton.onclick = function () {
     localStorage.setItem('dark-mode', 'disabled');
   }
 };
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const isoToday = today.toISOString().split("T")[0];
+
+  function applyDateRestrictions(input) {
+    input.max = isoToday;
+    input.addEventListener("change", () => {
+      const selectedDate = new Date(input.value);
+      if (isNaN(selectedDate)) return;
+      selectedDate.setHours(0, 0, 0, 0);
+      if (selectedDate > today) {
+        alert("Future dates are not allowed.");
+        input.value = "";
+      }
+    });
+  }
+
+  // Apply to already-existing date inputs
+  document.querySelectorAll('input[type="date"]').forEach(applyDateRestrictions);
+
+  // Watch for dynamically added date inputs
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === 1) {
+          if (node.matches('input[type="date"]')) {
+            applyDateRestrictions(node);
+          }
+          // In case the new node contains date inputs inside it
+          node.querySelectorAll?.('input[type="date"]').forEach(applyDateRestrictions);
+        }
+      });
+    });
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+});
+

@@ -4,7 +4,7 @@
     <title>Boars</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
-    <script type="text/javascript" defer src="{{ url_for('static', filename='js/sows.js')}}"></script>
+    <script type="text/javascript" defer src="{{ url_for('static', filename='js/boars.js')}}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
     <script type="text/javascript" defer src="{{ url_for('static', filename='js/home.js')}}"></script>
 {% endblock %}
@@ -30,6 +30,14 @@
         </div>
     </form>
 
+    <!-- Search field -->
+    <div class="search-container">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg> <!-- Magnifying glass icon -->
+        <input type="text" class="input" id="searchInput" placeholder="search" onkeyup="filterBoars()">
+        <svg onclick="clearSearch()" class="close-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg><!-- Close (X) icon -->
+    </div>
+    <hr>
+
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -39,7 +47,7 @@
     {% endif %}
     {% endwith %}
 
-    <table class="boar-table">
+    <table class="boar-table" id="BoarTable">
         <thead>
             <tr>
                 <th>#</th>
@@ -130,8 +138,13 @@
 
     <script>
         function confirmDelete() {
-        return confirm("Are you sure you want to delete this boar?");
-    }
+            return confirm("Are you sure you want to delete this boar?");
+        }
+        
+        function clearSearch() {
+                document.getElementById("searchInput").value = "";
+                filterBoars(); // Call your filter function to reset the results
+            }
     </script>
 </main>
 

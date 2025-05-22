@@ -156,8 +156,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 .expense-table .actions-column .action-btn:hover{
     transform: scale(0.95);
-    
 }
+.expense-table tfoot {
+        background-color: #DC143C;
+    }
 @media (max-width:800px){
     form{
         grid-template-columns:1fr;

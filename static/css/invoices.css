@@ -100,6 +100,7 @@ hr{
 }
 
 .footer tr td{
+    background-color: #0e8166;
     border:none;
 }
 
@@ -312,9 +313,6 @@ tfoot.footer {
         color: var(--text-dark);
         background: transparent;
     }
-    /* .action-btn svg{
-        padding: 5px;
-    } */
     .action-btn:active{
         transform: scale(0.95);
     }

@@ -108,12 +108,14 @@ input[type="text"]:focus, input[type="date"]:focus {
     font-size: 16px;
     color: var(--text-dark); 
     background: none;
+    
 }
 
 .form-btns{
     display: flex;
     justify-content: center;
     gap: 8px;
+    background: transparent;
 }
 
 .seperator{
