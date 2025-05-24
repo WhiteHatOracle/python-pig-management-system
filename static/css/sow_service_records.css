@@ -149,7 +149,7 @@ table{
     color: var(--text-dark);
 }
 table thead tr{
-    border-bottom: 1px dashed var(--border-light);
+    border-bottom: 2px double var(--border-light);
     display: table-row;
     text-align: right;
 }

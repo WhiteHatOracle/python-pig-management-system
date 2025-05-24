@@ -78,7 +78,7 @@ input[type="text"]:focus, input[type="date"]:focus {
 
 .sow-table thead tr, 
 .boar-table thead tr{
-    border-bottom: 1px dashed var(--border-light);
+    border-bottom: 2px double var(--border-light);
 }
 .sow-table thead tr th,
 .boar-table thead tr th{

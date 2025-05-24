@@ -174,7 +174,7 @@ table tbody tr td{
     color: var(--text-dark);
 }
 table thead tr{
-    border-bottom: 1px dashed var(--border-light);
+    border-bottom: 2px double var(--border-light);
     text-align: right;
 }
 table thead tr th{
