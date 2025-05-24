@@ -59,7 +59,6 @@ Litter Records for {{ sow.sowID }}
                 <!-- your SVG icon -->
             </button>
         </a>
-        
     </div>
     <div class="legend-container">
         <!-- <strong>Stage Color Legend:</strong> -->
@@ -68,7 +67,17 @@ Litter Records for {{ sow.sowID }}
         <div class="legend-item"><span class="legend-box" style="background-color: #bbf7d0;"></span>Growers</div>
         <div class="legend-item"><span class="legend-box" style="background-color: #fecaca;"></span>Finishers</div>
     </div>
-      
+
+    <div class="parent_information">
+        <div class="sire">
+            <h2>SIRE ID: </h2>
+            <h3>{{ serviceRecord.boar_used or 'No Boar Found'}}</h3>
+        </div>
+        <div class="dam">
+            <h2>DAM ID: </h2>
+            <h3>{{ serviceRecord.sow.sowID}}</h3>
+        </div>
+    </div>      
 <table>
     <thead>
         <tr>
@@ -128,7 +137,6 @@ Litter Records for {{ sow.sowID }}
             </tr>
         </tbody>
         {% endif %}
-        
 </table>
 </main>
 

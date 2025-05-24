@@ -183,6 +183,44 @@ table thead tr th{
     padding: 8px;
 }
 
+/* sire and dam  */
+.parent_information{
+    /* background: red; */
+    display: grid;
+    grid-template-columns: 1fr 1fr ;
+    gap: 3px;
+    text-align: center;
+    h2{
+        border: none;
+    }
+}
+
+.sire, .dam{
+    border: 2px double var(--border-light);
+    border-radius: 10px;
+    color: var(--text-dark);
+    padding: 10px 4px;
+}
+
+.sire h2, .dam h2{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+    color: var(--text-dark);
+    border: 1px solid var(--border-light);
+    padding: 0;
+    margin: 0 0 2px 0;
+    background:rgb(232, 232, 232);
+}
+
+.sire h3, .dam h3{
+    font-family:monospace;
+    font-size: 16px;
+    color: var(--text-dark);
+    border: 1px solid var(--border-light);
+    margin: 2px 0 0 0;
+    border-radius: 5px;
+}
+
 @media (max-width:800px) {
     .container{
         box-shadow: none;

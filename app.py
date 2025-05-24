@@ -697,7 +697,6 @@ def delete_sow(sow_id):
 @app.route('/sows/<int:sow_id>', methods=['GET', 'POST'])
 @login_required
 def sow_service_records(sow_id):
-    sow = Sows.query.get_or_404(sow_id)
     sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
     boars = Boars.query.filter_by(user_id=current_user.id).all()  # Only show the boars owned by the current user
     form = ServiceRecordForm()
@@ -749,7 +748,6 @@ def sow_service_records(sow_id):
 @login_required
 def litter_records(service_id):
     form = LitterForm()
-
     serviceRecord = ServiceRecords.query.get_or_404(service_id)
 
     if serviceRecord.sow.user_id != current_user.id:
