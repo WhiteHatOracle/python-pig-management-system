@@ -108,6 +108,9 @@ textarea::placeholder {
     cursor: pointer;
     font-size: 16px;
     color: var(--text-dark); /* Adjust color of the button */
+    span{
+        display: none;
+    }
 }
 
 /* Hover effect */
@@ -237,5 +240,8 @@ table thead tr th{
     }
     .delete-btn:active{
         transform: scale(0.95);
+    }
+    .action-btn span{
+        display: block;
     }
  }
