@@ -19,7 +19,7 @@ import logging
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
 from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
-from utils import get_sow_service_records, get_pig_counts, parse_range, update_dashboard, get_total_counts, generate_invoice_pdf, get_litter_stage
+from utils import get_sow_service_records, parse_range, update_dashboard, get_total_counts, generate_invoice_pdf, get_litter_stage
 
 # Configure logging to show in console
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -109,12 +109,12 @@ dash_app.layout = dbc.Container([
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Total Births"), 
-                    html.H2(id="total-porkers")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+            # dbc.Col(dbc.Card([
+            #     dbc.CardBody([
+            #         html.H4("Total Births"), 
+            #         html.H2(id="total-porkers")
+            #         ],className = "dash-card")
+            # ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
@@ -210,7 +210,7 @@ dash_app.layout = dbc.Container([
         dash.Output("total-pigs", "children"),
         dash.Output("total-sows", "children"),
         dash.Output("total-boars", "children"),
-        dash.Output("total-porkers", "children"),
+        # dash.Output("total-porkers", "children"),
         dash.Output("pre_weaners", "children"),
         dash.Output("weaners", "children"),
         dash.Output("growers", "children"),
@@ -221,6 +221,7 @@ dash_app.layout = dbc.Container([
         dash.Input("interval-update", "n_intervals")
     ],    
 )
+
 def callback_update_dashboard(n_intervals):
     return update_dashboard(n_intervals)
 

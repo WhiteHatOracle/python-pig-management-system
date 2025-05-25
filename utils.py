@@ -18,14 +18,6 @@ def parse_range(range_str):
     except (ValueError, AttributeError):
         return None, None
 
-# Funnction to fetch data
-def get_pig_counts():
-    num_sows = Sows.query.filter_by(user_id=current_user.id).count()
-    boars = Boars.query.filter_by(user_id=current_user.id).count()
-    pokers = 98
-    total_pigs = num_sows + boars + pokers   
-    return total_pigs, num_sows, boars, pokers
-
 # Function to Fetch Sow Service Records for Table
 def get_sow_service_records():
     # Get latest service record for each sow
@@ -77,7 +69,6 @@ def update_dashboard(n):
             str(total_pigs),
             str(total_sows),
             str(total_boars),
-            str(total_porkers),
             str(pre_weaners),
             str(weaners),
             str(growers),
@@ -87,7 +78,7 @@ def update_dashboard(n):
     
     except Exception as e:
         print("Error updating dashboard:", e)
-        return "Error", "Error", "Error", "Error", "Error", "Error", "Error", "Error", []
+        return "Error", "Error", "Error", "Error", "Error", "Error", "Error", []
 
 def get_total_counts():
     today=date.today()
@@ -131,7 +122,7 @@ def get_total_counts():
         return total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers
     except Exception as e:
         logging.error(f"Error in get_total_counts: {e}")
-        return 0, 0, 0, 0, 0, 0, 0, 0  # Return zeroes if there is an error
+        return 0, 0, 0, 0, 0, 0, 0 # Return zeroes if there is an error
     
 def generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weight, average_weight, total_cost):
     class PDF(FPDF):
