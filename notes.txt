@@ -22,3 +22,4 @@ from app import db, app
 
 with app.app_context():
     db.engine.execute("DROP TABLE IF EXISTS alembic_version")
+

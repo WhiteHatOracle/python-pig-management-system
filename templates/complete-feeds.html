@@ -3,10 +3,11 @@
 {% block title %}Complete Feeds{% endblock %}
 
 {% block head %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/feedcalculator.css' )}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <title>feed calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feedcalculator.css' )}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -43,16 +44,16 @@
     <div id="results" class="container">
 
         <label for="feed">Name of Feed: </label>
-        {{ result.feed|default('N/A') }}
+        <span class="label-output">{{ result.feed|default('N/A') }}</span>
 
         <label for="numOfPigs">Number of pigs: </label>
-        {{ result.numOfPigs|default(0) }}
+        <span class="label-output">{{ result.pigs|default(0) }}</span>
 
         <label for="totalFeed">Total required feed for {{ result.numOfDays|default(0) }} days: </label>
         <b>{{ "{:,.2f}".format(result.totalFeed|default(0)) }} Kg</b>
 
         <label for="numOfBags">Total Number of Bags: </label>
-        {{ "{:,.2f}".format(result.numOfBags|default(0)) }}
+        <span class="label-output">{{ "{:,.2f}".format(result.numOfBags|default(0)) }}</span>
 
         <label for="totalCost">Total Cost of Feed for {{ result.numOfPigs|default(0) }} Pigs for {{ result.numOfDays|default(0) }} days: </label>
         <b><u>K{{ "{:,.2f}".format(result.totalCost|default(0)) }}</u></b>

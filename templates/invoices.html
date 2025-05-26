@@ -1,25 +1,19 @@
 {% extends "home.html" %}
-
-{% block title %}Dashboard{% endblock %}
-
 {% block head %}
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/invoices.css') }}">
-  <script type="text/javascript" src="{{ url_for('static', filename='js/invoices.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-  <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+    <title>invoices</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/invoices.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/invoices.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js') }}" defer></script>
 {% endblock %}
 
 {% block content %}
 <main>
     <h2>Invoice List</h2>
     <div class="invoice-buttons">
-        <button class=" invoice-btns generate-invoice">
-            <a href="{{ url_for('invoice_Generator') }}">Generate Invoices</a>
-        </button>
-        <button class=" invoice-btns view-invoices">
-            <a href="{{ url_for('invoices')}}">View Invoices</a>
-        </button>
+            <a href="{{ url_for('invoice_Generator') }}" class="invoice-btns generate-invoice">Generate Invoices</a>
+            <a href="{{ url_for('invoices')}}" class="invoice-btns view-invoices">View Invoices</a>
     </div>
   <!-- Search field -->
     <div class="search-container">

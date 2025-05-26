@@ -96,15 +96,11 @@ input[type="text"]:focus, input[type="date"]:focus {
     border: 1px solid var(--border-dark);
     cursor: pointer;
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-
-    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
     box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
     background-color: #e0e0e0;
     border-radius: 40px;
     color: black;
 }
-
-
 
 .text-n-button button span{
     color: black;
@@ -184,7 +180,7 @@ table tbody tr td{
     gap: 8px;
 }
 .icon{
-    color: var(--text-light);
+    fill: var(--text-light);
 }
 .form-btns{
     display: flex;

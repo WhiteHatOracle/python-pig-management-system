@@ -109,13 +109,6 @@ dash_app.layout = dbc.Container([
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
-            # dbc.Col(dbc.Card([
-            #     dbc.CardBody([
-            #         html.H4("Total Births"), 
-            #         html.H2(id="total-porkers")
-            #         ],className = "dash-card")
-            # ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
-
             dbc.Col(dbc.Card([
                 dbc.CardBody([
                     html.H4("Pre-Weaners"), 
@@ -756,6 +749,7 @@ def litter_records(service_id):
 
     sow_id = serviceRecord.sow_id
     existing_litter = serviceRecord.litter
+    sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
 
     # Add stage if there's a litter
     litters = [existing_litter] if existing_litter else []
@@ -822,7 +816,7 @@ def litter_records(service_id):
             db.session.rollback()
             flash(f'An error occurred while saving the litter: {str(e)}', 'error')
 
-    return render_template('litterRecord.html', form=form, serviceRecord=serviceRecord, litters=litters, sow_id=sow_id, existing_litter=existing_litter)
+    return render_template('litterRecord.html', form=form, sow=sow ,serviceRecord=serviceRecord, litters=litters, sow_id=sow_id, existing_litter=existing_litter)
 
 @app.route('/delete-litter/<int:litter_id>', methods=['POST'])
 @login_required

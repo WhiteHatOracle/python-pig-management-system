@@ -137,9 +137,10 @@ input[type="text"]:focus, input[type="date"]:focus {
     transform: translateY(-1px);
 }
 
-/* .icon{
-    display: none;
-} */
+.icon{
+    /* display: none; */
+    fill: var(--text-dark);
+}
 .for-mobile{
     display: none;
 }
@@ -153,6 +154,7 @@ input[type="text"]:focus, input[type="date"]:focus {
     }
     .icon{
         display: inline-block;
+        color: var(--text-dark) !important;
     }
     .actions-column{
         text-align: center;
@@ -181,9 +183,10 @@ input[type="text"]:focus, input[type="date"]:focus {
     .menu-btn {
         background: none;
         border: none;
-        font-size: 20px; /* Adjust size */
+        font-size: 25px; /* Adjust size */
         cursor: pointer;
         padding: 5px;
+        color: var(--text-dark);
         position: relative; /* Ensures dropdown is positioned correctly */
     }
     .action-btn{

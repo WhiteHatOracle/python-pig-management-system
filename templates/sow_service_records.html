@@ -1,11 +1,12 @@
 {% extends 'home.html' %}
 {% block title %}Service Records for {{ sow.sowID }}{% endblock %}
 {% block head %}
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/sow-service-records.js')}}" defer></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+    <title>{{ sow.sowID }} - service record</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sow-service-records.js')}}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
 
 {% endblock %}
 {% block content %}

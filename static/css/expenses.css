@@ -153,6 +153,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     background: transparent;
     outline: none;
     border: none;
+    gap: 8px;
 }
 .expense-table .actions-column .action-btn:hover{
     transform: scale(0.95);
@@ -160,6 +161,13 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 .expense-table tfoot {
         background-color: #DC143C;
     }
+
+.action-txt{
+    color: var(--text-dark);
+}
+.icon{
+    fill: var(--text-dark);
+}
 @media (max-width:800px){
     form{
         grid-template-columns:1fr;
@@ -194,9 +202,9 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     .actions-column{
         display: flex;
         justify-content: center;
-        align-items: center
-    
+        align-items: center;
     }
+   
     .expense-table tbody .actions-column .buttons{
         grid-column: 1 / -1;
         gap: 8px;
@@ -205,11 +213,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 4px;
         padding: 6px 10px;
         font-size: 14px;
         border: 1px solid var(--border-dark) !important;
-        gap: 8px !important;
         border-radius: 40px;
         color: var(--text-dark);
         background: transparent;

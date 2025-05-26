@@ -1,14 +1,13 @@
 {% extends 'home.html' %}
-{% block title %}Dashboard{% endblock %}
 {% block head %}
-<Title>Sows</Title>
+<Title>sows</Title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/sows.js')}}" defer></script>  
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
-
 {% endblock %}
+
 {% block content %}
 <main>
     <h2 id="header">Sow Manager</h2>

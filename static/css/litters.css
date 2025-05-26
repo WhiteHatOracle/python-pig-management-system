@@ -80,11 +80,8 @@ textarea::placeholder {
 .text-n-button button {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between text and icon */
-    width: 300px;
     padding: 10px 20px;
-    font-size: 16px;
-    width: 100px;
+    font-size: 16px;    
     border: 1px solid var(--border-dark);
     cursor: pointer;
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
@@ -92,6 +89,25 @@ textarea::placeholder {
     background-color: #e0e0e0;
     border-radius: 40px;
     color: black;
+}
+
+.text-n-button button span{
+    color: black !important;
+}
+
+.text-n-button button svg {
+    transition: transform 0.3s ease;
+    fill: black !important;
+}
+
+.text-n-button button:hover {
+    transform: scale(0.95);
+    border: 1px solid var(--border-light);
+}
+
+/* Rotate icon slightly on hover */
+.text-n-button button:hover svg {
+    transform: translateX(-3px);
 }
 
 .delete-btn{
@@ -113,22 +129,6 @@ textarea::placeholder {
     }
 }
 
-/* Hover effect */
-.text-n-button button:hover {
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
-    border: 1px solid var(--border-light);
-    
-}
-
-/* SVG icon styling */
-.text-n-button button svg {
-    transition: transform 0.3s ease;
-}
-
-/* Rotate icon slightly on hover */
-.text-n-button button:hover svg {
-    transform: translateX(-3px);
-}
 
 /* LEGEND */
 .legend-container {
@@ -159,6 +159,10 @@ textarea::placeholder {
     gap: 6px;
   }
 
+  .back-btn{
+        text-decoration: none;
+  }
+
 /* Table styling */
 table{
     border-collapse: collapse;
@@ -167,11 +171,13 @@ table{
     box-shadow: 0 10px 30px 5px var(--shadow-dark);
     margin: 25px auto;
     color: var(--text-dark);
+    /* color: black; */
 }
 table tbody tr td{
     text-align: center;
     padding: 8px 5px;
     color: var(--text-dark);
+    color:#333;
 }
 table thead tr{
     border-bottom: 2px double var(--border-light);
@@ -185,7 +191,6 @@ table thead tr th{
 
 /* sire and dam  */
 .parent_information{
-    /* background: red; */
     display: grid;
     grid-template-columns: 1fr 1fr ;
     gap: 3px;
@@ -209,7 +214,7 @@ table thead tr th{
     border: 1px solid var(--border-light);
     padding: 0;
     margin: 0 0 2px 0;
-    background:rgb(232, 232, 232);
+    background:var(--bg-secondary);
 }
 
 .sire h3, .dam h3{
@@ -281,5 +286,6 @@ table thead tr th{
     }
     .action-btn span{
         display: block;
+        color: #333;
     }
  }

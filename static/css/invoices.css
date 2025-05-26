@@ -146,6 +146,7 @@ hr{
 
 .action-txt {
     margin-right: 8px;
+    color: var(--text-dark);
 }
 
 /* Table Footer */
@@ -186,6 +187,10 @@ tfoot.footer {
     font-weight: normal;
     color: var(--text-dark);
     display: inline-block;
+}
+
+.icon{
+    fill: var(--text-dark);
 }
 
 @media(max-width:800px) {
