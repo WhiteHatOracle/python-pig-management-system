@@ -1,7 +1,8 @@
 function confirmDelete() {
     return confirm('Are you sure you want to delete this sow? This action cannot be undone.');
-    }
-    document.addEventListener("DOMContentLoaded", function () {
+}
+ 
+document.addEventListener("DOMContentLoaded", function () {
         // Select all three-dot buttons
         const menuButtons = document.querySelectorAll(".menu-btn");
 
@@ -28,7 +29,7 @@ function confirmDelete() {
                 menu.classList.remove("show");
             });
         });
-    });
+});
 
 // for the search inputs
 let debounceTimer;

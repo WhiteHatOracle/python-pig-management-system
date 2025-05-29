@@ -178,11 +178,18 @@ form .btn:hover{
 
 @media (max-width: 800px){
 
-    .invoice-buttons{
+     .invoice-buttons{
         display: flex;
         justify-content: space-around;
         width: 100%;
         align-items: center;
+        margin-bottom: 10px;
+        white-space: nowrap;
+        a{
+            color: var(--text-dark);
+            text-align: center;
+            text-decoration: none;
+        }
     }
 
     .invoice-btns{

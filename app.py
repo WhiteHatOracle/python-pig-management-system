@@ -564,7 +564,7 @@ def boars():
                 db.session.rollback()
                 flash(f'An error occurred: {str(e)}', 'error')
     page =request.args.get('page',1,type=int)
-    per_page = 10
+    per_page = 20
     boars = Boars.query.filter_by(user_id=current_user.id).order_by(Boars.DOB).paginate(page=page, per_page=per_page,error_out=False)  # Only show the boars owned by the current user
     return render_template('boars.html', boars=boars, form=form, pagination=boars)  
   
@@ -643,7 +643,7 @@ def sows():
             flash(f'An error occurred: {str(e)}', 'error')
     
     page =request.args.get('page',1,type=int)
-    per_page = 10
+    per_page = 20
     sows = Sows.query.filter_by(user_id=current_user.id).order_by(Sows.DOB).paginate(page=page, per_page=per_page,error_out=False)
     return render_template('sows.html', sows=sows, form=form, pagination=sows)
 

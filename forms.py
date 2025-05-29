@@ -7,7 +7,8 @@ from models import Sows, Boars, User  # Importing the models for validation
 class SowForm(FlaskForm):
     sowID = StringField(validators=[InputRequired(), Length(min=3, max=20)])
     Breed = StringField(validators=[InputRequired(), Length(min=3, max=50)])
-    DOB = DateField(validators=[InputRequired()])
+    # DOB = DateField(validators=[InputRequired()])
+    DOB = DateField(format='%d-%m-%Y', render_kw={"placeholder": "dd-mm-yyyy"}, validators=[InputRequired()])
     submit = SubmitField("Add Sow")
         
     def validate_sowID(self, sowID):

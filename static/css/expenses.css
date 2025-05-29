@@ -168,6 +168,10 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 .icon{
     fill: var(--text-dark);
 }
+
+.no_records_found{
+    column-span: 10;
+}
 @media (max-width:800px){
     form{
         grid-template-columns:1fr;

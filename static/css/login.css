@@ -6,6 +6,7 @@
 
   --border-light:    #183D3D;
   --border-green:    #10a37f;
+  --green-clr:       #123524;
 
   --text-dark:       #2A3335;
   --cta-green:       #05006cfa;
@@ -125,7 +126,6 @@ body {
   border-radius: 1rem;
   text-align: center;
   animation: slideUp 1s ease forwards;
-  /* background: url(/static/assets/farm.jpg); */
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

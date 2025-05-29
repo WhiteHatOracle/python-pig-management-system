@@ -201,6 +201,12 @@ tfoot.footer {
         width: 100%;
         align-items: center;
         margin-bottom: 10px;
+        white-space: nowrap;
+        a{
+            color: var(--text-dark);
+            text-align: center;
+            text-decoration: none;
+        }
     }
 
     .invoice-btns{
@@ -208,9 +214,6 @@ tfoot.footer {
         padding: 7px 5px;
         border-radius: 5px;
         outline: none;
-        a{
-            text-decoration: none;
-        }
     }
 
     .view-invoices{
