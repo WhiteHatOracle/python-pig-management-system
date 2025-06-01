@@ -23,3 +23,7 @@ from app import db, app
 with app.app_context():
     db.engine.execute("DROP TABLE IF EXISTS alembic_version")
 
+============   UPDATE DATABASE ============
+flask db init
+flask db migrate -m "message"
+flask db upgrade

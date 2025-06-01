@@ -87,7 +87,7 @@ body{
   background: var(--bg-lighter); /* Semi-transparent white */
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px); /* Safari support */
-  box-shadow: 0 4px 30px var(--shadow-dark); /* Subtle shadow */  
+  box-shadow: 0 4px 30px var(--shadow-dark);/* Subtle shadow   */
   border: 1px solid var(--border-dark);
   position: sticky;
   top: 0;
@@ -423,6 +423,8 @@ hr{
     padding: 0;
     backdrop-filter: blur(10px);
     color: var(--text-dark);
+    overflow-x: scroll;
+
   }
 
   #sidebar ul {
@@ -437,8 +439,10 @@ hr{
   }
 
   #sidebar ul li {
-    height: 100%;
+    height:auto;
+    border: 1px solid red;
   }
+
 
   .hr-nav-seperator{
     display: none;
@@ -461,7 +465,7 @@ hr{
 
   #sidebar ul li .mobile-span {
     display: block;
-    font-size: 12px;
+    font-size: 10px;
     margin-top: -20px;
     bottom: 0;
     color: var(--text-dark);

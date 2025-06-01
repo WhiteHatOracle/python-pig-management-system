@@ -126,7 +126,13 @@ class Expense(db.Model):
 class Litter(db.Model):
     __tablename__="litter"
     id = db.Column(db.Integer, primary_key=True)
+    
     service_record_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE', name='fk_service_record_id'), nullable=False)
+    service_records = db.relationship("ServiceRecords", back_populates="litter")
+    
+    sow_id = db.Column(db.Integer, db.ForeignKey('sows.id'))
+    sow = db.relationship('Sows', backref='litters')
+
     farrowDate = db.Column(db.Date, nullable=False)
     totalBorn = db.Column(db.Integer, nullable=False)
     stillBorn = db.Column(db.Integer,nullable=False)
@@ -137,7 +143,4 @@ class Litter(db.Model):
     teeth_clipping_date = db.Column(db.Date, nullable=False)
     castration_date = db.Column(db.Date, nullable=False)
     wean_date = db.Column(db.Date, nullable=False)
-    averageWeight = db.Column(db.Float)
-
-    sow_id = db.Column(db.Integer, db.ForeignKey('sows.id'))
-    sow = db.relationship('Sows', backref='litters')
+    averageWeight = db.Column(db.Float)   

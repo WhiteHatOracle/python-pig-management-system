@@ -642,7 +642,7 @@ def sows():
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
     
-    page =request.args.get('page',1,type=int)
+    page = request.args.get('page',1,type=int)
     per_page = 20
     sows = Sows.query.filter_by(user_id=current_user.id).order_by(Sows.DOB).paginate(page=page, per_page=per_page,error_out=False)
     return render_template('sows.html', sows=sows, form=form, pagination=sows)
@@ -732,7 +732,7 @@ def sow_service_records(sow_id):
         )
 
         db.session.add(new_record)
-        db.session.commit()
+        db.session.commit()        
         flash('Service record added successfully!', 'success')
         return redirect(url_for('sow_service_records', sow_id=sow.id))
 
@@ -858,6 +858,12 @@ def delete_service_record(record_id):
     
     # Redirect back to the sow's service records page
     return redirect(url_for('sow_service_records', sow_id=record.sow_id))
+
+@app.route('/herd', methods=['POST', 'GET'])
+@login_required
+def herd():
+    herd = Litter.query.join(Sows).filter(Sows.user_id == current_user.id).order_by(Litter.farrowDate).all()
+    return render_template('herds.html', herd=herd)
 
 @app.route('/expenses', methods=['GET', 'POST'])
 @login_required
