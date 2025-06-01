@@ -27,7 +27,3 @@ with app.app_context():
 flask db init
 flask db migrate -m "message"
 flask db upgrade
-
-.env:
-GOOGLE_CLIENT_ID=766357128765-jtf4tp7p8o5l5nmokbmt8b6hcg9pot9i.apps.googleusercontent.com 
-GOOGLE_CLIENT_SECRET=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
