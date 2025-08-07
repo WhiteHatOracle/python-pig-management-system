@@ -790,7 +790,7 @@ def litter_records(service_id):
         tail_dorking_date = farrowDate + timedelta(days=3)
         castration_date = farrowDate + timedelta(days=3)
         teeth_clipping_date = farrowDate + timedelta(days=3)
-        wean_date = farrowDate + timedelta(days=21)
+        wean_date = farrowDate + timedelta(days=28)
 
         new_litter = Litter(
             service_record_id=serviceRecord.id,
