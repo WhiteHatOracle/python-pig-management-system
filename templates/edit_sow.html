@@ -2,11 +2,15 @@
 {% block title %}sow edit form{% endblock %}
 
 {% block head %}
-<title>sows</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <title>sows</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -24,7 +28,7 @@
         {{ form.Breed(class="form-control") }}
 
         <label for="DOB">Date of Birth:</label>
-        {{ form.DOB(class="form-control") }}
+        {{ form.DOB(class="form-control", id="dob_field") }}
 
         <div class="submitBTN">
             <button class="btn btn-primary" type="submit"> Edit</button>
@@ -33,13 +37,7 @@
 
     </form>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-messages">
@@ -49,9 +47,12 @@
             </div>
         {% endif %}
         {% endwith %}
-    </form>
 
-
+        <script>
+            flatpickr("#dob_field",{
+            dateFormat: "d-m-Y"
+        }); 
+        </script>
     
 </main>
 {% endblock %}

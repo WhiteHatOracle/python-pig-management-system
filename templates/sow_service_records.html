@@ -3,6 +3,10 @@
 {% block head %}
     <title>{{ sow.sowID }} - service record</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
     <script type="text/javascript" src="{{ url_for('static', filename='js/sow-service-records.js')}}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
@@ -19,7 +23,7 @@
             {{ form.boar_used() }}
 
             <label for="service_date">Service Date</label>
-            {{ form.service_date() }}
+            {{ form.service_date(autocomplete="off", id="serviceDate") }}
         <div class="submitBTN">
             <button type="submit" class="submit-btn" >Add Record</button>
         </div>
@@ -99,5 +103,10 @@
         </tbody>
         {% endif %}
     </table>
+    <script>
+        flatpickr("#serviceDate",{
+            dateFormat:"d-m-Y"
+        });
+    </script>
 </main>
 {% endblock %}

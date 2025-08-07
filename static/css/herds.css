@@ -3,9 +3,10 @@
   --bg-lighter:      #ffffff;
   --bg-lightest:     #fbfbfc;
 
-  --bg-primary:      #10a37f;   /* professional green */
-  /* --bg-primary:      #085341;   professional green */
+  /* --bg-primary:      #10a37f;   professional green */
+  --bg-primary:      #085341;   /*professional green*/
   --bg-secondary:    #ececec;
+  --bg-secondary:    #d6d6d6;
   --bg-accent:       #e0f3ec;
 
   --hover-primary:   #0e8e72;

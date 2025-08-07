@@ -3,6 +3,10 @@
 {% block head %}
     <title>boars</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
     <script type="text/javascript" defer src="{{ url_for('static', filename='js/boars.js')}}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
@@ -13,7 +17,7 @@
 
 <main>
     <h2 id="header">Boar Manager</h2>
-    <form class="container" method="POST">
+    <form class="container" method="POST" action="{{ url_for('boars')}}">
         {{ form.hidden_tag() }}  <!-- CSRF Token -->
 
         <label for="BoarId">Boar ID</label>
@@ -23,7 +27,7 @@
         {{ form.Breed(autocomplete="off") }}
 
         <label for="DOB">Date of Birth</label>
-        {{ form.DOB(autocomplete="off") }}
+        {{ form.DOB(autocomplete="off", id="dob_field") }}
 
         <div class="submitBTN"> 
             {{ form.submit }}
@@ -36,6 +40,7 @@
         <input type="text" class="input" id="searchInput" placeholder="search" onkeyup="filterBoars()">
         <svg onclick="clearSearch()" class="close-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg><!-- Close (X) icon -->
     </div>
+
     <hr>
 
     <!-- Flash Messages -->
@@ -145,6 +150,11 @@
                 document.getElementById("searchInput").value = "";
                 filterBoars(); // Call your filter function to reset the results
             }
+        
+        flatpickr("#dob_field",{
+            dateFormat: "d-m-Y"
+        });
+
     </script>
 </main>
 

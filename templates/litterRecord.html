@@ -6,133 +6,176 @@
 <script type="text/javascript" src="{{ url_for('static', filename='js/litters.js')}}" defer></script>
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
-
 {% endblock %}  
 {% block content %}
-<main>
-    <h2>Litter Records</h2>
-    {% if existing_litter %}
-    <div class="alert alert-warning"></div>
-    {% else %}
-        <form class="container" method="POST" action="">
-            {{form.hidden_tag()}}
+    <main>
+            <h2>Litter Records</h2>
 
-            <label for="farrowDate">Farrow Date</label>
-            {{ form.farrowDate(autocomplete="off") }}
+            {% if existing_litter %}
+                <div class="alert alert-warning"></div>
+                {% else %}
+                    <form class="container" method="POST" action="">
+                        {{form.hidden_tag()}}
 
-            <label for="totalBorn">Total Born</label>
-            {{ form.totalBorn(autocomplete="off") }}
+                        <label for="farrowDate">Farrow Date</label>
+                        {{ form.farrowDate(autocomplete="off") }}
 
-            <label for="bornAlive">Born Alive</label>
-            {{ form.bornAlive(autocomplete="off") }}
+                        <label for="totalBorn">Total Born</label>
+                        {{ form.totalBorn(autocomplete="off") }}
 
-            <label for="stillBorn">Still Born</label>
-            {{ form.stillBorn(autocomplete="off") }}
+                        <label for="bornAlive">Born Alive</label>
+                        {{ form.bornAlive(autocomplete="off") }}
 
-            <label for="weights">Weights </label>
-            {{ form.weights(autocomplete="off") }}
+                        <label for="stillBorn">Still Born</label>
+                        {{ form.stillBorn(autocomplete="off") }}
 
-            <div class="submitBTN">
-                {{form.submit}}
-            </div>
-        </form>
-    {% endif %}
+                        <label for="weights">Weights </label>
+                        {{ form.weights(autocomplete="off") }}
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    {% endwith %}
+                        <div class="submitBTN">
+                            {{form.submit}}
+                        </div>
+                    </form>
+            {% endif %}
 
-    <div class="text-n-button">
-        <h2>Service Records</h2>
-        <a href="{{ url_for('sow_service_records', sow_id=sow_id) }}" class="back-btn button">
-            <button>
-                <span>back</span>
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
-            </button>
-        </a>
-    </div>
-    <div class="legend-container">
-        <div class="legend-item"><span class="legend-box" style="background-color: #fef3c7;"></span>Pre-weaning</div>
-        <div class="legend-item"><span class="legend-box" style="background-color: #bfdbfe;"></span>Weaners</div>
-        <div class="legend-item"><span class="legend-box" style="background-color: #bbf7d0;"></span>Growers</div>
-        <div class="legend-item"><span class="legend-box" style="background-color: #fecaca;"></span>Finishers</div>
-    </div>
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
 
-    <div class="parent_information">
-        <div class="sire">
-            <h2>SIRE ID: </h2>
-            <h3>{{ serviceRecord.boar_used or 'No Boar Found'}}</h3>
-        </div>
-        <div class="dam">
-            <h2>DAM ID: </h2>
-            <h3>{{ serviceRecord.sow.sowID}}</h3>
-        </div>
-    </div>      
-<table>
-    <thead>
-        <tr>
-            <th>Farrow</th>
-            <th>Total </th>
-            <th>Born Alive</th>
-            <th>Still Born</th>
-            <th>Avg. Wt</th>
-            <th>Iron Inj.</th>
-            <th>Teeth Clip.</th>
-            <th>Tail Dock.</th>
-            <th>Castration</th>
-            <th>Weaning</th>
-        </tr>
-    </thead>
-    {% if litters %}
-    <tbody>
-        {% for litter in litters %}
-        <tr
-                {% if litter.stage == 'pre-weaning' %}
-                    style="background-color: #fef3c7;" 
-                {% elif litter.stage == 'weaner' %}
-                    style="background-color: #bfdbfe;"  
-                {% elif litter.stage == 'grower' %}
-                    style="background-color: #bbf7d0;"
-                {% elif litter.stage == 'finisher' %}
-                    style="background-color: #fecaca;" 
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
                 {% endif %}
-            >
-        
-            <td data-cell="Farrow Date:">   {{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
-            <td data-cell="Total Born:">    {{ litter.totalBorn }}</td>
-            <td data-cell="Born Alive:">    {{ litter.bornAlive }}</td>
-            <td data-cell="Still Born:">    {{ litter.stillBorn }}</td>
-            <td data-cell="Average Weight:">{{ litter.averageWeight }}</td>
-            <td data-cell="Iron Injection:">{{ litter.iron_injection_date.strftime("%d-%b-%Y") }}</td>
-            <td data-cell="Teeth Clipping:">{{ litter.teeth_clipping_date.strftime("%d-%b-%Y") }}</td>
-            <td data-cell="Tail Dorking:">  {{ litter.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
-            <td data-cell="Castration:">    {{ litter.castration_date.strftime("%d-%b-%Y") }}</td>
-            <td data-cell="Weaning:">       {{ litter.wean_date.strftime('%d-%b-%Y') }}</td>
-            <td class="actions-column">
-                <form class="delete-btn" action="{{ url_for('delete_litter', litter_id=litter.id) }}" method="POST" onsubmit="return confirmDelete();">
-                    {{ form.hidden_tag() }}
-                    <button class="action-btn" >
-                        <span>Delete</span>
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
+
+            {% endwith %}
+
+            <div class="text-n-button">
+                <h2>Service Records</h2>
+                <a href="{{ url_for('sow_service_records', sow_id=sow_id) }}" class="back-btn button">
+                    <button>
+                        <span>back</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
                     </button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-        </tbody>
-        {% else %}
-        <tbody class="no_records_found">
-            <tr>
-                <td colspan="10" style="text-align: center;">No records found.</td>
-            </tr>
-        </tbody>
-        {% endif %}
-</table>
-</main>
+                </a>
+            </div>
+            <div class="legend-container">
+                <div class="legend-item"><span class="legend-box" style="background-color: #fef3c7;"></span>Pre-weaning</div>
+                <div class="legend-item"><span class="legend-box" style="background-color: #bfdbfe;"></span>Weaners</div>
+                <div class="legend-item"><span class="legend-box" style="background-color: #bbf7d0;"></span>Growers</div>
+                <div class="legend-item"><span class="legend-box" style="background-color: #fecaca;"></span>Finishers</div>
+            </div>
+
+            <div class="parent_information">
+                <div class="sire">
+                    <h2>SIRE ID: </h2>
+                    <h3>{{ serviceRecord.boar_used or 'No Boar Found'}}</h3>
+                </div>
+                <div class="dam">
+                    <h2>DAM ID: </h2>
+                    <h3>{{ serviceRecord.sow.sowID}}</h3>
+                </div>
+            </div>      
+            <table>
+                <thead>
+                    <tr>
+                        <th>Farrow</th>
+                        <th>Total </th>
+                        <th>Born Alive</th>
+                        <th>Still Born</th>
+                        <th>Avg. Wt</th>
+                        <th>Iron Inj.</th>
+                        <th>Teeth Clip.</th>
+                        <th>Tail Dock.</th>
+                        <th>Castration</th>
+                        <th>Weaning</th>
+                    </tr>
+                </thead>
+                {% if litters %}
+                    <tbody>
+                        {% for litter in litters %}
+                            <tr
+                                    {% if litter.stage == 'pre-weaning' %}
+                                        style="background-color: #fef3c7;" 
+                                    {% elif litter.stage == 'weaner' %}
+                                        style="background-color: #bfdbfe;"  
+                                    {% elif litter.stage == 'grower' %}
+                                        style="background-color: #bbf7d0;"
+                                    {% elif litter.stage == 'finisher' %}
+                                        style="background-color: #fecaca;" 
+                                    {% endif %}
+                                >
+                                <td data-cell="Farrow Date:">   {{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
+                                <td data-cell="Total Born:">    {{ litter.totalBorn }}</td>
+                                <td data-cell="Born Alive:">    {{ litter.bornAlive }}</td>
+                                <td data-cell="Still Born:">    {{ litter.stillBorn }}</td>
+                                <td data-cell="Average Weight:">{{ litter.averageWeight }}</td>
+                                <td data-cell="Iron Injection:">{{ litter.iron_injection_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Teeth Clipping:">{{ litter.teeth_clipping_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Tail Dorking:">  {{ litter.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Castration:">    {{ litter.castration_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Weaning:">       {{ litter.wean_date.strftime('%d-%b-%Y') }}</td>
+                                <td class="actions-column">
+                                    <form class="delete-btn" action="{{ url_for('delete_litter', litter_id=litter.id) }}" method="POST" onsubmit="return confirmDelete();">
+                                        {{ form.hidden_tag() }}
+                                        <button class="action-btn" >
+                                            <span>Delete</span>
+                                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+                    
+                    {% else %}
+                        <tbody class="no_records_found">
+                            <tr>
+                                <td colspan="10" style="text-align: center;">No records found.</td>
+                            </tr>
+                        </tbody>
+                    {% endif %}
+            </table>
+
+            <div class="table-action-footer">
+                <a id="openModalBtn" class="add-to-group-btn">➕ Add to Fattening Group</a>
+            </div>
+
+            <div id="groupModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-btn">&times;</span>
+                    <h3>Add to Fattening Group</h3>
+                    <form action="{{url_for('herd')}}" method="POST">
+                        <label for="litter_number">Litter Number:</label>
+                        <input type="text" name="litter_number" id="litter_number" required>
+
+                        <label for="group_notes">Notes:</label>
+                        <textarea name="group_notes" id="group_notes" rows="3"></textarea>
+
+                        <button type="submit">Create Group</button>
+                    </form>
+                </div>
+            </div>
+    </main>
+
+    <script>
+    const modal = document.getElementById("groupModal");
+    const btn = document.getElementById("openModalBtn");
+    const span = document.querySelector(".close-btn");
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
 
 {% endblock %}

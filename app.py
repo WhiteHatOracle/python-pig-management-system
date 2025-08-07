@@ -1,14 +1,15 @@
 from sqlalchemy.engine import Engine
+from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from sqlalchemy import func, event
-from datetime import timedelta, date
+from datetime import timedelta, datetime
+import datetime
 from dotenv import load_dotenv
 from dash import dcc, html, dash_table
 from authlib.integrations.flask_client import OAuth
-import datetime
 import os
 import re
 import logging
@@ -18,7 +19,7 @@ import logging
 
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
-from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
+from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm, ChangePasswordForm
 from utils import get_sow_service_records, parse_range, update_dashboard, get_total_counts, generate_invoice_pdf, get_litter_stage
 
 # Configure logging to show in console
@@ -65,7 +66,7 @@ google = oauth.register(
 # Load configuration from environment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious' 
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+# app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
 # Make `enumerate` available in Jinja2 templates
 app.jinja_env.globals.update(enumerate=enumerate)
@@ -540,29 +541,25 @@ def boars():
         breed = re.sub(r'\s+', '', form.Breed.data).upper()
         boar_dob = form.DOB.data
 
-        # check if boar already exists
-        if Boars.query.filter_by(BoarId = boar_id, user_id=current_user.id).first():
-            flash('Boar ID already exists! Please use a different ID.', 'error')
-        
-        else:
-            #add boar to the database
-            try:
-                new_boar = Boars(
-                    BoarId = boar_id,
-                    DOB = boar_dob,
-                    Breed=breed,
-                    user_id=current_user.id
-                    )
-                db.session.add(new_boar)
-                db.session.commit()
-                flash('Boar added successfully!', 'success')
-                return redirect(url_for('boars'))
-            except IntegrityError:
-                db.session.rollback()
-                flash(f'Boar with ID {boar_id} already exists!', 'error')
-            except Exception as e:
-                db.session.rollback()
-                flash(f'An error occurred: {str(e)}', 'error')
+        #add boar to the database
+        try:
+            new_boar = Boars(
+                BoarId = boar_id,
+                DOB = boar_dob,
+                Breed=breed,
+                user_id=current_user.id
+                )
+            db.session.add(new_boar)
+            db.session.commit()
+            flash('Boar added successfully!', 'success')
+            return redirect(url_for('boars'))
+        except IntegrityError:
+            db.session.rollback()
+            flash(f'Boar with ID {boar_id} already exists!', 'error')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'An error occurred: {str(e)}', 'error')
+            
     page =request.args.get('page',1,type=int)
     per_page = 20
     boars = Boars.query.filter_by(user_id=current_user.id).order_by(Boars.DOB).paginate(page=page, per_page=per_page,error_out=False)  # Only show the boars owned by the current user
@@ -622,7 +619,7 @@ def sows():
     if form.validate_on_submit():
         sow_id = re.sub(r'\s+', '', form.sowID.data).upper()
         breed = re.sub(r'\s+', '', form.Breed.data).upper()
-        dob_str = form.DOB.data
+        dob_str = form.DOB.data       
 
         try:
             # Add sow to the database
@@ -951,6 +948,33 @@ def delete_expense(expense_id):
 @login_required
 def settings():
     return render_template('settings.html')
+
+# change password route
+@app.route('/change_password', methods=['POST', 'GET'])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+
+    if form.validate_on_submit():
+    # Check if the entered password matches the one in the database
+        if not bcrypt.check_password_hash(current_user.password, form.current_password.data):
+            flash("Current password is incorrect. Please try again.", "Error")
+            return redirect(url_for('change_password'))        
+        
+        new_password = form.new_password.data.strip()
+        if not new_password:
+            flash("New password cannot be empty.", "Error")
+            return redirect(url_for('change_password'))
+    
+        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        current_user.password = hashed_password  # Update the user's password
+        db.session.commit()
+
+
+        flash("Password changed successfully!", "Success")
+        return redirect(url_for('settings'))
+
+    return render_template('change_password.html', form=form)
 
 # Run the Dashboard
 if dash_app.layout is None:

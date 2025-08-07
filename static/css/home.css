@@ -63,9 +63,15 @@ input::placeholder, textarea::placeholder {
   color: var(--bg-primary); /* Replace with your desired color */
   opacity: 1; /* Optional: make the placeholder fully opaque */
 }
-.alert{
-  color: var(--text-dark);
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
 }
+
 html{
   font-family: Poppins, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.5rem;
@@ -424,7 +430,15 @@ hr{
     backdrop-filter: blur(10px);
     color: var(--text-dark);
     overflow-x: scroll;
+  }
 
+  #sidebar a{
+    border-radius: none;
+    padding: 0;
+    margin: 0;
+    /* display: flex; */
+    align-items: center;
+    gap: 1em;
   }
 
   #sidebar ul {
@@ -435,12 +449,11 @@ hr{
     justify-content: center;
     overflow-x: scroll;
     padding: 0;
-    margin-top: 5px;
+    margin-top: 10px;
   }
 
   #sidebar ul li {
     height:auto;
-    border: 1px solid red;
   }
 
 
@@ -449,9 +462,9 @@ hr{
   }
   
   #sidebar ul a {
-    width: 60px;
-    height: 60px;
-    padding: 0;
+    width:  50px;
+    height: 50px;
+    padding: 0 0 0 10px;
     border-radius: 0;
     justify-content: center;
     display: flex;

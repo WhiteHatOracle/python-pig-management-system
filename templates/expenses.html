@@ -3,10 +3,14 @@
 {% block head %}
 <title>expenses</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/expenses.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/expenses.js')}}" defer></script>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/expenses.css' )}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/expenses.js')}}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
 
 {% endblock %}
 {% block content %}
@@ -15,7 +19,7 @@
     <form class="form-fields" method="POST">
             {{ form.hidden_tag() }}
             <label for="date">Date: </label>    
-            {{ form.date(autocomplete="off") }}
+            {{ form.date(autocomplete="off",id="expense_field") }}
                         
             <label for="Amount">Amount: </label>
             {{ form.amount(autocomplete="off") }}
@@ -123,5 +127,10 @@
         <a href="{{ url_for('invoices', page=pagination.next_num) }}" class="pagination-btn">Next</a>
     {% endif %}
 </div>
+<script>
+    flatpickr("#expense_field",{
+        dateFormat: "d-m-Y"
+    });
+</script>
 </main>
 {% endblock %}

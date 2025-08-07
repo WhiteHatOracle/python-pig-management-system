@@ -1,35 +1,36 @@
 from wtforms import EmailField,StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError, InputRequired
+from wtforms.validators import InputRequired, Length, ValidationError, InputRequired, DataRequired
 from flask_wtf import FlaskForm
 from models import Sows, Boars, User  # Importing the models for validation
+from wtforms.fields import DateField
+from flask_login import current_user
 
 # Define Sow Management Form
 class SowForm(FlaskForm):
-    sowID = StringField(validators=[InputRequired(), Length(min=3, max=20)])
-    Breed = StringField(validators=[InputRequired(), Length(min=3, max=50)])
-    # DOB = DateField(validators=[InputRequired()])
-    DOB = DateField(format='%d-%m-%Y', render_kw={"placeholder": "dd-mm-yyyy"}, validators=[InputRequired()])
+    sowID = StringField(validators=[DataRequired(), Length(min=3, max=20)],render_kw={"Placeholder": "Sow ID"})
+    Breed = StringField(validators=[DataRequired(), Length(min=3, max=50)],render_kw={"Placeholder": "Breed"})
+    DOB = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     submit = SubmitField("Add Sow")
         
     def validate_sowID(self, sowID):
-        existing_sow = Sows.query.filter_by(sowID=sowID.data).first()
+        existing_sow = Sows.query.filter_by(sowID=sowID.data.strip().upper(),user_id=current_user.id).first()
         if existing_sow and existing_sow.id != self.sowID.data:
             raise ValidationError('The sow already exists. Please choose a different sow ID')
-
+     
 #Define sow service record Form
 class ServiceRecordForm(FlaskForm):
-    service_date = DateField('Service Date', validators=[InputRequired()])
+    service_date = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     boar_used = SelectField('Boar Used', choices=[], coerce=str)
 
 # Define Boar Form
 class BoarForm(FlaskForm):
-    BoarId = StringField(validators=[InputRequired(), Length(min=3, max=20)])
-    Breed = StringField(validators=[InputRequired(), Length(min=3, max=50)])
-    DOB = DateField(validators=[InputRequired()])
+    BoarId = StringField(validators=[DataRequired(), Length(min=3, max=20)])
+    Breed = StringField(validators=[DataRequired(), Length(min=3, max=50)])
+    DOB = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     submit = SubmitField("Add Boar")
 
     def validate_BoarId(self, BoarId):
-        existing_boar = Boars.query.filter_by(BoarId=BoarId.data).first()
+        existing_boar = Boars.query.filter_by(BoarId=BoarId.data.strip().upper(),user_id=current_user.id).first()
         if existing_boar and existing_boar.id != self.BoarId.data:
             raise ValidationError('The Boar already exists. Please Choose a different ID')
 
@@ -85,7 +86,7 @@ class InvoiceGeneratorForm(FlaskForm):
     submit = SubmitField("Generate Invoice")
 
 class ExpenseForm(FlaskForm):
-    date = DateField( validators=[InputRequired()])
+    date = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     amount = FloatField(validators=[InputRequired()])
     category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment'),('transport', 'Transport'),('utilities','Utilities')], validators=[InputRequired()])
     invoice_number = StringField(validators=[InputRequired()])
@@ -95,9 +96,16 @@ class ExpenseForm(FlaskForm):
 
 # litter management form:
 class LitterForm(FlaskForm):
-    farrowDate = DateField(validators=[InputRequired()])
+    farrowDate = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     totalBorn = IntegerField(validators=[InputRequired()])
     bornAlive = IntegerField(validators=[InputRequired()])
     stillBorn = IntegerField(validators=[InputRequired()])
     weights = TextAreaField(validators=[InputRequired()], render_kw={"Placeholder": "e.g: 2.1, 3, 1.2, 2, ..."})
     submit = SubmitField("Add Litter")
+
+# change password form
+class ChangePasswordForm(FlaskForm):
+    current_password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
+    new_password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
+    confirm_password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
+    submit = SubmitField("Change Password")

@@ -211,3 +211,4 @@ def get_litter_stage(farrow_date):
         return 'grower'
     else:
         return 'finisher'
+    

@@ -2,13 +2,15 @@
 {% block title %}boar edit form{% endblock %}
 
 {% block head %}
-<title>boars</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <title>boars</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +27,7 @@
         {{ form.Breed(class="form-control", autocomplete="off") }}
 
         <label for="DOB">Date of Birth:</label>
-        {{ form.DOB(class="form-control") }}
+        {{ form.DOB(class="form-control", id="dob_field") }}
 
         <div class="submitBTN">
             <button class="btn btn-primary" type="submit"> Edit</button>
@@ -42,5 +44,10 @@
         {% endfor %}
     {% endif %}
     {% endwith %}
+    <script>
+            flatpickr("#dob_field",{
+            dateFormat: "d-m-Y"
+        }); 
+        </script>
 </main>
 {% endblock %}
