@@ -11,6 +11,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150), unique=True, nullable=False)  # usually email
     email = db.Column(db.String(200), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
+    verification_token = db.Column(db.String(128), nullable=True)
+    is_verified = db.Column(db.Boolean, default=False)
 
     # NEW FIELDS for Google login
     google_id = db.Column(db.String(255), unique=True, nullable=True)
@@ -72,7 +74,7 @@ class ServiceRecords(db.Model):
     due_date = db.Column(db.Date)
     action_date = db.Column(db.Date)
 
-    litter = db.relationship('Litter', backref='service_record', uselist=False, passive_deletes=True)
+    litter = db.relationship('Litter', back_populates='service_record', uselist=False, passive_deletes=True)
     sow = db.relationship("Sows", back_populates="service_records")
 
     __table_args__ = (
@@ -128,7 +130,7 @@ class Litter(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     
     service_record_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE', name='fk_service_record_id'), nullable=False)
-    service_records = db.relationship("ServiceRecords", back_populates="litter")
+    service_record = db.relationship("ServiceRecords", back_populates="litter")
     
     sow_id = db.Column(db.Integer, db.ForeignKey('sows.id'))
     sow = db.relationship('Sows', backref='litters')

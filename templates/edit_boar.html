@@ -34,20 +34,23 @@
             <a href="{{ url_for('boars')}}" class="btn btn-secondary" style="text-align: center;">Cancel</a>
         </div>
         
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class="flashes">
+            {% for category, message in messages %}
+            <li class="flash {{ category|lower }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
     </form>
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    {% endwith %}
+
     <script>
-            flatpickr("#dob_field",{
-            dateFormat: "d-m-Y"
+        flatpickr("#dob_field",{
+        dateFormat: "d-m-Y"
         }); 
-        </script>
+    </script>
 </main>
 {% endblock %}

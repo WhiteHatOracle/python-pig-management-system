@@ -1,0 +1,87 @@
+Title
+main h2 {
+    color: #d93025; /* Google-style red warning */
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Warning text */
+main p {
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+/* Label and input */
+form label {
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+form input[type="password"] {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+form input[type="password"]:focus {
+    border-color: #d93025;
+    outline: none;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    text-align: center;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+}
+
+/* Danger button */
+.btn-danger {
+    background-color: #d93025;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #b2221a;
+}
+
+/* Secondary button */
+.btn-secondary {
+    background-color: #f1f1f1;
+    color: #444;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #ddd;
+}
+
+/* Align buttons horizontally on bigger screens */
+@media (min-width: 700px) {
+    form {
+        flex-direction: column;
+    }
+    .btn-danger, .btn-secondary {
+        width: 100%;
+    }
+}

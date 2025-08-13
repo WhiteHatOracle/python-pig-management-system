@@ -1,0 +1,33 @@
+{% extends 'home.html' %}
+{% block title %}Delete Account{% endblock %}
+
+{% block head %}
+  <title>Delete Account</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/delete_account.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <main>
+    <h2>Delete Account</h2>
+    <p> Are you sure you want to delete your account? This action cannot be undone.</p>
+    <form method="post">
+      {% if not is_google_user %}
+        <div>
+          <label for="password">Enter your password to confirm account deletion:</label>
+          <input type="password" name="password" id="password" required>
+        </div>
+      {% else %}
+        <div>
+          <p><strong>Since you signed in with Google, no password is required. Click below to delete your account.</strong></p>
+        </div>
+      {% endif %}
+      <button type="submit" class="btn btn-danger">Delete My Account</button>
+      <a href="{{ url_for('settings') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+  </main>
+</div>
+{% endblock %}

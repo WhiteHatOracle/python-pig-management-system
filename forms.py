@@ -1,5 +1,5 @@
 from wtforms import EmailField,StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError, InputRequired, DataRequired
+from wtforms.validators import InputRequired, Length, ValidationError, InputRequired, DataRequired, EqualTo
 from flask_wtf import FlaskForm
 from models import Sows, Boars, User  # Importing the models for validation
 from wtforms.fields import DateField
@@ -105,7 +105,10 @@ class LitterForm(FlaskForm):
 
 # change password form
 class ChangePasswordForm(FlaskForm):
-    current_password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
-    new_password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
-    confirm_password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)])
+    current_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)])
+    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)])
+    confirm_password = PasswordField("Confirm New Password", validators=[
+        DataRequired(),
+        EqualTo('new_password', message='Passwords must match'),
+    ])
     submit = SubmitField("Change Password")

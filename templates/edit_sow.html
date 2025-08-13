@@ -38,15 +38,15 @@
     </form>
 
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-            <div class="flash-messages">
+        <ul class="flashes">
             {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
+            <li class="flash {{ category|lower }}">{{ message }}</li>
             {% endfor %}
-            </div>
+        </ul>
         {% endif %}
-        {% endwith %}
+    {% endwith %} 
 
         <script>
             flatpickr("#dob_field",{

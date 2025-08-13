@@ -69,8 +69,8 @@
         <label for="num3MealTotalCost">Total Cost of Number 3 Meal: </label>
         <u>K{{ "{:,.2f}".format(result.num3MealTotalCost|default(0)) }}</u>
 
-        <label for="totalCost">Total Cost of Feed for {{ result.pigs|default(0) }} Pigs for {{ result.days|default(0) }} days: </label>
-        <span class="total-cost"><b><u>K{{ "{:,.2f}".format(result.totalCost|default(0)) }}</u></b></span>
+        <label for="totalCost">Total Cost of Feed for {{ result.pigs|default(0) }} Pigs for {{ result.days|default(0) }} days:</label>
+        <span class="total-cost"><b><u>K{{"{:,.2f}".format(result.totalCost|default(0)) }}</u></b></span>
     </div>
 
     <script>

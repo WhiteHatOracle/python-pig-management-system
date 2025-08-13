@@ -5,17 +5,19 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from sqlalchemy import func, event
+from flask_mail import Mail, Message
 from datetime import timedelta, datetime
-import datetime
 from dotenv import load_dotenv
 from dash import dcc, html, dash_table
 from authlib.integrations.flask_client import OAuth
 import os
 import re
-import logging
 import dash
-import dash_bootstrap_components as dbc
+import uuid
 import logging
+import datetime
+import traceback
+import dash_bootstrap_components as dbc
 
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
@@ -34,11 +36,8 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
 
-# Initialize Flask app
-app = Flask(__name__)
+app = Flask(__name__) # Initialize Flask app
 app.secret_key= os.getenv("SECRET_KEY")
-
-
 
 # Initialize Dash app
 dash_app = dash.Dash(
@@ -66,7 +65,17 @@ google = oauth.register(
 # Load configuration from environment variables
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious' 
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")  # Set in .env
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")  # Set in .env
+
 # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+
+mail = Mail(app)  # Initialize Flask-Mail
+
 
 # Make `enumerate` available in Jinja2 templates
 app.jinja_env.globals.update(enumerate=enumerate)
@@ -82,7 +91,7 @@ login_manager.login_view = "signin"  # Redirect here if unauthorized access is a
 # Load user for login management
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 # Dashboard Layout
 dash_app.layout = dbc.Container([
@@ -252,6 +261,9 @@ def signin():
             user =User.query.filter_by(username=username).first()
             
         if user:
+            if not user.is_verified:
+                flash("Please verify your email before logging in.", "Error")
+                return render_template('signin.html', form=form)
             if user.password is not None:
                 # Check password for local users
                 if bcrypt.check_password_hash(user.password, form.password.data):
@@ -266,21 +278,103 @@ def signin():
             flash("User does not exist. Please register.","Error")
     return render_template('signin.html', form=form)
 
-@app.route('/signup', methods = ['GET', 'POST'])
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = RegisterForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') # Hash the password
-        new_user = User(username=form.username.data, email=form.email.data ,password=hashed_password)
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        token = str(uuid.uuid4())
+        expiry_time=datetime.utcnow() + timedelta(hours=24)  # Link expires in 24 hours
+
+        new_user = User(
+            username=form.username.data,
+            email=form.email.data,
+            password=hashed_password,
+            verification_token=token,
+            verification_expiry=expiry_time,
+            is_verified=False
+        )
         try:
             db.session.add(new_user)
-            db.session.commit() 
-            flash("Registration sucessful! Please Log in.", "Success")
+            db.session.commit()
+
+            # Create verification email
+            verify_url = url_for('verify_email', token=token, _external=True)
+            msg = Message(
+                subject="Welcome to Pig Management System – Verify Your Email",
+                sender=("Pig Management System", app.config['MAIL_USERNAME']),
+                recipients=[form.email.data]
+            )
+
+            # Plain text version
+            msg.body = f"""Hi {form.username.data},
+
+            Thanks for signing up for Pig Management System!
+
+            Please confirm your email address by clicking the link below:
+            {verify_url}
+
+            This link will expire in 24 hours.
+
+            If you didn’t sign up, you can ignore this message.
+
+            Cheers,
+            The Pig Management System Team
+            """
+
+            # HTML version
+            msg.html = f"""
+            <p>Hi {form.username.data},</p>
+            <p>Thanks for signing up for <strong>Pig Management System</strong>!</p>
+            <p>Please confirm your email address by clicking the link below:</p>
+            <p><a href="{verify_url}" style="color: #1a73e8;">Verify My Email</a></p>
+            <p><strong>This link will expire in 24 hours.</strong></p>
+            <p>If you didn’t sign up, you can ignore this message.</p>
+            <p>Cheers,<br>The Pig Management System Team</p>
+            """
+
+            # Send email
+            email_sent = False
+            try:
+                mail.send(msg)
+                email_sent = True
+            except Exception as e:
+                app.logger.error("Email send failed:\n" + traceback.format_exc())
+                flash(f"Registration successful, but we couldn't send the verification email.", "Error")
+
+            if email_sent:
+                flash("Registration successful! Please check your email to verify your account.", "Success")
+
             return redirect(url_for('signin'))
+
         except Exception as e:
             db.session.rollback()
+            app.logger.error("Database error:\n" + traceback.format_exc())
             flash("An error occurred during registration. Please try again.", "Error")
+
     return render_template('signup.html', form=form)
+
+
+@app.route('/verify/<token>')
+def verify_email(token):
+    user = User.query.filter_by(verification_token=token).first()
+    if user:
+        # check if the token is expired
+        if user.verification_expiry and datetime.utcnow() > user.verification_expiry:
+            db.session.delete(user)
+            db.session.commit()
+            flash("Verification link expired. Please register again.", "Error")
+            return redirect(url_for('signup'))
+
+        # If the token is valid and not expired, verify the user
+        user.is_verified = True
+        user.verification_token = None
+        user.verification_expiry = None
+        db.session.commit()
+        flash("Your email has been verified. You can now log in.", "Success")
+    else:
+        flash("Invalid or expired verification link.", "Error")
+    return redirect(url_for('signin'))
 
 # Google login route
 @app.route('/google-login')
@@ -604,7 +698,7 @@ def edit_boar(boar_id):
             return redirect(url_for('boars'))  # Redirect to the main boar manager
         except IntegrityError:
             db.session.rollback()
-            flash(f'Boar with ID {boar.boarId} already exists!', 'error')
+            flash(f'Boar with ID {boar.BoarId} already exists!', 'error')
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
@@ -630,7 +724,6 @@ def sows():
                 user_id=current_user.id)
             db.session.add(new_sow)
             db.session.commit()
-            flash('Sow added successfully!', 'success')
             return redirect(url_for('sows'))
         except IntegrityError:
             db.session.rollback()
@@ -856,12 +949,6 @@ def delete_service_record(record_id):
     # Redirect back to the sow's service records page
     return redirect(url_for('sow_service_records', sow_id=record.sow_id))
 
-@app.route('/herd', methods=['POST', 'GET'])
-@login_required
-def herd():
-    herd = Litter.query.join(Sows).filter(Sows.user_id == current_user.id).order_by(Litter.farrowDate).all()
-    return render_template('herds.html', herd=herd)
-
 @app.route('/expenses', methods=['GET', 'POST'])
 @login_required
 def expenses():
@@ -962,6 +1049,8 @@ def change_password():
             return redirect(url_for('change_password'))        
         
         new_password = form.new_password.data.strip()
+        confirm_password = form.confirm_password.data.strip()
+
         if not new_password:
             flash("New password cannot be empty.", "Error")
             return redirect(url_for('change_password'))
@@ -975,6 +1064,46 @@ def change_password():
         return redirect(url_for('settings'))
 
     return render_template('change_password.html', form=form)
+
+@app.route("/delete_account", methods=["POST","GET"])
+@login_required
+def delete_account():
+    is_google_user = current_user.password is None
+    if request.method == "POST":
+        if is_google_user:
+            user_id = current_user.id
+            logout_user()
+            session.clear()
+            user = User.query.get(user_id)
+            if user:
+                db.session.delete(user)
+                db.session.commit()
+                flash("Your account has been permanently deleted.", "info")
+            else:
+                flash("User not found.", "danger")
+            return redirect(url_for("goodbye"))
+        else:
+            password = request.form.get("password")
+            if not bcrypt.check_password_hash(current_user.password, password):
+                flash("Incorrect password. Account not deleted.", "danger")
+                return redirect(url_for("delete_account"))
+            user_id = current_user.id
+            logout_user()
+            session.clear()
+            user = User.query.get(user_id)
+            if user:
+                db.session.delete(user)
+                db.session.commit()
+                flash("Your account has been permanently deleted.", "info")
+            else:
+                flash("User not found.", "danger")
+            return redirect(url_for("goodbye"))
+    return render_template("delete_account.html", is_google_user=is_google_user)
+
+@app.route("/goodbye")
+def goodbye():
+    return "<h3>We're sorry to see you go. Your account has been deleted.</h3>"
+
 
 # Run the Dashboard
 if dash_app.layout is None:

@@ -17,6 +17,8 @@ function applySidebarState() {
     sidebar.classList.toggle("close", isClosed);
 }
 
+
+
 // Run on initial load
 document.addEventListener("DOMContentLoaded", applySidebarState);
 
@@ -98,3 +100,14 @@ document.addEventListener("DOMContentLoaded", () => {
   observer.observe(document.body, { childList: true, subtree: true });
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+  // Disappearing flash messages
+  setTimeout(function() {
+    const flashMessages = document.querySelectorAll('.flash');
+    flashMessages.forEach(msg => {
+      msg.style.transition = 'opacity 0.5s ease';
+      msg.style.opacity = '0';
+      setTimeout(() => msg.remove(), 500); // Fully remove after fade-out
+    });
+  }, 5000); // 5 seconds
+});

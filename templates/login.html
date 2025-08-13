@@ -1,70 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ManagePro - Pig Management System</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-        <script type="text/javascript" src="{{ url_for('static', filename='js/login.js')}}" defer></script>  
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ManagePro - Pig Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+  <script type="text/javascript" src="{{ url_for('static', filename='js/login.js')}}" defer></script> 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <h1 class="logo">Farmer<span>DEV</span></h1>
-    <nav class="nav desktop-nav">
-      <a href="#features">Features</a>
-      <a href="{{ url_for('payment_plans') }}">Payment plans</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-      <a href="{{url_for('signin')}}" class="btn">Login</a>
-    </nav>
-    <button class="hamburger" id="hamburger"></button>
-  </header>
 
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="#features">Features</a>
-    <a href="{{ url_for('payment_plans') }}">Payment plans</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <a href="{{url_for('signin')}}" class="btn">Login</a>
+<header>
+  <h1>PigManagePro</h1>
+  <nav id="main-nav">
+    <ul>
+      <li><a href="{{ url_for('login') }}">Home</a></li>
+      <li><a href="{{ url_for('login') }}">About</a></li>
+      <li><a href="{{ url_for('login') }}">Features</a></li>
+      <li><a href="{{ url_for('login') }}">Contact</a></li>
+      <li><a href="{{ url_for('signin')}}" class="cta-btn">Login</a></li>
+    </ul>
+  </nav>
+  <button id="nav-toggle" aria-label="Toggle navigation">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+</header>
+
+<section class="hero">
+  <div class="hero-text">
+    <h2>Smart Pig Farm Management Made Simple</h2>
+    <p>Track, plan, and manage every aspect of your pig farm — from feed calculations to farrowing schedules — all in one intuitive dashboard.</p>
+    <a href="{{ url_for('signup') }}" class="cta-btn">Start Managing Smarter</a>
   </div>
+  <img src="/static/assets/MotherPig.png" alt="Pig farm management">
+</section>
+<!-- <hr> -->
+<section class="usp">
+  <h3>Why Choose PigManagePro?</h3>
+  <p>Our system combines automation, precision, and ease of use to help pig farmers save time, reduce costs, and boost productivity.</p>
+  <br>
+  <p>This is a smart, data-driven tool that helps manage pig farming operations more efficiently, streamlining tasks like breeding management, financial tracking, and overall farm analytics. It's great for anyone looking to automate and optimize farm operations with modern web technologies!</p>
+</section>
+<!-- <hr> -->
+<section class="benefits">
+  <div class="benefit">
+    <h4>Automated Feed Calculation</h4>
+    <p>Instantly know the exact feed needed for your pigs over a given number of days.</p>
+  </div>
+  <div class="benefit">
+    <h4>Smart Dashboard</h4>
+    <p>Get a quick glance at upcoming farrowings, vaccinations, and herd status.</p>
+  </div>
+  <div class="benefit">
+    <h4>Breeding & Vaccination Tracking</h4>
+    <p>Automatically calculate due dates, farrowing dates, and vaccination schedules.</p>
+  </div>
+  <div class="benefit">
+    <h4>Full Herd Overview</h4>
+    <p>Track gilts, sows, and boars with complete lifecycle management.</p>
+  </div>
+</section>
 
-  <section class="hero">
-    <h2 class="hero-title">Streamline Your Pig Management</h2>
-    <p class="hero-subtitle">
-      Efficient tools for livestock tracking, feeding schedules, and farm performance—all in one place.
-    </p>
-    <a href="{{url_for('signup')}}" class="btn get-started">Get Started</a>
-  </section>
-
-  <section id="features" class="features section-scroll">
-    <div class="feature">
-      <h3>Dashboard Overview</h3>
-      <p>Monitor livestock metrics, feed levels, and performance data.</p>
+<section class="social-proof">
+  <h3>Trusted by Farmers</h3>
+  <div class="testimonials">
+    <div class="testimonial">
+      <p>"This system has transformed how I manage my farm — it’s like having a farm assistant 24/7."</p>
+      <strong>– John M., Commercial Pig Farmer</strong>
     </div>
-    <div class="feature">
-      <h3>Team Collaboration</h3>
-      <p>Assign roles, manage farm workers, and sync tasks across teams.</p>
+    <div class="testimonial">
+      <p>"I no longer miss vaccination dates or farrowing deadlines. It's a real game-changer."</p>
+      <strong>– Sarah L., Small-Scale Farmer</strong>
     </div>
-    <div class="feature">
-      <h3>Automation</h3>
-      <p>Automate feeding, alerts, and reporting to save time and increase efficiency.</p>
+    <div class="testimonial">
+      <p>"This system has transformed how I manage my farm — it’s like having a farm assistant 24/7."</p>
+      <strong>– John M., Commercial Pig Farmer</strong>
     </div>
-  </section>
+    <div class="testimonial">
+      <p>"I no longer miss vaccination dates or farrowing deadlines. It's a real game-changer."</p>
+      <strong>– Sarah L., Small-Scale Farmer</strong>
+    </div>
+    <div class="testimonial">
+      <p>"This system has transformed how I manage my farm — it’s like having a farm assistant 24/7."</p>
+      <strong>– John M., Commercial Pig Farmer</strong>
+    </div>
+    <div class="testimonial">
+      <p>"I no longer miss vaccination dates or farrowing deadlines. It's a real game-changer."</p>
+      <strong>– Sarah L., Small-Scale Farmer</strong>
+    </div>
+  </div>
+</section>
 
-  <section id="about" class="about section-scroll">
-    <h3>Why Choose ManagePro?</h3>
-    <p>
-      Tailored for pig farmers, our system helps streamline operations and maximize productivity with ease of use, adaptability, and real-time insights.
-      <hr>
-      This is a smart, data-driven tool that helps manage pig farming operations more efficiently, streamlining tasks like breeding management, financial tracking, and overall farm analytics. It's great for anyone looking to automate and optimize farm operations with modern web technologies!
-
-    </p>
-  </section>
-
-  <footer id="contact" class="footer section-scroll">
-    <p>&copy; 2025 ManagePro. All rights reserved.</p>
-  </footer>
-
+<footer>
+  &copy; 2025 PigManagePro. All rights reserved.
+</footer>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const navToggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('main-nav');
+  navToggle.addEventListener('click', function() {
+    nav.classList.toggle('open');
+    navToggle.classList.toggle('open');
+  });
+});
+</script>
 </body>
 </html>
-
