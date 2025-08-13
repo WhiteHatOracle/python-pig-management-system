@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(200), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
     verification_token = db.Column(db.String(128), nullable=True)
+    verification_expiry = db.Column(db.DateTime, nullable=True)  # NEW FIELD for token expiry
     is_verified = db.Column(db.Boolean, default=False)
 
     # NEW FIELDS for Google login

@@ -74,7 +74,6 @@ app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")  # Set in .env
 
 # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 
-mail = Mail(app)  # Initialize Flask-Mail
 
 
 # Make `enumerate` available in Jinja2 templates
@@ -82,6 +81,7 @@ app.jinja_env.globals.update(enumerate=enumerate)
 
 # Initialize database, bcrypt, and login manager
 db.init_app(app)
+mail = Mail(app)  # Initialize Flask-Mail
 migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager()
