@@ -65,6 +65,10 @@ body{
     padding: 30px 10px;
     backdrop-filter: blur(3px);
     border-radius: 4px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 h1{
@@ -106,6 +110,10 @@ input:focus{
     cursor: pointer;
 }
 
+.btn:hover{
+    background-color: var(--hover-primary);
+}
+
 .third-party{
     display: flex;
     align-items: center;
@@ -139,31 +147,25 @@ input:focus{
     margin-right: 8px;
 }
 
-.signup{
-    background: var(--bg-light);
-    color: var(--text-);
-}
-
-.signup a{
-    text-align: none;
-}
-
-a{
-    color: var(--primary-color);
+.forgotPassword{
+    color: var(--bg-primary);
+    font-size: 0.9rem;
+    padding: 10px 8px;
+    margin-top: 10px;
     text-decoration: none;
 }
-
-p{
-    font-size: 12px;
-    color: var(--text-color);
+.forgotPassword:hover{
+    color: var(--hover-accent);
 }
 
 .dont-have-an-account{
-    color: var(--bg-primary);
-    font-size: 12px;
+    color: var(--hover-primary);
+    font-size: 0.9rem;
     padding: 10px 8px;
 }
-
+.dont-have-an-account:hover{
+    color: var(--bg-primary);
+}
 
 .separator{
     width: 300px;  /* Fixed width */
@@ -181,17 +183,84 @@ p{
 }
 
 .separator span{
-    font-size: 16px;
+    font-size: 0.8rem;
     margin: 0 4px;
 }
 
 .separator span{
-    font-size: 12px;
+    font-size: 0.8rem;
     color: var(--text-color);
 }
 
 .terms{
     margin-top: 40px;
     color: var(--primary-color);
-    font-size: 13px;
+    font-size: 1rem;
+}
+
+@media (max-width: 800px) {
+    .container{
+        width: 90%;
+        padding: 20px;
+    }
+    h1{
+        font-size: 1.5rem;
+    }
+    input[type="email"], .form-control, .btn{
+        width: 100%;
+    }
+    .third-party a{
+        width: 100%;
+    }
+    .separator{
+        width: 90%;
+    }
+
+    .search-container{
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    input::placeholder{
+        color: var(--text-dark) !important;
+        opacity: 1;
+    }
+
+    #searchInput {
+        padding: 8px 40px;
+        background: var(--bg-lightest); 
+        border: var(--bg-accent);
+        border: 1px solid var(--bg-accent);
+        border-radius: 20px; 
+        font-size: 16px;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+    #searchInput:focus{
+        color: var(--bg-primary);
+        border-color: var(--bg-primary);
+    }
+
+    .search-icon{
+        position: relative;
+        left: 40px;
+        margin: 5px;
+        top: -5px;
+        fill: var(--text-dark) !important;
+    }
+
+    .close-icon{
+        position: relative;
+        right: 40px;
+        margin: 5px;
+        top: -5px;
+        cursor: pointer;
+        fill: var(--text-dark);
+    }
+
+    hr{
+        margin: 10px auto;
+    }   
 }

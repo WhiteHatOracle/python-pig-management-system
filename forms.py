@@ -112,3 +112,20 @@ class ChangePasswordForm(FlaskForm):
         EqualTo('new_password', message='Passwords must match'),
     ])
     submit = SubmitField("Change Password")
+
+class ForgotPasswordForm(FlaskForm):
+    email = EmailField(validators=[InputRequired()], render_kw={"Placeholder": "E-mail"})
+    submit = SubmitField("Reset Password")
+
+    def validate_email(self, email):
+        existing_user = User.query.filter_by(email=email.data).first()
+        if not existing_user:
+            raise ValidationError('No account found with that email address. Please try again.')
+
+class ResetPasswordForm(FlaskForm):
+    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "New Password"})
+    confirm_password = PasswordField("Confirm New Password", validators=[
+        DataRequired(),
+        EqualTo('new_password', message='Passwords must match'),
+    ])
+    submit = SubmitField("Reset Password")

@@ -7,6 +7,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from sqlalchemy import func, event
 from flask_mail import Mail, Message
 from datetime import timedelta, datetime
+import datetime as dt
 from dotenv import load_dotenv
 from dash import dcc, html, dash_table
 from authlib.integrations.flask_client import OAuth
@@ -15,13 +16,13 @@ import re
 import dash
 import uuid
 import logging
-import datetime
+import secrets
 import traceback
 import dash_bootstrap_components as dbc
 
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
-from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm, ChangePasswordForm
+from forms import ResetPasswordForm, ForgotPasswordForm, LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm, ChangePasswordForm
 from utils import get_sow_service_records, parse_range, update_dashboard, get_total_counts, generate_invoice_pdf, get_litter_stage
 
 # Configure logging to show in console
@@ -71,10 +72,7 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")  # Set in .env
 app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")  # Set in .env
-
 # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
-
-
 
 # Make `enumerate` available in Jinja2 templates
 app.jinja_env.globals.update(enumerate=enumerate)
@@ -284,7 +282,7 @@ def signup():
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         token = str(uuid.uuid4())
-        expiry_time=datetime.utcnow() + timedelta(hours=24)  # Link expires in 24 hours
+        expiry_time = datetime.now(dt.timezone.utc) + timedelta(hours=24)  # Link expires in 24 hours
 
         new_user = User(
             username=form.username.data,
@@ -360,7 +358,7 @@ def verify_email(token):
     user = User.query.filter_by(verification_token=token).first()
     if user:
         # check if the token is expired
-        if user.verification_expiry and datetime.utcnow() > user.verification_expiry:
+        if user.verification_expiry and datetime.now(dt.timezone.utc) > user.verification_expiry:
             db.session.delete(user)
             db.session.commit()
             flash("Verification link expired. Please register again.", "Error")
@@ -561,14 +559,14 @@ def download_invoice():
     total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
     total_pigs = int(request.form.get("total_pigs"))
     #generate unique invoice number
-    invoice_number = f"INV-{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+    invoice_number = f"INV-{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
     #store invoice data in db just before downloading
     new_invoice = Invoice(
         invoice_number=invoice_number,
         num_of_pigs=total_pigs,
         company_name=company_name,
-        date=datetime.datetime.now().date(),
+        date=datetime.now().date(),
         total_weight=total_weight,
         average_weight=average_weight,
         total_price=total_cost,
@@ -1104,6 +1102,89 @@ def delete_account():
 def goodbye():
     return "<h3>We're sorry to see you go. Your account has been deleted.</h3>"
 
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            # Generate a password reset token
+            token = secrets.token_urlsafe(32)
+            user.password_reset_token = token
+            user.password_reset_expiry = datetime.now(dt.timezone.utc) + timedelta(hours=1)  # Token valid for 1 hour
+            db.session.commit()
+
+            reset_url = url_for('reset_password', token=token, _external=True)
+
+            # Send email with reset link
+            msg = Message(
+                subject     = "Password Reset Request - Pig Management System",
+                sender      = ("Pig Management System", app.config['MAIL_USERNAME']),
+                recipients  = [user.email]
+            )
+            msg.body = f"""
+                Hi {user.username},
+
+                You requested to reset your password.
+
+                Click the link below to reset your password (expires in 1 hour):
+                {reset_url}
+
+                If you didn’t request this, ignore this email.
+
+                Cheers,
+                Pig Management System Team
+                """
+            msg.html = f"""
+                <p>Hi {user.username},</p>
+                <p>You requested to reset your password.</p>
+                <p>Click the link below to reset your password (expires in 1 hour):</p>
+                <p><a href="{reset_url}" style="color: #1a73e8;">Reset Password</a></p>
+                <p>If you didn’t request this, ignore this email.</p>
+                <p>Cheers,<br>Pig Management System Team</p>
+                """
+            try:
+                mail.send(msg)
+                flash("A password reset link has been sent to your email.", "success")
+            except Exception as e:
+                flash(f"We ran into a problem trying to send the email. Please try again later. Error: {str(e)}", "error")
+        else:
+            flash("No account found with that email address.", "error")
+            return redirect(url_for('sign_in'))
+    return render_template('forgot_password.html', form=form)
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    user = User.query.filter_by(password_reset_token=token).first()
+    if not user or user.password_reset_expiry < datetime.now(dt.timezone.utc).replace(tzinfo=None):  # Now both are naive
+        flash("Invalid or expired password reset link.", "error")
+        return redirect(url_for('forgot_password'))
+
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        new_password = form.new_password.data.strip()
+        confirm_password = form.confirm_password.data.strip()
+
+        if not new_password:
+            flash("The password can't be empty.", "error")
+            return redirect(url_for('reset_password', token=token))
+        
+        if new_password != confirm_password:
+            flash("Passwords do not match. Please try again.", "error")
+            return redirect(url_for('reset_password', token=token))
+        
+        # Hash the new password and update the user record
+        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        user.password = hashed_password
+        user.password_reset_token = None  # Clear the token
+        user.password_reset_expiry = None  # Clear the expiry time
+
+        db.session.commit()
+
+        flash("Your password has been reset successfully. You can now log in with your new password.", "success")
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form, token=token)
 
 # Run the Dashboard
 if dash_app.layout is None:
