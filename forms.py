@@ -124,8 +124,5 @@ class ForgotPasswordForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
     new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "New Password"})
-    confirm_password = PasswordField("Confirm New Password", validators=[
-        DataRequired(),
-        EqualTo('new_password', message='Passwords must match'),
-    ])
+    confirm_password = PasswordField(validators=[DataRequired(), EqualTo('new_password', message='Passwords must match'),], render_kw={"Placeholder":"Confirm New Password"})
     submit = SubmitField("Reset Password")

@@ -45,18 +45,38 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
 }
-
-.alert{
-    outline: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 300px;
-    margin: 20px auto;
-    padding: 5px 20px;
-    color: red;
-    border: 2px solid rgb(255, 0, 0);
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
 }
+
+.flashes {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+  }
+
+  .flash {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .flash.success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .flash.error {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+
 .container{
     text-align: center;
     background-color: rgba(255,255,255,0.2);

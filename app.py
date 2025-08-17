@@ -1,5 +1,4 @@
 from sqlalchemy.engine import Engine
-from werkzeug.security import check_password_hash
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
@@ -280,6 +279,18 @@ def signin():
 def signup():
     form = RegisterForm()
     if form.validate_on_submit():
+        # check for an existing username
+        existing_user =User.query.filter_by(username=form.username.data.strip()).first()
+        if existing_user:
+            flash("The username already exists. Try something different, maybe your farm name?? :)", "Error")
+            return render_template('signup.html', form=form)
+        
+        # check if email already exists
+        existing_email = User.query.filter_by(email=form.email.data.strip()).first()
+        if existing_email:
+            flash("Looks like that email is already registered. Forgotten your password?", "Error")
+            return render_template('signup.html', form = form)
+
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         token = str(uuid.uuid4())
         expiry_time = datetime.now(dt.timezone.utc) + timedelta(hours=24)  # Link expires in 24 hours
@@ -1183,7 +1194,7 @@ def reset_password(token):
         db.session.commit()
 
         flash("Your password has been reset successfully. You can now log in with your new password.", "success")
-        return redirect(url_for('login'))
+        return redirect(url_for('signin'))
     return render_template('reset_password.html', form=form, token=token)
 
 # Run the Dashboard
