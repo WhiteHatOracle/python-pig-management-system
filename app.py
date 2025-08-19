@@ -20,7 +20,7 @@ import traceback
 import dash_bootstrap_components as dbc
 
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort
+from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort, get_flashed_messages
 from forms import ResetPasswordForm, ForgotPasswordForm, LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm, ChangePasswordForm
 from utils import get_sow_service_records, parse_range, update_dashboard, get_total_counts, generate_invoice_pdf, get_litter_stage
 
@@ -654,11 +654,12 @@ def boars():
                 )
             db.session.add(new_boar)
             db.session.commit()
-            flash('Boar added successfully!', 'success')
+            flash(f'{boar_id} added successfully!', 'success')
             return redirect(url_for('boars'))
         except IntegrityError:
             db.session.rollback()
-            flash(f'Boar with ID {boar_id} already exists!', 'error')
+            flash(f'{boar_id} already exists!', 'error')
+            return redirect(url_for('boars'))
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
@@ -703,14 +704,18 @@ def edit_boar(boar_id):
 
         try:
             db.session.commit()
-            flash('Boar updated successfully!', 'success')
+            flash('Updated successfully!', 'success')
             return redirect(url_for('boars'))  # Redirect to the main boar manager
         except IntegrityError:
             db.session.rollback()
-            flash(f'Boar with ID {boar.BoarId} already exists!', 'error')
+            flash(f'{form.BoarId.data.upper()} already exists!', 'error')
+            # Render the template to show the error message
+            return render_template('edit_boar.html', form=form, boar=boar)
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
+            # Render the template to show the error message
+            return render_template('edit_boar.html', form=form, boar=boar)
 
     return render_template('edit_boar.html', form=form, boar=boar)
 
@@ -733,10 +738,11 @@ def sows():
                 user_id=current_user.id)
             db.session.add(new_sow)
             db.session.commit()
+            flash(f'{sow_id} successfully added!', 'success')
             return redirect(url_for('sows'))
         except IntegrityError:
             db.session.rollback()
-            flash(f'Sow with ID {sow_id} already exists!', 'error')
+            flash(f'{sow_id} already exists!', 'error')
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
@@ -763,11 +769,11 @@ def edit_sow(sow_id):
 
         try:
             db.session.commit()
-            flash('Sow updated successfully!', 'success')
+            flash('Updated successfully!', 'success')
             return redirect(url_for('sows'))  # Redirect to the main sow manager
         except IntegrityError:
             db.session.rollback()
-            flash(f'Sow with ID {sow.sowID} already exists!', 'error')
+            flash(f'{sow.sowID} already exists!', 'error')
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
@@ -802,7 +808,7 @@ def sow_service_records(sow_id):
         form.boar_used.choices = boar_choices
 
     if form.validate_on_submit():  # Checks if the form was submitted and is valid
-        
+               
         boar_used_id = form.boar_used.data.upper() #get boar id used from form
         boar = Boars.query.filter_by(id=boar_used_id, user_id=current_user.id).first_or_404() # query the boar from the current logged in user
 
@@ -915,7 +921,7 @@ def litter_records(service_id):
             db.session.rollback()
             flash(f'An error occurred while saving the litter: {str(e)}', 'error')
 
-    return render_template('litterRecord.html', form=form, sow=sow ,serviceRecord=serviceRecord, litters=litters, sow_id=sow_id, existing_litter=existing_litter)
+    return render_template('litterRecord.html', form=form, sow=sow ,serviceRecord=serviceRecord, litters=litters, sow_id=sow_id, existing_litter=existing_litter, service_id=service_id)
 
 @app.route('/delete-litter/<int:litter_id>', methods=['POST'])
 @login_required
@@ -973,10 +979,14 @@ def expenses():
             description=form.description.data,
             user_id = current_user.id
         )
-        db.session.add(expense)
-        db.session.commit()
-        flash('Expense logged successfully!', 'success')
-        return redirect(url_for('expenses'))
+        try:
+            db.session.add(expense)
+            db.session.commit()
+            flash('Expense logged successfully!', 'success')
+            return redirect(url_for('expenses'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('An expense with the same invoice is available','error')
     
     page = request.args.get('page', 1, type=int)
     per_page = 10  # Number of Exepenses per page
@@ -1046,32 +1056,37 @@ def settings():
     return render_template('settings.html')
 
 # change password route
-@app.route('/change_password', methods=['POST', 'GET'])
+@app.route('/change_password', methods=['GET', 'POST'])
 @login_required
 def change_password():
     form = ChangePasswordForm()
 
     if form.validate_on_submit():
-    # Check if the entered password matches the one in the database
+        # Verify current password
         if not bcrypt.check_password_hash(current_user.password, form.current_password.data):
-            flash("Current password is incorrect. Please try again.", "Error")
-            return redirect(url_for('change_password'))        
-        
-        new_password = form.new_password.data.strip()
-        confirm_password = form.confirm_password.data.strip()
-
-        if not new_password:
-            flash("New password cannot be empty.", "Error")
+            flash("Current password is incorrect.", "error")
             return redirect(url_for('change_password'))
-    
-        hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
-        current_user.password = hashed_password  # Update the user's password
+
+        new_password = form.new_password.data.strip()
+
+        # Ensure new password is not empty or same as current
+        if not new_password:
+            flash("New password cannot be empty.", "error")
+            return redirect(url_for('change_password'))
+
+        if bcrypt.check_password_hash(current_user.password, new_password):
+            flash("New password cannot be the same as the current password.", "error")
+            return redirect(url_for('change_password'))
+
+        # Update password
+        current_user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
         db.session.commit()
 
-
-        flash("Password changed successfully!", "Success")
+        flash("Password changed successfully!", "success")
         return redirect(url_for('settings'))
-
+    
+    if form.is_submitted() and not form.validate():
+        flash("There seems to have been a problem, please try again", "error")
     return render_template('change_password.html', form=form)
 
 @app.route("/delete_account", methods=["POST","GET"])

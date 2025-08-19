@@ -215,12 +215,17 @@ table tbody tr td{
 
 @media (max-width:800px) {
 
+    form{
+    grid-template-columns: 1fr;
+    }
+
     #header{
         font-size: 18px;
     }
 
     .container{
         padding: 5px 0 5px 0 !important;
+
     }
 
     .container label{

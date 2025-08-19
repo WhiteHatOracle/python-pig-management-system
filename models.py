@@ -68,7 +68,7 @@ class ServiceRecords(db.Model):
     __tablename__ = "service_records"
     id = db.Column(db.Integer, primary_key=True)
     sow_id = db.Column(db.Integer, db.ForeignKey("sows.id"), nullable=False)
-    service_date = db.Column(db.Date, nullable=False)
+    service_date = db.Column(db.Date)
     boar_used = db.Column(db.String(50), nullable=False)
 
     checkup_date = db.Column(db.Date)
@@ -139,7 +139,7 @@ class Litter(db.Model):
     sow_id = db.Column(db.Integer, db.ForeignKey('sows.id'))
     sow = db.relationship('Sows', backref='litters')
 
-    farrowDate = db.Column(db.Date, nullable=False)
+    farrowDate = db.Column(db.Date)
     totalBorn = db.Column(db.Integer, nullable=False)
     stillBorn = db.Column(db.Integer,nullable=False)
     bornAlive = db.Column(db.Integer, nullable=False)

@@ -1,4 +1,5 @@
 {% extends 'home.html' %}
+{% block title%}sows{% endblock %}
 {% block head %}
     <Title>sows</Title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,10 +7,13 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+    <!-- style links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
-    <script type="text/javascript" src="{{ url_for('static', filename='js/sows.js')}}" defer></script>  
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <!-- javascript links -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/sows.js')}}" defer></script>  
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
 {% endblock %}
 
 {% block content %}
@@ -112,6 +116,14 @@
                                 <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
                             </button> 
                         </form>
+                        
+                        <form action="{{ url_for('edit_sow', sow_id=sow.id) }}">
+                            {{ form.hidden_tag() }}
+                            <button class="action-btn">
+                                <span class="action-txt">Edit</span>
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M160-120v-170l527-526q12-12 27-18t30-6q16 0 30.5 6t25.5 18l56 56q12 11 18 25.5t6 30.5q0 15-6 30t-18 27L330-120H160Zm80-80h56l393-392-28-29-29-28-392 393v56Zm560-503-57-57 57 57Zm-139 82-29-28 57 57-28-29ZM560-120q74 0 137-37t63-103q0-36-19-62t-51-45l-59 59q23 10 36 22t13 26q0 23-36.5 41.5T560-200q-17 0-28.5 11.5T520-160q0 17 11.5 28.5T560-120ZM183-426l60-60q-20-8-31.5-16.5T200-520q0-12 18-24t76-37q88-38 117-69t29-70q0-55-44-87.5T280-840q-45 0-80.5 16T145-785q-11 13-9 29t15 26q13 11 29 9t27-13q14-14 31-20t42-6q41 0 60.5 12t19.5 28q0 14-17.5 25.5T262-654q-80 35-111 63.5T120-520q0 32 17 54.5t46 39.5Z"/></svg>
+                            </button>
+                        </form>
 
                         <form action="{{ url_for('delete_sow', sow_id=sow.sowID) }}" onsubmit="return confirmDelete();">
                             {{ form.hidden_tag() }}
@@ -121,13 +133,6 @@
                             </button>
                         </form>
 
-                        <form action="{{ url_for('edit_sow', sow_id=sow.id) }}">
-                            {{ form.hidden_tag() }}
-                            <button class="action-btn">
-                                <span class="action-txt">Edit</span>
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M160-120v-170l527-526q12-12 27-18t30-6q16 0 30.5 6t25.5 18l56 56q12 11 18 25.5t6 30.5q0 15-6 30t-18 27L330-120H160Zm80-80h56l393-392-28-29-29-28-392 393v56Zm560-503-57-57 57 57Zm-139 82-29-28 57 57-28-29ZM560-120q74 0 137-37t63-103q0-36-19-62t-51-45l-59 59q23 10 36 22t13 26q0 23-36.5 41.5T560-200q-17 0-28.5 11.5T520-160q0 17 11.5 28.5T560-120ZM183-426l60-60q-20-8-31.5-16.5T200-520q0-12 18-24t76-37q88-38 117-69t29-70q0-55-44-87.5T280-840q-45 0-80.5 16T145-785q-11 13-9 29t15 26q13 11 29 9t27-13q14-14 31-20t42-6q41 0 60.5 12t19.5 28q0 14-17.5 25.5T262-654q-80 35-111 63.5T120-520q0 32 17 54.5t46 39.5Z"/></svg>
-                            </button>
-                        </form>
 
                     </div>
                 </th>
@@ -161,17 +166,15 @@
     {% endif %}
 </div>
 </main>
-<script>
-    function clearSearch() {
-            document.getElementById("searchInput").value = "";
-            filterInvoices(); // Call your filter function to reset the results
-        }
-    
-    flatpickr("#dob_field", {
-        dateFormat: "d-m-Y" // dd-mm-yyyy
-    });
-
-
-
-</script>
+    <script>
+        function clearSearch() {
+                document.getElementById("searchInput").value = "";
+                filterInvoices(); // Call your filter function to reset the results
+            }
+        
+        flatpickr("#dob_field", {
+            dateFormat: "d-m-Y", // dd-mm-yyyy
+            maxDate:"today"
+        });
+    </script>
 {% endblock %}

@@ -1,15 +1,17 @@
 {% extends 'home.html' %}
 {% block title %}Expenses{% endblock %}
 {% block head %}
-<title>expenses</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>expenses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    <!-- styling links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/expenses.css' )}}">
-    <script type="text/javascript" src="{{ url_for('static', filename='js/expenses.js')}}" defer></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <!-- javascript links -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/expenses.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
 
 {% endblock %}
@@ -131,7 +133,8 @@
 </div>
 <script>
     flatpickr("#expense_field",{
-        dateFormat: "d-m-Y"
+        dateFormat: "d-m-Y",
+        maxDate: "today"
     });
 </script>
 </main>

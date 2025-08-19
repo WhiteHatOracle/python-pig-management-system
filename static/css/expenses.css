@@ -174,7 +174,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 }
 @media (max-width:800px){
     form{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr !important;
     }
 
     .expense-table thead tr th{

@@ -2,12 +2,18 @@
 {% block title %}sow edit form{% endblock %}
 
 {% block head %}
-<title>expenses</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/expenses.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-<script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <title>expenses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Flatpickr CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- styling links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/expenses.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <!-- javascript links -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
@@ -17,7 +23,7 @@
     <form class="form-fields" method="POST">
         {{ form.hidden_tag() }}
         <label for="date">Date: </label>    
-        {{ form.date(autocomplete="off") }}
+        {{ form.date(autocomplete="off",id="expense") }}
                     
         <label for="Amount">Amount: <br><p style="font-size:12px; color: #999;margin: 0;">*without currency symbol or points. e.g 2000</p></label>
         {{ form.amount(autocomplete="off") }}
@@ -49,5 +55,11 @@
         {% endif %}
     {% endwith %} 
 </form>
+ <script>
+        flatpickr("#expense",{
+        dateFormat: "d-m-Y",
+        maxDate: "d-m-Y"
+        }); 
+    </script>
 </main>
 {% endblock %}

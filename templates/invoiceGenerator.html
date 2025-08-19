@@ -2,9 +2,12 @@
 {% block head %}
     <title>invoice generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- styling links -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/invoiceGenerator.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <!-- javascript links -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
 {% endblock %}
 
 {% block content %}

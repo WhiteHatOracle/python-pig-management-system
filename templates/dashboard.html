@@ -5,9 +5,12 @@
 {% block head %}
   <title>dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- styling links -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css' )}}">
+  <!-- javascript links -->
   <script type="text/javascript" defer src="{{ url_for('static', filename='js/dashboard.js')}}" ></script>
   <script type="text/javascript" defer src="{{ url_for('static', filename='js/home.js')}}" ></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">    
 
 {% endblock %}

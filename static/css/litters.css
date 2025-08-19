@@ -1,22 +1,32 @@
-::-webkit-scrollbar{
+::-webkit-scrollbar {
     display: none;
 }
-.alert{
+
+.alert {
     color: var(--text-dark);
 }
-form{
+
+form {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+    background: var(--bg-light);
 }
-.container{
-    box-shadow:0 10px 15px 5px var(--shadow-light);
+
+.container {
+    box-shadow: 0 10px 15px 5px var(--shadow-light);
 }
+
 label {
     font-weight: bold;
     color: var(--text-dark);
     margin: 25px 0 0 0;
 }
-input[type="date"], input[type="number"], textarea {
+
+/* Input Styles */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+textarea {
     padding: 10px;
     font-size: 16px;
     border: 1px solid var(--border-dark);
@@ -24,74 +34,82 @@ input[type="date"], input[type="number"], textarea {
     min-width: 100%;
     margin: 10px 0 0 0;
     box-sizing: border-box;
-    outline: none;;
-}   
-input[type="date"]:focus, input[type="number"]:focus {
+    outline: none;
+}
+
+input[type="text"],
+input[type="date"] {
+    margin: 5px 0;
+}
+
+input[type="date"]:focus,
+input[type="number"]:focus,
+input[type="text"]:focus {
     border-color: var(--border-dark);
     outline: none;
 }
+
 textarea::placeholder {
     color: var(--text-dark);
 }
+
+/* Submit Button */
 .submitBTN {
-    grid-column: 1 / -1;     /* Make the div span across all columns */
-    display: flex;           /* Use flexbox for centering the button */
-    justify-content: center; /* Center horizontally                  */
-    margin-top: 1rem;        /* Optional spacing above the button    */
-    
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
 }
+
 .submitBTN input[type="submit"] {
     width: 300px;
     padding: 10px 20px;
     font-size: 16px;
-    width: 300px;
     border: 1px solid var(--border-dark);
     cursor: pointer;
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2), inset -6px -6px 10px 0 rgba(255,255,255,0.5);
     background-color: #e0e0e0;
     border-radius: 40px;
     color: black;
 }
 
-.submitBTN input[type="submit"]:hover{
-    background: linear-gradient(var(--hover-secondary),var(--hover-accent));
+.submitBTN input[type="submit"]:hover {
+    background: linear-gradient(var(--hover-secondary), var(--hover-accent));
     border: 1px solid var(--border-light);
 }
 
+/* Text and Button */
 .text-n-button {
     display: flex;
-    justify-content: space-between;  /* Space between text and button */
-    align-items: center;  /* Align items vertically */
+    justify-content: space-between;
+    align-items: center;
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 10px 30px 5px var(--shadow-dark);
-
-    span{
-        color: var(--text-dark);
-    }
-    h2{
-    border: none;
-    margin: auto 0;
-    }
 }
 
-/* Button styling */
+.text-n-button span,
+.text-n-button button span {
+    color: var(--text-dark);
+}
+
+.text-n-button h2 {
+    border: none;
+    margin: auto 0;
+}
+
 .text-n-button button {
     display: flex;
     align-items: center;
     padding: 10px 20px;
-    font-size: 16px;    
+    font-size: 16px;
     border: 1px solid var(--border-dark);
     cursor: pointer;
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
+    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2), inset -6px -6px 10px 0 rgba(255,255,255,0.5);
     background-color: var(--bg-secondary);
     border-radius: 40px;
-    color: var(--text-dark);
-}
-
-.text-n-button button span{
     color: var(--text-dark);
 }
 
@@ -105,32 +123,37 @@ textarea::placeholder {
     border: 1px solid var(--border-light);
 }
 
-/* Rotate icon slightly on hover */
 .text-n-button button:hover svg {
     transform: translateX(-3px);
 }
 
-.delete-btn{
+/* Delete and Action Buttons */
+.delete-btn {
     display: flex;
     justify-content: center;
     gap: 8px;
 }
-.action-btn{
+
+.action-btn {
     display: flex;
     align-items: center;
-    gap: 4px; /* Space between text and icon */
+    gap: 4px;
     border: none;
-    background: none;
+    background: transparent;
     cursor: pointer;
     font-size: 16px;
-    color: var(--text-dark); /* Adjust color of the button */
-    span{
-        display: none;
-    }
+    color: var(--text-dark);
 }
 
+.action-btn span {
+    display: none;
+}
 
-/* LEGEND */
+.action-btn svg {
+    background: none;
+}
+
+/* Legend */
 .legend-container {
     display: flex;
     align-items: center;
@@ -141,86 +164,73 @@ textarea::placeholder {
     padding: 10px;
     justify-content: center;
     box-shadow: 0 10px 30px 5px var(--shadow-dark);
-    border-radius:5px;
-  }
+    border-radius: 5px;
+}
 
-  .legend-box {
+.legend-box {
     display: inline-block;
     width: 16px;
     height: 16px;
     border: 1px solid var(--border-dark);
     margin-right: 6px;
     vertical-align: middle;
-  }
+}
 
-  .legend-item {
+.legend-item {
     display: flex;
     align-items: center;
     gap: 6px;
-  }
+}
 
-  .back-btn{
+.back-btn {
     text-decoration: none;
-  }
+}
 
-/* Table styling */
-table{
+/* Table Styling */
+table {
     border-collapse: collapse;
     min-width: 100%;
     border-radius: 5px;
     box-shadow: 0 10px 30px 5px var(--shadow-dark);
     margin: 25px auto;
     color: var(--text-dark);
-    /* color: black; */
 }
-table tbody tr td{
+
+table tbody tr td {
     text-align: center;
     padding: 8px 5px;
-    color: var(--text-dark);
-    color:#333;
+    color: #333;
 }
-table thead tr{
+
+table thead tr {
     border-bottom: 2px double var(--border-light);
     text-align: right;
 }
-table thead tr th{
+
+table thead tr th {
     color: var(--text-dark);
     font-size: 16px;
     padding: 8px;
 }
 
-/* sire and dam  */
-.parent_information{
+/* Sire and Dam */
+.parent_information {
     display: grid;
-    grid-template-columns: 1fr 1fr ;
+    grid-template-columns: 1fr 1fr;
     gap: 3px;
     text-align: center;
-    h2{
-        border: none;
-    }
+}
+
+.parent_information h2 {
+    border: none;
 }
 
 .table-action-footer {
     text-align: center;
-    margin-top: 10px auto;
-}
-
-.add-to-group-btn {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 16px;
-    text-decoration: none;
-    border-radius: 4px;
-    font-weight: bold;
-}
-
-.add-to-group-btn:hover {
-    background-color: #45a049;
-    cursor: pointer;
 }
 
 .modal {
-    display: none; /* Hidden by default */
+    display: none;
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -254,26 +264,28 @@ table thead tr th{
     color: #000;
 }
 
-
-.sire, .dam{
+.sire,
+.dam {
     border: 2px double var(--border-light);
     border-radius: 10px;
     color: var(--text-dark);
     padding: 10px 4px;
 }
 
-.sire h2, .dam h2{
+.sire h2,
+.dam h2 {
     font-family: 'Times New Roman', Times, serif;
     font-size: 20px;
     color: var(--text-dark);
     border: 1px solid var(--border-light);
     padding: 0;
     margin: 0 0 2px 0;
-    background:var(--bg-secondary);
+    background: var(--bg-secondary);
 }
 
-.sire h3, .dam h3{
-    font-family:monospace;
+.sire h3,
+.dam h3 {
+    font-family: monospace;
     font-size: 16px;
     color: var(--text-dark);
     border: 1px solid var(--border-light);
@@ -281,8 +293,12 @@ table thead tr th{
     border-radius: 5px;
 }
 
-@media (max-width:800px) {
-    .container{
+/* Responsive Styles */
+@media (max-width: 800px) {
+    form{
+    grid-template-columns: 1fr;
+    }
+    .container {
         box-shadow: none;
     }
     .legend-container {
@@ -290,41 +306,38 @@ table thead tr th{
         grid-template-columns: 1fr 1fr;
         gap: 10px;
     }
-    
     .legend-item {
-       justify-content: flex-start;
-    }    
-
-    table thead tr th{
+        justify-content: flex-start;
+    }
+    table thead tr th {
         display: none;
     }
-
-    table tbody tr td{
+    table tbody tr td {
         display: grid;
         padding: 10px;
         font-size: 12px;
-        grid-template-columns: repeat(2,1fr);
+        grid-template-columns: repeat(2, 1fr);
         border: none;
         text-align: left;
     }
-    table tbody tr td::before{
+    table tbody tr td::before {
         content: attr(data-cell);
         float: left;
         font-weight: bold;
     }
-    table tbody tr{
+    table tbody tr {
         border: 2px double var(--border-dark);
         border-radius: 40px !important;
     }
-    table tbody tr .actions-column::before{
+    table tbody tr .actions-column::before {
         display: none;
     }
-    table tbody tr .actions-column{
+    table tbody tr .actions-column {
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    .delete-btn{
+    .delete-btn {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -336,11 +349,11 @@ table thead tr th{
         color: var(--text-dark);
         background: transparent;
     }
-    .delete-btn:active{
+    .delete-btn:active {
         transform: scale(0.95);
     }
-    .action-btn span{
+    .action-btn span {
         display: block;
         color: #333;
     }
- }
+}

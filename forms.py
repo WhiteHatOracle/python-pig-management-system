@@ -21,19 +21,18 @@ class SowForm(FlaskForm):
 class ServiceRecordForm(FlaskForm):
     service_date = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     boar_used = SelectField('Boar Used', choices=[], coerce=str)
-
+    
 # Define Boar Form
 class BoarForm(FlaskForm):
     BoarId = StringField(validators=[DataRequired(), Length(min=3, max=20)])
     Breed = StringField(validators=[DataRequired(), Length(min=3, max=50)])
-    DOB = DateField(format='%d-%m-%Y',validators=[DataRequired()])
+    DOB = DateField(format="%d-%m-%Y",validators=[DataRequired()])
     submit = SubmitField("Add Boar")
 
     def validate_BoarId(self, BoarId):
         existing_boar = Boars.query.filter_by(BoarId=BoarId.data.strip().upper(),user_id=current_user.id).first()
         if existing_boar and existing_boar.id != self.BoarId.data:
             raise ValidationError('The Boar already exists. Please Choose a different ID')
-
 
 # Define Registration Form
 class RegisterForm(FlaskForm):
@@ -94,23 +93,24 @@ class ExpenseForm(FlaskForm):
     description = StringField()
     submit = SubmitField("Add Expense")
 
-# litter management form:
+# litter management form
 class LitterForm(FlaskForm):
-    farrowDate = DateField(format='%d-%m-%Y',validators=[DataRequired()])
-    totalBorn = IntegerField(validators=[InputRequired()])
-    bornAlive = IntegerField(validators=[InputRequired()])
-    stillBorn = IntegerField(validators=[InputRequired()])
-    weights = TextAreaField(validators=[InputRequired()], render_kw={"Placeholder": "e.g: 2.1, 3, 1.2, 2, ..."})
+    farrowDate = DateField("Farrow Date", format="%d-%m-%Y", validators=[DataRequired()])
+    totalBorn = IntegerField("Total Born", validators=[InputRequired()])
+    bornAlive = IntegerField("Born Alive", validators=[InputRequired()])
+    stillBorn = IntegerField("Still Born", validators=[InputRequired()])  # 👈 allow 0
+    weights = TextAreaField("Weights", validators=[DataRequired()], 
+                            render_kw={"placeholder": "e.g: 2.1, 3, 1.2, 2, ..."})
     submit = SubmitField("Add Litter")
 
 # change password form
 class ChangePasswordForm(FlaskForm):
-    current_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)])
-    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)])
+    current_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Current Password"})
+    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "New Password"})
     confirm_password = PasswordField("Confirm New Password", validators=[
         DataRequired(),
         EqualTo('new_password', message='Passwords must match'),
-    ])
+    ], render_kw={"Placeholder": "Confirm New Password"})
     submit = SubmitField("Change Password")
 
 class ForgotPasswordForm(FlaskForm):

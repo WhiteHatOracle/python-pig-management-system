@@ -1,15 +1,18 @@
 {% extends "home.html" %}
 {% block title %}Dashboard{% endblock %}
+
 {% block head %}
     <title>boars</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">  
     <!-- Flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
+    <!-- styling links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
-    <script type="text/javascript" defer src="{{ url_for('static', filename='js/boars.js')}}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <!-- javascript links -->
+    <script type="text/javascript" defer src="{{ url_for('static', filename='js/boars.js')}}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
     <script type="text/javascript" defer src="{{ url_for('static', filename='js/home.js')}}"></script>
 {% endblock %}
 
@@ -74,6 +77,17 @@
                 <th>{{ boar.Breed }}</th>
                 <th>{{ boar.DOB.strftime('%d-%b-%Y') }}</th>
                 <th class="for-desktop boar-btns actions-column">
+                    
+                    <form class="form-btns" action="{{ url_for('edit_boar', boar_id = boar.id)}}">
+                        {{ form.hidden_tag() }}
+                        <button class="action-btn" >
+                            <span class="action-txt">Edit</span>
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+                        </button>
+                    </form>
+                    
+                    <span class="separator">|</span>
+                    
                     <form class="form-btns" action="{{ url_for('delete_boar', BoarId=boar.BoarId) }}" method="POST" onsubmit="return confirmDelete();">
                         {{ form.hidden_tag() }}
                         <button type="submit" class="action-btn">
@@ -83,34 +97,25 @@
                         </button>
                     </form>
                     
-                    <span class="separator">|</span>
-                    
-                    <form class="form-btns" action="{{ url_for('edit_boar', boar_id = boar.id)}}">
-                        {{ form.hidden_tag() }}
-                        <button class="action-btn" >
-                            <span class="action-txt">Edit</span>
-                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
-                        </button>
-                    </form>
                 </th>
                 <th class="for-mobile sow-btns actions-column">
                     <button class="menu-btn" onclick="showMenu()">⋮</button>
                     <div class="dropdown-menu">
-                        <form method="POST" class="form-btns" action="{{ url_for('delete_boar', BoarId=boar.BoarId) }}" onsubmit="return confirmDelete();">
-                            {{ form.hidden_tag() }}
-                            <button class="action-btn" >
-                                <span class="action-txt">Delete</span>
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
-                            </button>
-                        </form>   
-                
                         <form action="{{ url_for ('edit_boar', boar_id=boar.id)}}">
                             {{ form.hidden_tag() }}
                                 <button class="action-btn">
                                     <span class="action-txt">Edit</span>
                                     <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
                                 </button>
-                        </form>                  
+                        </form> 
+
+                        <form method="POST" class="form-btns" action="{{ url_for('delete_boar', BoarId=boar.BoarId) }}" onsubmit="return confirmDelete();">
+                            {{ form.hidden_tag() }}
+                            <button class="action-btn" >
+                                <span class="action-txt">Delete</span>
+                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#333"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
+                            </button>
+                        </form>                    
                     </div>
                 </th>
             </tr>
@@ -154,7 +159,8 @@
             }
         
         flatpickr("#dob_field",{
-            dateFormat: "d-m-Y"
+            dateFormat: "d-m-Y",
+            maxDate:"today"
         });
 
     </script>
