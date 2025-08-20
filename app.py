@@ -180,7 +180,6 @@ dash_app.layout = dbc.Container([
                 },
                 style_data_conditional=[{
                     'if': {'column_id': 'due_date'},
-                    # 'color': '#082d06',
                     'color': 'var(--text-dark)',
                     'fontWeight': 'bold'
                 },{
@@ -210,7 +209,6 @@ dash_app.layout = dbc.Container([
         dash.Output("total-pigs", "children"),
         dash.Output("total-sows", "children"),
         dash.Output("total-boars", "children"),
-        # dash.Output("total-porkers", "children"),
         dash.Output("pre_weaners", "children"),
         dash.Output("weaners", "children"),
         dash.Output("growers", "children"),
@@ -362,7 +360,6 @@ def signup():
             flash("An error occurred during registration. Please try again.", "Error")
 
     return render_template('signup.html', form=form)
-
 
 @app.route('/verify/<token>')
 def verify_email(token):
@@ -1084,7 +1081,6 @@ def change_password():
 
         flash("Password changed successfully!", "success")
         return redirect(url_for('settings'))
-    
     if form.is_submitted() and not form.validate():
         flash("There seems to have been a problem, please try again", "error")
     return render_template('change_password.html', form=form)
