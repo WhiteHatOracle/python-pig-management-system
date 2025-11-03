@@ -1,5 +1,6 @@
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
@@ -97,21 +98,21 @@ dash_app.layout = dbc.Container([
         dbc.Row([
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Pigs"), 
+                    html.H4("Herd Size"), 
                     html.H2(id="total-pigs")
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Sows"),
+                    html.H4("Sows"),
                     html.H2(id="total-sows")
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
 
             dbc.Col(dbc.Card([
                 dbc.CardBody([
-                    html.H4("Total Boars"), 
+                    html.H4("Boars"), 
                     html.H2(id="total-boars")
                     ],className = "dash-card")
             ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
@@ -754,7 +755,7 @@ def sows():
 def edit_sow(sow_id):
 
     sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
-    form = SowForm(obj=sow)  # Pre-fill form with existing data
+    form = SowForm(sow_id=sow.id, obj=sow)  # Pre-fill form with existing data
     form.sow_id = sow.id #prevents false validation errors
 
     if form.validate_on_submit():
@@ -767,13 +768,15 @@ def edit_sow(sow_id):
         try:
             db.session.commit()
             flash('Updated successfully!', 'success')
-            return redirect(url_for('sows'))  # Redirect to the main sow manager
+            return redirect(url_for('sows'))
         except IntegrityError:
             db.session.rollback()
             flash(f'{sow.sowID} already exists!', 'error')
+            return redirect(url_for('edit_sow', sow_id=sow.id))
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')
+            return redirect(url_for('edit_sow', sow_id=sow.id))
 
     return render_template('edit_sow.html', form=form, sow=sow)
 
@@ -832,11 +835,11 @@ def sow_service_records(sow_id):
             due_date=due_date,
             action_date=action_date
         )
-
         db.session.add(new_record)
         db.session.commit()        
         flash('Service record added successfully!', 'success')
         return redirect(url_for('sow_service_records', sow_id=sow.id))
+       
 
     return render_template('sow_service_records.html', sow=sow, form=form)
 
@@ -1013,7 +1016,7 @@ def edit_expense(expense_id):
             return redirect(url_for('expenses'))
         except IntegrityError:
             db.session.rollback()
-            flash(f'Expense with receipt number {expense.invoice_number} already exists', 'error')
+            flash(f'you already have an expense with that Reciept number', 'error')
         except Exception as e:
             db.session.rollback()
             flash(f'An error occurred: {str(e)}', 'error')

@@ -3,12 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ManagePro - Pig Management System</title>
+  <title>PigManagePro - The Future of Farm Management</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- styling links -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- styling links-->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+  <!-- Add an icon library for the features section (e.g., Font Awesome) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- javascript links -->
   <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
   <script type="text/javascript" src="{{ url_for('static', filename='js/login.js')}}" defer></script> 
@@ -16,100 +21,271 @@
 <body>
 
 <header>
-  <h1>PigManagePro</h1>
-  <nav id="main-nav">
-    <ul>
-      <li><a href="{{ url_for('login') }}">Home</a></li>
-      <li><a href="{{ url_for('login') }}">About</a></li>
-      <li><a href="{{ url_for('login') }}">Features</a></li>
-      <li><a href="{{ url_for('login') }}">Contact</a></li>
-      <li><a href="{{ url_for('signin')}}" class="cta-btn">Login</a></li>
-    </ul>
-  </nav>
-  <button id="nav-toggle" aria-label="Toggle navigation">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </button>
+  <div class="header-container">
+    <a href="#" class="logo">
+      <!-- Simple SVG logo -->
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" fill="var(--primary)"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12 13C17.5228 13 22 17.4772 22 23H2C2 17.4772 6.47715 13 12 13ZM12.75 18.0002C12.75 17.5859 12.4142 17.2502 12 17.2502C11.5858 17.2502 11.25 17.5859 11.25 18.0002V20.0002H9C8.58579 20.0002 8.25 20.3359 8.25 20.7502C8.25 21.1644 8.58579 21.5002 9 21.5002H15C15.4142 21.5002 15.75 21.1644 15.75 20.7502C15.75 20.3359 15.4142 20.0002 15 20.0002H12.75V18.0002Z" fill="var(--primary-light)"></path></svg>
+      <span>PigManagePro</span>
+    </a>
+    <nav id="main-nav">
+      <ul>
+        <li><a href="#">Features</a></li>
+        <li><a href="#">Pricing</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="header-actions">
+      <button id="theme-toggle" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-sun"></i>
+          <i class="fa-solid fa-moon"></i>
+      </button>
+      <a href="{{ url_for('signin') }}" class="btn btn-secondary">Login</a>
+      <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Free Trial</a>
+      <button id="nav-toggle" aria-label="Toggle navigation">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+    </div>
+  </div>
 </header>
 
-<section class="hero">
-  <div class="hero-text">
-    <h2>Smart Pig Farm Management Made Simple</h2>
-    <p>Track, plan, and manage every aspect of your pig farm — from feed calculations to farrowing schedules — all in one intuitive dashboard.</p>
-    <a href="{{ url_for('signup') }}" class="cta-btn">Start Managing Smarter</a>
-  </div>
-  <img src="/static/assets/MotherPig.png" alt="Pig farm management">
-</section>
-<!-- <hr> -->
-<section class="usp">
-  <h3>Why Choose PigManagePro?</h3>
-  <p>Our system combines automation, precision, and ease of use to help pig farmers save time, reduce costs, and boost productivity.</p>
-  <br>
-  <p>This is a smart, data-driven tool that helps manage pig farming operations more efficiently, streamlining tasks like breeding management, financial tracking, and overall farm analytics. It's great for anyone looking to automate and optimize farm operations with modern web technologies!</p>
-</section>
-<!-- <hr> -->
-<section class="benefits">
-  <div class="benefit">
-    <h4>Automated Feed Calculation</h4>
-    <p>Instantly know the exact feed needed for your pigs over a given number of days.</p>
-  </div>
-  <div class="benefit">
-    <h4>Smart Dashboard</h4>
-    <p>Get a quick glance at upcoming farrowings, vaccinations, and herd status.</p>
-  </div>
-  <div class="benefit">
-    <h4>Breeding & Vaccination Tracking</h4>
-    <p>Automatically calculate due dates, farrowing dates, and vaccination schedules.</p>
-  </div>
-  <div class="benefit">
-    <h4>Full Herd Overview</h4>
-    <p>Track gilts, sows, and boars with complete lifecycle management.</p>
-  </div>
-</section>
+<main>
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">The Future of Pig Farming is Here.</h1>
+        <p class="hero-subtitle">Stop guessing, start managing. Track, analyze, and optimize every aspect of your farm with our intelligent, data-driven platform.</p>
+        <div class="hero-cta">
+          <a href="{{ url_for('signup') }}" class="btn btn-primary btn-large">Start Your 14-Day Free Trial</a>
+          <a href="#" class="btn btn-link">Watch Demo <i class="fa-solid fa-play"></i></a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="dashboard-mockup">
+          <img src="/static/assets/Dashboard.png" alt="PigManagePro Dashboard Interface">
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section class="social-proof">
-  <h3>Trusted by Farmers</h3>
-  <div class="testimonials">
-    <div class="testimonial">
-      <p>"This system has transformed how I manage my farm — it’s like having a farm assistant 24/7."</p>
-      <strong>– John M., Commercial Pig Farmer</strong>
+  <!-- KEY METRICS / SOCIAL PROOF -->
+  <section class="key-metrics">
+    <div class="container">
+      <div class="metric-item">
+        <h3>15%</h3>
+        <p>Average Reduction in Feed Waste</p>
+      </div>
+      <div class="metric-item">
+        <h3>2,500+</h3>
+        <p>Farms Powered by PigManagePro</p>
+      </div>
+      <div class="metric-item">
+        <h3>98%</h3>
+        <p>Customer Satisfaction Rate</p>
+      </div>
+      <div class="metric-item">
+        <h3>500k+</h3>
+        <p>Pigs Managed on our Platform</p>
+      </div>
     </div>
-    <div class="testimonial">
-      <p>"I no longer miss vaccination dates or farrowing deadlines. It's a real game-changer."</p>
-      <strong>– Sarah L., Small-Scale Farmer</strong>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section id="features" class="features">
+    <div class="container">
+      <div class="section-header">
+        <h2>Everything You Need, All In One Place</h2>
+        <p>From farrowing to finances, we've built the tools to streamline your entire operation.</p>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-text">
+          <div class="feature-icon"><i class="fa-solid fa-chart-pie"></i></div>
+          <h3>Intelligent Dashboard</h3>
+          <p>Get a bird's-eye view of your farm's health. Instantly see upcoming farrowings, vaccination schedules, feed levels, and key performance indicators in one beautiful interface.</p>
+        </div>
+        <div class="feature-visual">
+          <img src="/static/assets/analytics.png" alt="Dashboard analytics view">
+        </div>
+      </div>
+
+      <div class="feature-item reverse">
+        <div class="feature-text">
+          <div class="feature-icon"><i class="fa-solid fa-calculator"></i></div>
+          <h3>Automated Feed & Costing</h3>
+          <p>Our smart calculators determine precise feed requirements based on herd size, age, and growth targets. Track expenses and generate profitability reports automatically.</p>
+        </div>
+        <div class="feature-visual">
+          <img src="/static/assets/feed&cost.png" alt="Feed calculation interface">
+        </div>
+      </div>
+
+       <div class="feature-item">
+        <div class="feature-text">
+          <div class="feature-icon"><i class="fa-solid fa-syringe"></i></div>
+          <h3>Lifecycle & Health Tracking</h3>
+          <p>Never miss a date again. Automatically schedule breeding cycles, farrowing dates, and vaccination reminders. Keep detailed health records for every animal.</p>
+        </div>
+        <div class="feature-visual">
+          <img src="/static/assets/Breeding_Shedule.png" alt="Breeding and health schedule">
+        </div>
+      </div>
     </div>
-    <div class="testimonial">
-      <p>"This system has transformed how I manage my farm — it’s like having a farm assistant 24/7."</p>
-      <strong>– John M., Commercial Pig Farmer</strong>
+  </section>
+  
+  <!-- PRICING SECTION -->
+  <section id="pricing" class="pricing">
+    <div class="container">
+      <div class="section-header">
+        <h2>Simple, Transparent Pricing</h2>
+        <p>Choose a plan that scales with your farm. No hidden fees, ever.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Hobbyist</h3>
+          <div class="price"><span>$</span>19<span>/mo</span></div>
+          <p>Perfect for small-scale and backyard farmers.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> Up to 50 Pigs</li>
+            <li><i class="fa-solid fa-check"></i> Core Dashboard</li>
+            <li><i class="fa-solid fa-check"></i> Health Tracking</li>
+            <li><i class="fa-solid fa-times"></i> Advanced Reporting</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get Started</a>
+        </div>
+        <div class="pricing-card popular">
+          <div class="popular-badge">Most Popular</div>
+          <h3>Professional</h3>
+          <div class="price"><span>$</span>49<span>/mo</span></div>
+          <p>For growing commercial operations.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> Up to 500 Pigs</li>
+            <li><i class="fa-solid fa-check"></i> All Hobbyist Features</li>
+            <li><i class="fa-solid fa-check"></i> Advanced Reporting & Analytics</li>
+            <li><i class="fa-solid fa-check"></i> Priority Email Support</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start Free Trial</a>
+        </div>
+        <div class="pricing-card">
+          <h3>Enterprise</h3>
+          <div class="price">Contact Us</div>
+          <p>Custom solutions for large-scale farms.</p>
+          <ul>
+            <li><i class="fa-solid fa-check"></i> Unlimited Pigs</li>
+            <li><i class="fa-solid fa-check"></i> All Professional Features</li>
+            <li><i class="fa-solid fa-check"></i> API Access & Integrations</li>
+            <li><i class="fa-solid fa-check"></i> Dedicated Account Manager</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Request a Quote</a>
+        </div>
+      </div>
     </div>
-    <div class="testimonial">
-      <p>"I no longer miss vaccination dates or farrowing deadlines. It's a real game-changer."</p>
-      <strong>– Sarah L., Small-Scale Farmer</strong>
+  </section>
+
+  <!-- TESTIMONIALS SECTION -->
+  <section class="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <h2>Trusted by Modern Farmers Worldwide</h2>
+      </div>
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <p>"PigManagePro has completely transformed our operations. We're saving at least 10 hours a week on admin. It's like having a digital farm assistant."</p>
+          <div class="author">
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John M.">
+            <div>
+              <strong>John M.</strong>
+              <span>Commercial Farmer, Iowa</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p>"I used to rely on a messy whiteboard and notebooks. Now, everything is automated and I get reminders on my phone. A total game-changer for farrowing season!"</p>
+          <div class="author">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah L.">
+            <div>
+              <strong>Sarah L.</strong>
+              <span>Small-Scale Farmer, UK</span>
+            </div>
+          </div>
+        </div>
+         <div class="testimonial-card">
+          <p>"The analytics are incredibly powerful. For the first time, I have a clear picture of my farm's profitability, right down to the individual sow."</p>
+          <div class="author">
+            <img src="https://randomuser.me/api/portraits/men/56.jpg" alt="David C.">
+            <div>
+              <strong>David C.</strong>
+              <span>Breeding Specialist, Ontario</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="testimonial">
-      <p>"This system has transformed how I manage my farm — it’s like having a farm assistant 24/7."</p>
-      <strong>– John M., Commercial Pig Farmer</strong>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+    <div class="container">
+      <h2>Ready to Revolutionize Your Farm?</h2>
+      <p>Join over 2,500 farmers who manage smarter with PigManagePro.</p>
+      <a href="{{ url_for('signup') }}" class="btn btn-primary btn-large">Start Your Free Trial Today</a>
     </div>
-    <div class="testimonial">
-      <p>"I no longer miss vaccination dates or farrowing deadlines. It's a real game-changer."</p>
-      <strong>– Sarah L., Small-Scale Farmer</strong>
-    </div>
-  </div>
-</section>
+  </section>
+</main>
 
 <footer>
-  &copy; 2025 PigManagePro. All rights reserved.
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" fill="var(--primary)"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12 13C17.5228 13 22 17.4772 22 23H2C2 17.4772 6.47715 13 12 13ZM12.75 18.0002C12.75 17.5859 12.4142 17.2502 12 17.2502C11.5858 17.2502 11.25 17.5859 11.25 18.0002V20.0002H9C8.58579 20.0002 8.25 20.3359 8.25 20.7502C8.25 21.1644 8.58579 21.5002 9 21.5002H15C15.4142 21.5002 15.75 21.1644 15.75 20.7502C15.75 20.3359 15.4142 20.0002 15 20.0002H12.75V18.0002Z" fill="#fff"></path></svg>
+          <span>PigManagePro</span>
+        </a>
+        <p>Smart farming, simplified.</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#">Features</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Updates</a></li>
+            <li><a href="#">Demo</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 PigManagePro. All rights reserved.</p>
+      <div class="social-icons">
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+      </div>
+    </div>
+  </div>
 </footer>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const navToggle = document.getElementById('nav-toggle');
-  const nav = document.getElementById('main-nav');
-  navToggle.addEventListener('click', function() {
-    nav.classList.toggle('open');
-    navToggle.classList.toggle('open');
-  });
-});
-</script>
+
+<!-- Add your new JS file -->
+<script src="redesign.js"></script>
+
 </body>
 </html>

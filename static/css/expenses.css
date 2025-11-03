@@ -100,7 +100,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
 .expense-table thead tr th{
     padding: 8px 5px;
     color: var(--text-dark);
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid var(--border-dark);
     background-color: var(--bg-accent);
     color: var(--text-dark);
@@ -117,7 +117,7 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     font-size: 14px;
     color: var(--text-dark);
     padding: 12px 15px;
-    text-align: left;
+    text-align: center;
     border-bottom: 1px solid var(--border-dark);
     display: table-cell;
 }
@@ -159,7 +159,11 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
     transform: scale(0.95);
 }
 .expense-table tfoot {
-        background-color: #DC143C;
+        background-color: white;
+        tr td p{
+            color: #e88e3add;
+            text-decoration: underline ;
+        }
     }
 
 .action-txt{
@@ -229,7 +233,6 @@ input[type="text"]:focus, input[type="date"]:focus, select:focus {
         position: sticky;
         bottom: 60px;
         box-shadow: 10px 2px 10px var(--shadow-dark);
-        background-color: #DC143C;
         z-index: 1000;
         border-radius: 40px;
     }

@@ -55,14 +55,14 @@ input::placeholder{
 .search-icon{
     position: relative;
     left: 35px;
-    margin: 5px;
+    margin: 0 auto;
     fill: var(--text-dark) !important;
 }
 
 .close-icon{
     position: relative;
     right: 35px;
-    margin: 5px;
+    margin: 0 auto;
     cursor: pointer;
     fill: var(--text-dark);
 }
@@ -264,12 +264,6 @@ tfoot.footer {
         color: black;
     }
     
-    .search-container{
-        display: flex;
-        justify-content: center;
-        margin-bottom: 10px;
-    }
-
     th{
         display: none;
     }
@@ -350,4 +344,41 @@ tfoot.footer {
         z-index: 1000;
         border-radius: 40px;
       }
+
+      /* Center the search container on screen */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Focus state: green border */
+.search-container .input:focus-within {
+    border-color: green;
+    box-shadow: 0 0 8px rgba(0,128,0,0.5);
+}
+
+/* Input styling */
+.search-container .input {
+    flex: 1;
+    font-size: 16px;
+    padding: 6px 8px;
+}
+
+/* SVG icons styling */
+.search-container svg {
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+/* Optional: hide close icon by default until input has value */
+.close-icon {
+    display: none;
+}
+
+/* Show close icon when input has value */
+.search-container input:not(:placeholder-shown) ~ .close-icon {
+    display: inline;
+}
+
 }

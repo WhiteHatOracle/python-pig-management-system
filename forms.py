@@ -11,10 +11,14 @@ class SowForm(FlaskForm):
     Breed = StringField(validators=[DataRequired(), Length(min=3, max=50)],render_kw={"Placeholder": "Breed"})
     DOB = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     submit = SubmitField("Add Sow")
-        
+
+    def __init__(self, sow_id=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.sow_id = sow_id    #store the sow for validation    
+    
     def validate_sowID(self, sowID):
         existing_sow = Sows.query.filter_by(sowID=sowID.data.strip().upper(),user_id=current_user.id).first()
-        if existing_sow and existing_sow.id != self.sowID.data:
+        if existing_sow and existing_sow.id != self.sow_id:
             raise ValidationError('The sow already exists. Please choose a different sow ID')
      
 #Define sow service record Form

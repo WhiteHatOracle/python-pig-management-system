@@ -453,6 +453,7 @@ hr{
     backdrop-filter: blur(10px);
     color: var(--text-dark);
     overflow-x: scroll;
+    z-index: 9999;
   }
 
   #sidebar a{

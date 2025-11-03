@@ -25,10 +25,10 @@ class User(db.Model, UserMixin):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     # Relationships for ownership
-    boars = db.relationship("Boars", back_populates="owner", cascade="all, delete-orphan")
-    sows = db.relationship("Sows", back_populates="owner", cascade="all, delete-orphan")
-    invoices = db.relationship("Invoice", back_populates="owner", cascade="all, delete-orphan")
-    expenses = db.relationship("Expense", back_populates="owner", cascade="all, delete-orphan")
+    boars =     db.relationship("Boars",    back_populates="owner", cascade="all, delete-orphan",passive_deletes=True)
+    sows =      db.relationship("Sows",     back_populates="owner", cascade="all, delete-orphan",passive_deletes=True)
+    invoices =  db.relationship("Invoice",  back_populates="owner", cascade="all, delete-orphan",passive_deletes=True)
+    expenses =  db.relationship("Expense",  back_populates="owner", cascade="all, delete-orphan",passive_deletes=True)
 
 # Define the Boar model
 class Boars(db.Model):
@@ -39,7 +39,7 @@ class Boars(db.Model):
     DOB = db.Column(db.Date)
 
     # Link to owner
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id",ondelete="CASCADE"), nullable=False)
     owner = db.relationship("User", back_populates="boars")
 
     __table_args__ = (
@@ -53,10 +53,17 @@ class Sows(db.Model):
     sowID = db.Column(db.String(20), nullable=False, index=True)
     Breed = db.Column(db.String(50), nullable=False, unique=False, index=True, server_default='UNKNOWN')
     DOB = db.Column(db.Date)
-    service_records = db.relationship("ServiceRecords", back_populates="sow", cascade="all, delete-orphan")
+
+    #service recods(cascades via ORM + DB)
+    service_records = db.relationship(
+        "ServiceRecords", 
+        back_populates="sow", 
+        cascade="all, delete-orphan",
+        passive_deletes=True
+        )
 
     # Link to owner
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id",ondelete="CASCADE"), nullable=False)
     owner = db.relationship("User", back_populates="sows")
 
     __table_args__ = (
@@ -67,7 +74,7 @@ class Sows(db.Model):
 class ServiceRecords(db.Model):
     __tablename__ = "service_records"
     id = db.Column(db.Integer, primary_key=True)
-    sow_id = db.Column(db.Integer, db.ForeignKey("sows.id"), nullable=False)
+    sow_id = db.Column(db.Integer, db.ForeignKey("sows.id",ondelete="CASCADE"), nullable=False)
     service_date = db.Column(db.Date)
     boar_used = db.Column(db.String(50), nullable=False)
 
@@ -97,7 +104,7 @@ class Invoice(db.Model):
     total_price = db.Column(db.Float, nullable=False)
 
     # Link to owner
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id",ondelete="CASCADE"), nullable=False)
     owner = db.relationship("User", back_populates="invoices")
 
     __table_args__ = (
@@ -119,7 +126,7 @@ class Expense(db.Model):
     description = db.Column(db.String(200))
 
     # Link to owner
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id",ondelete="CASCADE"), nullable=False)
     owner = db.relationship("User", back_populates="expenses")
 
     __table_args__ = (
@@ -133,11 +140,11 @@ class Litter(db.Model):
     __tablename__="litter"
     id = db.Column(db.Integer, primary_key=True)
     
-    service_record_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE', name='fk_service_record_id'), nullable=False)
+    service_record_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE'), nullable=False)
     service_record = db.relationship("ServiceRecords", back_populates="litter")
     
-    sow_id = db.Column(db.Integer, db.ForeignKey('sows.id'))
-    sow = db.relationship('Sows', backref='litters')
+    sow_id = db.Column(db.Integer, db.ForeignKey('sows.id',ondelete="CASCADE"),nullable=False)
+    sow = db.relationship('Sows', backref=db.backref('litters', passive_deletes=True))
 
     farrowDate = db.Column(db.Date)
     totalBorn = db.Column(db.Integer, nullable=False)

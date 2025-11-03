@@ -24,10 +24,10 @@
         {{ form.hidden_tag() }}
         
         <label for="sowID">Sow ID:</label>
-        {{ form.sowID(class="form-control") }}
+        {{ form.sowID(class="form-control", autocomplete="off") }}
 
         <label for="Breed">Breed:</label>
-        {{ form.Breed(class="form-control") }}
+        {{ form.Breed(class="form-control", autocomplete="off") }}
 
         <label for="DOB">Date of Birth:</label>
         {{ form.DOB(class="form-control", id="dob_field") }}
@@ -37,18 +37,18 @@
             <a href="{{ url_for('sows')}}" class="btn btn-secondary" style="text-align: center;">Cancel</a>
         </div>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                <li class="flash {{ category|lower }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        {% endwith %} 
     </form>
 
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <ul class="flashes">
-            {% for category, message in messages %}
-            <li class="flash {{ category|lower }}">{{ message }}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    {% endwith %} 
 
         <script>
             flatpickr("#dob_field",{

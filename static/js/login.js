@@ -118,4 +118,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
   
+  // New Code Here
+  document.addEventListener('DOMContentLoaded', function() {
   
+  // --- Mobile Navigation ---
+  const navToggle = document.getElementById('nav-toggle');
+  const nav = document.getElementById('main-nav');
+  // NOTE: You'll need to add a mobile navigation pane to your HTML
+  // to make this fully functional, similar to your original design.
+  if (navToggle) {
+    navToggle.addEventListener('click', function() {
+      // Logic to show/hide mobile nav
+      alert('Mobile nav toggle clicked! Implement your mobile menu logic here.');
+    });
+  }
+
+  // --- Dark Mode Toggle ---
+  const themeToggle = document.getElementById('theme-toggle');
+  const body = document.body;
+
+  // Function to apply the saved theme
+  const applyTheme = (theme) => {
+    if (theme === 'dark') {
+      body.classList.add('dark-mode');
+    } else {
+      body.classList.remove('dark-mode');
+    }
+  };
+
+  // Check for saved theme in localStorage
+  const savedTheme = localStorage.getItem('theme');
+  
+  // Check for system preference if no theme is saved
+  if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      applyTheme('dark');
+  } else {
+      applyTheme(savedTheme || 'light');
+  }
+
+
+  themeToggle.addEventListener('click', () => {
+    if (body.classList.contains('dark-mode')) {
+      body.classList.remove('dark-mode');
+      localStorage.setItem('theme', 'light');
+    } else {
+      body.classList.add('dark-mode');
+      localStorage.setItem('theme', 'dark');
+    }
+  });
+
+});

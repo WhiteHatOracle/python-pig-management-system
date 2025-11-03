@@ -18,17 +18,17 @@
 
 {% block content %}
 <main>
-    <h2>Edit Sow</h2>
+    <h2>Expenses</h2>
 
     <form class="form-fields" method="POST">
         {{ form.hidden_tag() }}
         <label for="date">Date: </label>    
         {{ form.date(autocomplete="off",id="expense") }}
                     
-        <label for="Amount">Amount: <br><p style="font-size:12px; color: #999;margin: 0;">*without currency symbol or points. e.g 2000</p></label>
+        <label for="Amount">Amount: </label>
         {{ form.amount(autocomplete="off") }}
         
-        <label for="invoice_number">Invoice Number:</label>
+        <label for="invoice_number">Reciept Number:</label>
         {{ form.invoice_number(autocomplete="off") }}
 
         <label for="Category">Category: </label>

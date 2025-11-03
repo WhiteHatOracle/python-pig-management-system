@@ -8,8 +8,8 @@ if (flashMessages.length > 0) {
         message.style.opacity = '0'; // Start fading out
         setTimeout(function() {
         message.remove(); // Remove the element after the fade-out
-        }, 1000); // Wait for the transition to complete (1 second here)
+        }, 2000); // Wait for the transition to complete (2 second here)
     });
-    }, 3000); // 3000 milliseconds = 3 seconds delay
+    }, 5000); // 5000 milliseconds = 5 seconds delay
 }
 });
