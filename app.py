@@ -1,3 +1,4 @@
+from authlib.integrations.flask_client import OAuth
 from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.exc import IntegrityError
@@ -6,11 +7,10 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from sqlalchemy import func, event
 from flask_mail import Mail, Message
-from datetime import timedelta, datetime
-import datetime as dt
+from datetime import timedelta, datetime, timezone
 from dotenv import load_dotenv
 from dash import dcc, html, dash_table
-from authlib.integrations.flask_client import OAuth
+import datetime as dt
 import os
 import re
 import dash
@@ -33,9 +33,10 @@ load_dotenv()
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
-    cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
-    cursor.close()
+    if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys=ON")
+        cursor.close()
 
 app = Flask(__name__) # Initialize Flask app
 app.secret_key= os.getenv("SECRET_KEY")
@@ -292,7 +293,7 @@ def signup():
 
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         token = str(uuid.uuid4())
-        expiry_time = datetime.now(dt.timezone.utc) + timedelta(hours=24)  # Link expires in 24 hours
+        expiry_time = datetime.now(dt.timezone.utc) + timedelta(minutes=5)  # Link expires in 24 hours
 
         new_user = User(
             username=form.username.data,
@@ -365,13 +366,18 @@ def signup():
 @app.route('/verify/<token>')
 def verify_email(token):
     user = User.query.filter_by(verification_token=token).first()
+
     if user:
-        # check if the token is expired
-        if user.verification_expiry and datetime.now(dt.timezone.utc) > user.verification_expiry:
-            db.session.delete(user)
-            db.session.commit()
-            flash("Verification link expired. Please register again.", "Error")
-            return redirect(url_for('signup'))
+        if user.verification_expiry:
+            expiry = user.verification_expiry
+            if expiry.tzinfo is None:
+                expiry = expiry.replace(tzinfo=timezone.utc)
+
+            if datetime.now(timezone.utc) > expiry:
+                db.session.delete(user)
+                db.session.commit()
+                flash("Verification link expired. Please register again","Error")
+                return redirect(url_for('signup'))
 
         # If the token is valid and not expired, verify the user
         user.is_verified = True
@@ -808,20 +814,24 @@ def sow_service_records(sow_id):
         form.boar_used.choices = boar_choices
 
     if form.validate_on_submit():  # Checks if the form was submitted and is valid
-               
-        boar_used_id = form.boar_used.data.upper() #get boar id used from form
-        boar = Boars.query.filter_by(id=boar_used_id, user_id=current_user.id).first_or_404() # query the boar from the current logged in user
-
+        
+        boar_used_value = form.boar_used.data  # string, e.g. "3" or "ai"
         service_date = form.service_date.data
-        boar_used = boar.BoarId.upper() # get the boar "name"
+
+        if boar_used_value.lower() == "ai":
+            boar_used = "ARTIFICIAL INSEMINATION"
+        else:
+            boar = Boars.query.filter_by(id=int(boar_used_value), user_id=current_user.id).first_or_404()
+            boar_used = boar.BoarId.upper()
+
 
         # Calculate other dates
-        checkup_date = service_date + timedelta(days=21)
-        litter_guard1_date = service_date + timedelta(days=68)
-        feed_up_date = service_date + timedelta(days=90)
-        litter_guard2_date = service_date + timedelta(days=100)
-        action_date = service_date + timedelta(days=109)
-        due_date = service_date + timedelta(days=114)
+        checkup_date = service_date         + timedelta(days=21)
+        litter_guard1_date = service_date   + timedelta(days=68)
+        feed_up_date = service_date         + timedelta(days=90)
+        litter_guard2_date = service_date   + timedelta(days=100)
+        action_date = service_date          + timedelta(days=109)
+        due_date = service_date             + timedelta(days=114)
 
         # Create and add new service record
         new_record = ServiceRecords(
@@ -1034,6 +1044,7 @@ def expense_totals():
 
 @app.route('/delete-expense/<int:expense_id>', methods=['POST'])
 @login_required
+
 def delete_expense(expense_id):
     #Query the expense id
     expense = Expense.query.filter_by(id=expense_id, user_id=current_user.id).first_or_404()
@@ -1218,4 +1229,4 @@ if dash_app.layout is None:
 # Run the app
 if __name__ == '__main__':
     # app.run(debug=True)
-    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)
+    app.run(host="0.0.0.0", port=5500, debug=True, use_reloader=False)

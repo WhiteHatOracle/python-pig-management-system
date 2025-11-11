@@ -108,3 +108,14 @@ This document outlines the development stages and tasks for integrating a **Fatt
 - This system adds centralized fattening management **optionally**.  
 - Litter numbers act as a permanent identifier across the app.
 
+
+Innovation lives here.
+We don't just learn technology - 
+we design it, code it 
+and make it work for real-world challenges
+
+Join us at the copperbelt university lusaka campus - 
+where knowledge meets opportunity, 
+innovation meets purpose 
+and 
+students become leaders of tomorrow

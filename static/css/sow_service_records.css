@@ -180,7 +180,7 @@ table tbody tr td{
     gap: 8px;
 }
 .icon{
-    fill: var(--text-light);
+    fill: var(--text-dark);
 }
 .form-btns{
     display: flex;

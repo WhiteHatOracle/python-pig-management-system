@@ -1,5 +1,6 @@
 {% extends 'home.html' %}
-{% block title%}{{sow.sowID - Litter Records}}{% endblock %}
+{% block title %}{{ sow.sowID ~ ' - Litter Records' }}{% endblock %}
+
 {% block head %}
     <title>{{sow.sowID}}  - litter Records</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +23,7 @@
             {% if existing_litter %}
                 <div class="alert alert-warning"></div>
                 {% else %}
-                    <form class="container" method="POST" action="{{ url_for('litter_records', service_id=serviceRecord) }}">
+                    <form class="container" method="POST" action="{{ url_for('litter_records', service_id=serviceRecord.id) }}">
                         {{form.hidden_tag()}}
 
                         <label for="farrowDate">Farrow Date</label>
@@ -112,16 +113,16 @@
                                         style="background-color: #fecaca;" 
                                     {% endif %}
                                 >
-                                <td data-cell="Farrow Date:">   {{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
-                                <td data-cell="Total Born:">    {{ litter.totalBorn }}</td>
-                                <td data-cell="Born Alive:">    {{ litter.bornAlive }}</td>
-                                <td data-cell="Still Born:">    {{ litter.stillBorn }}</td>
-                                <td data-cell="Average Weight:">{{ litter.averageWeight }}</td>
-                                <td data-cell="Iron Injection:">{{ litter.iron_injection_date.strftime("%d-%b-%Y") }}</td>
-                                <td data-cell="Teeth Clipping:">{{ litter.teeth_clipping_date.strftime("%d-%b-%Y") }}</td>
-                                <td data-cell="Tail Dorking:">  {{ litter.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
-                                <td data-cell="Castration:">    {{ litter.castration_date.strftime("%d-%b-%Y") }}</td>
-                                <td data-cell="Weaning:">       {{ litter.wean_date.strftime('%d-%b-%Y') }}</td>
+                                <td data-cell="Farrow Date:">       {{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
+                                <td data-cell="Total Born:">        {{ litter.totalBorn }}</td>
+                                <td data-cell="Born Alive:">        {{ litter.bornAlive }}</td>
+                                <td data-cell="Still Born:">        {{ litter.stillBorn }}</td>
+                                <td data-cell="Average Weight:">    {{ litter.averageWeight }}</td>
+                                <td data-cell="Iron Injection:">    {{ litter.iron_injection_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Teeth Clipping:">    {{ litter.teeth_clipping_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Tail Dorking:">      {{ litter.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Castration:">        {{ litter.castration_date.strftime("%d-%b-%Y") }}</td>
+                                <td data-cell="Weaning:">           {{ litter.wean_date.strftime('%d-%b-%Y') }}</td>
                                 <td class="actions-column">
                                     <form class="delete-btn" action="{{ url_for('delete_litter', litter_id=litter.id) }}" method="POST" onsubmit="return confirmDelete();">
                                         <button class="action-btn" >

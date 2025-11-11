@@ -1,48 +1,48 @@
 :root {
-    --bg-light:        #f7f8f9;
-    --bg-lighter:      #ffffff;
-    --bg-lightest:     #fbfbfc;
-  
-    --bg-primary:      #10a37f;   /* professional green */
-    --bg-secondary:    #ececec;
-    --bg-accent:       #e0f3ec;
-  
-    --hover-primary:   #0e8e72;
-    --hover-secondary: #e2e2e2;
-    --hover-accent:    #c8e9dc;
-  
-    --border-light:    #d1d5db;
-    --border-dark:     #94a3b8;
-  
-    --text-light:      #4b5563;
-    --text-dark:       #1f2937;
-  
-    --shadow-light:    rgba(0, 0, 0, 0.05);
-    --shadow-dark:     rgba(0, 0, 0, 0.15);
-  }
-  
-  .dark-mode {
-    --bg-light:        #202123;
-    --bg-lighter:      #171821;
-    --bg-lightest:     #43434c;
-  
-    --bg-primary:      #10a37f;
-    --bg-secondary:    #3f4042;
-    --bg-accent:       #286451;
-  
-    --hover-primary:   #0e8e72;
-    --hover-secondary: #4b4c4e;
-    --hover-accent:    #2a4a40;
-  
-    --border-light:    #3e3f42;
-    --border-dark:     #6b7280;
-  
-    --text-light:      #d1d5db;
-    --text-dark:       #f9fafb;
-  
-    --shadow-light:    rgba(0, 0, 0, 0.2);
-    --shadow-dark:     rgba(0, 0, 0, 0.4);
-  }
+  --bg-light:        #FFFFFF;
+  --bg-lighter:      #F7FAFC;
+  --bg-lightest:     #EDF2F7;
+
+  --bg-primary:      #4A5568;  
+  --bg-secondary:    #e6f6f0;
+  --bg-accent:       #00A86B;
+
+  --hover-primary:   #0e8e72;
+  --hover-secondary: #e2e2e2;
+  --hover-accent:    #c8e9dc;
+
+  --border-light:    #E2E8F0;
+  --border-dark:     #E2E8F0;
+
+  --text-light:      #A0AEC0;
+  --text-dark:       #1A202C;
+
+  --shadow-light:    rgba(0, 0, 0, 0.05);
+  --shadow-dark:     rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode {
+  --bg-light:        #1F2937;
+  --bg-lighter:      #4A5568;
+  --bg-lightest:     #9CA3AF;
+
+  --bg-primary:      #111827;
+  --bg-secondary:    #1F2937;
+  --bg-accent:       #374151;
+
+  --hover-primary:   #0e8e72;
+  --hover-secondary: #4b4c4e;
+  --hover-accent:    #2a4a40;
+
+  --border-light:    #3e3f42;
+  --border-dark:     #6b7280;
+
+  --text-light:      #6B7280;
+  --text-dark:       #F9FAFB;
+
+  --shadow-light:    rgba(0, 0, 0, 0.2);
+  --shadow-dark:     rgba(0, 0, 0, 0.3);
+}
 .alert{
     color: var(--text-dark);
 }
@@ -63,7 +63,8 @@ main .dashboard-iframe{
     width: 100%;
     bottom: 100px;
     height: 95%;
-    color: var(--text-dark) !important;
+    /* color: var(--text-dark) !important; */
+    color: red !important;
 }
 
 ::-webkit-scrollbar{
@@ -173,7 +174,7 @@ H3 {
 
 /* Hover effect for table rows */
 .dash-table-container tbody tr:hover {
-    background-color: var(--bg-accent) !important;
+    background-color: var(--bg-accent);
 }
 
 /* Styling for due date column */
@@ -185,6 +186,10 @@ H3 {
 /* Styling for conditional formatting (e.g., odd rows) */
 .dash-table-container .dash-table-row-odd {
     background-color: var(--bg-primary) !important;
+}
+
+.container-fluid{
+    background: transparent !important;
 }
 
 /* Mobile responsiveness */

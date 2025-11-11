@@ -11,8 +11,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(150), unique=True, nullable=False)  # usually email
     email = db.Column(db.String(200), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
-    verification_token = db.Column(db.String(128), nullable=True)
-    verification_expiry = db.Column(db.DateTime, nullable=True)  # NEW FIELD for token expiry
+    verification_token = db.Column(db.String(200), nullable=True)
+    verification_expiry = db.Column(db.DateTime(timezone=True), nullable=True)  # NEW FIELD for token expiry
     is_verified = db.Column(db.Boolean, default=False)
     password_reset_token = db.Column(db.String(128), nullable=True)
     password_reset_expiry = db.Column(db.DateTime, nullable=True)
@@ -22,7 +22,8 @@ class User(db.Model, UserMixin):
     google_id = db.Column(db.String(255), unique=True, nullable=True)
     name = db.Column(db.String(255), nullable=True)
     profile_pic = db.Column(db.String(512), nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
 
     # Relationships for ownership
     boars =     db.relationship("Boars",    back_populates="owner", cascade="all, delete-orphan",passive_deletes=True)
@@ -54,13 +55,20 @@ class Sows(db.Model):
     Breed = db.Column(db.String(50), nullable=False, unique=False, index=True, server_default='UNKNOWN')
     DOB = db.Column(db.Date)
 
-    #service recods(cascades via ORM + DB)
+    #service recods(cascades via ORM + DB)    
     service_records = db.relationship(
         "ServiceRecords", 
         back_populates="sow", 
         cascade="all, delete-orphan",
         passive_deletes=True
-        )
+    )
+
+    litters = db.relationship(
+        "Litter",
+        back_populates="sow",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )
 
     # Link to owner
     user_id = db.Column(db.Integer, db.ForeignKey("user.id",ondelete="CASCADE"), nullable=False)
@@ -85,7 +93,14 @@ class ServiceRecords(db.Model):
     due_date = db.Column(db.Date)
     action_date = db.Column(db.Date)
 
-    litter = db.relationship('Litter', back_populates='service_record', uselist=False, passive_deletes=True)
+    litter = db.relationship(
+        'Litter',
+        back_populates='service_record',
+        uselist=False,
+        cascade='all,delete-orphan',
+        passive_deletes=True
+    )
+    
     sow = db.relationship("Sows", back_populates="service_records")
 
     __table_args__ = (
@@ -144,7 +159,7 @@ class Litter(db.Model):
     service_record = db.relationship("ServiceRecords", back_populates="litter")
     
     sow_id = db.Column(db.Integer, db.ForeignKey('sows.id',ondelete="CASCADE"),nullable=False)
-    sow = db.relationship('Sows', backref=db.backref('litters', passive_deletes=True))
+    sow = db.relationship('Sows', back_populates='litters')
 
     farrowDate = db.Column(db.Date)
     totalBorn = db.Column(db.Integer, nullable=False)
