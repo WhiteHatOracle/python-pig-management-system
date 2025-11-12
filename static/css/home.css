@@ -4,7 +4,7 @@
   --bg-lighter:      #F7FAFC;
   --bg-lightest:     #EDF2F7;
 
-  --bg-primary:      #111827;  
+  --bg-primary:      #4A5568;  
   --bg-secondary:    #e6f6f0;
   --bg-accent:       #00A86B;
 
@@ -24,11 +24,10 @@
 
 .dark-mode {
   --bg-light:        #1F2937;
-  --bg-lighter:      #34D399;
+  --bg-lighter:      #4A5568;
   --bg-lightest:     #9CA3AF;
 
-  --bg-primary:      #4A5568;
-  --bg-primary:      #FFFFFF;
+  --bg-primary:      #111827;
   --bg-secondary:    #1F2937;
   --bg-accent:       #374151;
 
