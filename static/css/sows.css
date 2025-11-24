@@ -48,15 +48,14 @@ input[type="text"]:focus{
 .submitBTN input[type="submit"] {
     padding: 10px 20px;
     font-size: 16px;
-    color: black !important;
+    color: var(--text-dark) !important;
     width: 300px;
     border: 1px solid var(--border-dark);
     cursor: pointer;
     transition: background-color 0.3s;
 
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-    background-color: #e0e0e0;
+    background-color: var(--text-light);
     border-radius: 40px;
 }
 
@@ -233,7 +232,7 @@ input[type="text"]:focus{
       }
       
       .dropdown-menu button:hover {
-        background: #f0f0f0;
+        background: var(--text-light);
       }
       .dropdown-menu.show {
         display: flex; /* Shows the menu */

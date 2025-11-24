@@ -107,20 +107,21 @@ textarea::placeholder {
     border: 1px solid var(--border-dark);
     cursor: pointer;
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2), inset -6px -6px 10px 0 rgba(255,255,255,0.5);
     background-color: var(--bg-secondary);
     border-radius: 40px;
     color: var(--text-dark);
+    gap: 5px;
 }
 
 .text-n-button button svg {
     transition: transform 0.3s ease;
-    color: var(--text-dark);
+    fill: var(--text-dark);
+    margin-top: -5px;
 }
 
 .text-n-button button:hover {
     transform: scale(0.95);
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--bg-primary);
 }
 
 .text-n-button button:hover svg {
@@ -200,7 +201,7 @@ table {
 table tbody tr td {
     text-align: center;
     padding: 8px 5px;
-    color: #333;
+    color: #131212;
 }
 
 table thead tr {
@@ -244,7 +245,7 @@ table thead tr th {
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: var(--text-light);
     margin: 10% auto;
     padding: 20px;
     width: 400px;
@@ -253,7 +254,7 @@ table thead tr th {
 }
 
 .close-btn {
-    color: #aaa;
+    color: var(--text-light);
     position: absolute;
     top: 10px;
     right: 15px;
@@ -263,7 +264,7 @@ table thead tr th {
 }
 
 .close-btn:hover {
-    color: #000;
+    color: var(--bg-primary);
 }
 
 .sire,
@@ -356,6 +357,6 @@ table thead tr th {
     }
     .action-btn span {
         display: block;
-        color: #333;
+        color: var(--text-dark);
     }
 }

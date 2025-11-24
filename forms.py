@@ -1,14 +1,14 @@
 from wtforms import EmailField,StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
 from wtforms.validators import InputRequired, Length, ValidationError, InputRequired, DataRequired, EqualTo
 from flask_wtf import FlaskForm
-from models import Sows, Boars, User  # Importing the models for validation
+from models import Sows, Boars, User
 from wtforms.fields import DateField
 from flask_login import current_user
 
 # Define Sow Management Form
 class SowForm(FlaskForm):
-    sowID = StringField(validators=[DataRequired(), Length(min=3, max=20)],render_kw={"Placeholder": "Sow ID"})
-    Breed = StringField(validators=[DataRequired(), Length(min=3, max=50)],render_kw={"Placeholder": "Breed"})
+    sowID = StringField(validators=[DataRequired(), Length(min=3, max=20)])
+    Breed = StringField(validators=[DataRequired(), Length(min=3, max=50)])
     DOB = DateField(format='%d-%m-%Y',validators=[DataRequired()])
     submit = SubmitField("Add Sow")
 
@@ -41,8 +41,8 @@ class BoarForm(FlaskForm):
 # Define Registration Form
 class RegisterForm(FlaskForm):
     username = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Username"})
-    email = EmailField(validators=[InputRequired()], render_kw={"Placeholder": "E-mail"})
-    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Password"})
+    email = EmailField(validators=[InputRequired()],render_kw={"Placeholder": "Email"})
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)],render_kw={"Placeholder": "Password"})
     submit = SubmitField("Register")
 
     # Custom Validator to check for existing username
@@ -53,19 +53,19 @@ class RegisterForm(FlaskForm):
 
 # Define Login Form
 class LoginForm(FlaskForm):
-    identifier = StringField('username or Email', validators=[InputRequired()], render_kw={"Placeholder":"Username or E-mail"})
-    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Password"})
+    identifier = StringField('username or Email', validators=[InputRequired()],render_kw={"Placeholder": "Username or Email"})
+    password = PasswordField(validators=[InputRequired(), Length(min=4, max=20)],render_kw={"Placeholder": "Password"})
     remember = BooleanField("Remember Me")  # Optional remember me checkbox
     submit = SubmitField("Login")
 
 # Define Feed Calculation Forms
 class FeedCalculatorForm(FlaskForm):
-    days = IntegerField(validators=[InputRequired()], render_kw={"Placeholder": "Number of days (e.g 21)"})
-    feed = StringField(validators=[InputRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Feed Name (e.g weaner)"})
-    feed_cost = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Cost of Concentrate (e.g 850)"})
-    num3_meal_cost = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Cost of Number 3 Meal (e.g 5.35)"})
-    pigs = IntegerField(validators=[InputRequired()], render_kw={"Placeholder": "Number of pigs (e.g 4)"})
-    feed_consumption = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "Feed consumption per animal (e.g 1.5)"})
+    days = IntegerField(validators=[InputRequired()])
+    feed = StringField(validators=[InputRequired(), Length(min=4, max=20)])
+    feed_cost = DecimalField(validators=[InputRequired()])
+    num3_meal_cost = DecimalField(validators=[InputRequired()])
+    pigs = IntegerField(validators=[InputRequired()])
+    feed_consumption = DecimalField(validators=[InputRequired()])
     submit = SubmitField("Calculate")
 
 class CompleteFeedForm(FlaskForm):
@@ -78,15 +78,15 @@ class CompleteFeedForm(FlaskForm):
 
 # Define Invoice Generator Form
 class InvoiceGeneratorForm(FlaskForm):
-    company = StringField(validators=[InputRequired(), Length(min=4, max=50)], render_kw={"Placeholder": "Company Name"})
-    firstBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"Placeholder": "e.g., 65-109.9"})
-    firstBandPrice = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "60.0 or 60"})
-    secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"Placeholder": "e.g., 65-109.9"})
-    secondBandPrice = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "60.0 or 60"})
-    thirdBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)], render_kw={"Placeholder": "e.g., 65-109.9"})
-    thirdBandPrice = DecimalField(validators=[InputRequired()], render_kw={"Placeholder": "60.0 or 60"})
-    weights = TextAreaField(validators=[InputRequired()], render_kw={"Placeholder": "e.g., 56.7, 71.5, 66.75, 69.7, ..."})
-    submit = SubmitField("Generate Invoice")
+    company         = StringField(validators=[InputRequired(), Length(min=4, max=50)])
+    firstBandRange  = StringField(validators=[InputRequired(), Length(min=4, max=10)])
+    firstBandPrice  = DecimalField(validators=[InputRequired()])
+    secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)])
+    secondBandPrice = DecimalField(validators=[InputRequired()])
+    thirdBandRange  = StringField(validators=[InputRequired(), Length(min=4, max=10)])
+    thirdBandPrice  = DecimalField(validators=[InputRequired()])
+    weights         = TextAreaField(validators=[InputRequired()])
+    submit          = SubmitField("Generate Invoice")
 
 class ExpenseForm(FlaskForm):
     date = DateField(format='%d-%m-%Y',validators=[DataRequired()])
@@ -103,22 +103,18 @@ class LitterForm(FlaskForm):
     totalBorn = IntegerField("Total Born", validators=[InputRequired()])
     bornAlive = IntegerField("Born Alive", validators=[InputRequired()])
     stillBorn = IntegerField("Still Born", validators=[InputRequired()])  # 👈 allow 0
-    weights = TextAreaField("Weights", validators=[DataRequired()], 
-                            render_kw={"placeholder": "e.g: 2.1, 3, 1.2, 2, ..."})
+    weights = TextAreaField("Weights", validators=[DataRequired()],render_kw={"Placeholder": "e.g 5,3.1,4,..."})
     submit = SubmitField("Add Litter")
 
 # change password form
 class ChangePasswordForm(FlaskForm):
-    current_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "Current Password"})
-    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "New Password"})
-    confirm_password = PasswordField("Confirm New Password", validators=[
-        DataRequired(),
-        EqualTo('new_password', message='Passwords must match'),
-    ], render_kw={"Placeholder": "Confirm New Password"})
+    current_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)])
+    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)])
+    confirm_password = PasswordField("Confirm New Password", validators=[DataRequired(),EqualTo('new_password', message='Passwords must match')])
     submit = SubmitField("Change Password")
 
 class ForgotPasswordForm(FlaskForm):
-    email = EmailField(validators=[InputRequired()], render_kw={"Placeholder": "E-mail"})
+    email = EmailField(validators=[InputRequired()])
     submit = SubmitField("Reset Password")
 
     def validate_email(self, email):
@@ -127,6 +123,6 @@ class ForgotPasswordForm(FlaskForm):
             raise ValidationError('No account found with that email address. Please try again.')
 
 class ResetPasswordForm(FlaskForm):
-    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)], render_kw={"Placeholder": "New Password"})
-    confirm_password = PasswordField(validators=[DataRequired(), EqualTo('new_password', message='Passwords must match'),], render_kw={"Placeholder":"Confirm New Password"})
+    new_password = PasswordField(validators=[DataRequired(), Length(min=4, max=20)])
+    confirm_password = PasswordField(validators=[DataRequired(), EqualTo('new_password', message='Passwords must match')])
     submit = SubmitField("Reset Password")

@@ -36,37 +36,6 @@ input::placeholder{
     opacity: 1;
 }
 
-#searchInput {
-    padding: 8px 40px;
-    background: var(--bg-lightest); 
-    border: var(--bg-accent);
-    border: 1px solid var(--bg-accent);
-    border-radius: 20px; 
-    font-size: 16px;
-    box-sizing: border-box;
-    outline: none;
-}
-
-#searchInput:focus{
-    color: var(--bg-primary);
-    border-color: var(--bg-primary);
-}
-
-.search-icon{
-    position: relative;
-    left: 35px;
-    margin: 0 auto;
-    fill: var(--text-dark) !important;
-}
-
-.close-icon{
-    position: relative;
-    right: 35px;
-    margin: 0 auto;
-    cursor: pointer;
-    fill: var(--text-dark);
-}
-
 hr{
     margin: 10px auto;
 }
@@ -84,8 +53,7 @@ hr{
     padding: 8px 5px;
     color: var(--text-dark);
     text-align: left;
-    border-bottom: 1px solid #ddd;
-    border-bottom: 1px solid var(--border-light);
+    border-bottom: 2px solid var(--border-light);
     background-color: var(--bg-accent);
     color: var(--text-dark);
     font-weight: bold;
@@ -344,41 +312,4 @@ tfoot.footer {
         z-index: 1000;
         border-radius: 40px;
       }
-
-      /* Center the search container on screen */
-.search-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Focus state: green border */
-.search-container .input:focus-within {
-    border-color: green;
-    box-shadow: 0 0 8px rgba(0,128,0,0.5);
-}
-
-/* Input styling */
-.search-container .input {
-    flex: 1;
-    font-size: 16px;
-    padding: 6px 8px;
-}
-
-/* SVG icons styling */
-.search-container svg {
-    cursor: pointer;
-    margin: 0 auto;
-}
-
-/* Optional: hide close icon by default until input has value */
-.close-icon {
-    display: none;
-}
-
-/* Show close icon when input has value */
-.search-container input:not(:placeholder-shown) ~ .close-icon {
-    display: inline;
-}
-
 }

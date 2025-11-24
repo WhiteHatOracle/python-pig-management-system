@@ -216,7 +216,7 @@ body{
 
 #sidebar svg{
   flex-shrink: 0;
-  fill: var(--bg-primary);
+  fill: var(--text-dark);
 }
 
 #sidebar a span{
@@ -318,49 +318,50 @@ button:focus{
 }
 
 /* search field code */
-
-.search-container{
+.search-container {
+    position: relative;
     display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 20px;
+    width: 100%;
 }
-
-input::placeholder{
-    color: var(--text-dark) !important;
-    opacity: 1;
-}
-
 
 #searchInput {
-    padding: 8px 40px;
-    background: var(--bg-lightest); 
-    border: var(--bg-accent);
-    border: 1px solid var(--bg-accent);
-    border-radius: 20px; 
+    width: 100%;
+    padding: 8px 40px 8px 40px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--hover-primary);
+    border-radius: 20px;
     font-size: 16px;
     box-sizing: border-box;
     outline: none;
+    color: var(--text-dark);
 }
 
-#searchInput:focus{
-    color: var(--bg-primary);
+#searchInput::placeholder {
+    color: var(--text-dark);
+    opacity: 1;
+}
+
+#searchInput:focus {
     border-color: var(--bg-primary);
 }
 
-.search-icon{
-    position: relative;
-    left: 40px;
-    margin: 5px;
-    top: -5px;
-    fill: var(--text-dark) !important;
+.search-icon {
+    position: absolute;
+    left: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+    fill: var(--text-dark);
+    pointer-events: none;
 }
 
-.close-icon{
-    position: relative;
-    right: 40px;
-    margin: 5px;
-    top: -5px;
+.close-icon {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
     cursor: pointer;
     fill: var(--text-dark);
 }
@@ -506,7 +507,42 @@ hr{
     bottom: 0;
     color: var(--text-dark);
     text-align: center;
-  }        
+  }      
+     /* Center the search container on screen */
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Focus state: green border */
+.search-container .input:focus-within {
+    border-color: green;
+    box-shadow: 0 0 8px rgba(0,128,0,0.5);
+}
+
+/* Input styling */
+.search-container .input {
+    flex: 1;
+    font-size: 16px;
+    padding: 6px 8px;
+}
+
+/* SVG icons styling */
+.search-container svg {
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+/* Optional: hide close icon by default until input has value */
+.close-icon {
+    display: none;
+}
+
+/* Show close icon when input has value */
+.search-container input:not(:placeholder-shown) ~ .close-icon {
+    display: inline;
+}  
 }
 
 
