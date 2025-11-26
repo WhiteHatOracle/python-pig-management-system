@@ -55,7 +55,7 @@ input[type="text"]:focus{
     transition: background-color 0.3s;
 
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    background-color: var(--text-light);
+    background-color: var(--bg-secondary);
     border-radius: 40px;
 }
 
@@ -232,7 +232,7 @@ input[type="text"]:focus{
       }
       
       .dropdown-menu button:hover {
-        background: var(--text-light);
+        background: var(--bg-secondary);
       }
       .dropdown-menu.show {
         display: flex; /* Shows the menu */

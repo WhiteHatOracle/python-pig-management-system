@@ -32,7 +32,7 @@
   --bg-accent:       #374151;
 
   --hover-primary:   #0e8e72;
-  --hover-secondary: #4b4c4e;
+  --hover-secondary: #959595;
   --hover-accent:    #2a4a40;
 
   --border-light:    #3e3f42;
@@ -419,8 +419,7 @@ hr{
   }
   .phone-top-nav-bar svg{
     margin: 0 auto;
-    fill: var(--bg-primary);
-
+    fill: var(--text-dark);
   }
 
   #sidebar .settings,

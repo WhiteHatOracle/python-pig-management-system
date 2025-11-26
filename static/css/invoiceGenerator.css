@@ -46,25 +46,23 @@ input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:foc
 }
 
 .submitBTN {
-    grid-column: 1 / -1; /* Make the div span across all columns */
-    display: flex; /* Use flexbox for centering the button */
-    justify-content: center; /* Center horizontally */  
-    margin-top: 1rem; /* Optional spacing above the button */
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center; 
+    margin-top: 1rem; 
 }
 .submitBTN input[type="submit"] {
     padding: 10px 20px;
     font-size: 16px;
-    color: black;
-    /* color: var(--text-dark); */
+    color: var(--text-dark);
     width: 300px;
-    border: 1px solid var(--hover-accent);
+    border: 1px solid var(--border-light);
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
 
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-    background-color: #e0e0e0;
+    background-color: var(--bg-secondary);
     border-radius: 40px;
 }
 
@@ -97,7 +95,6 @@ form .btn{
     padding: 10px 20px;
     font-size: 16px;
     color: var(--text-dark);
-    /* background: linear-gradient(var(--hover-primary),var(--hover-secondary)); */
     max-width: 300px;
     border: 1px solid var(--hover-accent);
     border-radius: 5px;
@@ -105,10 +102,9 @@ form .btn{
     transition: background-color 0.3s;
 
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-    background-color: #e0e0e0;
+    background-color: var(--bg-secondary);
     border-radius: 40px;
-    color: black;
+    color: var(--text-dark);
 }
 
 form .btn:hover{
@@ -210,11 +206,10 @@ form .btn:hover{
         border: 1px solid var(--border-dark);
         cursor: pointer;
         transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-        background-color: #e0e0e0;
+        background-color: var(-bg-light);
         border-radius: 40px;
         a{
-            color: black;
+            color: var(--text-dark);
         }
     }
     .generate-invoice{
@@ -224,11 +219,10 @@ form .btn:hover{
         border: 1px solid var(--border-dark);
         cursor: pointer;
         transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-        background-color: #e0e0e0;
+        background-color: var(--bg-secondary);
         border-radius: 40px;
         a{
-            color: black;
+            color: var(--text-dark);
         }
     }
 

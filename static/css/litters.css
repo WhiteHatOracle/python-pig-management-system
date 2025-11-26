@@ -68,14 +68,13 @@ textarea::placeholder {
     border: 1px solid var(--border-dark);
     cursor: pointer;
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2), inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-    background-color: #e0e0e0;
+    background-color: var(--bg-secondary);
     border-radius: 40px;
-    color: black;
+    color: var(--text-dark);
 }
 
 .submitBTN input[type="submit"]:hover {
-    background: linear-gradient(var(--hover-secondary), var(--hover-accent));
+    background: var(--hover-secondary);
     border: 1px solid var(--border-light);
 }
 
@@ -122,6 +121,7 @@ textarea::placeholder {
 .text-n-button button:hover {
     transform: scale(0.95);
     border: 1px solid var(--bg-primary);
+    background-color: var(--hover-secondary);
 }
 
 .text-n-button button:hover svg {
@@ -201,7 +201,7 @@ table {
 table tbody tr td {
     text-align: center;
     padding: 8px 5px;
-    color: #131212;
+    color: var(--text-dark);
 }
 
 table thead tr {
@@ -241,7 +241,7 @@ table thead tr th {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.5);
+    background-color: var(--bg-primary);
 }
 
 .modal-content {

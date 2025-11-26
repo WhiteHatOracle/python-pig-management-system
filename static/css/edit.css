@@ -58,10 +58,9 @@ input[type="text"]:focus, input[type="date"]:focus {
     outline: none;
 
     transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-    background-color: #e0e0e0;
+    background-color: var(--bg-secondary);
     border-radius: 40px;
-    color: black;
+    color: var(--text-dark);
 }
 
 .btn:hover{
@@ -70,5 +69,5 @@ input[type="text"]:focus, input[type="date"]:focus {
 }
 a{
     text-decoration: none;
-    color: black;
+    color: var(--text-dark);
 }
