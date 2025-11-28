@@ -1,297 +1,668 @@
-
-::-webkit-scrollbar{
-    display: none;
-}
-.alert{
-    color: var(--text-dark);
-}
-#header{
-   border: 1px solid var(--border-dark);
-   color: var(--text-light);
-   text-align: center;
-   padding: 10px;
-   margin-bottom: 20px;
-   border-radius: 5px;
-   color: var(--text-dark);
-}
-form{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-}
-.container{
-    /* border: 1px solid var(--border-dark) !important; */
-    box-shadow:0 10px 15px 5px var(--shadow-light);
-}
-label {
-    font-weight: bold;
-    color: var(--text-dark);
-    margin: 10px 0 0 0;
+/* ==================== HIDE SCROLLBAR ==================== */
+::-webkit-scrollbar {
+  display: none;
 }
 
-input[type="text"], input[type="date"], select {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid var(--border-dark);
-    border-radius: 5px;
-    min-width: 100%;
-    box-sizing: border-box;
-}   
-
-input[type="text"]:focus, input[type="date"]:focus {
-    border-color: var(--border-dark);
-    outline: none;
-}
-.submitBTN {
-    grid-column: 1 / -1; /* Make the div span across all columns */
-    display: flex; /* Use flexbox for centering the button */
-    justify-content: center; /* Center horizontally */
-    margin-top: 1rem; /* Optional spacing above the button */
-}
-.submit-btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    width: 300px;
-    border: 1px solid var(--border-dark);
-    cursor: pointer;
-    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-    background-color: #e0e0e0;
-    border-radius: 40px;
-    color: black;
-}
-.submit-btn:active{
-    transform: scale(0.95);
+/* ==================== PAGE HEADER ==================== */
+.page-header {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow-light);
 }
 
-.submit-btn:hover {
-    /* background: linear-gradient(var(--hover-secondary),var(--hover-accent)); */
-    border: 1px solid var(--border-light);
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.text-n-button {
-    display: flex;
-    justify-content: space-between;  /* Space between text and button */
-    align-items: center;  /* Align items vertically */
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px 5px var(--shadow-dark);
-    
-
-    span{
-        color: var(--text-dark);
-    }
-    h2{
-    border: none;
-    margin: auto 0;
-    }
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--bg-lightest);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
-/* Button styling */
-.text-n-button button {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    font-size: 16px;    
-    border: 1px solid var(--border-dark);
-    cursor: pointer;
-    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: inset 6px 6px 10px 0 rgba(0,0,0,0.2),inset -6px -6px 10px 0 rgba(255,255,255,0.5);
-    background-color: #e0e0e0;
-    border-radius: 40px;
-    color: black;
+.back-btn:hover {
+  background: var(--hover-accent);
+  color: var(--bg-accent);
 }
 
-.text-n-button button span{
-    color: black;
+.back-btn:active {
+  transform: scale(0.95);
 }
 
-/* Hover effect */
-.text-n-button button:hover {
-    transform: scale(0.95);
-    border: 1px solid var(--border-light);
+.header-text {
+  flex: 1;
 }
 
-/* SVG icon styling */
-.text-n-button button svg {
-    transition: transform 0.3s ease;
-    fill: black;
+.header-text h1 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 4px 0;
+  line-height: 1.3;
 }
 
-/* Rotate icon slightly on hover */
-.text-n-button button:hover svg {
-    transform: translateX(-3px);
+.sow-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
 }
 
-
-h2{
-    color: var(--text-dark);
+.sow-id {
+  font-weight: 600;
+  color: var(--bg-accent);
 }
 
-.no_records_found tr td{
-    column-span: all;
-    color: var(--text-dark);
-    width: 100%;
+.sow-info .separator {
+  color: var(--border-light);
 }
 
-table{
-    /* white-space: nowrap; */
-    border-collapse: collapse;
-    min-width: 100%;
-    border-radius: 5px;
-    box-shadow: 0 10px 30px 5px var(--shadow-dark);
-    margin: 25px auto;
-    text-align: center;
-    color: var(--text-dark);
-}
-table thead tr{
-    border-bottom: 2px double var(--border-light);
-    display: table-row;
-    text-align: right;
-}
-table thead tr th{
-    color: var(--text-dark);
-    font-size: 16px;
-    padding: 8px;
-    text-align: center;
-}
-table tbody tr td{
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-    padding: 12px 15px;
-    color: var(--text-dark);
-    font-size: 14px;
+/* ==================== FORM CARD ==================== */
+.form-card {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px var(--shadow-dark);
 }
 
-.actions-column{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin: 0 auto;
-    display: table-cell;
-    vertical-align: middle;
-}
-.flex{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.icon{
-    fill: var(--text-dark);
-}
-.form-btns{
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-}
-.action-btn{
-    display: flex;
-    align-items: center;
-    gap: 4px; /* Space between text and icon */
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: var(--text-dark); /* Adjust color of the button */
-    .action-txt{
-        font-weight: 500;
-    }
-    span{
-        display: none;
-    }
-}
-.action-btn:hover{
-    transform: scale(0.95);
-}
-.seperator{
-    font-size: 16px;
-    color: var(--text-dark); /* Adjust color of the separator */
-    display: inline-block;
-    line-height: 1;
+.form-card-header {
+  background: var(--bg-lightest);
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border-light);
 }
 
-@media (max-width:800px) {
+.form-card-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+  border: none;
+  padding: 0;
+  text-align: left;
+}
 
-    form{
+.service-form {
+  padding: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.form-input,
+.service-form select,
+.service-form input[type="text"],
+.service-form input[type="date"] {
+  padding: 12px 14px;
+  font-size: 0.9375rem;
+  border: 2px solid var(--border-light);
+  border-radius: 10px;
+  width: 100%;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input:focus,
+.service-form select:focus,
+.service-form input[type="text"]:focus,
+.service-form input[type="date"]:focus {
+  border-color: var(--bg-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 168, 107, 0.15);
+}
+
+/* Select dropdown styling */
+.service-form select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ==================== BUTTONS ==================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 12px 28px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--bg-accent);
+  color: #fff;
+  min-width: 180px;
+}
+
+.btn-primary:hover {
+  background: var(--hover-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary svg {
+  flex-shrink: 0;
+}
+
+/* ==================== TABLE CARD ==================== */
+.table-card {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px var(--shadow-dark);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  background: var(--bg-lightest);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.table-header h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+
+.record-count {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  background: var(--bg-light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* ==================== TABLE STYLES ==================== */
+.service-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.service-table thead {
+  background: var(--bg-light);
+}
+
+.service-table thead th {
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.service-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.service-table tbody tr:hover {
+  background: var(--bg-lightest);
+}
+
+.service-table tbody td {
+  padding: 12px 10px;
+  text-align: center;
+  color: var(--text-dark);
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.service-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.col-index {
+  width: 50px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.due-date {
+  font-weight: 600;
+  color: var(--bg-accent);
+}
+
+/* ==================== ACTION BUTTONS ==================== */
+.col-actions {
+  width: 160px;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.action-btn svg {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transition: color 0.2s ease;
+}
+
+.action-btn span {
+  display: none;
+}
+
+.view-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--bg-accent);
+}
+
+.view-btn:hover svg {
+  color: var(--bg-accent);
+}
+
+.delete-btn:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.delete-btn:hover svg {
+  color: #DC2626;
+}
+
+.action-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border-light);
+  margin: 0 4px;
+}
+
+/* ==================== EMPTY STATE ==================== */
+.empty-row td {
+  padding: 0 !important;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.empty-state svg {
+  color: var(--text-light);
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-state p {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin: 0 0 0.25rem 0;
+}
+
+.empty-state span {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* ==================== FLASH MESSAGES ==================== */
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.flash {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+}
+
+.flash.success {
+  background-color: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.flash.error {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* ==================== FLATPICKR OVERRIDES ==================== */
+.flatpickr-calendar {
+  border-radius: 10px;
+  box-shadow: 0 8px 24px var(--shadow-dark);
+  border: 1px solid var(--border-light);
+  font-family: inherit;
+}
+
+.dark-mode .flatpickr-calendar {
+  background: var(--bg-lighter);
+  border-color: var(--border-dark);
+}
+
+.dark-mode .flatpickr-months,
+.dark-mode .flatpickr-weekdays,
+.dark-mode .flatpickr-days {
+  background: var(--bg-lighter);
+}
+
+.dark-mode .flatpickr-day {
+  color: var(--text-dark);
+}
+
+.dark-mode .flatpickr-day:hover {
+  background: var(--bg-lightest);
+}
+
+.dark-mode .flatpickr-day.selected {
+  background: var(--bg-accent);
+  border-color: var(--bg-accent);
+}
+
+/* ==================== RESPONSIVE STYLES ==================== */
+@media (max-width: 1200px) {
+  .service-table thead th,
+  .service-table tbody td {
+    padding: 10px 8px;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .page-header {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .header-text h1 {
+    font-size: 1.125rem;
+  }
+
+  .sow-info {
+    flex-wrap: wrap;
+    font-size: 0.8125rem;
+  }
+
+  .form-card {
+    margin-bottom: 1rem;
+  }
+
+  .form-card-header {
+    padding: 0.875rem 1rem;
+  }
+
+  .service-form {
+    padding: 1rem;
+  }
+
+  .form-grid {
     grid-template-columns: 1fr;
-    }
+    gap: 1rem;
+  }
 
-    #header{
-        font-size: 18px;
-    }
+  .form-actions {
+    margin-top: 1rem;
+  }
 
-    .container{
-        padding: 5px 0 5px 0 !important;
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+  }
 
-    }
+  .table-header {
+    padding: 0.875rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 
-    .container label{
-        margin-left: 10px;
-    }
+  /* Card-based table layout for mobile */
+  .service-table {
+    border: none;
+  }
 
-    .index{
-        display: none;
-    }
-    th{
-        display: none;
-    }
-    table tbody tr td{
-        display: grid;
-        padding: 10px;
-        font-size: 12px;
-        grid-template-columns: repeat(2, 1fr);
-        border: none;
-        text-align: left;
-    }
+  .service-table thead {
+    display: none;
+  }
 
-    table tbody tr{
-        border: 2px double var(--border-dark);
-    }    
-    table tbody tr:nth-of-type(even){
-        background: var(--bg-accent);
-    }
-    table tbody tr td::before{
-        content: attr(data-cell);
-        float: left;
-        font-weight: bold;
-    }
-    table tbody tr td .actions-column::before{
-        display: none;
-    }
-    table tbody tr td.actions-column{
-        display: block;
-    }
-    .flex{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        
-    }
-    .flex .action-txt{
+  .service-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+  }
 
-        display: block;
-    }
-    .action-btn{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 6px 10px;
-        font-size: 12px;
-        border: 1px solid var(--border-dark);
-        border-radius: 40px;
-        color: var(--text-dark);
-        background: transparent;
-    }
-    .action-btn:hover{
-        background:transparent;
-        transform: scale(1);
-    }
-    .action-btn:active{
-        transform: scale(0.95);
-    }
+  .service-table tbody tr {
+    display: block;
+    background: var(--bg-light);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .service-table tbody tr:hover {
+    background: var(--bg-light);
+  }
+
+  .service-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-light);
+    white-space: normal;
+  }
+
+  .service-table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .service-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: left;
+    flex-shrink: 0;
+    margin-right: 1rem;
+  }
+
+  .col-index {
+    display: none;
+  }
+
+  .col-actions {
+    background: var(--bg-lightest);
+    width: 100%;
+  }
+
+  .col-actions::before {
+    display: none !important;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .action-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 8px;
+    background: var(--bg-light);
+  }
+
+  .action-btn span {
+    display: inline;
+  }
+
+  .action-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .action-divider {
+    display: none;
+  }
+
+  .view-btn {
+    border-color: var(--bg-accent);
+    color: var(--bg-accent);
+  }
+
+  .view-btn svg {
+    color: var(--bg-accent);
+  }
+
+  .delete-btn {
+    border-color: #FCA5A5;
+    color: #DC2626;
+  }
+
+  .delete-btn svg {
+    color: #DC2626;
+  }
+
+  /* Empty state mobile */
+  .empty-state {
+    padding: 2rem 1rem;
+  }
+
+  .empty-state svg {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-content {
+    gap: 0.75rem;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header-text h1 {
+    font-size: 1rem;
+  }
+
+  .form-group label {
+    font-size: 0.8125rem;
+  }
+
+  .form-input,
+  .service-form select,
+  .service-form input {
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .service-table tbody td {
+    padding: 8px 12px;
+    font-size: 0.8125rem;
+  }
+
+  .action-btn {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
 }

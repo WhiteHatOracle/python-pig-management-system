@@ -1,240 +1,420 @@
-::-webkit-scrollbar{
-    display: none;
-}
-#header{
-    border: 1px solid var(--border-dark);
-    text-align: center;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    color: var(--text-dark);
+/* ==================== SCROLLBAR ==================== */
+::-webkit-scrollbar {
+  display: none;
 }
 
-form{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    background: var(--bg-light);
+/* ==================== PAGE HEADER ==================== */
+#header {
+  border: 1px solid var(--border-light);
+  text-align: center;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  border-radius: 10px;
+  color: var(--text-dark);
+  background: var(--bg-lighter);
+  font-size: 1.25rem;
+  font-weight: 600;
 }
-.container{
-    box-shadow: 0 10px 30px 5px var(--shadow-dark);
+
+/* ==================== FORM STYLES ==================== */
+form.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 1.5rem;
+  background: var(--bg-lighter);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px var(--shadow-dark);
+  border: 1px solid var(--border-light);
 }
+
 label {
-    font-weight: bold;
-    color: var(--text-dark);
-    margin: 20px 5px 5px 5px;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin: 12px 0 6px 0;
+  font-size: 0.9375rem;
 }
 
-input[type="text"], input[type="date"]{
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid var(--border-dark);
-    border-radius: 5px;
-    min-width: 100%;
-    margin: 5px 0;
-    box-sizing: border-box;
-} 
-
-
-input[type="text"]:focus{
-    border-color: var(--border-dark);
-    outline: none;
+input[type="text"],
+input[type="date"] {
+  padding: 12px 14px;
+  font-size: 0.9375rem;
+  border: 2px solid var(--border-light);
+  border-radius: 10px;
+  width: 100%;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
 }
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+  border-color: var(--bg-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 168, 107, 0.15);
+}
+
+input[type="text"]::placeholder {
+  color: var(--text-muted);
+}
+
+/* Submit Button Container */
 .submitBTN {
-    grid-column: 1 / -1;     /* Make the div span across all columns */
-    display: flex;           /* Use flexbox for centering the button */
-    justify-content: center; /* Center horizontally                  */
-    margin: 1rem;        /* Optional spacing above the button    */
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
 }
-.submitBTN input[type="submit"] {
-    padding: 10px 20px;
-    font-size: 16px;
-    color: var(--text-dark) !important;
-    width: 300px;
-    border: 1px solid var(--border-dark);
-    cursor: pointer;
-    transition: background-color 0.3s;
 
-    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    background-color: var(--bg-secondary);
-    border-radius: 40px;
+.submitBTN input[type="submit"] {
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  width: 100%;
+  max-width: 300px;
+  border: none;
+  cursor: pointer;
+  background: var(--bg-accent);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
 .submitBTN input[type="submit"]:hover {
-    transform: scale(0.95);
-    border: 1px solid var(--border-light);
-}
-/* code for the table */
-.sow-table, .boar-table{
-    border-collapse: collapse;
-    min-width: 100%;
-    border-radius: 5px;
-    box-shadow: 0 10px 30px 5px rgba(0,0,0,0.15);
-    margin: 25px auto;
-    text-align: center;
-    color: var(--text-dark);
-    background: none !important;
+  background: var(--hover-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
 }
 
-.sow-table thead tr, 
-.boar-table thead tr{
-    border-bottom: 2px double var(--border-light);
+.submitBTN input[type="submit"]:active {
+  transform: translateY(0);
 }
+
+/* ==================== TABLE STYLES ==================== */
+.sow-table,
+.boar-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px var(--shadow-dark);
+  margin: 24px 0;
+  overflow: hidden;
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+}
+
+.sow-table thead,
+.boar-table thead {
+  background: var(--bg-lightest);
+}
+
 .sow-table thead tr th,
-.boar-table thead tr th{
-    color: var(--text-dark);
-    font-size: 16px;
-    letter-spacing: 1px;
-    padding: 8px;
+.boar-table thead tr th {
+  color: var(--text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 14px 12px;
+  text-align: center;
+  border-bottom: 2px solid var(--border-light);
+  text-transform: uppercase;
+}
+
+.sow-table tbody tr,
+.boar-table tbody tr {
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.sow-table tbody tr:hover,
+.boar-table tbody tr:hover {
+  background: var(--bg-lightest);
 }
 
 .sow-table tbody tr th,
-.boar-table tbody tr th{
-    padding: 8px;
+.boar-table tbody tr th {
+  padding: 12px;
+  font-weight: 400;
+  color: var(--text-dark);
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.9375rem;
 }
 
-.actions-column{
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    gap: 1px;
-}
-.action-btn{
-    display: flex;
-    align-items: center;
-    gap: 4px; /* Space between text and icon */
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: var(--text-dark); 
-    background: none;
-    
+.sow-table tbody tr:last-child th,
+.boar-table tbody tr:last-child th {
+  border-bottom: none;
 }
 
-.form-btns{
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    background: transparent;
+/* Empty state */
+.sow-table tbody td,
+.boar-table tbody td {
+  padding: 24px;
+  text-align: center;
+  color: var(--text-muted);
 }
 
-.seperator{
-    font-size: 16px;
-    color: var(--text-dark); /* Adjust color of the separator */
-    display: inline-block;
-    line-height: 1;
+/* ==================== ACTION BUTTONS ==================== */
+.actions-column {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
-.edit{
-    line-height: 1;
-    font-size: 16px;
-    color: var(--text-dark);
-    cursor: pointer;
-    gap: 8px;
+.form-btns {
+  display: inline-flex;
+  background: transparent;
 }
 
-.edit:hover{
-    transform: translateY(-1px);
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  background: transparent;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.icon{
-    /* display: none; */
-    fill: var(--text-dark);
+.action-btn:hover {
+  background: var(--bg-lightest);
+  color: var(--bg-accent);
 }
-.for-mobile{
+
+.action-btn:hover .icon {
+  fill: var(--bg-accent);
+}
+
+.action-btn .icon {
+  width: 18px;
+  height: 18px;
+  fill: var(--text-muted);
+  transition: fill 0.2s ease;
+}
+
+.separator {
+  color: var(--border-light);
+  font-size: 1rem;
+  margin: 0 2px;
+}
+
+/* Delete button special styling */
+.form-btns:last-child .action-btn:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+.form-btns:last-child .action-btn:hover .icon {
+  fill: #DC2626;
+}
+
+/* ==================== MOBILE DROPDOWN MENU ==================== */
+.for-mobile {
+  display: none;
+}
+
+.menu-btn {
+  background: var(--bg-lightest);
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 8px 12px;
+  color: var(--text-dark);
+  border-radius: 8px;
+  transition: background 0.2s ease;
+  line-height: 1;
+}
+
+.menu-btn:hover {
+  background: var(--hover-accent);
+}
+
+.dropdown-menu {
+  position: absolute;
+  right: 8px;
+  top: 100%;
+  background: var(--bg-lighter);
+  box-shadow: 0 8px 24px var(--shadow-dark);
+  border-radius: 10px;
+  display: none;
+  flex-direction: row;
+  padding: 8px;
+  z-index: 100;
+  border: 1px solid var(--border-light);
+  gap: 4px;
+}
+
+.dropdown-menu.show {
+  display: flex;
+}
+
+.dropdown-menu form {
+  display: contents;
+}
+
+.dropdown-menu .action-btn {
+  flex-direction: column;
+  width: 60px;
+  height: 60px;
+  padding: 8px;
+  justify-content: center;
+  border-radius: 8px;
+  gap: 4px;
+}
+
+.dropdown-menu .action-btn .action-txt {
+  font-size: 0.6875rem;
+  font-weight: 500;
+}
+
+.dropdown-menu .action-btn .icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* ==================== RESPONSIVE STYLES ==================== */
+@media (max-width: 900px) {
+  #header {
+    font-size: 1.125rem;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+  }
+
+  form.container {
+    grid-template-columns: 1fr;
+    gap: 0;
+    padding: 1.25rem;
+  }
+
+  label {
+    margin: 10px 0 4px 0;
+  }
+
+  input[type="text"],
+  input[type="date"] {
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .submitBTN {
+    margin-top: 1.25rem;
+  }
+
+  .submitBTN input[type="submit"] {
+    width: 100%;
+    max-width: none;
+    padding: 14px;
+  }
+
+  /* Table Responsive */
+  .sow-table,
+  .boar-table {
+    margin: 16px 0;
+    font-size: 0.875rem;
+  }
+
+  .sow-table thead tr th,
+  .boar-table thead tr th {
+    font-size: 0.75rem;
+    padding: 10px 6px;
+    letter-spacing: 0;
+  }
+
+  .sow-table thead tr th:last-child,
+  .boar-table thead tr th:last-child {
     display: none;
-}
-.mobile-span{
-    display: none;
+  }
+
+  .sow-table tbody tr th,
+  .boar-table tbody tr th {
+    font-size: 0.8125rem;
+    padding: 10px 6px;
+  }
+
+  /* Show mobile menu, hide desktop */
+  .for-desktop {
+    display: none !important;
+  }
+
+  .for-mobile {
+    display: table-cell;
+    position: relative;
+  }
+
+  .actions-column {
+    justify-content: flex-end;
+  }
 }
 
-@media (max-width:800px) {
-    .for-desktop{
-        display: none;
-    }
-    .icon{
-        display: inline-block;
-        color: var(--text-dark) !important;
-    }
-    .actions-column{
-        text-align: center;
-    }
-    form{
-        grid-template-columns:1fr;
-    }
-    table{
-        min-width: 100%;
-    }
-    .sow-table thead tr th:last-child,
-    .boar-table thead tr th:last-child{
-        display: none;
-    }
-    .sow-table thead tr th,
-    .boar-table thead tr th{
-        font-size: 14px;
-    }
-    .sow-table tbody tr th,
-    .boar-table tbody tr th{
-        font-size: 12px;
-    }
-    .for-mobile{
-        display: block;
-    }
-    .menu-btn {
-        background: none;
-        border: none;
-        font-size: 25px; /* Adjust size */
-        cursor: pointer;
-        padding: 5px;
-        color: var(--text-dark);
-        position: relative; /* Ensures dropdown is positioned correctly */
-    }
-    .action-btn{
-        width: 60px;
-        height: 60px;
-        padding: 0;
-        border-radius: 0;
-        justify-content: center;
-        display: flex;
-        flex-direction: column;
-        text-decoration: none;
-        color: var(--text-dark);
-    }
-    .dropdown-menu {
-        position: absolute;
-        background: var(--bg-lighter);
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-        border-radius: 5px;
-        display: none; /* Initially hidden */
-        flex-direction: row;
-        min-width: 120px;
-        padding: 5px 5px 5px 0;
-        z-index: 100;
-        right: 0; /* Ensures menu stays inside the table cell */
-        transform: translateX(-10px); /* Adjust for small spacing */
-    }
-    .dropdown-menu span {
-        display: block;
-        font-size: 10px;
-        margin-bottom: 0px;
-        right: 0;
-        bottom: 0;
-        color: var(--text-dark);
-        }
-      
-      .dropdown-menu button {
-        background: none;
-        border: none;
-        width: 100%;
-        padding: 10px;
-        text-align: left;
-        cursor: pointer;
-        font-size: 14px;
-      }
-      
-      .dropdown-menu button:hover {
-        background: var(--bg-secondary);
-      }
-      .dropdown-menu.show {
-        display: flex; /* Shows the menu */
-      }
+@media (max-width: 500px) {
+  .sow-table thead tr th,
+  .boar-table thead tr th {
+    font-size: 0.6875rem;
+    padding: 8px 4px;
+  }
+
+  .sow-table tbody tr th,
+  .boar-table tbody tr th {
+    font-size: 0.75rem;
+    padding: 8px 4px;
+  }
+
+  .dropdown-menu {
+    right: 0;
+  }
+
+  .dropdown-menu .action-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .dropdown-menu .action-btn .icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .dropdown-menu .action-btn .action-txt {
+    font-size: 0.625rem;
+  }
+}
+
+/* ==================== FLATPICKR OVERRIDES ==================== */
+.flatpickr-calendar {
+  border-radius: 10px;
+  box-shadow: 0 8px 24px var(--shadow-dark);
+  border: 1px solid var(--border-light);
+}
+
+.dark-mode .flatpickr-calendar {
+  background: var(--bg-lighter);
+  border-color: var(--border-dark);
+}
+
+.dark-mode .flatpickr-months,
+.dark-mode .flatpickr-weekdays,
+.dark-mode .flatpickr-days {
+  background: var(--bg-lighter);
+}
+
+.dark-mode .flatpickr-day {
+  color: var(--text-dark);
+}
+
+.dark-mode .flatpickr-day:hover {
+  background: var(--bg-lightest);
+}
+
+.dark-mode .flatpickr-day.selected {
+  background: var(--bg-accent);
+  border-color: var(--bg-accent);
 }

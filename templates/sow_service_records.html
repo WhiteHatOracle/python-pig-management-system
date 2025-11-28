@@ -7,111 +7,150 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- styling links -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sow_service_records.css' )}}">
     <!-- javascript links -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
     <script type="text/javascript" src="{{ url_for('static', filename='js/sow-service-records.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
-
 {% endblock %}
+
 {% block content %}
 <main>
-    <h2 id="header">Service Records for: {{ sow.sowID }}</h2>
-    <p>Date of Birth: {{ sow.DOB }}</p>
-    <form class="container" method="POST" action="{{ url_for('sow_service_records', sow_id=sow.id) }}">
-        {{ form.hidden_tag() }}
-            <label for="boar_used">Boar Used</label>
-            {{ form.boar_used() }}
-
-            <label for="service_date">Service Date</label>
-            {{form.service_date(class="form-control",type="date",id="date")}}
-        <div class="submitBTN">
-            <button type="submit" class="submit-btn" >Add Record</button>
+    <!-- Page Header with Back Button -->
+    <div class="page-header">
+        <div class="header-content">
+            <button class="back-btn" onclick="goBack()" aria-label="Go back">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+            </button>
+            <div class="header-text">
+                <h1>Service Records</h1>
+                <p class="sow-info">
+                    <span class="sow-id">{{ sow.sowID }}</span>
+                    <span class="separator">•</span>
+                    <span class="dob">DOB: {{ sow.DOB.strftime('%d-%b-%Y') if sow.DOB else sow.DOB }}</span>
+                </p>
+            </div>
         </div>
-    </form>
-    
+    </div>
+
+    <!-- Add Record Form -->
+    <div class="form-card">
+        <div class="form-card-header">
+            <h2>Add New Service Record</h2>
+        </div>
+        <form class="service-form" method="POST" action="{{ url_for('sow_service_records', sow_id=sow.id) }}">
+            {{ form.hidden_tag() }}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="boar_used">Boar Used</label>
+                    {{ form.boar_used(class="form-input") }}
+                </div>
+                <div class="form-group">
+                    <label for="service_date">Service Date</label>
+                    {{ form.service_date(class="form-input", type="date", id="date") }}
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                    <span>Add Record</span>
+                </button>
+            </div>
+        </form>
+    </div>
 
     <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flashes">
-                    {% for category, message in messages %}
-                    <li class="flash {{ category|lower }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
-
-    <div class="text-n-button">
-        <h2>Service Records</h2>
-        <button onclick="goBack()">
-            <span>back</span>
-            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M280-200v-80h284q63 0 109.5-40T720-420q0-60-46.5-100T564-560H312l104 104-56 56-200-200 200-200 56 56-104 104h252q97 0 166.5 63T800-420q0 94-69.5 157T564-200H280Z"/></svg>
-        </button>
-    </div>
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Boar</th>
-                <th>Service Date</th>
-                <th>Checkup Date</th>
-                <th>Lit Guard 1</th>
-                <th>Feed Up</th>
-                <th>Lit Guard 2</th>
-                <th>Action Date</th>
-                <th>Due Date</th>
-                <th>action</th>
-            </tr>
-        </thead>
-        {% if sow.service_records %}  
-        <tbody> 
-            {% for record in sow.service_records %}
-            <tr>
-                <td class="index">{{ loop.index }}</td> <!-- Use loop.index for a 1-based index -->
-                <td data-cell="Boar Used">{{ record.boar_used }}</td>
-                <td data-cell="Service Date:">{{ record.service_date.strftime('%d-%b-%Y') }}</td>
-                <td data-cell="Check-up Date:">{{ record.checkup_date.strftime('%d-%b-%Y') }}</td>
-                <td data-cell="Litter Guard 1:">{{ record.litter_guard1_date.strftime('%d-%b-%Y') }}</td>
-                <td data-cell="90 days Feed up:">{{ record.feed_up_date.strftime('%d-%b-%Y') }}</td>
-                <td data-cell="Litter Guard 2:">{{ record.litter_guard2_date.strftime('%d-%b-%Y') }}</td>
-                <td data-cell="Action Date:">{{ record.action_date.strftime('%d-%b-%Y') }}</td>
-                <td data-cell="Due Date:">{{ record.due_date.strftime('%d-%b-%Y') }}</td>
-                <td class="actions-column">
-                    <div class="flex">
-                        <form class="form-btns" action="{{ url_for('litter_records', service_id=record.id) }}" method="POST" style="display:inline;">
-                            {{ form.hidden_tag() }}
-                            <button class="action-btn">
-                                <span class="action-txt">Details</span>
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" ><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
-                            </button>  
-                        </form> 
-                        <span class="separator">|</span>
-                        <form class="form-btns" action="{{ url_for('delete_service_record', record_id=record.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete();">                       
-                            <button class="action-btn" >
-                                <span class="action-txt">Delete</span>
-                                <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" ><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
-                            </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        {% else %}
-        <tbody class="no_records_found">
-            <tr>
-                <td colspan="10" style="text-align: center;">No records found.</td>
-            </tr>
-        </tbody>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                <li class="flash {{ category|lower }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
         {% endif %}
-    </table>
+    {% endwith %}
+
+    <!-- Records Table -->
+    <div class="table-card">
+        <div class="table-header">
+            <h2>Service History</h2>
+            <span class="record-count">{{ sow.service_records|length }} record(s)</span>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="service-table">
+                <thead>
+                    <tr>
+                        <th class="col-index">#</th>
+                        <th>Boar</th>
+                        <th>Service Date</th>
+                        <th>Checkup</th>
+                        <th>Lit Guard 1</th>
+                        <th>Feed Up</th>
+                        <th>Lit Guard 2</th>
+                        <th>Action Date</th>
+                        <th>Due Date</th>
+                        <th class="col-actions">Actions</th>
+                    </tr>
+                </thead>
+                {% if sow.service_records %}  
+                <tbody> 
+                    {% for record in sow.service_records %}
+                    <tr>
+                        <td class="col-index">{{ loop.index }}</td>
+                        <td data-label="Boar Used">{{ record.boar_used }}</td>
+                        <td data-label="Service Date">{{ record.service_date.strftime('%d-%b-%Y') }}</td>
+                        <td data-label="Checkup Date">{{ record.checkup_date.strftime('%d-%b-%Y') }}</td>
+                        <td data-label="Litter Guard 1">{{ record.litter_guard1_date.strftime('%d-%b-%Y') }}</td>
+                        <td data-label="Feed Up (90 days)">{{ record.feed_up_date.strftime('%d-%b-%Y') }}</td>
+                        <td data-label="Litter Guard 2">{{ record.litter_guard2_date.strftime('%d-%b-%Y') }}</td>
+                        <td data-label="Action Date">{{ record.action_date.strftime('%d-%b-%Y') }}</td>
+                        <td data-label="Due Date" class="due-date">{{ record.due_date.strftime('%d-%b-%Y') }}</td>
+                        <td class="col-actions" data-label="Actions">
+                            <div class="action-buttons">
+                                <form action="{{ url_for('litter_records', service_id=record.id) }}" method="POST">
+                                    {{ form.hidden_tag() }}
+                                    <button type="submit" class="action-btn view-btn" title="View Details">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+                                        <span>Details</span>
+                                    </button>  
+                                </form>
+                                <span class="action-divider"></span>
+                                <form action="{{ url_for('delete_service_record', record_id=record.id) }}" method="POST" onsubmit="return confirmDelete();">                       
+                                    {{ form.hidden_tag() }}
+                                    <button type="submit" class="action-btn delete-btn" title="Delete Record">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                                        <span>Delete</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {% else %}
+                <tbody>
+                    <tr class="empty-row">
+                        <td colspan="10">
+                            <div class="empty-state">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+                                <p>No service records found</p>
+                                <span>Add a new record using the form above</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                {% endif %}
+            </table>
+        </div>
+    </div>
 </main>
+
 <script>
     flatpickr("#date", {
-        dateFormat:"d-m-Y",
-        maxDate:"today"
+        dateFormat: "d-m-Y",
+        maxDate: "today"
     });    
 </script>
 {% endblock %}
