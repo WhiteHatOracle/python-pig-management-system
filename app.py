@@ -108,18 +108,26 @@ login_manager.login_view = "signin"  # Redirect here if unauthorized access is a
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
-# Dashboard Layout
+from dash import html, dcc, dash_table
+import dash
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import pandas as pd
+from datetime import datetime, timedelta
+from sqlalchemy import func, extract
+
+# Dashboard Layout with Charts
 dash_app.layout = html.Div([
-    # Main Dashboard Container
     html.Div([
-        # Welcome Section
+        # Welcome Section (same as before)
         html.Div([
             html.Div([
                 html.Div([
                     html.Span("👋", className="welcome-emoji"),
                     html.Div([
                         html.H1("Farm Dashboard", className="welcome-title"),
-                        html.P("Monitor your herd and upcoming activities", className="welcome-subtitle"),
+                        html.P("Monitor your herd and farm finances", className="welcome-subtitle"),
                     ], className="welcome-text"),
                 ], className="welcome-content"),
                 html.Div([
@@ -128,113 +136,208 @@ dash_app.layout = html.Div([
             ], className="welcome-header"),
         ], className="welcome-section"),
 
-        # Quick Stats Section
+        # Financial Summary Cards
         html.Div([
             html.Div([
                 html.Div([
-                    html.Span("📊", className="section-icon"),
+                    html.Span("💰", className="section-icon"),
+                    html.Span("Financial Overview", className="section-title"),
+                ], className="section-header"),
+                html.Div([
+                    # Period selector
+                    dcc.Dropdown(
+                        id='period-selector',
+                        options=[
+                            {'label': 'Last 30 Days', 'value': '30'},
+                            {'label': 'Last 3 Months', 'value': '90'},
+                            {'label': 'Last 6 Months', 'value': '180'},
+                            {'label': 'This Year', 'value': '365'},
+                            {'label': 'All Time', 'value': 'all'},
+                        ],
+                        value='90',
+                        clearable=False,
+                        className='period-dropdown'
+                    ),
+                ], className="period-selector-wrapper"),
+            ], className="section-header-row financial-header"),
+        ], className="section-title-wrapper"),
+
+        # Financial Stats Cards
+        html.Div([
+            # Total Revenue Card
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Span("📈", className="finance-emoji"),
+                    ], className="finance-icon-wrapper revenue"),
+                    html.Div([
+                        html.H2(id="total-revenue", className="finance-value revenue-value"),
+                        html.P("Total Revenue", className="finance-label"),
+                        html.Span(id="revenue-change", className="finance-change positive"),
+                    ], className="finance-content"),
+                ], className="finance-inner"),
+            ], className="finance-card"),
+
+            # Total Expenses Card
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Span("📉", className="finance-emoji"),
+                    ], className="finance-icon-wrapper expenses"),
+                    html.Div([
+                        html.H2(id="total-expenses", className="finance-value expenses-value"),
+                        html.P("Total Expenses", className="finance-label"),
+                        html.Span(id="expenses-change", className="finance-change negative"),
+                    ], className="finance-content"),
+                ], className="finance-inner"),
+            ], className="finance-card"),
+
+            # Net Profit Card
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Span("💵", className="finance-emoji"),
+                    ], className="finance-icon-wrapper profit"),
+                    html.Div([
+                        html.H2(id="net-profit", className="finance-value profit-value"),
+                        html.P("Net Profit", className="finance-label"),
+                        html.Span(id="profit-margin", className="finance-change"),
+                    ], className="finance-content"),
+                ], className="finance-inner"),
+            ], className="finance-card highlight"),
+
+            # Profit Margin Card
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Span("📊", className="finance-emoji"),
+                    ], className="finance-icon-wrapper margin"),
+                    html.Div([
+                        html.H2(id="profit-margin-pct", className="finance-value margin-value"),
+                        html.P("Profit Margin", className="finance-label"),
+                        html.Span(id="margin-status", className="finance-change"),
+                    ], className="finance-content"),
+                ], className="finance-inner"),
+            ], className="finance-card"),
+        ], className="finance-grid"),
+
+        # Charts Section
+        html.Div([
+            # Secondary Charts Row
+            html.Div([
+                # Expense Breakdown Pie Chart
+                html.Div([
+                    html.Div([
+                        html.Span("🥧", className="section-icon"),
+                        html.Span("Expense Breakdown", className="section-title"),
+                    ], className="chart-header"),
+                    html.Div([
+                        dcc.Graph(
+                            id='expense-breakdown-chart',
+                            config={
+                                'displayModeBar': False,
+                                'responsive': True
+                            },
+                            className='pie-chart'
+                        ),
+                    ], className="chart-container"),
+                ], className="chart-card"),
+
+                # Revenue vs Expenses Chart (Main Chart)
+                html.Div([
+                    html.Div([
+                        html.Div([
+                            html.Span("📊", className="section-icon"),
+                            html.Span("Revenue vs Expenses", className="section-title"),
+                        ], className="section-header"),
+                        html.Div([
+                            dcc.RadioItems(
+                                id='chart-type-selector',
+                                options=[
+                                    {'label': ' Bar', 'value': 'bar'},
+                                    {'label': ' Line', 'value': 'line'},
+                                    {'label': ' Area', 'value': 'area'},
+                                ],
+                                value='bar',
+                                className='chart-type-radio',
+                                inputClassName='chart-radio-input',
+                                labelClassName='chart-radio-label',
+                            ),
+                        ], className="chart-type-wrapper"),
+                    ], className="chart-header"),
+                    html.Div([
+                        dcc.Graph(
+                            id='revenue-expenses-chart',
+                            config={
+                                'displayModeBar': False,
+                                'responsive': True
+                            },
+                            className='main-chart'
+                        ),
+                    ], className="chart-container"),
+                ], className="chart-card main-chart-card"),
+            ], className="charts-row"),
+        ], className="charts-section"),
+
+        # Herd Stats Section (condensed version)
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Span("🐷", className="section-icon"),
                     html.Span("Herd Overview", className="section-title"),
                 ], className="section-header"),
             ], className="section-title-wrapper"),
             
-            # Stats Grid
             html.Div([
-                # Total Herd Card (Featured)
+                # Total Herd
+                html.Div([
+                    html.Div([
+                        html.H3(id="total-pigs", className="herd-value"),
+                        html.P("Total Herd", className="herd-label"),
+                    ], className="herd-inner"),
+                ], className="herd-card featured"),
+
+                # Sows
+                html.Div([
+                    html.Div([
+                        html.H3(id="total-sows", className="herd-value"),
+                        html.P("Sows", className="herd-label"),
+                    ], className="herd-inner"),
+                ], className="herd-card"),
+
+                # Boars
+                html.Div([
+                    html.Div([
+                        html.H3(id="total-boars", className="herd-value"),
+                        html.P("Boars", className="herd-label"),
+                    ], className="herd-inner"),
+                ], className="herd-card"),
+
+                # Growth Stages (combined)
                 html.Div([
                     html.Div([
                         html.Div([
-                            html.Span("🐷", className="stat-emoji"),
-                        ], className="stat-icon-wrapper featured"),
+                            html.Span(id="pre_weaners", className="stage-num"),
+                            html.Span("Pre-W", className="stage-abbr"),
+                        ], className="stage-item pre-weaning"),
                         html.Div([
-                            html.H2(id="total-pigs", className="stat-value featured-value"),
-                            html.P("Total Herd Size", className="stat-label"),
-                        ], className="stat-content"),
-                    ], className="stat-inner"),
-                ], className="stat-card featured-card"),
+                            html.Span(id="weaners", className="stage-num"),
+                            html.Span("Wean", className="stage-abbr"),
+                        ], className="stage-item weaner"),
+                        html.Div([
+                            html.Span(id="growers", className="stage-num"),
+                            html.Span("Grow", className="stage-abbr"),
+                        ], className="stage-item grower"),
+                        html.Div([
+                            html.Span(id="finishers", className="stage-num"),
+                            html.Span("Fin", className="stage-abbr"),
+                        ], className="stage-item finisher"),
+                    ], className="stages-compact"),
+                ], className="herd-card stages-card"),
+            ], className="herd-grid"),
+        ], className="herd-section"),
 
-                # Sows Card
-                html.Div([
-                    html.Div([
-                        html.Div([
-                            html.Span("♀️", className="stat-emoji"),
-                        ], className="stat-icon-wrapper sows"),
-                        html.Div([
-                            html.H2(id="total-sows", className="stat-value"),
-                            html.P("Sows", className="stat-label"),
-                        ], className="stat-content"),
-                    ], className="stat-inner"),
-                ], className="stat-card"),
-
-                # Boars Card
-                html.Div([
-                    html.Div([
-                        html.Div([
-                            html.Span("♂️", className="stat-emoji"),
-                        ], className="stat-icon-wrapper boars"),
-                        html.Div([
-                            html.H2(id="total-boars", className="stat-value"),
-                            html.P("Boars", className="stat-label"),
-                        ], className="stat-content"),
-                    ], className="stat-inner"),
-                ], className="stat-card"),
-            ], className="stats-grid main-stats"),
-
-            # Growth Stages Grid
-            html.Div([
-                html.Div([
-                    html.Span("🌱", className="section-icon"),
-                    html.Span("Growth Stages", className="section-title"),
-                ], className="section-header mini"),
-            ], className="section-title-wrapper"),
-
-            html.Div([
-                # Pre-Weaners
-                html.Div([
-                    html.Div([
-                        html.Div(className="stage-indicator pre-weaning"),
-                        html.Div([
-                            html.H3(id="pre_weaners", className="stage-value"),
-                            html.P("Pre-Weaners", className="stage-label"),
-                        ], className="stage-content"),
-                    ], className="stage-inner"),
-                ], className="stage-card"),
-
-                # Weaners
-                html.Div([
-                    html.Div([
-                        html.Div(className="stage-indicator weaner"),
-                        html.Div([
-                            html.H3(id="weaners", className="stage-value"),
-                            html.P("Weaners", className="stage-label"),
-                        ], className="stage-content"),
-                    ], className="stage-inner"),
-                ], className="stage-card"),
-
-                # Growers
-                html.Div([
-                    html.Div([
-                        html.Div(className="stage-indicator grower"),
-                        html.Div([
-                            html.H3(id="growers", className="stage-value"),
-                            html.P("Growers", className="stage-label"),
-                        ], className="stage-content"),
-                    ], className="stage-inner"),
-                ], className="stage-card"),
-
-                # Finishers
-                html.Div([
-                    html.Div([
-                        html.Div(className="stage-indicator finisher"),
-                        html.Div([
-                            html.H3(id="finishers", className="stage-value"),
-                            html.P("Finishers", className="stage-label"),
-                        ], className="stage-content"),
-                    ], className="stage-inner"),
-                ], className="stage-card"),
-            ], className="stats-grid stages-grid"),
-        ], className="stats-section"),
-
-        # Upcoming Farrowings Section
+        # Upcoming Farrowings Section (same as before)
         html.Div([
             html.Div([
                 html.Div([
@@ -246,10 +349,8 @@ dash_app.layout = html.Div([
                         html.Span(id="farrowing-count", className="count-badge"),
                     ], className="section-badge"),
                 ], className="section-header-row"),
-                html.P("Sows expected to farrow in the coming weeks", className="section-description"),
             ], className="table-section-header"),
 
-            # Data Table
             html.Div([
                 dash_table.DataTable(
                     id="sow-service-table",
@@ -261,28 +362,21 @@ dash_app.layout = html.Div([
                         {"name": "Due Date", "id": "due_date"},
                     ],
                     sort_action="native",
-                    page_size=10,
-                    style_table={
-                        'overflowX': 'auto',
-                        'borderRadius': '12px',
-                        'border': '1px solid var(--border-light)',
-                    },
+                    page_size=5,
+                    style_table={'overflowX': 'auto', 'borderRadius': '12px'},
                     style_header={
                         'backgroundColor': '#059669',
                         'color': 'white',
                         'textAlign': 'center',
                         'fontWeight': '600',
-                        'fontSize': '12px',
+                        'fontSize': '11px',
                         'textTransform': 'uppercase',
-                        'letterSpacing': '0.5px',
-                        'padding': '14px 12px',
-                        'borderBottom': '2px solid #047857',
+                        'padding': '12px 8px',
                     },
                     style_cell={
-                        'padding': '14px 12px',
+                        'padding': '12px 8px',
                         'textAlign': 'center',
-                        'fontFamily': "'Poppins', -apple-system, sans-serif",
-                        'fontSize': '14px',
+                        'fontSize': '13px',
                         'border': 'none',
                         'borderBottom': '1px solid var(--border-light)',
                     },
@@ -291,66 +385,418 @@ dash_app.layout = html.Div([
                         'color': 'var(--text-dark)',
                     },
                     style_data_conditional=[
-                        {
-                            'if': {'row_index': 'odd'},
-                            'backgroundColor': 'var(--bg-lightest)',
-                        },
-                        {
-                            'if': {'column_id': 'due_date'},
-                            'fontWeight': '600',
-                            'color': '#059669',
-                        },
-                        {
-                            'if': {'column_id': 'sow_id'},
-                            'fontWeight': '600',
-                            'color': 'var(--bg-accent)',
-                        },
+                        {'if': {'row_index': 'odd'}, 'backgroundColor': 'var(--bg-lightest)'},
+                        {'if': {'column_id': 'due_date'}, 'fontWeight': '600', 'color': '#059669'},
                     ],
-                    style_cell_conditional=[
-                        {
-                            'if': {'column_id': 'sow_id'},
-                            'width': '100px',
-                        },
-                    ],
-                    css=[
-                        {
-                            "selector": ".dash-table-container",
-                            "rule": "border-radius: 12px !important; overflow: hidden;"
-                        },
-                        {
-                            "selector": "tbody tr:hover",
-                            "rule": "background-color: var(--hover-accent) !important;"
-                        },
-                        {
-                            "selector": ".dash-header",
-                            "rule": "background-color: #059669 !important;"
-                        },
-                    ]
                 ),
-            ], className="table-wrapper"),
+            ], className="table-wrapper compact"),
+        ], className="table-section compact"),
 
-            # Empty State (shown when no data)
-            html.Div([
-                html.Span("📋", className="empty-icon"),
-                html.H4("No Upcoming Farrowings", className="empty-title"),
-                html.P("All sows are either not pregnant or have already farrowed", className="empty-text"),
-            ], id="empty-state", className="empty-state", style={"display": "none"}),
-
-        ], className="table-section"),        
-
-        # Auto-refresh interval
-        dcc.Interval(
-            id="interval-update",
-            interval=30 * 1000,  # Updates every 30 seconds
-            n_intervals=0
-        ),
+        # Intervals and Location
+        dcc.Interval(id="interval-update", interval=30 * 1000, n_intervals=0),
+        dcc.Interval(id="chart-interval", interval=60 * 1000, n_intervals=0),
         dcc.Location(id='url', refresh=True),
 
     ], className="dashboard-container"),
 ], className="dashboard-app")
 
 
-# Callback to Update Data
+# Helper function to get financial data
+def get_financial_data(period='90'):
+    """Get revenue and expense data for the specified period"""
+    from models import Invoice, Expense  # Import your models
+    
+    today = datetime.now().date()
+    
+    if period == 'all':
+        start_date = datetime(2000, 1, 1).date()
+    else:
+        days = int(period)
+        start_date = today - timedelta(days=days)
+    
+    # Get invoices (revenue)
+    invoices = Invoice.query.filter(Invoice.date >= start_date).all()
+    
+    # Get expenses
+    expenses = Expense.query.filter(Expense.date >= start_date).all()
+    
+    # Process revenue data
+    revenue_by_month = {}
+    for inv in invoices:
+        month_key = inv.date.strftime('%Y-%m')
+        if month_key not in revenue_by_month:
+            revenue_by_month[month_key] = 0
+        revenue_by_month[month_key] += float(inv.total_price or 0)
+    
+    # Process expense data
+    expense_by_month = {}
+    expense_by_category = {}
+    for exp in expenses:
+        month_key = exp.date.strftime('%Y-%m')
+        if month_key not in expense_by_month:
+            expense_by_month[month_key] = 0
+        expense_by_month[month_key] += float(exp.amount or 0)
+        
+        # Category breakdown
+        category = exp.category or 'Other'
+        if category not in expense_by_category:
+            expense_by_category[category] = 0
+        expense_by_category[category] += float(exp.amount or 0)
+    
+    # Calculate totals
+    total_revenue = sum(revenue_by_month.values())
+    total_expenses = sum(expense_by_month.values())
+    net_profit = total_revenue - total_expenses
+    profit_margin = (net_profit / total_revenue * 100) if total_revenue > 0 else 0
+    
+    return {
+        'revenue_by_month': revenue_by_month,
+        'expense_by_month': expense_by_month,
+        'expense_by_category': expense_by_category,
+        'total_revenue': total_revenue,
+        'total_expenses': total_expenses,
+        'net_profit': net_profit,
+        'profit_margin': profit_margin,
+    }
+
+
+# Callback for financial summary cards
+@dash_app.callback(
+    [
+        dash.Output("total-revenue", "children"),
+        dash.Output("total-expenses", "children"),
+        dash.Output("net-profit", "children"),
+        dash.Output("profit-margin-pct", "children"),
+        dash.Output("revenue-change", "children"),
+        dash.Output("expenses-change", "children"),
+        dash.Output("profit-margin", "children"),
+        dash.Output("margin-status", "children"),
+        dash.Output("net-profit", "className"),
+        dash.Output("profit-margin-pct", "className"),
+    ],
+    [dash.Input("period-selector", "value")],
+)
+def update_financial_summary(period):
+    data = get_financial_data(period)
+    
+    total_revenue = f"K{data['total_revenue']:,.2f}"
+    total_expenses = f"K{data['total_expenses']:,.2f}"
+    net_profit = f"K{data['net_profit']:,.2f}"
+    profit_margin = f"{data['profit_margin']:.1f}%"
+    
+    # Determine profit status
+    if data['net_profit'] > 0:
+        profit_class = "finance-value profit-value positive"
+        margin_class = "finance-value margin-value positive"
+        profit_status = "↑ Profitable"
+        margin_status = "Healthy"
+    elif data['net_profit'] < 0:
+        profit_class = "finance-value profit-value negative"
+        margin_class = "finance-value margin-value negative"
+        profit_status = "↓ Loss"
+        margin_status = "At Risk"
+    else:
+        profit_class = "finance-value profit-value"
+        margin_class = "finance-value margin-value"
+        profit_status = "Break Even"
+        margin_status = "Neutral"
+    
+    # Calculate period change (simplified)
+    revenue_change = f"↑ {len([v for v in data['revenue_by_month'].values() if v > 0])} months with sales"
+    expenses_change = f"{len(data['expense_by_category'])} categories"
+    
+    return (
+        total_revenue,
+        total_expenses,
+        net_profit,
+        profit_margin,
+        revenue_change,
+        expenses_change,
+        profit_status,
+        margin_status,
+        profit_class,
+        margin_class,
+    )
+
+
+# Callback for Revenue vs Expenses chart
+@dash_app.callback(
+    dash.Output("revenue-expenses-chart", "figure"),
+    [
+        dash.Input("period-selector", "value"),
+        dash.Input("chart-type-selector", "value"),
+        dash.Input("chart-interval", "n_intervals"),
+    ],
+)
+def update_revenue_expenses_chart(period, chart_type, n):
+    data = get_financial_data(period)
+    
+    # Combine all months
+    all_months = sorted(set(list(data['revenue_by_month'].keys()) + list(data['expense_by_month'].keys())))
+    
+    if not all_months:
+        # Return empty chart
+        fig = go.Figure()
+        fig.add_annotation(
+            text="No data available for selected period",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=16, color="#718096")
+        )
+        fig.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            height=350,
+        )
+        return fig
+    
+    # Create dataframe
+    df = pd.DataFrame({
+        'Month': all_months,
+        'Revenue': [data['revenue_by_month'].get(m, 0) for m in all_months],
+        'Expenses': [data['expense_by_month'].get(m, 0) for m in all_months],
+    })
+    
+    # Format month labels
+    df['Month_Label'] = pd.to_datetime(df['Month']).dt.strftime('%b %Y')
+    
+    # Create chart based on type
+    if chart_type == 'bar':
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            name='Revenue',
+            x=df['Month_Label'],
+            y=df['Revenue'],
+            marker_color='#10B981',
+            marker_line_width=0,
+        ))
+        fig.add_trace(go.Bar(
+            name='Expenses',
+            x=df['Month_Label'],
+            y=df['Expenses'],
+            marker_color='#EF4444',
+            marker_line_width=0,
+        ))
+        fig.update_layout(barmode='group')
+        
+    elif chart_type == 'line':
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            name='Revenue',
+            x=df['Month_Label'],
+            y=df['Revenue'],
+            mode='lines+markers',
+            line=dict(color='#10B981', width=3),
+            marker=dict(size=8),
+        ))
+        fig.add_trace(go.Scatter(
+            name='Expenses',
+            x=df['Month_Label'],
+            y=df['Expenses'],
+            mode='lines+markers',
+            line=dict(color='#EF4444', width=3),
+            marker=dict(size=8),
+        ))
+        
+    else:  # area
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(
+            name='Revenue',
+            x=df['Month_Label'],
+            y=df['Revenue'],
+            fill='tozeroy',
+            mode='lines',
+            line=dict(color='#10B981', width=2),
+            fillcolor='rgba(16, 185, 129, 0.3)',
+        ))
+        fig.add_trace(go.Scatter(
+            name='Expenses',
+            x=df['Month_Label'],
+            y=df['Expenses'],
+            fill='tozeroy',
+            mode='lines',
+            line=dict(color='#EF4444', width=2),
+            fillcolor='rgba(239, 68, 68, 0.3)',
+        ))
+    
+    # Update layout
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        height=350,
+        margin=dict(l=20, r=20, t=20, b=40),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(size=12),
+        ),
+        xaxis=dict(
+            showgrid=False,
+            showline=True,
+            linecolor='#E2E8F0',
+            tickfont=dict(size=11, color='#718096'),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='#E2E8F0',
+            showline=False,
+            tickfont=dict(size=11, color='#718096'),
+            tickprefix='K',
+        ),
+        hovermode='x unified',
+    )
+    
+    return fig
+
+
+# Callback for Expense Breakdown Pie Chart
+@dash_app.callback(
+    dash.Output("expense-breakdown-chart", "figure"),
+    [
+        dash.Input("period-selector", "value"),
+        dash.Input("chart-interval", "n_intervals"),
+    ],
+)
+def update_expense_breakdown(period, n):
+    data = get_financial_data(period)
+    
+    categories = list(data['expense_by_category'].keys())
+    values = list(data['expense_by_category'].values())
+    
+    if not categories:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="No expenses recorded",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=14, color="#718096")
+        )
+        fig.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            height=300,
+        )
+        return fig
+    
+    # Color palette
+    colors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16']
+    
+    fig = go.Figure(data=[go.Pie(
+        labels=categories,
+        values=values,
+        hole=0.55,
+        marker=dict(colors=colors[:len(categories)]),
+        textinfo='percent',
+        textposition='outside',
+        textfont=dict(size=11),
+        hovertemplate="<b>%{label}</b><br>K%{value:,.2f}<br>%{percent}<extra></extra>",
+    )])
+    
+    # Add center text
+    total = sum(values)
+    fig.add_annotation(
+        text=f"K{total:,.0f}",
+        x=0.5, y=0.55,
+        font=dict(size=18, color='#1A202C', family='Poppins'),
+        showarrow=False,
+    )
+    fig.add_annotation(
+        text="Total",
+        x=0.5, y=0.45,
+        font=dict(size=12, color='#718096'),
+        showarrow=False,
+    )
+    
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        height=300,
+        margin=dict(l=20, r=20, t=20, b=20),
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=-0.2,
+            xanchor="center",
+            x=0.5,
+            font=dict(size=10),
+        ),
+    )
+    
+    return fig
+
+
+def update_monthly_profit(period, n):
+    data = get_financial_data(period)
+    
+    all_months = sorted(set(list(data['revenue_by_month'].keys()) + list(data['expense_by_month'].keys())))
+    
+    if not all_months:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="No data available",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=14, color="#718096")
+        )
+        fig.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            height=300,
+        )
+        return fig
+    
+    # Calculate profit/loss for each month
+    profits = []
+    colors = []
+    for m in all_months:
+        rev = data['revenue_by_month'].get(m, 0)
+        exp = data['expense_by_month'].get(m, 0)
+        profit = rev - exp
+        profits.append(profit)
+        colors.append('#10B981' if profit >= 0 else '#EF4444')
+    
+    month_labels = [datetime.strptime(m, '%Y-%m').strftime('%b %Y') for m in all_months]
+    
+    fig = go.Figure(data=[go.Bar(
+        x=month_labels,
+        y=profits,
+        marker_color=colors,
+        marker_line_width=0,
+        hovertemplate="<b>%{x}</b><br>K%{y:,.2f}<extra></extra>",
+    )])
+    
+    # Add zero line
+    fig.add_hline(y=0, line_dash="dash", line_color="#718096", line_width=1)
+    
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        height=300,
+        margin=dict(l=20, r=20, t=20, b=40),
+        xaxis=dict(
+            showgrid=False,
+            showline=True,
+            linecolor='#E2E8F0',
+            tickfont=dict(size=10, color='#718096'),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='#E2E8F0',
+            showline=False,
+            tickfont=dict(size=10, color='#718096'),
+            tickprefix='K',
+            zeroline=False,
+        ),
+    )
+    
+    return fig
+
+
+# Main callback to update herd data and table
 @dash_app.callback(
     [
         dash.Output("total-pigs", "children"),
@@ -391,7 +837,6 @@ def callback_update_dashboard(n_intervals):
         farrowing_text,
         current_date,
     )
-
 
 # Flask Route for Dash App
 @app.route("/dashboard/")

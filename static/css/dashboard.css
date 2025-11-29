@@ -901,3 +901,540 @@ body,
   background: var(--hover-accent);
   border-color: var(--bg-accent);
 }
+
+/* ==================== FINANCIAL SECTION ==================== */
+.financial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.period-selector-wrapper {
+  min-width: 160px;
+}
+
+.period-dropdown {
+  border-radius: 8px !important;
+}
+
+/* Period Dropdown Styling */
+.Select-control {
+  border-radius: 8px !important;
+  border: 1px solid var(--border-light) !important;
+  background: var(--bg-light) !important;
+}
+
+.Select-menu-outer {
+  border-radius: 8px !important;
+  border: 1px solid var(--border-light) !important;
+  box-shadow: 0 4px 16px var(--shadow-dark) !important;
+}
+
+/* ==================== FINANCE GRID ==================== */
+.finance-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.finance-card {
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.finance-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--shadow-dark);
+}
+
+.finance-card.highlight {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--hover-accent) 100%);
+  border: none;
+}
+
+.finance-inner {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+}
+
+.finance-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.finance-icon-wrapper.revenue {
+  background: #D1FAE5;
+}
+
+.finance-icon-wrapper.expenses {
+  background: #FEE2E2;
+}
+
+.finance-icon-wrapper.profit {
+  background: var(--bg-accent);
+}
+
+.finance-icon-wrapper.margin {
+  background: #DBEAFE;
+}
+
+.finance-emoji {
+  font-size: 1.5rem;
+}
+
+.finance-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.finance-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.finance-value.revenue-value {
+  color: #059669;
+}
+
+.finance-value.expenses-value {
+  color: #DC2626;
+}
+
+.finance-value.profit-value.positive {
+  color: #059669;
+}
+
+.finance-value.profit-value.negative {
+  color: #DC2626;
+}
+
+.finance-value.margin-value.positive {
+  color: #059669;
+}
+
+.finance-value.margin-value.negative {
+  color: #DC2626;
+}
+
+.finance-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.finance-change {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-top: 0.375rem;
+}
+
+.finance-change.positive {
+  background: #D1FAE5;
+  color: #059669;
+}
+
+.finance-change.negative {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+
+/* ==================== CHARTS SECTION ==================== */
+.charts-section {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.chart-card {
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.chart-card:last-child {
+  margin-bottom: 0;
+}
+
+.main-chart-card {
+  margin-bottom: 1rem;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.chart-type-wrapper {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.chart-type-radio {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--bg-lightest);
+  padding: 4px;
+  border-radius: 8px;
+}
+
+.chart-radio-label {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.chart-radio-input:checked + .chart-radio-label {
+  background: var(--bg-accent);
+  color: #fff;
+}
+
+.chart-container {
+  min-height: 300px;
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ==================== HERD SECTION (COMPACT) ==================== */
+.herd-section {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.herd-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.herd-card {
+  background: var(--bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.herd-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-dark);
+}
+
+.herd-card.featured {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--hover-accent) 100%);
+  border: none;
+}
+
+.herd-inner {
+  padding: 1rem;
+}
+
+.herd-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.herd-card.featured .herd-value {
+  color: var(--bg-accent);
+}
+
+.herd-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 0.25rem 0 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Stages Compact Card */
+.herd-card.stages-card {
+  grid-column: span 1;
+}
+
+.stages-compact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.stage-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.stage-item.pre-weaning {
+  background: rgba(251, 191, 36, 0.15);
+}
+
+.stage-item.weaner {
+  background: rgba(59, 130, 246, 0.15);
+}
+
+.stage-item.grower {
+  background: rgba(16, 185, 129, 0.15);
+}
+
+.stage-item.finisher {
+  background: rgba(239, 68, 68, 0.15);
+}
+
+.stage-num {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.stage-abbr {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* ==================== COMPACT TABLE SECTION ==================== */
+.table-section.compact {
+  padding: 1rem;
+}
+
+.table-section.compact .table-section-header {
+  margin-bottom: 0.75rem;
+}
+
+.table-wrapper.compact {
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+/* ==================== RESPONSIVE STYLES ==================== */
+@media (max-width: 1200px) {
+  .finance-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+
+  .herd-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .herd-card.stages-card {
+    grid-column: span 2;
+  }
+
+  .stages-compact {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .financial-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .period-selector-wrapper {
+    width: 100%;
+  }
+
+  .finance-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .finance-inner {
+    padding: 1rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .finance-icon-wrapper {
+    width: 44px;
+    height: 44px;
+  }
+
+  .finance-value {
+    font-size: 1.25rem;
+  }
+
+  .charts-section {
+    padding: 1rem;
+  }
+
+  .chart-card {
+    padding: 0.75rem;
+  }
+
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .chart-container {
+    min-height: 250px;
+  }
+
+  .herd-section {
+    padding: 1rem;
+  }
+
+  .herd-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+
+  .herd-card.stages-card {
+    grid-column: span 2;
+  }
+
+  .herd-value {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .finance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-inner {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .charts-row {
+    gap: 0.75rem;
+  }
+
+  .chart-type-radio {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .herd-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .herd-card.featured {
+    grid-column: span 2;
+  }
+
+  .stages-compact {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==================== DARK MODE CHART ADJUSTMENTS ==================== */
+.dark-mode .finance-icon-wrapper.revenue {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.dark-mode .finance-icon-wrapper.expenses {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+.dark-mode .finance-icon-wrapper.profit {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+.dark-mode .finance-icon-wrapper.margin {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.dark-mode .finance-change.positive {
+  background: rgba(16, 185, 129, 0.2);
+}
+
+.dark-mode .finance-change.negative {
+  background: rgba(239, 68, 68, 0.2);
+}
+
+/* ==================== LOADING ANIMATION ==================== */
+.chart-container .js-plotly-plot {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ==================== PLOTLY CHART OVERRIDES ==================== */
+.js-plotly-plot .plotly .main-svg {
+  background: transparent !important;
+}
+
+.modebar {
+  display: none !important;
+}
+
+.dark-mode .js-plotly-plot .gtitle,
+.dark-mode .js-plotly-plot .xtitle,
+.dark-mode .js-plotly-plot .ytitle {
+  fill: var(--text-dark) !important;
+}
+
+.dark-mode .js-plotly-plot .xgrid,
+.dark-mode .js-plotly-plot .ygrid {
+  stroke: var(--border-dark) !important;
+}
+
+.dark-mode .js-plotly-plot .xtick text,
+.dark-mode .js-plotly-plot .ytick text {
+  fill: var(--text-muted) !important;
+}
