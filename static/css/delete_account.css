@@ -1,87 +1,458 @@
-Title
-main h2 {
-    color: #d93025; /* Google-style red warning */
-    font-size: 1.8rem;
-    margin-bottom: 1rem;
-    text-align: center;
+/* ============================================
+   DELETE ACCOUNT PAGE STYLES
+   ============================================ */
+
+/* CSS Variables */
+:root {
+    --danger-primary: #dc3545;
+    --danger-light: rgba(220, 53, 69, 0.1);
+    --danger-dark: #c82333;
+    --warning-primary: #ffc107;
+    --warning-light: rgba(255, 193, 7, 0.1);
 }
 
-/* Warning text */
-main p {
-    color: var(--text-dark);
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
-    text-align: center;
-}
-
-/* Form */
-form {
+/* Main Container */
+.delete-account-main {
+    padding: 1.5rem;
+    max-width: 700px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 1.5rem;
+    min-height: calc(100vh - 200px);
 }
 
-/* Label and input */
-form label {
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-    display: block;
+/* ============================================
+   WARNING BANNER
+   ============================================ */
+.warning-banner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(220, 53, 69, 0.1) 100%);
+    border: 1px solid rgba(255, 193, 7, 0.4);
+    border-radius: 16px;
+    animation: pulse-border 2s ease-in-out infinite;
 }
 
-form input[type="password"] {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s ease;
+@keyframes pulse-border {
+    0%, 100% {
+        border-color: rgba(255, 193, 7, 0.4);
+        box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+    }
+    50% {
+        border-color: rgba(220, 53, 69, 0.4);
+        box-shadow: 0 0 20px rgba(220, 53, 69, 0.1);
+    }
 }
 
-form input[type="password"]:focus {
-    border-color: #d93025;
-    outline: none;
+.warning-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    background: var(--warning-light);
+    border-radius: 50%;
+    color: var(--warning-primary);
+    flex-shrink: 0;
 }
 
-/* Buttons */
-.btn {
-    display: inline-block;
-    text-align: center;
-    padding: 0.7rem 1.2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease-in-out;
+.warning-text h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--danger-primary);
+    margin: 0;
+}
+
+.warning-text p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0 0;
+}
+
+/* ============================================
+   FLASH MESSAGES
+   ============================================ */
+.flash-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.flash-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
+    animation: slideIn 0.3s ease-out;
+    border: 1px solid transparent;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.flash-success {
+    background: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
+.flash-error,
+.flash-danger {
+    background: rgba(220, 53, 69, 0.1);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+}
+
+.flash-warning {
+    background: rgba(255, 193, 7, 0.1);
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #d39e00;
+}
+
+.flash-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flash-text {
+    flex: 1;
+    font-weight: 500;
+}
+
+.flash-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
     cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    opacity: 0.7;
+    transition: all 0.2s ease;
 }
 
-/* Danger button */
-.btn-danger {
-    background-color: #d93025;
-    color: var(--text-light);
-    border: none;
+.flash-close:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.1);
 }
 
-.btn-danger:hover {
-    background-color: #b2221a;
+/* ============================================
+   DELETE CARD
+   ============================================ */
+.delete-card {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px var(--shadow-dark);
+    border: 1px solid var(--border-dark);
+    overflow: hidden;
 }
 
-/* Secondary button */
-.btn-secondary {
-    background-color: var(--bg-light);
+.delete-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, var(--bg-accent) 0%, rgba(220, 53, 69, 0.05) 100%);
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.header-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    flex-shrink: 0;
+}
+
+.header-icon.danger {
+    background: var(--danger-light);
+    color: var(--danger-primary);
+}
+
+.header-text h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--text-dark);
+    margin: 0;
+}
+
+.header-text p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0.25rem 0 0 0;
+}
+
+.delete-card-content {
+    padding: 1.5rem;
+}
+
+/* ============================================
+   CONSEQUENCES SECTION
+   ============================================ */
+.consequences-section {
+    background: var(--danger-light);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.consequences-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--danger-primary);
+    margin: 0 0 1rem 0;
+}
+
+.consequences-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.consequences-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.consequences-list li svg {
+    color: var(--danger-primary);
+    flex-shrink: 0;
+}
+
+/* ============================================
+   DELETE FORM
+   ============================================ */
+.delete-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.form-group label svg {
+    color: var(--text-muted);
+}
+
+.form-group input[type="password"] {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border-dark);
+    border-radius: 10px;
+    background: var(--bg-lightest);
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+
+.form-group input::placeholder {
+    color: var(--text-muted);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--danger-primary);
+    box-shadow: 0 0 0 3px var(--danger-light);
+}
+
+/* Google Notice */
+.google-notice {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--bg-accent);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+}
+
+.google-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.google-text strong {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    margin-bottom: 0.25rem;
+}
+
+.google-text p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    padding-top: 0.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
     border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.btn-secondary {
+    background: var(--bg-accent);
+    color: var(--text-dark);
+    border: 1px solid var(--border-dark);
 }
 
 .btn-secondary:hover {
-    background-color: var(bg-light);
+    background: var(--bg-lightest);
+    transform: translateY(-1px);
 }
 
-/* Align buttons horizontally on bigger screens */
-@media (min-width: 700px) {
-    form {
-        flex-direction: column;
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-primary) 0%, var(--danger-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+.btn-danger:active {
+    transform: translateY(0);
+}
+
+.btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+@media (max-width: 600px) {
+    .delete-account-main {
+        padding: 1rem;
+        gap: 1rem;
     }
-    .btn-danger, .btn-secondary {
+
+    .warning-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.25rem;
+    }
+
+    .warning-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .warning-text h1 {
+        font-size: 1.25rem;
+    }
+
+    .delete-card-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1.25rem;
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .delete-card-content {
+        padding: 1.25rem;
+    }
+
+    .consequences-section {
+        padding: 1rem;
+    }
+
+    .google-notice {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .btn {
         width: 100%;
+    }
+}
+
+/* Animation */
+.delete-card {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
