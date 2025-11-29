@@ -1,73 +1,816 @@
-::-webkit-scrollbar{
-    display: none;
+/* ==================== HIDE SCROLLBAR ==================== */
+::-webkit-scrollbar {
+  display: none;
 }
 
-.alert{
-   color: red;
+/* ==================== PAGE HEADER ==================== */
+.page-header {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px var(--shadow-light);
 }
-form{
-    display: grid;
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: var(--bg-lightest);
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text-dark);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  background: var(--hover-accent);
+  color: var(--bg-accent);
+}
+
+.back-btn:active {
+  transform: scale(0.95);
+}
+
+.header-text {
+  flex: 1;
+}
+
+.header-text h1 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.sow-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.sow-id {
+  font-weight: 600;
+  color: var(--bg-accent);
+}
+
+.sow-info .separator {
+  color: var(--border-light);
+}
+
+/* ==================== FORM CARD ==================== */
+.form-card {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px var(--shadow-dark);
+}
+
+.form-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--bg-lightest);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  color: var(--bg-accent);
+  flex-shrink: 0;
+}
+
+.header-info h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0 0 4px 0;
+  border: none;
+  padding: 0;
+  text-align: left;
+}
+
+.header-info p {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.edit-form {
+  padding: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 0.5rem;
+}
+
+.form-group label svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.form-input {
+  padding: 12px 14px;
+  font-size: 0.9375rem;
+  border: 2px solid var(--border-light);
+  border-radius: 10px;
+  width: 100%;
+  background: var(--bg-light);
+  color: var(--text-dark);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input:focus {
+  border-color: var(--bg-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 168, 107, 0.15);
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.375rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ==================== BUTTONS ==================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-decoration: none;
+  min-width: 140px;
+}
+
+.btn svg {
+  flex-shrink: 0;
+}
+
+.btn-primary {
+  background: var(--bg-accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--hover-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--bg-lightest);
+  color: var(--text-dark);
+  border: 1px solid var(--border-light);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-light);
+  border-color: var(--border-dark);
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+/* ==================== INFO CARD ==================== */
+.info-card {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow-light);
+}
+
+.info-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.875rem 1.25rem;
+  background: var(--bg-lightest);
+  border-bottom: 1px solid var(--border-light);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-card-header svg {
+  color: var(--text-muted);
+}
+
+.info-card-content {
+  padding: 1rem 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.info-value {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+/* ==================== FLASH MESSAGES ==================== */
+.flashes {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.flash {
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.9375rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.flash.success {
+  background-color: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.flash.error {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.flash.warning {
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+}
+
+/* ==================== FLATPICKR OVERRIDES ==================== */
+.flatpickr-calendar {
+  border-radius: 10px;
+  box-shadow: 0 8px 24px var(--shadow-dark);
+  border: 1px solid var(--border-light);
+  font-family: inherit;
+}
+
+.dark-mode .flatpickr-calendar {
+  background: var(--bg-lighter);
+  border-color: var(--border-dark);
+}
+
+.dark-mode .flatpickr-months,
+.dark-mode .flatpickr-weekdays,
+.dark-mode .flatpickr-days {
+  background: var(--bg-lighter);
+}
+
+.dark-mode .flatpickr-day {
+  color: var(--text-dark);
+}
+
+.dark-mode .flatpickr-day:hover {
+  background: var(--bg-lightest);
+}
+
+.dark-mode .flatpickr-day.selected {
+  background: var(--bg-accent);
+  border-color: var(--bg-accent);
+}
+
+/* ==================== RESPONSIVE STYLES ==================== */
+@media (max-width: 900px) {
+  .page-header {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .header-text h1 {
+    font-size: 1.125rem;
+  }
+
+  .sow-info {
+    flex-wrap: wrap;
+    font-size: 0.8125rem;
+  }
+
+  .form-card {
+    margin-bottom: 1rem;
+  }
+
+  .form-card-header {
+    padding: 1rem;
+  }
+
+  .header-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .header-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header-info h2 {
+    font-size: 1rem;
+  }
+
+  .header-info p {
+    font-size: 0.8125rem;
+  }
+
+  .edit-form {
+    padding: 1rem;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-group-full {
+    grid-column: 1;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .info-card-content {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .info-item {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .info-item:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-content {
+    gap: 0.75rem;
+  }
+
+  .back-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .header-text h1 {
+    font-size: 1rem;
+  }
+
+  .form-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .form-group label {
+    font-size: 0.8125rem;
+  }
+
+  .form-input {
+    padding: 10px 12px;
+    font-size: 1rem;
+  }
+
+  .field-hint {
+    font-size: 0.6875rem;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+    padding: 12px;
+  }
+}
+
+/* ==================== LOADING STATE ==================== */
+.btn.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.btn.loading .spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==================== FOCUS STATES FOR ACCESSIBILITY ==================== */
+.back-btn:focus,
+.btn:focus {
+  outline: 2px solid var(--bg-accent);
+  outline-offset: 2px;
+}
+
+.form-input:focus {
+  outline: none;
+}
+
+/* ==================== VALIDATION STATES ==================== */
+.form-input.error {
+  border-color: #DC2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.form-input.success {
+  border-color: var(--bg-accent);
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: #DC2626;
+  margin-top: 0.375rem;
+}
+
+/* ==================== ADDITIONAL FORM CARD HEADER ICONS ==================== */
+.header-icon.boar-icon {
+  background: #DBEAFE;
+  color: #2563EB;
+}
+
+.header-icon.expense-icon {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+/* ==================== TEXTAREA STYLING ==================== */
+.form-textarea {
+  min-height: 100px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ==================== INFO CARD GRID FOR EXPENSES ==================== */
+.info-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.info-item-full {
+  grid-column: 1 / -1;
+}
+
+.amount-value {
+  font-weight: 600;
+  color: var(--bg-accent);
+}
+
+.amount-value::before {
+  content: '$';
+}
+
+/* ==================== SELECT INPUT STYLING ==================== */
+.form-input[type="select"],
+select.form-input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+/* ==================== NUMBER INPUT STYLING ==================== */
+.form-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.form-input[type="number"]::-webkit-outer-spin-button,
+.form-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ==================== DARK MODE ADJUSTMENTS ==================== */
+.dark-mode .header-icon.boar-icon {
+  background: rgba(37, 99, 235, 0.2);
+}
+
+.dark-mode .header-icon.expense-icon {
+  background: rgba(217, 119, 6, 0.2);
+}
+
+.dark-mode .amount-value {
+  color: var(--bg-accent);
+}
+
+/* ==================== THREE COLUMN GRID RESPONSIVE ==================== */
+@media (max-width: 900px) {
+  .info-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .info-item-full {
+    grid-column: 1;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 900px) {
+  .info-card-grid {
     grid-template-columns: repeat(2, 1fr);
-    box-shadow: 0 2px 3px var(--shadow-dark);
-    box-shadow: 0 10px 30px 5px var(--shadow-dark);
-    margin: 10px;
-    padding: 10px;
-    border-radius: 5px;
-}
-h2{
-    border: 1px solid var(--border-dark);
-    color: var(--text-light);
-    text-align: center;
-    padding: 10px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    color: var(--text-dark);
+  }
 
-}
-label{
-    color: var(--text-dark);
-}
-input[type="text"], input[type="date"] {
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid var(--border-dark);
-    border-radius: 5px;
-    min-width: 100%;
-    margin: 10px 0 0 0;
-    box-sizing: border-box;
-}   
-
-input[type="text"]:focus, input[type="date"]:focus {
-    border-color: var(--border-dark);
-    outline: none;
-}
-.submitBTN {
-    grid-column: 1 / -1;     /* Make the div span across all columns */
-    display: flex;           /* Use flexbox for centering the button */
-    justify-content: center; /* Center horizontally                  */
-    margin-top: 1rem;        /* Optional spacing above the button    */
-    gap: 20px;
+  .info-item-full {
+    grid-column: 1 / -1;
+  }
 }
 
-.btn{
-    padding: 10px 20px;
-    border: 2px solid var(--border-light);
-    cursor: pointer;
-    font-size: 16px;
-    width: 200px;
-    outline: none;
-
-    transition: transform 0.1s ease, background-color 0.2s ease, box-shadow 0.2s ease;
-    background-color: var(--bg-secondary);
-    border-radius: 40px;
-    color: var(--text-dark);
+/* ==================== AMOUNT INPUT STYLING ==================== */
+.form-group .amount-prefix {
+  position: relative;
 }
 
-.btn:hover{
-    transform: scale(0.95);
-    border: 1px solid var(--border-light);
+.form-group .amount-prefix .form-input {
+  padding-left: 30px;
 }
-a{
-    text-decoration: none;
-    color: var(--text-dark);
+
+.form-group .amount-prefix::before {
+  content: '$';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  pointer-events: none;
+}
+
+/* ==================== CATEGORY BADGE STYLES ==================== */
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 20px;
+  background: var(--bg-lightest);
+  color: var(--text-dark);
+}
+
+.category-badge.feed {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.category-badge.medication {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.category-badge.equipment {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.category-badge.utilities {
+  background: #E0E7FF;
+  color: #3730A3;
+}
+
+.category-badge.labor {
+  background: #FCE7F3;
+  color: #9D174D;
+}
+
+/* ==================== FORM VALIDATION STYLES ==================== */
+.form-group.has-error .form-input {
+  border-color: #DC2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+}
+
+.form-group.has-error .field-hint {
+  display: none;
+}
+
+.form-group.has-success .form-input {
+  border-color: var(--bg-accent);
+}
+
+.validation-message {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.75rem;
+  margin-top: 0.375rem;
+}
+
+.validation-message.error {
+  color: #DC2626;
+}
+
+.validation-message.success {
+  color: var(--bg-accent);
+}
+
+.validation-message svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ==================== REQUIRED FIELD INDICATOR ==================== */
+.form-group label .required {
+  color: #DC2626;
+  margin-left: 2px;
+}
+
+/* ==================== RESPONSIVE FORM GRID FOR 3 COLUMNS ==================== */
+@media (min-width: 1024px) {
+  .form-grid.three-columns {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ==================== EXPENSE SUMMARY QUICK STATS ==================== */
+.expense-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-card {
+  background: var(--bg-lighter);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== LOADING OVERLAY FOR FORM ==================== */
+.form-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.form-card.loading .form-loading-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.dark-mode .form-loading-overlay {
+  background: rgba(31, 41, 55, 0.8);
+}
+
+/* ==================== CURRENCY FORMATTING ==================== */
+.currency-input-wrapper {
+  position: relative;
+}
+
+.currency-input-wrapper .currency-symbol {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.currency-input-wrapper .form-input {
+  padding-left: 28px;
 }

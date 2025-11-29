@@ -9,6 +9,7 @@ from flask_mail import Mail, Message
 from datetime import timedelta, datetime, timezone
 from dotenv import load_dotenv
 from dash import dcc, html, dash_table
+import dash_bootstrap_components as dbc
 import datetime as dt
 import os
 import re
@@ -17,7 +18,23 @@ import uuid
 import logging
 import secrets
 import traceback
-import dash_bootstrap_components as dbc
+
+from dash import html, dcc, dash_table
+import dash
+
+from dash import html, dcc, dash_table
+import dash
+import plotly.express as px
+import plotly.graph_objects as go
+from dash import html, dcc, dash_table
+import dash
+import plotly.graph_objects as go
+import pandas as pd
+from datetime import datetime, timedelta
+from plotly.subplots import make_subplots
+import pandas as pd
+from datetime import datetime, timedelta
+from sqlalchemy import func, extract
 
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort, get_flashed_messages
@@ -92,121 +109,250 @@ def load_user(user_id):
     return db.session.get(User, int(user_id))
 
 # Dashboard Layout
-dash_app.layout = dbc.Container([
+dash_app.layout = html.Div([
+    # Main Dashboard Container
     html.Div([
-        # Row for Summary Cards
-        dbc.Row([
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Herd Size"), 
-                    html.H2(id="total-pigs")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+        # Welcome Section
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Span("👋", className="welcome-emoji"),
+                    html.Div([
+                        html.H1("Farm Dashboard", className="welcome-title"),
+                        html.P("Monitor your herd and upcoming activities", className="welcome-subtitle"),
+                    ], className="welcome-text"),
+                ], className="welcome-content"),
+                html.Div([
+                    html.Span(id="current-date", className="current-date"),
+                ], className="welcome-date"),
+            ], className="welcome-header"),
+        ], className="welcome-section"),
 
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Sows"),
-                    html.H2(id="total-sows")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+        # Quick Stats Section
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Span("📊", className="section-icon"),
+                    html.Span("Herd Overview", className="section-title"),
+                ], className="section-header"),
+            ], className="section-title-wrapper"),
+            
+            # Stats Grid
+            html.Div([
+                # Total Herd Card (Featured)
+                html.Div([
+                    html.Div([
+                        html.Div([
+                            html.Span("🐷", className="stat-emoji"),
+                        ], className="stat-icon-wrapper featured"),
+                        html.Div([
+                            html.H2(id="total-pigs", className="stat-value featured-value"),
+                            html.P("Total Herd Size", className="stat-label"),
+                        ], className="stat-content"),
+                    ], className="stat-inner"),
+                ], className="stat-card featured-card"),
 
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Boars"), 
-                    html.H2(id="total-boars")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+                # Sows Card
+                html.Div([
+                    html.Div([
+                        html.Div([
+                            html.Span("♀️", className="stat-emoji"),
+                        ], className="stat-icon-wrapper sows"),
+                        html.Div([
+                            html.H2(id="total-sows", className="stat-value"),
+                            html.P("Sows", className="stat-label"),
+                        ], className="stat-content"),
+                    ], className="stat-inner"),
+                ], className="stat-card"),
 
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Pre-Weaners"), 
-                    html.H2(id="pre_weaners")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+                # Boars Card
+                html.Div([
+                    html.Div([
+                        html.Div([
+                            html.Span("♂️", className="stat-emoji"),
+                        ], className="stat-icon-wrapper boars"),
+                        html.Div([
+                            html.H2(id="total-boars", className="stat-value"),
+                            html.P("Boars", className="stat-label"),
+                        ], className="stat-content"),
+                    ], className="stat-inner"),
+                ], className="stat-card"),
+            ], className="stats-grid main-stats"),
 
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Weaners"), 
-                    html.H2(id="weaners")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+            # Growth Stages Grid
+            html.Div([
+                html.Div([
+                    html.Span("🌱", className="section-icon"),
+                    html.Span("Growth Stages", className="section-title"),
+                ], className="section-header mini"),
+            ], className="section-title-wrapper"),
 
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Growers"), 
-                    html.H2(id="growers")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+            html.Div([
+                # Pre-Weaners
+                html.Div([
+                    html.Div([
+                        html.Div(className="stage-indicator pre-weaning"),
+                        html.Div([
+                            html.H3(id="pre_weaners", className="stage-value"),
+                            html.P("Pre-Weaners", className="stage-label"),
+                        ], className="stage-content"),
+                    ], className="stage-inner"),
+                ], className="stage-card"),
 
-            dbc.Col(dbc.Card([
-                dbc.CardBody([
-                    html.H4("Finishers"), 
-                    html.H2(id="finishers")
-                    ],className = "dash-card")
-            ], color="transparent", inverse=True, style={"border": "none", "boxShadow": "none"})),
+                # Weaners
+                html.Div([
+                    html.Div([
+                        html.Div(className="stage-indicator weaner"),
+                        html.Div([
+                            html.H3(id="weaners", className="stage-value"),
+                            html.P("Weaners", className="stage-label"),
+                        ], className="stage-content"),
+                    ], className="stage-inner"),
+                ], className="stage-card"),
 
-        ], className="card-grid"),
+                # Growers
+                html.Div([
+                    html.Div([
+                        html.Div(className="stage-indicator grower"),
+                        html.Div([
+                            html.H3(id="growers", className="stage-value"),
+                            html.P("Growers", className="stage-label"),
+                        ], className="stage-content"),
+                    ], className="stage-inner"),
+                ], className="stage-card"),
 
-        html.Hr(),
+                # Finishers
+                html.Div([
+                    html.Div([
+                        html.Div(className="stage-indicator finisher"),
+                        html.Div([
+                            html.H3(id="finishers", className="stage-value"),
+                            html.P("Finishers", className="stage-label"),
+                        ], className="stage-content"),
+                    ], className="stage-inner"),
+                ], className="stage-card"),
+            ], className="stats-grid stages-grid"),
+        ], className="stats-section"),
 
-        html.H3("Upcoming Farrowings"),
-        # Table for Sow Service Records
-        dash_table.DataTable(
-            id="sow-service-table",
-            # className='sow-service-table',
-            columns=[
-                {"name": "Sow ID", "id": "sow_id"},  # Now correctly shows sowID
-                {"name": "Service Date", "id": "service_date"},
-                {"name": "First Litter Guard", "id": "litter_guard1_date"},
-                {"name": "Second Litter Guard", "id": "litter_guard2_date"},
-                {"name": "Due Date", "id": "due_date"},
-            ],
-                sort_action="native",
-                style_table={
-                    'width': '100%', 
-                    'backdropFilter': 'blur(10px)',# Apply backdrop blur
-                    'overflowX': 'auto',
-                },  
-                style_header={
-                    'backgroundColor': '#4CAF50',
-                    'color': 'white',
-                    'textAlign': 'center',
-                    'fontWeight': 'bold'
-                },
-                style_cell={
-                    'border': '1px solid #ddd',
-                    'padding': '8px',
-                    'textAlign': 'center',
-                    'fontFamily': 'Arial, sans-serif'
-                },
-                style_data_conditional=[{
-                    'if': {'column_id': 'due_date'},
-                    'color': 'var(--text-dark)',
-                    'fontWeight': 'bold'
-                },{
-                    'if': {'row_index': 'odd'},  # Zebra striping effect
-                    'backgroundColor': '#5bdc4c',
-                    'color': 'white'
-                }],
-                css=[{
-                    "selector": ".dash-table-container", 
-                    "rule": "border-collapse: collapse !important;"},
-                   {"selector": "tbody tr:hover", 
-                    "rule": "background-color: #ddd !important;"
-                }]
-        ),
+        # Upcoming Farrowings Section
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Span("📅", className="section-icon"),
+                        html.Span("Upcoming Farrowings", className="section-title"),
+                    ], className="section-header"),
+                    html.Div([
+                        html.Span(id="farrowing-count", className="count-badge"),
+                    ], className="section-badge"),
+                ], className="section-header-row"),
+                html.P("Sows expected to farrow in the coming weeks", className="section-description"),
+            ], className="table-section-header"),
 
+            # Data Table
+            html.Div([
+                dash_table.DataTable(
+                    id="sow-service-table",
+                    columns=[
+                        {"name": "Sow ID", "id": "sow_id"},
+                        {"name": "Service Date", "id": "service_date"},
+                        {"name": "Litter Guard 1", "id": "litter_guard1_date"},
+                        {"name": "Litter Guard 2", "id": "litter_guard2_date"},
+                        {"name": "Due Date", "id": "due_date"},
+                    ],
+                    sort_action="native",
+                    page_size=10,
+                    style_table={
+                        'overflowX': 'auto',
+                        'borderRadius': '12px',
+                        'border': '1px solid var(--border-light)',
+                    },
+                    style_header={
+                        'backgroundColor': '#059669',
+                        'color': 'white',
+                        'textAlign': 'center',
+                        'fontWeight': '600',
+                        'fontSize': '12px',
+                        'textTransform': 'uppercase',
+                        'letterSpacing': '0.5px',
+                        'padding': '14px 12px',
+                        'borderBottom': '2px solid #047857',
+                    },
+                    style_cell={
+                        'padding': '14px 12px',
+                        'textAlign': 'center',
+                        'fontFamily': "'Poppins', -apple-system, sans-serif",
+                        'fontSize': '14px',
+                        'border': 'none',
+                        'borderBottom': '1px solid var(--border-light)',
+                    },
+                    style_data={
+                        'backgroundColor': 'var(--bg-lighter)',
+                        'color': 'var(--text-dark)',
+                    },
+                    style_data_conditional=[
+                        {
+                            'if': {'row_index': 'odd'},
+                            'backgroundColor': 'var(--bg-lightest)',
+                        },
+                        {
+                            'if': {'column_id': 'due_date'},
+                            'fontWeight': '600',
+                            'color': '#059669',
+                        },
+                        {
+                            'if': {'column_id': 'sow_id'},
+                            'fontWeight': '600',
+                            'color': 'var(--bg-accent)',
+                        },
+                    ],
+                    style_cell_conditional=[
+                        {
+                            'if': {'column_id': 'sow_id'},
+                            'width': '100px',
+                        },
+                    ],
+                    css=[
+                        {
+                            "selector": ".dash-table-container",
+                            "rule": "border-radius: 12px !important; overflow: hidden;"
+                        },
+                        {
+                            "selector": "tbody tr:hover",
+                            "rule": "background-color: var(--hover-accent) !important;"
+                        },
+                        {
+                            "selector": ".dash-header",
+                            "rule": "background-color: #059669 !important;"
+                        },
+                    ]
+                ),
+            ], className="table-wrapper"),
+
+            # Empty State (shown when no data)
+            html.Div([
+                html.Span("📋", className="empty-icon"),
+                html.H4("No Upcoming Farrowings", className="empty-title"),
+                html.P("All sows are either not pregnant or have already farrowed", className="empty-text"),
+            ], id="empty-state", className="empty-state", style={"display": "none"}),
+
+        ], className="table-section"),        
+
+        # Auto-refresh interval
         dcc.Interval(
             id="interval-update",
-            interval=30 * 1000, # Updates every 30 seconds
+            interval=30 * 1000,  # Updates every 30 seconds
             n_intervals=0
         ),
-         dcc.Location(id='url', refresh=True),
-    ], className="dashboard-wrapper"),
-], fluid=True)
+        dcc.Location(id='url', refresh=True),
+
+    ], className="dashboard-container"),
+], className="dashboard-app")
+
 
 # Callback to Update Data
-@dash_app.callback([
+@dash_app.callback(
+    [
         dash.Output("total-pigs", "children"),
         dash.Output("total-sows", "children"),
         dash.Output("total-boars", "children"),
@@ -214,21 +360,43 @@ dash_app.layout = dbc.Container([
         dash.Output("weaners", "children"),
         dash.Output("growers", "children"),
         dash.Output("finishers", "children"),
-        dash.Output("sow-service-table", "data")
+        dash.Output("sow-service-table", "data"),
+        dash.Output("farrowing-count", "children"),
+        dash.Output("current-date", "children"),
     ],
-    [
-        dash.Input("interval-update", "n_intervals")
-    ],    
+    [dash.Input("interval-update", "n_intervals")],
 )
-
 def callback_update_dashboard(n_intervals):
-    return update_dashboard(n_intervals)
+    from datetime import datetime
+    
+    # Get your existing data
+    total_pigs, total_sows, total_boars, pre_weaners, weaners, growers, finishers, table_data = update_dashboard(n_intervals)
+    
+    # Calculate farrowing count
+    farrowing_count = len(table_data) if table_data else 0
+    farrowing_text = f"{farrowing_count} sow{'s' if farrowing_count != 1 else ''}"
+    
+    # Current date
+    current_date = datetime.now().strftime("%A, %B %d, %Y")
+    
+    return (
+        total_pigs,
+        total_sows,
+        total_boars,
+        pre_weaners,
+        weaners,
+        growers,
+        finishers,
+        table_data,
+        farrowing_text,
+        current_date,
+    )
 
-# Flask Route for Dash App (to embed in iframe)
+
+# Flask Route for Dash App
 @app.route("/dashboard/")
 def dashboard():
     return render_template("dashboard.html")
-    # return flask.redirect("/dashboard_internal/")
 
 @app.route('/home', methods=['GET','POST'])
 def home():

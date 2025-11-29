@@ -1,91 +1,265 @@
 {% extends "home.html" %}
 
 {% block head %}
-    <title>feed calculator</title>
+    <title>Feed Calculator - Concentrate Feeds</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- styling lnks -->
-    <link rel="stylesheet" href="{{url_for('static',filename='css/feedcalculator.css')}}">
+    <!-- styling links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">    
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/feedcalculator.css') }}">
     <!-- javascript links -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/feedcalculator.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
 {% endblock %}
 
 {% block content %}
 <main>
-    <h2> Feed Calculator</h2>
-    <div class="feed-type-btn">
-        <a class="feed-calculator-btns Concentrats" href="{{url_for('calculate')}}"><button class="feed-calc">Concentrate Feeds</button></a>
-        <a class="feed-calculator-btns Complete" href="{{url_for('complete_feeds')}}"><button class="feed-calc">Complete Feeds</button></a>
-    </div>
-    <form class="container" method="POST" action="?scroll=results">
-        {{ form.hidden_tag()}}
-        
-        <label for="feed">Name of Feed: </label>
-        {{ form.feed(autocomplete="off") }}
-
-        <label for="days">Number of days: </label>
-        {{ form.days(autocomplete="off") }}
-
-        <label for="feed_cost">Cost of feed: </label>
-        {{ form.feed_cost(autocomplete="off") }}
-
-        <label for="num3_meal_cost">Cost of Number 3 Meal: </label>
-        {{ form.num3_meal_cost(autocomplete="off")}}
-
-        <label for="pigs">Number of pigs: </label>
-        {{ form.pigs(autocomplete="off")}}
-
-        <label for="feed_consumption">consumption per animal per day: </label>
-        {{ form.feed_consumption (autocomplete="off")}}
-        
-        <div class="submitBTN">
-            {{ form.submit }}
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M80-80q0-111 29.5-189.5T185-400q46-52 103-80.5T400-520v-120q-137-17-228.5-84.5T80-880h800q0 88-91.5 155.5T560-640v120q55 11 112 39.5T775-400q46 52 75.5 130.5T880-80H640v-80h155q-18-152-113.5-220T480-448q-106 0-201.5 68T165-160h155v80H80Z"/></svg>
+            </div>
+            <div class="header-text">
+                <h1>Feed Calculator</h1>
+                <p>Calculate feed requirements and costs for your herd</p>
+            </div>
         </div>
-    </form>
-
-    <h2>Feed Calculation</h2>
-    <div id="results" class="container">
-
-        
-        <label for="feed">Name of Feed: </label>
-        <span class="label-output">{{ result.feed|default('N/A') }}</span>
-
-        <label for="pigs">Number of Animals: </label>
-        <span class="label-output">{{ result.pigs|default(0) }}</span>
-
-        <label for="days">Number of Days: </label>
-        <span class="label-output">{{ result.days|default(0) }}</span>
-
-        <label for="totalFeed">Total required feed for {{ result.days|default(0) }} days: </label>
-        <b>{{ "{:,.2f}".format(result.totalFeed|default(0)) }} Kg</b>
-
-        <label for="numOfBags">Total Number of Bags: </label>
-        <span class="label-output">{{ "{:,.2f}".format(result.numOfBags|default(0)) }}</span>
-
-        <label for="concCost">Total Cost of Concentrate: </label>
-        <u>K{{ "{:,.2f}".format(result.concCost|default(0)) }}</u>
-
-        <label for="num3Meal">Total Required Number 3 Meal for {{ result.days|default(0) }} days: </label>
-        <b>{{ "{:,.2f}".format(result.num3Meal|default(0)) }} Kg</b>
-
-        <label for="num3MealTotalCost">Total Cost of Number 3 Meal: </label>
-        <u>K{{ "{:,.2f}".format(result.num3MealTotalCost|default(0)) }}</u>
-
-        <label for="totalCost">Total Cost of Feed for {{ result.pigs|default(0) }} Pigs for {{ result.days|default(0) }} days:</label>
-        <span class="total-cost"><b><u>K{{"{:,.2f}".format(result.totalCost|default(0)) }}</u></b></span>
     </div>
 
-    <script>
-        window.addEventListener('load', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('scroll') === 'results') {
-                const resultsDiv = document.getElementById('results');
-                if (resultsDiv) {
-                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-        });
-    </script>
+    <!-- Feed Type Tabs -->
+    <div class="feed-tabs">
+        <a href="{{ url_for('calculate') }}" class="feed-tab active">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/></svg>
+            <span>Concentrate Feeds</span>
+        </a>
+        <a href="{{ url_for('complete_feeds') }}" class="feed-tab">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 31.5-155.5t86-127Q252-817 325-848.5T480-880q83 0 155.5 31.5t127 86q54.5 54.5 86 127T880-480q0 82-31.5 155t-86 127.5q-54.5 54.5-127 86T480-80Z"/></svg>
+            <span>Complete Feeds</span>
+        </a>
+    </div>
+
+    <!-- Calculator Form Card -->
+    <div class="calculator-card">
+        <div class="card-header">
+            <div class="card-header-content">
+                <h2>Concentrate Feed Calculator</h2>
+                <p>For feeds mixed with Number 3 Meal</p>
+            </div>
+            <button type="button" class="clear-btn" onclick="clearForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"/></svg>
+                <span>Clear</span>
+            </button>
+        </div>
+
+        <form class="calculator-form" method="POST" action="?scroll=results" id="feedForm">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="feed">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M160-120v-80h640v80H160Zm160-160q-66 0-113-47t-47-113v-400h640q33 0 56.5 23.5T880-760v80q0 33-23.5 56.5T800-600h-80v160q0 66-47 113t-113 47H320Z"/></svg>
+                        <span>Feed Name</span>
+                    </label>
+                    {{ form.feed(class="form-input", autocomplete="off", placeholder="e.g., Pig Grower Concentrate") }}
+                    <span class="field-hint">Name or brand of the concentrate feed</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="pigs">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M40-160v-112q0-34 17.5-62.5T104-378q62-31 126-46.5T360-440q66 0 130 15.5T616-378q29 15 46.5 43.5T680-272v112H40Zm720 0v-120q0-44-24.5-84.5T666-434q51 6 96 20.5t84 35.5q36 20 55 44.5t19 53.5v120H760ZM360-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47Zm400-160q0 66-47 113t-113 47q-11 0-28-2.5t-28-5.5q27-32 41.5-71t14.5-81q0-42-14.5-81T544-792q14-5 28-6.5t28-1.5q66 0 113 47t47 113Z"/></svg>
+                        <span>Number of Pigs</span>
+                    </label>
+                    {{ form.pigs(class="form-input", autocomplete="off", placeholder="0", type="number", min="1") }}
+                    <span class="field-hint">Total pigs to be fed</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="days">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Z"/></svg>
+                        <span>Number of Days</span>
+                    </label>
+                    {{ form.days(class="form-input", autocomplete="off", placeholder="0", type="number", min="1") }}
+                    <span class="field-hint">Duration of feeding period</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="feed_consumption">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M160-120v-80h640v80H160Zm160-160q-66 0-113-47t-47-113v-400h640q33 0 56.5 23.5T880-760v80q0 33-23.5 56.5T800-600h-80v160q0 66-47 113t-113 47H320Z"/></svg>
+                        <span>Daily Consumption (kg)</span>
+                    </label>
+                    {{ form.feed_consumption(class="form-input", autocomplete="off", placeholder="0.00", type="number", step="0.01", min="0") }}
+                    <span class="field-hint">Kg per animal per day</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="feed_cost">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Z"/></svg>
+                        <span>Concentrate Cost (K)</span>
+                    </label>
+                    {{ form.feed_cost(class="form-input", autocomplete="off", placeholder="0.00", type="number", step="0.01", min="0") }}
+                    <span class="field-hint">Price per 50kg bag</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="num3_meal_cost">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Z"/></svg>
+                        <span>No. 3 Meal Cost (K)</span>
+                    </label>
+                    {{ form.num3_meal_cost(class="form-input", autocomplete="off", placeholder="0.00", type="number", step="0.01", min="0") }}
+                    <span class="field-hint">Price per 50kg bag</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-calculate">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M320-240h60v-80h80v-60h-80v-80h-60v80h-80v60h80v80Zm200-30h200v-60H520v60Zm0-100h200v-60H520v60Zm44-152 56-56 56 56 42-42-56-58 56-56-42-42-56 56-56-56-42 42 56 56-56 58 42 42Zm-314-70h200v-60H250v60ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z"/></svg>
+                    <span>Calculate Feed Requirements</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div id="results" class="results-card {% if not result.feed %}empty{% endif %}">
+        <div class="results-header">
+            <div class="results-title">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M160-160v-440 440-15 15Zm0 80q-33 0-56.5-23.5T80-160v-440q0-33 23.5-56.5T160-680h200v-120q0-33 23.5-56.5T440-880h80q33 0 56.5 23.5T600-800v120h200q33 0 56.5 23.5T880-600v440q0 33-23.5 56.5T800-80H160Zm280-600h80v-120h-80v120ZM160-160h640v-440H160v440Zm320-220q42 0 71-29t29-71q0-42-29-71t-71-29q-42 0-71 29t-29 71q0 42 29 71t71 29Z"/></svg>
+                <h2>Calculation Results</h2>
+            </div>
+            {% if result.feed %}
+            <span class="results-badge">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
+                Calculated
+            </span>
+            {% endif %}
+        </div>
+
+        {% if result.feed %}
+        <div class="results-content">
+            <!-- Summary Stats -->
+            <div class="results-summary">
+                <div class="summary-stat">
+                    <span class="stat-label">Feed Name</span>
+                    <span class="stat-value">{{ result.feed }}</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="stat-label">Animals</span>
+                    <span class="stat-value">{{ result.pigs }}</span>
+                </div>
+                <div class="summary-stat">
+                    <span class="stat-label">Days</span>
+                    <span class="stat-value">{{ result.days }}</span>
+                </div>
+            </div>
+
+            <div class="results-divider"></div>
+
+            <!-- Detailed Results -->
+            <div class="results-grid">
+                <div class="result-item">
+                    <div class="result-icon concentrate">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M160-120v-80h640v80H160Zm160-160q-66 0-113-47t-47-113v-400h640q33 0 56.5 23.5T880-760v80q0 33-23.5 56.5T800-600h-80v160q0 66-47 113t-113 47H320Z"/></svg>
+                    </div>
+                    <div class="result-details">
+                        <span class="result-label">Total Feed Required</span>
+                        <span class="result-value">{{ "{:,.2f}".format(result.totalFeed|default(0)) }} <small>kg</small></span>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-icon bags">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M200-80q-33 0-56.5-23.5T120-160v-451q-18-11-29-28.5T80-680v-120q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v120q0 23-11 40.5T840-611v451q0 33-23.5 56.5T760-80H200Z"/></svg>
+                    </div>
+                    <div class="result-details">
+                        <span class="result-label">Number of Bags</span>
+                        <span class="result-value">{{ "{:,.2f}".format(result.numOfBags|default(0)) }} <small>bags</small></span>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-icon cost">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Z"/></svg>
+                    </div>
+                    <div class="result-details">
+                        <span class="result-label">Concentrate Cost</span>
+                        <span class="result-value">K{{ "{:,.2f}".format(result.concCost|default(0)) }}</span>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-icon meal">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M280-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z"/></svg>
+                    </div>
+                    <div class="result-details">
+                        <span class="result-label">No. 3 Meal Required</span>
+                        <span class="result-value">{{ "{:,.2f}".format(result.num3Meal|default(0)) }} <small>kg</small></span>
+                    </div>
+                </div>
+
+                <div class="result-item">
+                    <div class="result-icon cost">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Z"/></svg>
+                    </div>
+                    <div class="result-details">
+                        <span class="result-label">No. 3 Meal Cost</span>
+                        <span class="result-value">K{{ "{:,.2f}".format(result.num3MealTotalCost|default(0)) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Cost Highlight -->
+            <div class="total-cost-card">
+                <div class="total-cost-content">
+                    <div class="total-cost-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280ZM400-400h320q0-33 23.5-56.5T800-480v-160q-33 0-56.5-23.5T720-720H400q0 33-23.5 56.5T320-640v160q33 0 56.5 23.5T400-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h720v80ZM280-400v-320 320Z"/></svg>
+                        <span>Total Feed Cost</span>
+                    </div>
+                    <div class="total-cost-details">
+                        <span class="cost-context">{{ result.pigs }} pigs × {{ result.days }} days</span>
+                        <span class="cost-amount">K{{ "{:,.2f}".format(result.totalCost|default(0)) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="results-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" fill="currentColor"><path d="M320-240h60v-80h80v-60h-80v-80h-60v80h-80v60h80v80Zm200-30h200v-60H520v60Zm0-100h200v-60H520v60Zm44-152 56-56 56 56 42-42-56-58 56-56-42-42-56 56-56-56-42 42 56 56-56 58 42 42Zm-314-70h200v-60H250v60ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z"/></svg>
+            <h3>No Calculation Yet</h3>
+            <p>Fill in the form above and click "Calculate" to see your feed requirements</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Help Tips Card -->
+    <div class="tips-card">
+        <div class="tips-header">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+            <span>Tips for Concentrate Feeds</span>
+        </div>
+        <div class="tips-content">
+            <ul class="tips-list">
+                <li>Concentrate feeds are mixed with Number 3 Meal (typically 1:1 ratio)</li>
+                <li>Standard bag size is 50kg for both concentrate and meal</li>
+                <li>Adjust consumption rates based on pig age and weight</li>
+                <li>Growers typically consume 1.5-2.5kg per day, Finishers 2.5-3.5kg per day</li>
+            </ul>
+        </div>
+    </div>
 </main>
+
+<script>
+    // Scroll to results on page load if needed
+    window.addEventListener('load', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('scroll') === 'results') {
+            const resultsDiv = document.getElementById('results');
+            if (resultsDiv) {
+                setTimeout(() => {
+                    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+    });
+</script>
 {% endblock %}

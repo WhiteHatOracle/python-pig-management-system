@@ -1,70 +1,138 @@
+/**
+ * Invoices List JavaScript
+ */
+
 let debounceTimer;
 
+/**
+ * Filter invoices based on search input
+ */
 function filterInvoices() {
-    // Clear the previous debounce timer
-    clearTimeout(debounceTimer);
+  clearTimeout(debounceTimer);
 
-    // Set a new debounce timer
-    debounceTimer = setTimeout(function () {
-        const searchInput = document.getElementById('searchInput').value.toLowerCase();
-        const table = document.getElementById('invoiceTable');
-        const rows = table.getElementsByTagName('tr');
-
-        // If search input is empty, just reset highlights and show all rows
-        if (searchInput === '') {
-            resetHighlights();
-            showAllRows(rows);
-            return;
-        }
-
-        // Reset any previous highlights
-        resetHighlights();
-
-        for (let i = 1; i < rows.length; i++) { // Skip the header row (i = 1)
-            const cells = rows[i].getElementsByTagName('td');
-            let match = false;
-
-            // Check if any cell in the row matches the search input
-            for (let j = 0; j < cells.length; j++) {
-                if (cells[j]) {
-                    const cellText = cells[j].textContent || cells[j].innerText;
-                    if (cellText.toLowerCase().indexOf(searchInput) > -1) {
-                        match = true;
-                        // Highlight the entire row
-                        highlightRow(rows[i]);
-                    }
-                }
-            }
-
-            // Show or hide the row based on the match
-            if (match) {
-                rows[i].style.display = '';
-            } else {
-                rows[i].style.display = 'none';
-            }
-        }
-    }, 300); // 300ms debounce delay
-}
-
-// Function to highlight the entire row
-function highlightRow(row) {
-    row.style.backgroundColor = '#62a7f2 '; 
-    row.style.fontWeight = 'bold';
-}
-
-// Function to reset highlights when the search is cleared
-function resetHighlights() {
+  debounceTimer = setTimeout(function() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
     const table = document.getElementById('invoiceTable');
-    const rows = table.getElementsByTagName('tr');
-    for (let i = 1; i < rows.length; i++) { // Skip the header row (i = 1)
-        rows[i].style.backgroundColor = ''; // Remove row background color
-        rows[i].style.fontWeight = ''; // Reset font weight
+    const rows = table.querySelectorAll('tbody tr:not(.empty-row)');
+
+    if (searchInput === '') {
+      resetHighlights(rows);
+      showAllRows(rows);
+      return;
     }
+
+    resetHighlights(rows);
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      let match = false;
+
+      cells.forEach(cell => {
+        const text = cell.textContent.toLowerCase();
+        if (text.includes(searchInput)) {
+          match = true;
+        }
+      });
+
+      if (match) {
+        row.style.display = '';
+        highlightRow(row);
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }, 300);
 }
 
-// Function to show all rows
-function showAllRows(rows) {
-    for (let i = 1; i < rows.length; i++) {
-        rows[i].style.display = ''; // Show all rows
-    }
+/**
+ * Highlight matching row
+ */
+function highlightRow(row) {
+  row.style.backgroundColor = 'var(--hover-accent)';
 }
+
+/**
+ * Reset all row highlights
+ */
+function resetHighlights(rows) {
+  rows.forEach(row => {
+    row.style.backgroundColor = '';
+  });
+}
+
+/**
+ * Show all rows
+ */
+function showAllRows(rows) {
+  rows.forEach(row => {
+    row.style.display = '';
+  });
+}
+
+/**
+ * Clear search input
+ */
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  filterInvoices();
+}
+
+/**
+ * Confirm invoice deletion
+ */
+function confirmDelete() {
+  return confirm('Are you sure you want to delete this invoice? This action cannot be undone.');
+}
+
+/**
+ * Fetch and update totals
+ */
+function fetchTotals() {
+  fetch('/invoice_totals')
+    .then(response => response.json())
+    .then(data => {
+      animateValue('totalPigs', data.total_pigs);
+      animateValue('totalWeight', data.total_weight);
+      animateValue('averageWeight', data.average_weight);
+      animateValue('totalRevenue', data.total_revenue);
+    })
+    .catch(error => {
+      console.error('Error fetching totals:', error);
+      document.getElementById('totalPigs').textContent = '--';
+      document.getElementById('totalWeight').textContent = '--';
+      document.getElementById('averageWeight').textContent = '--';
+      document.getElementById('totalRevenue').textContent = '--';
+    });
+}
+
+/**
+ * Animate value update
+ */
+function animateValue(elementId, newValue) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.style.transition = 'opacity 0.2s ease';
+    element.style.opacity = '0.5';
+    
+    setTimeout(() => {
+      element.textContent = newValue;
+      element.style.opacity = '1';
+    }, 200);
+  }
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+  fetchTotals();
+  
+  // Add keyboard shortcut for search (Ctrl/Cmd + K)
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      document.getElementById('searchInput').focus();
+    }
+  });
+});
+
+// Refresh totals periodically
+setInterval(fetchTotals, 30000);

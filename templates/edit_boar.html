@@ -1,60 +1,135 @@
 {% extends 'home.html' %}
-{% block title %}boar edit form{% endblock %}
+{% block title %}Edit Boar - {{ boar.BoarId }}{% endblock %}
 
 {% block head %}
-    <title>boars</title>
+    <title>Edit Boar - {{ boar.BoarId }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- styling links -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit.css')}}">
     <!-- javascript links -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/edit.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}
 <main>
-    <h2>Edit Boar</h2>
-
-    <form method="POST" action="{{ url_for('edit_boar', boar_id=boar.id)}}"">  
-        {{ form.hidden_tag() }}
-        
-        <label for="BoarId">Boar ID:</label>
-        {{ form.BoarId(class="form-control",autocomplete="off") }}
-
-        <label for="Breed">Breed:</label>
-        {{ form.Breed(class="form-control", autocomplete="off") }}
-
-        <label for="DOB">Date of Birth:</label>
-        {{ form.DOB(class="form-control", id="dob_field") }}
-
-        <div class="submitBTN">
-            <button class="btn btn-primary" type="submit"> Edit</button>
-            <a href="{{ url_for('boars')}}" class="btn btn-secondary" style="text-align: center;">Cancel</a>
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <a href="{{ url_for('boars') }}" class="back-btn" aria-label="Go back to boar manager">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M640-80 240-480l400-400 71 71-329 329 329 329-71 71Z"/></svg>
+            </a>
+            <div class="header-text">
+                <h1>Edit Boar</h1>
+                <p class="sow-info">
+                    <span class="sow-id">{{ boar.BoarId }}</span>
+                    <span class="separator">•</span>
+                    <span class="breed">{{ boar.Breed }}</span>
+                </p>
+            </div>
         </div>
+    </div>
 
-        
-        <!-- Flash Messages -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
             <ul class="flashes">
                 {% for category, message in messages %}
                 <li class="flash {{ category|lower }}">{{ message }}</li>
                 {% endfor %}
             </ul>
-            {% endif %}
-        {% endwith %} 
-    </form>
+        {% endif %}
+    {% endwith %}
 
+    <!-- Edit Form Card -->
+    <div class="form-card">
+        <div class="form-card-header">
+            <div class="header-icon boar-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+            </div>
+            <div class="header-info">
+                <h2>Update Boar Details</h2>
+                <p>Modify the information below and save your changes</p>
+            </div>
+        </div>
 
-    <script>
-        flatpickr("#dob_field",{
-        dateFormat: "d-m-Y",
-        maxDate: "d-m-Y"
-        }); 
-    </script>
+        <form class="edit-form" method="POST" action="{{ url_for('edit_boar', boar_id=boar.id) }}">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="BoarId">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M560-440h200v-80H560v80Zm0-120h200v-80H560v80ZM200-320h320v-22q0-45-44-71.5T360-440q-72 0-116 26.5T200-342v22Zm160-160q33 0 56.5-23.5T440-560q0-33-23.5-56.5T360-640q-33 0-56.5 23.5T280-560q0 33 23.5 56.5T360-480ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Z"/></svg>
+                        <span>Boar ID</span>
+                    </label>
+                    {{ form.BoarId(class="form-input", autocomplete="off", placeholder="Enter boar ID") }}
+                    <span class="field-hint">Unique identifier for this boar</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="Breed">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M800-800v240h-80v-103L561-505q19 28 29 59.5t10 65.5q0 92-64 156t-156 64q-92 0-156-64t-64-156q0-92 64-156t156-64q33 0 65 9.5t59 29.5l159-159H560v-80h240Z"/></svg>
+                        <span>Breed</span>
+                    </label>
+                    {{ form.Breed(class="form-input", autocomplete="off", placeholder="Enter breed") }}
+                    <span class="field-hint">Breed or crossbreed type</span>
+                </div>
+
+                <div class="form-group form-group-full">
+                    <label for="DOB">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Z"/></svg>
+                        <span>Date of Birth</span>
+                    </label>
+                    {{ form.DOB(class="form-input", id="dob_field", placeholder="Select date") }}
+                    <span class="field-hint">When was this boar born?</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="{{ url_for('boars') }}" class="btn btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                    <span>Cancel</span>
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
+                    <span>Save Changes</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Current Values Card -->
+    <div class="info-card">
+        <div class="info-card-header">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-280q17 0 28.5-11.5T520-320v-160q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480v160q0 17 11.5 28.5T480-280Zm0-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+            <span>Current Values</span>
+        </div>
+        <div class="info-card-content">
+            <div class="info-item">
+                <span class="info-label">Boar ID</span>
+                <span class="info-value">{{ boar.BoarId }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Breed</span>
+                <span class="info-value">{{ boar.Breed }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ boar.DOB.strftime('%d-%b-%Y') if boar.DOB else 'Not set' }}</span>
+            </div>
+        </div>
+    </div>
 </main>
+
+<script>
+    flatpickr("#dob_field", {
+        dateFormat: "d-m-Y",
+        maxDate: "today"
+    }); 
+</script>
 {% endblock %}

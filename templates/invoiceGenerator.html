@@ -1,116 +1,283 @@
 {% extends "home.html" %}
 {% block head %}
-    <title>invoice generator</title>
+    <title>Invoice Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- styling links -->
-    <link rel="stylesheet" href="{{url_for('static',filename='css/invoiceGenerator.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/invoiceGenerator.css') }}">
     <!-- javascript links -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/invoiceGenerator.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
 {% endblock %}
 
 {% block content %}
 <main>
-    <h2 id="header">Invoice Generator</h2>
-    <div class="invoice-buttons">
-            <a href="{{ url_for('invoice_Generator') }}" class="invoice-btns generate-invoice">Generate Invoices</a>
-            <a href="{{ url_for('invoices')}}" class="invoice-btns view-invoices">View Invoices</a>
-    </div>
-    <form class="container" method="POST" action="?scroll=invoice">
-        {{ form.hidden_tag()}}  
-        <label for="company">Company Name</label>
-        {{ form.company(autocomplete="off") }}
-
-        <label for="firstBandRange">First band range</label>
-        {{ form.firstBandRange(autocomplete="off") }}
-
-        <label for="firstBandPrice">First band price</label>
-        {{ form.firstBandPrice(autocomplete="off") }}
-
-        <label for="secondBandRange">Second band range</label>
-        {{ form.secondBandRange(autocomplete="off") }}
-
-        <label for="secondBandPrice">Second band price</label>
-        {{ form.secondBandPrice(autocomplete="off") }}
-        
-        <label for="thirdBandRange">Third band range</label>
-        {{ form.thirdBandRange(autocomplete="off") }}
-
-        <label for="thirdBandPrice">Third band price</label>
-        {{ form.thirdBandPrice(autocomplete="off") }}
-
-        <label for="weights">Weights</label>
-        {{ form.weights(autocomplete="off") }}
-        
-        <div class="submitBTN">
-            {{ form.submit }}
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M240-80q-50 0-85-35t-35-85v-120h120v-560l60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60v680q0 50-35 85t-85 35H240Zm480-80q17 0 28.5-11.5T760-200v-560H320v440h360v120q0 17 11.5 28.5T720-160ZM360-600v-80h240v80H360Zm0 120v-80h240v80H360Zm320-120q-17 0-28.5-11.5T640-640q0-17 11.5-28.5T680-680q17 0 28.5 11.5T720-640q0 17-11.5 28.5T680-600Zm0 120q-17 0-28.5-11.5T640-520q0-17 11.5-28.5T680-560q17 0 28.5 11.5T720-520q0 17-11.5 28.5T680-480ZM240-160h360v-80H200v40q0 17 11.5 28.5T240-160Zm-40 0v-80 80Z"/></svg>
+            </div>
+            <div class="header-text">
+                <h1>Invoice Generator</h1>
+                <p>Create and manage sales invoices with price banding</p>
+            </div>
         </div>
-    </form>    
-    
-    <div class="container" id="invoice">
-        {% if invoice_data %}
-            <h2>Invoice for {{ company_name }}</h2>
-            <table class="invoice-table">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Weight</th>
-                        <th>Price per Kg</th>
-                        <th>Cost</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for idx, item in enumerate(invoice_data, start=1) %}
-                    <tr>
-                        <td>{{ idx }}</td>
-                        <td>{{ item.formatted_weight }}</td>
-                        <td>{{ item.formatted_price }}</td>
-                        <td>{{ item.formatted_cost }}</td> <!-- Format cost -->
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td class="left-text">Total Weight:</td>
-                        <td>{{ total_weight }}</td>
-                        <td class="right-text" align="right">Total:</td>
-                        <td align="right">{{ total_cost }}</td>
-                    </tr>
-                    <tr>
-                        <td class="left-text">Average Weight:</td>
-                        <td>{{ average_weight }}</td>
-                        <td></td> <!-- Empty cells to maintain alignment -->
-                        <td></td>
-                    </tr>
-                </tfoot>
+    </div>
+
+    <!-- Invoice Navigation Tabs -->
+    <div class="invoice-tabs">
+        <a href="{{ url_for('invoice_Generator') }}" class="invoice-tab active">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+            <span>Generate Invoice</span>
+        </a>
+        <a href="{{ url_for('invoices') }}" class="invoice-tab">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M280-600v-80h400v80H280Zm0 160v-80h400v80H280Zm0 160v-80h400v80H280Zm-80 200q-33 0-56.5-23.5T120-160v-640q0-33 23.5-56.5T200-880h560q33 0 56.5 23.5T840-800v640q0 33-23.5 56.5T760-80H200Z"/></svg>
+            <span>View Invoices</span>
+        </a>
+    </div>
+
+    <!-- Generator Form Card -->
+    <div class="generator-card">
+        <div class="card-header">
+            <div class="card-header-content">
+                <h2>Price Band Configuration</h2>
+                <p>Set up weight ranges and prices for automatic calculation</p>
+            </div>
+            <button type="button" class="clear-btn" onclick="clearForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"/></svg>
+                <span>Clear</span>
+            </button>
+        </div>
+
+        <form class="generator-form" method="POST" action="?scroll=invoice" id="invoiceForm">
+            {{ form.hidden_tag() }}
+            
+            <!-- Company Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M80-120v-720h400v160h400v560H80Zm80-80h240v-80H160v80Zm0-160h240v-80H160v80Zm0-160h240v-80H160v80Zm0-160h240v-80H160v80Zm320 480h320v-400H480v400Zm80-240v-80h160v80H560Zm0 160v-80h160v80H560Z"/></svg>
+                    <span>Company Details</span>
+                </div>
+                <div class="form-group full-width">
+                    <label for="company">Company Name</label>
+                    {{ form.company(class="form-input", autocomplete="off", placeholder="Enter company or buyer name") }}
+                </div>
+            </div>
+
+            <!-- Price Bands Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M444-200h70v-50q50-9 86-39t36-89q0-42-24-77t-96-61q-60-20-83-35t-23-41q0-26 18.5-41t53.5-15q32 0 50 15.5t26 38.5l64-26q-11-35-40.5-61T516-710v-50h-70v50q-50 11-78 44t-28 74q0 47 27.5 76t86.5 50q63 23 87.5 41t24.5 47q0 33-23.5 48.5T486-314q-33 0-58.5-20.5T390-396l-66 26q14 48 43.5 77.5T444-252v52Z"/></svg>
+                    <span>Price Bands</span>
+                </div>
                 
-            </table>
-            <form method="POST" action="/download-invoice" class="download_invoice">
-                <input type="hidden" name="total_pigs" value="{{ total_pigs }}">
-                <input type="hidden" name="company_name" value="{{ company_name }}">
-                <input type="hidden" name="invoice_data" value="{{ invoice_data }}">
-                <input type="hidden" name="total_weight" value="{{ total_weight }}">
-                <input type="hidden" name="average_weight" value="{{ average_weight }}">
-                <input type="hidden" name="total_cost" value="{{ total_cost }}">
-                <button type="submit" class="btn btn-success">
-                    <span>Download PDF</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                <div class="price-bands">
+                    <!-- Band 1 -->
+                    <div class="price-band band-1">
+                        <div class="band-header">
+                            <span class="band-number">1</span>
+                            <span class="band-title">First Band</span>
+                        </div>
+                        <div class="band-fields">
+                            <div class="form-group">
+                                <label for="firstBandRange">Weight Range (kg)</label>
+                                {{ form.firstBandRange(class="form-input", autocomplete="off", placeholder="e.g., 0-50") }}
+                            </div>
+                            <div class="form-group">
+                                <label for="firstBandPrice">Price per Kg (K)</label>
+                                {{ form.firstBandPrice(class="form-input", autocomplete="off", placeholder="0.00") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Band 2 -->
+                    <div class="price-band band-2">
+                        <div class="band-header">
+                            <span class="band-number">2</span>
+                            <span class="band-title">Second Band</span>
+                        </div>
+                        <div class="band-fields">
+                            <div class="form-group">
+                                <label for="secondBandRange">Weight Range (kg)</label>
+                                {{ form.secondBandRange(class="form-input", autocomplete="off", placeholder="e.g., 51-80") }}
+                            </div>
+                            <div class="form-group">
+                                <label for="secondBandPrice">Price per Kg (K)</label>
+                                {{ form.secondBandPrice(class="form-input", autocomplete="off", placeholder="0.00") }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Band 3 -->
+                    <div class="price-band band-3">
+                        <div class="band-header">
+                            <span class="band-number">3</span>
+                            <span class="band-title">Third Band</span>
+                        </div>
+                        <div class="band-fields">
+                            <div class="form-group">
+                                <label for="thirdBandRange">Weight Range (kg)</label>
+                                {{ form.thirdBandRange(class="form-input", autocomplete="off", placeholder="e.g., 81-120") }}
+                            </div>
+                            <div class="form-group">
+                                <label for="thirdBandPrice">Price per Kg (K)</label>
+                                {{ form.thirdBandPrice(class="form-input", autocomplete="off", placeholder="0.00") }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weights Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+                    <span>Animal Weights</span>
+                </div>
+                <div class="form-group full-width">
+                    <label for="weights">Enter Weights (comma separated)</label>
+                    {{ form.weights(class="form-input form-textarea", autocomplete="off", placeholder="e.g., 45.5, 52.3, 68.0, 75.2, 82.5, 91.0") }}
+                    <span class="field-hint">Enter each animal's weight in kg, separated by commas</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-generate">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M320-240h60v-80h80v-60h-80v-80h-60v80h-80v60h80v80Zm200-30h200v-60H520v60Zm0-100h200v-60H520v60Zm44-152 56-56 56 56 42-42-56-58 56-56-42-42-56 56-56-56-42 42 56 56-56 58 42 42Zm-314-70h200v-60H250v60ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z"/></svg>
+                    <span>Generate Invoice</span>
                 </button>
-            </form>
+            </div>
+        </form>
+    </div>
+
+    <!-- Invoice Preview Section -->
+    <div id="invoice" class="invoice-preview-card {% if not invoice_data %}empty{% endif %}">
+        <div class="preview-header">
+            <div class="preview-title">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M240-80q-50 0-85-35t-35-85v-120h120v-560l60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60v680q0 50-35 85t-85 35H240Z"/></svg>
+                <h2>Invoice Preview</h2>
+            </div>
+            {% if invoice_data %}
+            <div class="preview-actions">
+                <form method="POST" action="/download-invoice" class="download-form">
+                    <input type="hidden" name="total_pigs" value="{{ total_pigs }}">
+                    <input type="hidden" name="company_name" value="{{ company_name }}">
+                    <input type="hidden" name="invoice_data" value="{{ invoice_data }}">
+                    <input type="hidden" name="total_weight" value="{{ total_weight }}">
+                    <input type="hidden" name="average_weight" value="{{ average_weight }}">
+                    <input type="hidden" name="total_cost" value="{{ total_cost }}">
+                    <button type="submit" class="btn btn-download">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
+                        <span>Download PDF</span>
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if invoice_data %}
+        <div class="preview-content">
+            <!-- Invoice Header -->
+            <div class="invoice-header-info">
+                <div class="company-info">
+                    <h3>{{ company_name }}</h3>
+                    <span class="invoice-date">{{ now.strftime('%d %B %Y') if now else 'Today' }}</span>
+                </div>
+                <div class="invoice-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">{{ invoice_data|length }}</span>
+                        <span class="stat-label">Animals</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ total_weight }}</span>
+                        <span class="stat-label">Total Kg</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">{{ average_weight }}</span>
+                        <span class="stat-label">Avg Kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invoice Table -->
+            <div class="invoice-table-wrapper">
+                <table class="invoice-table">
+                    <thead>
+                        <tr>
+                            <th class="col-num">#</th>
+                            <th class="col-weight">Weight</th>
+                            <th class="col-price">Price/Kg</th>
+                            <th class="col-cost">Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for idx, item in enumerate(invoice_data, start=1) %}
+                        <tr>
+                            <td class="col-num">{{ idx }}</td>
+                            <td class="col-weight" data-label="Weight">{{ item.formatted_weight }}</td>
+                            <td class="col-price" data-label="Price/Kg">{{ item.formatted_price }}</td>
+                            <td class="col-cost" data-label="Cost">{{ item.formatted_cost }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Invoice Summary -->
+            <div class="invoice-summary">
+                <div class="summary-row">
+                    <span class="summary-label">Total Weight</span>
+                    <span class="summary-value">{{ total_weight }} kg</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Average Weight</span>
+                    <span class="summary-value">{{ average_weight }} kg</span>
+                </div>
+                <div class="summary-row total">
+                    <span class="summary-label">Total Amount</span>
+                    <span class="summary-value">{{ total_cost }}</span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="preview-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" fill="currentColor"><path d="M240-80q-50 0-85-35t-35-85v-120h120v-560l60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60 60 60 60-60v680q0 50-35 85t-85 35H240Zm480-80q17 0 28.5-11.5T760-200v-560H320v440h360v120q0 17 11.5 28.5T720-160ZM360-600v-80h240v80H360Zm0 120v-80h240v80H360Zm320-120q-17 0-28.5-11.5T640-640q0-17 11.5-28.5T680-680q17 0 28.5 11.5T720-640q0 17-11.5 28.5T680-600Zm0 120q-17 0-28.5-11.5T640-520q0-17 11.5-28.5T680-560q17 0 28.5 11.5T720-520q0 17-11.5 28.5T680-480ZM240-160h360v-80H200v40q0 17 11.5 28.5T240-160Z"/></svg>
+            <h3>No Invoice Generated</h3>
+            <p>Fill in the form above to generate an invoice preview</p>
+        </div>
         {% endif %}
     </div>
-    <script>
-        window.addEventListener('load', function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('scroll') === 'invoice') {
-                const resultsDiv = document.getElementById('invoice');
-                if (resultsDiv) {
-                    resultsDiv.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-        });
-    </script>
+
+    <!-- Tips Card -->
+    <div class="tips-card">
+        <div class="tips-header">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+            <span>How Price Bands Work</span>
+        </div>
+        <div class="tips-content">
+            <ul class="tips-list">
+                <li><strong>Band 1:</strong> Lower weight range with a specific price per kg</li>
+                <li><strong>Band 2:</strong> Medium weight range with typically higher price</li>
+                <li><strong>Band 3:</strong> Higher weight range with premium pricing</li>
+                <li>Each animal's weight is matched to the appropriate band for pricing</li>
+            </ul>
+        </div>
+    </div>
 </main>
 
+<script>
+    window.addEventListener('load', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('scroll') === 'invoice') {
+            const invoiceDiv = document.getElementById('invoice');
+            if (invoiceDiv) {
+                setTimeout(() => {
+                    invoiceDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+    });
+</script>
 {% endblock %}
