@@ -1,7 +1,7 @@
 {% extends 'home.html' %}
 {% block title %}Expenses{% endblock %}
 {% block head %}
-    <title>expenses</title>
+    <title>Expenses</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -13,129 +13,275 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/expenses.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
-
 {% endblock %}
-{% block content %}
-<main>
-    <h2 id="header">Expenses</h2>
-    <form class="form-fields" method="POST">
-            {{ form.hidden_tag() }}
-            <label for="date">Date: </label>    
-            {{ form.date(autocomplete="off",id="expense_field") }}
-                        
-            <label for="Amount">Amount: </label>
-            {{ form.amount(autocomplete="off") }}
-            
-            <label for="invoice_number">Reciept Number:</label>
-            {{ form.invoice_number(autocomplete="off") }}
 
-            <label for="Category">Category: </label>
-            {{ form.category(autocomplete="off") }}
-            
-            <label for="Vendor">Vendor: </label>
-            {{ form.vendor(autocomplete="off") }}
-            
-            <label for="Description">Description: </label>
-            {{ form.description(autocomplete="off") }}
-            <div class="submitBTN">
-                {{form.submit}}
+{% block content %}
+<main class="expenses-main">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="currentColor">
+                    <path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z"/>
+                </svg>
             </div>
-    </form>
-        <!-- Flash Messages -->
+            <div class="header-text">
+                <h1>Expenses</h1>
+                <p>Track and manage your business expenses</p>
+            </div>
+        </div>
+        <div class="header-stats">
+            <div class="stat-card expense-stat">
+                <span class="stat-label">Total Expenses</span>
+                <span class="stat-value" id="totalExpenseHeader">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        <ul class="flashes">
+        <div class="flash-container">
             {% for category, message in messages %}
-            <li class="flash {{ category|lower }}">{{ message }}</li>
+            <div class="flash-message flash-{{ category|lower }}">
+                <span class="flash-icon">
+                    {% if category|lower == 'success' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Zm56 216q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+                    {% elif category|lower == 'error' or category|lower == 'danger' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m336-280 144-144 144 144 56-56-144-144 144-144-56-56-144 144-144-144-56 56 144 144-144 144 56 56ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-280q17 0 28.5-11.5T520-320v-160q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480v160q0 17 11.5 28.5T480-280Zm0-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+                    {% endif %}
+                </span>
+                <span class="flash-text">{{ message }}</span>
+                <button class="flash-close" onclick="this.parentElement.remove()">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </button>
+            </div>
             {% endfor %}
-        </ul>
+        </div>
         {% endif %}
-    {% endwith %} 
+    {% endwith %}
 
-    <table class="expense-table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Reciept number</th>
-                <th>Category</th>
-                <th>Vendor</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        {% if expenses %}
-            <tbody>
-                {% for expense in expenses %}
-                <tr>
-                    <td data-cell="Date: ">{{ expense.date.strftime('%d-%b-%y') }}</td>
-                    <td data-cell="Amount: ">K{{ "{:,.2f}".format(expense.amount) }}</td>
-                    <td data-cell="Reciept Number: ">{{ expense.invoice_number }}</td>
-                    <td data-cell="Category: ">{{ expense.category }}</td>
-                    <td data-cell="Vendor: ">{{ expense.vendor }}</td>
-                    <td data-cell="Description: ">{{ expense.description }}</td>
-                    <td class="actions-column">
-                        
-                            <div class="buttons">
-                                <form class="form-btns" method="POST" action="{{ url_for('edit_expense', expense_id=expense.id)}}">
-                                    {{ form.hidden_tag() }}
-                                    <button class="action-btn edit" >
-                                        <span class="action-txt">Edit</span>
-                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M160-120v-170l527-526q12-12 27-18t30-6q16 0 30.5 6t25.5 18l56 56q12 11 18 25.5t6 30.5q0 15-6 30t-18 27L330-120H160Zm80-80h56l393-392-28-29-29-28-392 393v56Zm560-503-57-57 57 57Zm-139 82-29-28 57 57-28-29ZM560-120q74 0 137-37t63-103q0-36-19-62t-51-45l-59 59q23 10 36 22t13 26q0 23-36.5 41.5T560-200q-17 0-28.5 11.5T520-160q0 17 11.5 28.5T560-120ZM183-426l60-60q-20-8-31.5-16.5T200-520q0-12 18-24t76-37q88-38 117-69t29-70q0-55-44-87.5T280-840q-45 0-80.5 16T145-785q-11 13-9 29t15 26q13 11 29 9t27-13q14-14 31-20t42-6q41 0 60.5 12t19.5 28q0 14-17.5 25.5T262-654q-80 35-111 63.5T120-520q0 32 17 54.5t46 39.5Z"/></svg>
-                                    </button>
-                                </form>
-                                <span class="separator">|</span>
-                                <form class="form-btns" method="POST" action="{{ url_for('delete_expense', expense_id=expense.id) }}" onsubmit="return confirmDelete();">
-                                    {{ form.hidden_tag() }}
-                                    <button class="action-btn delete" >
-                                        <span class="action-txt">Delete</span>
-                                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>                    
-                                    </button>
-                                </form>
-                            </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2" style="text-align:right; font-weight:bold;background:transparent">
-                        <p>Total Expense: <span id="totalExpense">Loading...</span> </p>
+    <!-- Expense Form Card -->
+    <div class="form-card">
+        <div class="form-card-header">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                    <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/>
+                </svg>
+                Add New Expense
+            </h2>
+        </div>
+        <form class="expense-form" method="POST">
+            {{ form.hidden_tag() }}
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="expense_field">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Z"/></svg>
+                        Date
+                    </label>
+                    {{ form.date(autocomplete="off", id="expense_field", placeholder="Select date") }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M441-120v-86q-53-12-91.5-46T293-348l74-30q15 48 44.5 73t77.5 25q41 0 69.5-18.5T587-356q0-35-22-55.5T463-458q-86-27-118-64.5T313-614q0-65 42-101t86-41v-84h80v84q45 6 76 33t45 67l-74 32q-10-26-32-43t-55-17q-35 0-57.5 15.5T391-634q0 26 20.5 43.5T504-552q79 24 114.5 66T654-386q0 51-28 88.5T googletag81-256v96h-80Z"/></svg>
+                        Amount
+                    </label>
+                    {{ form.amount(autocomplete="off", placeholder="Enter amount") }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="invoice_number">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520Z"/></svg>
+                        Receipt Number
+                    </label>
+                    {{ form.invoice_number(autocomplete="off", placeholder="Enter receipt number") }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="category">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m260-520 220-360 220 360H260ZM700-80q-75 0-127.5-52.5T520-260q0-75 52.5-127.5T700-440q75 0 127.5 52.5T880-260q0 75-52.5 127.5T700-80Zm-580-20v-320h320v320H120Z"/></svg>
+                        Category
+                    </label>
+                    {{ form.category(autocomplete="off") }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="vendor">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M160-720v-80h640v80H160Zm0 560v-240h-40v-80l40-200h640l40 200v80h-40v240h-80v-240H560v240H160Zm80-80h240v-160H240v160Z"/></svg>
+                        Vendor
+                    </label>
+                    {{ form.vendor(autocomplete="off", placeholder="Enter vendor name") }}
+                </div>
+                
+                <div class="form-group full-width">
+                    <label for="description">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M320-240h320v-80H320v80Zm0-160h320v-80H320v80Zm-80 320q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Z"/></svg>
+                        Description
+                    </label>
+                    {{ form.description(autocomplete="off", placeholder="Enter expense description") }}
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                {{ form.submit(class="submit-btn") }}
+            </div>
+        </form>
+    </div>
 
-                    </td>
-                </tr>
-            </tfoot>
-        {% else %}
-            <tbody class="no_records_found">
-                <tr>
-                    <td colspan="7" style="text-align: center; font-weight:bold;">No Expenses Recorded.</td>
-                </tr>
-            </tbody>
-        {% endif %}
-    </table>
+    <!-- Expenses Table Card -->
+    <div class="table-card">
+        <div class="table-card-header">
+            <h2>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
+                    <path d="M120-240v-80h240v80H120Zm0-200v-80h480v80H120Zm0-200v-80h720v80H120Z"/>
+                </svg>
+                Expense Records
+            </h2>
+            <div class="table-info">
+                <span class="record-count">
+                    {% if expenses %}
+                        {{ expenses|length }} record(s)
+                    {% else %}
+                        No records
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="expense-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Receipt #</th>
+                        <th>Category</th>
+                        <th>Vendor</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                {% if expenses %}
+                    <tbody>
+                        {% for expense in expenses %}
+                        <tr class="table-row" data-id="{{ expense.id }}">
+                            <td data-cell="Date">
+                                <span class="cell-content">{{ expense.date.strftime('%d-%b-%y') }}</span>
+                            </td>
+                            <td data-cell="Amount">
+                                <span class="cell-content amount-cell">K{{ "{:,.2f}".format(expense.amount) }}</span>
+                            </td>
+                            <td data-cell="Receipt #">
+                                <span class="cell-content">{{ expense.invoice_number }}</span>
+                            </td>
+                            <td data-cell="Category">
+                                <span class="cell-content category-badge">{{ expense.category }}</span>
+                            </td>
+                            <td data-cell="Vendor">
+                                <span class="cell-content">{{ expense.vendor }}</span>
+                            </td>
+                            <td data-cell="Description">
+                                <span class="cell-content description-cell">{{ expense.description }}</span>
+                            </td>
+                            <td data-cell="Actions" class="actions-cell">
+                                <div class="action-buttons">
+                                    <form method="POST" action="{{ url_for('edit_expense', expense_id=expense.id) }}">
+                                        {{ form.hidden_tag() }}
+                                        <button type="submit" class="action-btn edit-btn" title="Edit">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                                                <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+                                            </svg>
+                                            <span class="btn-text">Edit</span>
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('delete_expense', expense_id=expense.id) }}" onsubmit="return confirmDelete();">
+                                        {{ form.hidden_tag() }}
+                                        <button type="submit" class="action-btn delete-btn" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                            </svg>
+                                            <span class="btn-text">Delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="7">
+                                <div class="table-footer">
+                                    <div class="total-display">
+                                        <span class="total-label">Total Expenses:</span>
+                                        <span class="total-value" id="totalExpense">Loading...</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                {% else %}
+                    <tbody>
+                        <tr class="empty-row">
+                            <td colspan="7">
+                                <div class="empty-state">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="64px" viewBox="0 -960 960 960" width="64px" fill="currentColor">
+                                        <path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z"/>
+                                    </svg>
+                                    <h3>No Expenses Recorded</h3>
+                                    <p>Start by adding your first expense using the form above.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
     <!-- Pagination Controls -->
-<div class="pagination-container">
-    {% if pagination.has_prev %}
-        <a href="{{ url_for('invoices', page=pagination.prev_num) }}" class="pagination-btn">Previous</a>
+    {% if pagination and pagination.pages > 1 %}
+    <div class="pagination-container">
+        <div class="pagination">
+            {% if pagination.has_prev %}
+                <a href="{{ url_for('expenses', page=pagination.prev_num) }}" class="pagination-btn prev-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>
+                    <span>Previous</span>
+                </a>
+            {% endif %}
+            
+            <div class="pagination-numbers">
+                {% for page_num in pagination.iter_pages() %}
+                    {% if page_num %}
+                        <a href="{{ url_for('expenses', page=page_num) }}" class="pagination-num {% if page_num == pagination.page %}active{% endif %}">
+                            {{ page_num }}
+                        </a>
+                    {% else %}
+                        <span class="pagination-dots">...</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            {% if pagination.has_next %}
+                <a href="{{ url_for('expenses', page=pagination.next_num) }}" class="pagination-btn next-btn">
+                    <span>Next</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z"/></svg>
+                </a>
+            {% endif %}
+        </div>
+    </div>
     {% endif %}
-    
-    {% for page_num in pagination.iter_pages() %}
-        {% if page_num %}
-            <a href="{{ url_for('invoices', page=page_num) }}" class="pagination-btn {% if page_num == pagination.page %}active{% endif %}">{{ page_num }}</a>
-        {% else %}
-            <span class="pagination-dots">...</span>
-        {% endif %}
-    {% endfor %}
-    
-    {% if pagination.has_next %}
-        <a href="{{ url_for('invoices', page=pagination.next_num) }}" class="pagination-btn">Next</a>
-    {% endif %}
-</div>
+</main>
+
 <script>
-    flatpickr("#expense_field",{
+    flatpickr("#expense_field", {
         dateFormat: "d-m-Y",
-        maxDate: "today"
+        maxDate: "today",
+        disableMobile: "true"
     });
 </script>
-</main>
 {% endblock %}
