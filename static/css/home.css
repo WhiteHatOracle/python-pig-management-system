@@ -25,7 +25,7 @@
   --shadow-medium:   rgba(0, 0, 0, 0.08);
 
   /* Layout Variables */
-  --sidebar-width:   260px;
+  --sidebar-width:   250px;
   --sidebar-collapsed: 72px;
   --mobile-nav-height: 72px;
   --mobile-header-height: 60px;
@@ -767,4 +767,38 @@ button:focus {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ============================================
+   THEME NOTIFICATION
+   ============================================ */
+.theme-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.25rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-dark);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px var(--shadow-dark);
+    color: var(--text-dark);
+    font-size: 0.9rem;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s ease;
+}
+
+.theme-notification.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.theme-notification svg {
+    fill: #10a37f;
+    flex-shrink: 0;
 }

@@ -61,8 +61,8 @@
                         <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="M160-120v-80h640v80H160Zm160-160q-66 0-113-47t-47-113v-400h640q33 0 56.5 23.5T880-760v80q0 33-23.5 56.5T800-600h-80v160q0 66-47 113t-113 47H320Z"/></svg>
                         <span>Feed Name</span>
                     </label>
-                    {{ form.feed(class="form-input", autocomplete="off", placeholder="e.g., Pig Grower Concentrate") }}
-                    <span class="field-hint">Name or brand of the concentrate feed</span>
+                    {{ form.feed(class="form-input", autocomplete="off", placeholder="e.g., Pig Grower") }}
+                    <span class="field-hint">Name of the concentrate feed</span>
                 </div>
 
                 <div class="form-group">
@@ -107,7 +107,7 @@
                         <span>No. 3 Meal Cost (K)</span>
                     </label>
                     {{ form.num3_meal_cost(class="form-input", autocomplete="off", placeholder="0.00", type="number", step="0.01", min="0") }}
-                    <span class="field-hint">Price per 50kg bag</span>
+                    <span class="field-hint">Price per kg</span>
                 </div>
             </div>
 
@@ -239,8 +239,8 @@
         </div>
         <div class="tips-content">
             <ul class="tips-list">
-                <li>Concentrate feeds are mixed with Number 3 Meal (typically 1:1 ratio)</li>
-                <li>Standard bag size is 50kg for both concentrate and meal</li>
+                <li>Concentrate feeds are mixed with Number 3 Meal (typically 1:3 ratio)</li>
+                <li>Standard bag size is 50kg for the concentrate feed</li>
                 <li>Adjust consumption rates based on pig age and weight</li>
                 <li>Growers typically consume 1.5-2.5kg per day, Finishers 2.5-3.5kg per day</li>
             </ul>
