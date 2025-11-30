@@ -3,47 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - PigManagePro</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
-    <title>Sign Up</title>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/auth.js')}}" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Create an account</h1>
-        <form class="form-class" action="" method="POST" >
-            {{ form.hidden_tag() }}
-            {{ form.username(id="username", class="form-control", autocomplete="off") }}
-            {{ form.email(id="email", class="form-control", autocomplete="off")}}
-            {{ form.password(id="password", class="form-control") }}
-            {{ form.submit(class="btn btn-primary", type='submit', value='Continue') }}         
-        </form>
-        <p>Already have an account? <a href="{{ url_for('signin')}}" class="dont-have-an-account">Login</a> </p>
+    <div class="auth-container">
+        <!-- Left Side - Branding -->
+        <div class="auth-branding">
+            <div class="branding-bg">
+                <img src="{{url_for('static', filename='assets/farm.jpg')}}" alt="">
+            </div>
+            <div class="branding-overlay"></div>
+            <div class="branding-content">
+                <a href="{{ url_for('login') }}" class="brand-logo">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" fill="#10a37f"/>
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 13C17.5228 13 22 17.4772 22 23H2C2 17.4772 6.47715 13 12 13Z" fill="#0e8e72"/>
+                    </svg>
+                    <span>PigManagePro</span>
+                </a>
+                
+                <div class="branding-text">
+                    <h1>Start your journey</h1>
+                    <p>Join thousands of farmers who are already managing smarter with our intelligent platform.</p>
+                </div>
+                
+                <div class="branding-stats">
+                    <div class="stat-item">
+                        <strong>2,500+</strong>
+                        <span>Active Farms</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>500K+</strong>
+                        <span>Pigs Managed</span>
+                    </div>
+                    <div class="stat-item">
+                        <strong>98%</strong>
+                        <span>Satisfaction</span>
+                    </div>
+                </div>
+                
+                <div class="branding-testimonial">
+                    <blockquote>
+                        "PigManagePro transformed our operations. We've reduced feed waste by 15% and saved countless hours on admin work."
+                    </blockquote>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John M.">
+                        <div>
+                            <strong>John M.</strong>
+                            <span>Commercial Farmer, Iowa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="branding-footer">
+                <p>&copy; 2025 PigManagePro. All rights reserved.</p>
+            </div>
+        </div>
         
-        <div class="separator">
-            <hr>
-            <span> OR </span>
-            <hr>
+        <!-- Right Side - Form -->
+        <div class="auth-form-section">
+            <div class="auth-form-container">
+                <!-- Theme Toggle -->
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"/>
+                    </svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                        <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z"/>
+                    </svg>
+                </button>
+                
+                <div class="form-header">
+                    <h2>Create your account</h2>
+                    <p>Start your 14-day free trial. No credit card required.</p>
+                </div>
+                
+                <!-- Flash Messages -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    <div class="flash-container">
+                        {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category|lower }}">
+                            <span class="flash-icon">
+                                {% if category|lower == 'success' %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                                {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Z"/></svg>
+                                {% endif %}
+                            </span>
+                            <span class="flash-text">{{ message }}</span>
+                            <button class="flash-close" onclick="this.parentElement.remove()">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% endwith %}
+                
+                <form class="auth-form" method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group">
+                        <label for="username">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/>
+                            </svg>
+                            Username
+                        </label>
+                        <div class="input-wrapper">
+                            {{ form.username(id="username", placeholder="Choose a username", autocomplete="off") }}
+                        </div>
+                        {% for error in form.username.errors %}
+                            <span class="input-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"/>
+                            </svg>
+                            Email Address
+                        </label>
+                        <div class="input-wrapper">
+                            {{ form.email(id="email", placeholder="Enter your email", autocomplete="off") }}
+                        </div>
+                        {% for error in form.email.errors %}
+                            <span class="input-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M240-80q-33 0-56.5-23.5T160-160v-400q0-33 23.5-56.5T240-640h40v-80q0-83 58.5-141.5T480-920q83 0 141.5 58.5T680-720v80h40q33 0 56.5 23.5T800-560v400q0 33-23.5 56.5T720-80H240Zm240-200q33 0 56.5-23.5T560-360q0-33-23.5-56.5T480-440q-33 0-56.5 23.5T400-360q0 33 23.5 56.5T480-280ZM360-640h240v-80q0-50-35-85t-85-35q-50 0-85 35t-35 85v80Z"/>
+                            </svg>
+                            Password
+                        </label>
+                        <div class="input-wrapper">
+                            {{ form.password(id="password", placeholder="Create a password") }}
+                            <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                                    <path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Z"/>
+                                </svg>
+                                <svg class="eye-off-icon" xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor" style="display: none;">
+                                    <path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <!-- Password Strength -->
+                        <div class="password-strength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strength-fill"></div>
+                            </div>
+                            <span class="strength-text" id="strength-text">Password strength</span>
+                        </div>
+                        {% for error in form.password.errors %}
+                            <span class="input-error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">
+                            I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">
+                        <span>Create Account</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                            <path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/>
+                        </svg>
+                    </button>
+                </form>
+                
+                <div class="divider">
+                    <span>or sign up with</span>
+                </div>
+                
+                <div class="social-login">
+                    <a href="{{ url_for('google_login') }}" class="social-btn google-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+                            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </a>
+                </div>
+                
+                <div class="auth-footer">
+                    <p>Already have an account? <a href="{{ url_for('signin') }}">Sign in</a></p>
+                </div>
+            </div>
         </div>
-
-        <div class="third-party">
-            <a href="{{url_for('google_login')}}" >
-                <img src="https://www.google.com/favicon.ico" alt="Google"> 
-                <span>sign up With Google</span>
-            </a>
-        </div>
-        <!-- <div class="terms">
-            <a href="#" class="terms">Terms of Use </a> | 
-            <a href="#" class="terms">Privacy Policy</a>
-        </div> -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            <ul class="flashes">
-                {% for category, message in messages %}
-                <li class="flash {{ category|lower }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        {% endwith %}
     </div>
 </body>
 </html>

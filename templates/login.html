@@ -1,291 +1,662 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PigManagePro - The Future of Farm Management</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- styling links-->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
-
-  <!-- Add an icon library for the features section (e.g., Font Awesome) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- javascript links -->
-  <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
-  <script type="text/javascript" src="{{ url_for('static', filename='js/login.js')}}" defer></script> 
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PigManagePro - Smart Pig Farm Management Software</title>
+    <meta name="description" content="The intelligent platform for modern pig farmers. Track, analyze, and optimize your farm operations with data-driven insights.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    
+    <!-- Scripts -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/login.js')}}" defer></script>
 </head>
 <body>
 
-<header>
-  <div class="header-container">
-    <a href="#" class="logo">
-      <!-- Simple SVG logo -->
-      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" fill="var(--primary)"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12 13C17.5228 13 22 17.4772 22 23H2C2 17.4772 6.47715 13 12 13ZM12.75 18.0002C12.75 17.5859 12.4142 17.2502 12 17.2502C11.5858 17.2502 11.25 17.5859 11.25 18.0002V20.0002H9C8.58579 20.0002 8.25 20.3359 8.25 20.7502C8.25 21.1644 8.58579 21.5002 9 21.5002H15C15.4142 21.5002 15.75 21.1644 15.75 20.7502C15.75 20.3359 15.4142 20.0002 15 20.0002H12.75V18.0002Z" fill="var(--primary-light)"></path></svg>
-      <span>PigManagePro</span>
-    </a>
-    <nav id="main-nav">
-      <ul>
-        <li><a href="#features">Features</a></li>
-        <li><a href="#pricing">Pricing</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-    </nav>
-    <div class="header-actions">
-      <button id="theme-toggle" aria-label="Toggle dark mode">
-          <i class="fa-solid fa-sun"></i>
-          <i class="fa-solid fa-moon"></i>
-      </button>
-      <a href="{{ url_for('signin') }}" class="btn btn-secondary">Login</a>
-      <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Free Trial</a>
-      <button id="nav-toggle" aria-label="Toggle navigation">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
+<!-- Header -->
+<header class="header" id="header">
+    <div class="header-container">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="40" height="40" rx="10" fill="url(#logo-gradient)"/>
+                    <path d="M20 12C22.2091 12 24 13.7909 24 16C24 18.2091 22.2091 20 20 20C17.7909 20 16 18.2091 16 16C16 13.7909 17.7909 12 20 12Z" fill="white"/>
+                    <path d="M12 28C12 24.134 15.134 21 19 21H21C24.866 21 28 24.134 28 28V29H12V28Z" fill="white" fill-opacity="0.8"/>
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#10a37f"/>
+                            <stop offset="1" stop-color="#0e8e72"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <span>PigManagePro</span>
+        </a>
+
+        <nav class="nav" id="nav">
+            <ul class="nav-list">
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#how-it-works" class="nav-link">How It Works</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                    <path d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"/>
+                </svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                    <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z"/>
+                </svg>
+            </button>
+            <a href="{{ url_for('signin') }}" class="btn btn-ghost">Log In</a>
+            <a href="{{ url_for('signup') }}" class="btn btn-primary">Start Free Trial</a>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
     </div>
-  </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-nav" id="mobile-nav">
+        <ul class="mobile-nav-list">
+            <li><a href="#features" class="mobile-nav-link">Features</a></li>
+            <li><a href="#how-it-works" class="mobile-nav-link">How It Works</a></li>
+            <li><a href="#pricing" class="mobile-nav-link">Pricing</a></li>
+            <li><a href="#testimonials" class="mobile-nav-link">Testimonials</a></li>
+            <li class="mobile-nav-divider"></li>
+            <li><a href="{{ url_for('signin') }}" class="mobile-nav-link">Log In</a></li>
+            <li><a href="{{ url_for('signup') }}" class="btn btn-primary btn-block">Start Free Trial</a></li>
+        </ul>
+    </div>
 </header>
 
 <main>
-  <!-- HERO SECTION -->
-  <section class="hero">
-    <div class="hero-content">
-      <div class="hero-text">
-        <h1 class="hero-title">The Future of Pig Farming is Here.</h1>
-        <p class="hero-subtitle">Stop guessing, start managing. Track, analyze, and optimize every aspect of your farm with our intelligent, data-driven platform.</p>
-        <div class="hero-cta">
-          <a href="{{ url_for('signup') }}" class="btn btn-primary btn-large">Start Your 14-Day Free Trial</a>
-          <a href="#" class="btn btn-link">Watch Demo <i class="fa-solid fa-play"></i></a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="hero-gradient"></div>
+            <div class="hero-pattern"></div>
         </div>
-      </div>
-      <div class="hero-visual">
-        <div class="dashboard-mockup">
-          <img src="/static/assets/Dashboard.png" alt="PigManagePro Dashboard Interface">
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- KEY METRICS / SOCIAL PROOF -->
-  <section class="key-metrics">
-    <div class="container">
-      <div class="metric-item">
-        <h3>15%</h3>
-        <p>Average Reduction in Feed Waste</p>
-      </div>
-      <div class="metric-item">
-        <h3>2,500+</h3>
-        <p>Farms Powered by PigManagePro</p>
-      </div>
-      <div class="metric-item">
-        <h3>98%</h3>
-        <p>Customer Satisfaction Rate</p>
-      </div>
-      <div class="metric-item">
-        <h3>500k+</h3>
-        <p>Pigs Managed on our Platform</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURES SECTION -->
-  <section id="features" class="features">
-    <div class="container">
-      <div class="section-header">
-        <h2>Everything You Need, All In One Place</h2>
-        <p>From farrowing to finances, we've built the tools to streamline your entire operation.</p>
-      </div>
-
-      <div class="feature-item">
-        <div class="feature-text">
-          <div class="feature-icon"><i class="fa-solid fa-chart-pie"></i></div>
-          <h3>Intelligent Dashboard</h3>
-          <p>Get a bird's-eye view of your farm's health. Instantly see upcoming farrowings, vaccination schedules, feed levels, and key performance indicators in one beautiful interface.</p>
-        </div>
-        <div class="feature-visual">
-          <img src="/static/assets/analytics.png" alt="Dashboard analytics view">
-        </div>
-      </div>
-
-      <div class="feature-item reverse">
-        <div class="feature-text">
-          <div class="feature-icon"><i class="fa-solid fa-calculator"></i></div>
-          <h3>Automated Feed & Costing</h3>
-          <p>Our smart calculators determine precise feed requirements based on herd size, age, and growth targets. Track expenses and generate profitability reports automatically.</p>
-        </div>
-        <div class="feature-visual">
-          <img src="/static/assets/feed&cost.png" alt="Feed calculation interface">
-        </div>
-      </div>
-
-       <div class="feature-item">
-        <div class="feature-text">
-          <div class="feature-icon"><i class="fa-solid fa-syringe"></i></div>
-          <h3>Lifecycle & Health Tracking</h3>
-          <p>Never miss a date again. Automatically schedule breeding cycles, farrowing dates, and vaccination reminders. Keep detailed health records for every animal.</p>
-        </div>
-        <div class="feature-visual">
-          <img src="/static/assets/Breeding_Shedule.png" alt="Breeding and health schedule">
-        </div>
-      </div>
-    </div>
-  </section>
-  
-  <!-- PRICING SECTION -->
-  <section id="pricing" class="pricing">
-    <div class="container">
-      <div class="section-header">
-        <h2>Simple, Transparent Pricing</h2>
-        <p>Choose a plan that scales with your farm. No hidden fees, ever.</p>
-      </div>
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <h3>Hobbyist</h3>
-          <div class="price"><span>$</span>19<span>/mo</span></div>
-          <p>Perfect for small-scale and backyard farmers.</p>
-          <ul>
-            <li><i class="fa-solid fa-check"></i> Up to 50 Pigs</li>
-            <li><i class="fa-solid fa-check"></i> Core Dashboard</li>
-            <li><i class="fa-solid fa-check"></i> Health Tracking</li>
-            <li><i class="fa-solid fa-times"></i> Advanced Reporting</li>
-          </ul>
-          <a href="#" class="btn btn-secondary">Get Started</a>
-        </div>
-        <div class="pricing-card popular">
-          <div class="popular-badge">Most Popular</div>
-          <h3>Professional</h3>
-          <div class="price"><span>$</span>49<span>/mo</span></div>
-          <p>For growing commercial operations.</p>
-          <ul>
-            <li><i class="fa-solid fa-check"></i> Up to 500 Pigs</li>
-            <li><i class="fa-solid fa-check"></i> All Hobbyist Features</li>
-            <li><i class="fa-solid fa-check"></i> Advanced Reporting & Analytics</li>
-            <li><i class="fa-solid fa-check"></i> Priority Email Support</li>
-          </ul>
-          <a href="#" class="btn btn-primary">Start Free Trial</a>
-        </div>
-        <div class="pricing-card">
-          <h3>Enterprise</h3>
-          <div class="price">Contact Us</div>
-          <p>Custom solutions for large-scale farms.</p>
-          <ul>
-            <li><i class="fa-solid fa-check"></i> Unlimited Pigs</li>
-            <li><i class="fa-solid fa-check"></i> All Professional Features</li>
-            <li><i class="fa-solid fa-check"></i> API Access & Integrations</li>
-            <li><i class="fa-solid fa-check"></i> Dedicated Account Manager</li>
-          </ul>
-          <a href="#" class="btn btn-secondary">Request a Quote</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS SECTION -->
-  <section class="testimonials">
-    <div class="container">
-      <div class="section-header">
-        <h2>Trusted by Modern Farmers Worldwide</h2>
-      </div>
-      <div class="testimonial-grid">
-        <div class="testimonial-card">
-          <p>"PigManagePro has completely transformed our operations. We're saving at least 10 hours a week on admin. It's like having a digital farm assistant."</p>
-          <div class="author">
-            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John M.">
-            <div>
-              <strong>John M.</strong>
-              <span>Commercial Farmer, Iowa</span>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    <span>New: AI-Powered Feed Optimization</span>
+                </div>
+                <h1 class="hero-title">
+                    Smart Pig Farm<br>
+                    <span class="gradient-text">Management Made Simple</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Stop guessing, start managing. Track every pig, optimize feed costs, and boost profitability with our intelligent, data-driven platform.
+                </p>
+                <div class="hero-cta">
+                    <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg">
+                        Start Your Free Trial
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg>
+                    </a>
+                    <a href="#demo" class="btn btn-outline btn-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m380-300 280-180-280-180v360ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+                        Watch Demo
+                    </a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <span class="stat-number">2,500+</span>
+                        <span class="stat-label">Active Farms</span>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat">
+                        <span class="stat-number">500K+</span>
+                        <span class="stat-label">Pigs Managed</span>
+                    </div>
+                    <div class="hero-stat-divider"></div>
+                    <div class="hero-stat">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Satisfaction</span>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <p>"I used to rely on a messy whiteboard and notebooks. Now, everything is automated and I get reminders on my phone. A total game-changer for farrowing season!"</p>
-          <div class="author">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah L.">
-            <div>
-              <strong>Sarah L.</strong>
-              <span>Small-Scale Farmer, UK</span>
+            <div class="hero-visual">
+                <div class="dashboard-preview">
+                    <div class="preview-header">
+                        <div class="preview-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <img src="/static/assets/Dashboard.png" alt="PigManagePro Dashboard" loading="lazy">
+                    </div>
+                </div>
+                <div class="floating-card floating-card-1">
+                    <div class="floating-icon success">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-120v-240h80v80h320v80H520v80h-80Zm-320-80v-80h240v80H120Zm160-160v-80H120v-80h160v-80h80v240h-80Zm160 0v-80h400v80H440Zm160-160v-240h80v80h160v80H680v80h-80Zm-480 0v-80h400v80H120Z"/></svg>
+                    </div>
+                    <div class="floating-text">
+                        <span class="floating-title">Feed Optimized</span>
+                        <span class="floating-value">-15% Waste</span>
+                    </div>
+                </div>
+                <div class="floating-card floating-card-2">
+                    <div class="floating-icon primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/></svg>
+                    </div>
+                    <div class="floating-text">
+                        <span class="floating-title">3 Reminders</span>
+                        <span class="floating-value">Today</span>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-         <div class="testimonial-card">
-          <p>"The analytics are incredibly powerful. For the first time, I have a clear picture of my farm's profitability, right down to the individual sow."</p>
-          <div class="author">
-            <img src="https://randomuser.me/api/portraits/men/56.jpg" alt="David C.">
-            <div>
-              <strong>David C.</strong>
-              <span>Breeding Specialist, Ontario</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- FINAL CTA -->
-  <section class="final-cta">
-    <div class="container">
-      <h2>Ready to Revolutionize Your Farm?</h2>
-      <p>Join over 2,500 farmers who manage smarter with PigManagePro.</p>
-      <a href="{{ url_for('signup') }}" class="btn btn-primary btn-large">Start Your Free Trial Today</a>
-    </div>
-  </section>
+    <!-- Logos Section -->
+    <section class="logos-section">
+        <div class="container">
+            <p class="logos-title">Trusted by forward-thinking farms worldwide</p>
+            <div class="logos-grid">
+                <div class="logo-item">
+                    <span>🐷 GreenAcres Farm</span>
+                </div>
+                <div class="logo-item">
+                    <span>🌾 Heritage Hogs</span>
+                </div>
+                <div class="logo-item">
+                    <span>🏠 Valley Farms</span>
+                </div>
+                <div class="logo-item">
+                    <span>🌿 Organic Piggery</span>
+                </div>
+                <div class="logo-item">
+                    <span>⭐ Premium Pork Co.</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Features</span>
+                <h2 class="section-title">Everything you need to run a modern farm</h2>
+                <p class="section-subtitle">From daily operations to financial reporting, we've built every tool you need.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z"/></svg>
+                    </div>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Get instant insights into your farm's performance with beautiful dashboards and reports.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"/></svg>
+                    </div>
+                    <h3>Smart Scheduling</h3>
+                    <p>Never miss a farrowing date, vaccination, or breeding cycle with automated reminders.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Zm80-80h400q0-33 23.5-56.5T840-480v-160q-33 0-56.5-23.5T760-720H360q0 33-23.5 56.5T280-640v160q33 0 56.5 23.5T360-400Zm440 240H120q-33 0-56.5-23.5T40-240v-440h80v440h680v80ZM280-400v-320 320Z"/></svg>
+                    </div>
+                    <h3>Financial Tracking</h3>
+                    <p>Track expenses, revenue, and profitability. Know your cost per pig at any moment.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="m422-232 207-248H469l29-227-185 267h139l-30 208ZM320-80l40-280H160l360-520h80l-40 320h240L400-80h-80Zm151-390Z"/></svg>
+                    </div>
+                    <h3>Feed Optimization</h3>
+                    <p>AI-powered feed calculations based on growth targets, reducing waste and costs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M480-80q-139-35-229.5-159.5T160-516v-244l320-120 320 120v244q0 152-90.5 276.5T480-80Zm0-84q104-33 172-132t68-220v-189l-240-90-240 90v189q0 121 68 220t172 132Zm0-316Z"/></svg>
+                    </div>
+                    <h3>Health Records</h3>
+                    <p>Complete health history for every animal. Track treatments, vaccines, and outcomes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm-40-82v-78q-33 0-56.5-23.5T360-320v-40L168-552q-3 18-5.5 36t-2.5 36q0 121 79.5 212T440-162Zm276-102q20-22 36-47.5t26.5-53q10.5-27.5 16-56.5t5.5-59q0-98-54.5-179T600-776v16q0 33-23.5 56.5T520-680h-80v80q0 17-11.5 28.5T400-560h-80v80h240q17 0 28.5 11.5T600-440v120h40q26 0 47 15.5t29 40.5Z"/></svg>
+                    </div>
+                    <h3>Cloud Access</h3>
+                    <p>Access your farm data anywhere, anytime. Desktop, tablet, or mobile—it just works.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="how-it-works-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">How It Works</span>
+                <h2 class="section-title">Up and running in minutes</h2>
+                <p class="section-subtitle">Getting started is simple. No technical expertise required.</p>
+            </div>
+
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Create Your Account</h3>
+                        <p>Sign up for free in 30 seconds. No credit card required for your 14-day trial.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Add Your Herd</h3>
+                        <p>Import your existing data or start fresh. Our setup wizard guides you through.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Start Managing</h3>
+                        <p>Track breeding, health, and finances. Watch your farm's efficiency improve.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature Showcase -->
+    <section class="showcase-section">
+        <div class="container">
+            <div class="showcase-item">
+                <div class="showcase-content">
+                    <span class="section-badge">Dashboard</span>
+                    <h2>Your farm at a glance</h2>
+                    <p>Get a comprehensive overview of your entire operation. See upcoming events, key metrics, and actionable insights—all in one beautiful interface.</p>
+                    <ul class="showcase-list">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Real-time herd statistics
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Upcoming farrowing alerts
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Financial summary
+                        </li>
+                    </ul>
+                </div>
+                <div class="showcase-image">
+                    <img src="/static/assets/analytics.png" alt="Dashboard analytics view">
+                </div>
+            </div>
+
+            <div class="showcase-item reverse">
+                <div class="showcase-content">
+                    <span class="section-badge">Feed Calculator</span>
+                    <h2>Optimize every meal</h2>
+                    <p>Our intelligent feed calculator determines the exact nutritional requirements based on age, weight, and growth targets. Stop overfeeding and start saving.</p>
+                    <ul class="showcase-list">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Automatic portion calculations
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Cost tracking per pig
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Waste reduction insights
+                        </li>
+                    </ul>
+                </div>
+                <div class="showcase-image">
+                    <img src="/static/assets/feed&cost.png" alt="Feed calculation interface">
+                </div>
+            </div>
+
+            <div class="showcase-item">
+                <div class="showcase-content">
+                    <span class="section-badge">Breeding Management</span>
+                    <h2>Never miss a date</h2>
+                    <p>Track breeding cycles, predict farrowing dates, and manage your entire reproductive program with precision. Get automated reminders for every important event.</p>
+                    <ul class="showcase-list">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Breeding cycle tracking
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Farrowing predictions
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Automated reminders
+                        </li>
+                    </ul>
+                </div>
+                <div class="showcase-image">
+                    <img src="/static/assets/Breeding_Shedule.png" alt="Breeding schedule interface">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Pricing</span>
+                <h2 class="section-title">Simple, transparent pricing</h2>
+                <p class="section-subtitle">Start free, scale as you grow. No hidden fees, cancel anytime.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Starter</h3>
+                        <div class="pricing-price">
+                            <span class="price-currency">$</span>
+                            <span class="price-amount">19</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <p>Perfect for small-scale farmers</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Up to 50 pigs
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Core dashboard
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Health tracking
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Email support
+                        </li>
+                        <li class="disabled">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            Advanced analytics
+                        </li>
+                        <li class="disabled">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            API access
+                        </li>
+                    </ul>
+                    <a href="{{ url_for('signup') }}" class="btn btn-outline btn-block">Get Started</a>
+                </div>
+
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Professional</h3>
+                        <div class="pricing-price">
+                            <span class="price-currency">$</span>
+                            <span class="price-amount">49</span>
+                            <span class="price-period">/month</span>
+                        </div>
+                        <p>For growing commercial operations</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Up to 500 pigs
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            All Starter features
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Advanced analytics
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Financial reports
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Priority support
+                        </li>
+                        <li class="disabled">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                            API access
+                        </li>
+                    </ul>
+                    <a href="{{ url_for('signup') }}" class="btn btn-primary btn-block">Start Free Trial</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Enterprise</h3>
+                        <div class="pricing-price">
+                            <span class="price-amount">Custom</span>
+                        </div>
+                        <p>For large-scale operations</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Unlimited pigs
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            All Professional features
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            API access
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Custom integrations
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            Dedicated account manager
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="m424-296 282-282-56-56-226 226-114-114-56 56 170 170Z"/></svg>
+                            On-site training
+                        </li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline btn-block">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Testimonials</span>
+                <h2 class="section-title">Loved by farmers worldwide</h2>
+                <p class="section-subtitle">See what our customers have to say about PigManagePro.</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                    </div>
+                    <p class="testimonial-text">"PigManagePro has completely transformed our operations. We're saving at least 10 hours a week on admin. It's like having a digital farm assistant."</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="John M.">
+                        <div>
+                            <strong>John M.</strong>
+                            <span>Commercial Farmer, Iowa</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                    </div>
+                    <p class="testimonial-text">"I used to rely on a messy whiteboard and notebooks. Now, everything is automated and I get reminders on my phone. A total game-changer for farrowing season!"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah L.">
+                        <div>
+                            <strong>Sarah L.</strong>
+                            <span>Small-Scale Farmer, UK</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-rating">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m233-120 65-281L80-590l288-25 112-265 112 265 288 25-218 189 65 281-247-149-247 149Z"/></svg>
+                    </div>
+                    <p class="testimonial-text">"The analytics are incredibly powerful. For the first time, I have a clear picture of my farm's profitability, right down to the individual sow."</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/56.jpg" alt="David C.">
+                        <div>
+                            <strong>David C.</strong>
+                            <span>Breeding Specialist, Ontario</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to modernize your farm?</h2>
+                <p>Join over 2,500 farmers who manage smarter with PigManagePro.</p>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('signup') }}" class="btn btn-white btn-lg">
+                        Start Your Free Trial
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M647-440H160v-80h487L423-744l57-56 320 320-320 320-57-56 224-224Z"/></svg>
+                    </a>
+                </div>
+                <p class="cta-note">No credit card required • 14-day free trial • Cancel anytime</p>
+            </div>
+        </div>
+    </section>
 </main>
 
-<footer>
-  <div class="container">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="#" class="logo">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" fill="var(--primary)"></path><path fill-rule="evenodd" clip-rule="evenodd" d="M12 13C17.5228 13 22 17.4772 22 23H2C2 17.4772 6.47715 13 12 13ZM12.75 18.0002C12.75 17.5859 12.4142 17.2502 12 17.2502C11.5858 17.2502 11.25 17.5859 11.25 18.0002V20.0002H9C8.58579 20.0002 8.25 20.3359 8.25 20.7502C8.25 21.1644 8.58579 21.5002 9 21.5002H15C15.4142 21.5002 15.75 21.1644 15.75 20.7502C15.75 20.3359 15.4142 20.0002 15 20.0002H12.75V18.0002Z" fill="#fff"></path></svg>
-          <span>PigManagePro</span>
-        </a>
-        <p>Smart farming, simplified.</p>
-      </div>
-      <div class="footer-links">
-        <div>
-          <h4>Product</h4>
-          <ul>
-            <li><a href="#">Features</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Updates</a></li>
-            <li><a href="#">Demo</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Company</h4>
-          <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-        <div>
-          <h4>Legal</h4>
-          <ul>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2025 PigManagePro. All rights reserved.</p>
-      <div class="social-icons">
-        <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
-        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-      </div>
-    </div>
-  </div>
-</footer>
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="40" height="40" rx="10" fill="url(#logo-gradient-footer)"/>
+                            <path d="M20 12C22.2091 12 24 13.7909 24 16C24 18.2091 22.2091 20 20 20C17.7909 20 16 18.2091 16 16C16 13.7909 17.7909 12 20 12Z" fill="white"/>
+                            <path d="M12 28C12 24.134 15.134 21 19 21H21C24.866 21 28 24.134 28 28V29H12V28Z" fill="white" fill-opacity="0.8"/>
+                            <defs>
+                                <linearGradient id="logo-gradient-footer" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#10a37f"/>
+                                    <stop offset="1" stop-color="#0e8e72"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <span>PigManagePro</span>
+                </a>
+                <p>Smart farming, simplified. The intelligent platform for modern pig farmers.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    </a>
+                    <a href="#" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="#" aria-label="LinkedIn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                    </a>
+                </div>
+            </div>
 
-<!-- Add your new JS file -->
-<script src="redesign.js"></script>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#">Demo</a></li>
+                        <li><a href="#">Updates</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">Status</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 PigManagePro. All rights reserved.</p>
+            <div class="footer-badges">
+                <span>🔒 SSL Secured</span>
+                <span>🌍 GDPR Compliant</span>
+            </div>
+        </div>
+    </div>
+</footer>
 
 </body>
 </html>

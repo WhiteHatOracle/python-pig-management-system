@@ -1,170 +1,182 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const track = document.querySelector(".carousel__track");
-    const slides = Array.from(track.children);
-    const nextButton = document.querySelector(".next");
-    const prevButton = document.querySelector(".prev");
-    const dotsNav = document.querySelector(".carousel__nav");
-    const dots = Array.from(dotsNav.children);
+// ============================================
+// LANDING PAGE JAVASCRIPT
+// ============================================
 
-    let slideWidth = slides[0].getBoundingClientRect().width; // Get slide width
-
-    // Arrange slides next to each other
-    const setSlidePosition = (slide, index) => {
-        slide.style.left = `${slideWidth * index}px`;
-    };
-    slides.forEach(setSlidePosition);
-
-    const moveToSlide = (track, currentSlide, targetSlide) => {
-        track.style.transform = `translateX(-${targetSlide.style.left})`;
-        currentSlide.classList.remove("current-slide");
-        targetSlide.classList.add("current-slide");
-    };
-
-    const updateDots = (currentDot, targetDot) => {
-        currentDot.classList.remove("current-slide");
-        targetDot.classList.add("current-slide");
-    };
-
-    // Move to next slide
-    nextButton.addEventListener("click", () => {
-        const currentSlide = track.querySelector(".current-slide");
-        const currentDot = dotsNav.querySelector(".current-slide");
-
-        const nextSlide = currentSlide.nextElementSibling || slides[0]; // Loop to first slide
-        const nextDot = currentDot.nextElementSibling || dots[0];
-
-        moveToSlide(track, currentSlide, nextSlide);
-        updateDots(currentDot, nextDot);
-    });
-
-    // Move to previous slide
-    prevButton.addEventListener("click", () => {
-        const currentSlide = track.querySelector(".current-slide");
-        const currentDot = dotsNav.querySelector(".current-slide");
-
-        const prevSlide = currentSlide.previousElementSibling || slides[slides.length - 1]; // Loop to last slide
-        const prevDot = currentDot.previousElementSibling || dots[dots.length - 1];
-
-        moveToSlide(track, currentSlide, prevSlide);
-        updateDots(currentDot, prevDot);
-    });
-
-    // Click on navigation dots
-    dotsNav.addEventListener("click", (e) => {
-        const targetDot = e.target;
-        if (!dots.includes(targetDot)) return; // Ignore clicks outside buttons
-
-        const currentSlide = track.querySelector(".current-slide");
-        const currentDot = dotsNav.querySelector(".current-slide");
-
-        const targetIndex = dots.findIndex((dot) => dot === targetDot);
-        const targetSlide = slides[targetIndex];
-
-        moveToSlide(track, currentSlide, targetSlide);
-        updateDots(currentDot, targetDot);
-    });
-
-    // Recalculate slide positions if window resizes
-    window.addEventListener("resize", () => {
-        slideWidth = slides[0].getBoundingClientRect().width;
-        slides.forEach(setSlidePosition);
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    initMobileNav();
+    initThemeToggle();
+    initSmoothScroll();
+    initHeaderScroll();
+    initScrollAnimations();
 });
 
-/* script.js */
-/* script.js */
-document.addEventListener('DOMContentLoaded', () => {
-    const features = document.querySelectorAll('.feature');
-    features.forEach((el, index) => {
-      el.style.animationDelay = `${0.3 * index}s`;
+// ============================================
+// MOBILE NAVIGATION
+// ============================================
+function initMobileNav() {
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileNav = document.getElementById('mobile-nav');
+    
+    if (!menuBtn || !mobileNav) return;
+    
+    menuBtn.addEventListener('click', function() {
+        this.classList.toggle('active');
+        mobileNav.classList.toggle('active');
     });
-  
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+    
+    // Close menu when clicking a link
+    const mobileLinks = mobileNav.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            menuBtn.classList.remove('active');
+            mobileNav.classList.remove('active');
+        });
+    });
+    
+    // Close menu when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!menuBtn.contains(e.target) && !mobileNav.contains(e.target)) {
+            menuBtn.classList.remove('active');
+            mobileNav.classList.remove('active');
         }
-      });
-    }, { threshold: 0.1 });
-  
-    document.querySelectorAll('.section-scroll').forEach(section => {
-      observer.observe(section);
     });
-  
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-    let isMenuOpen = false;
-  
-    hamburger.addEventListener('click', () => {
-      isMenuOpen = !isMenuOpen;
-      mobileMenu.classList.toggle('show');
-      hamburger.classList.toggle('open');
-    });
-  
-    document.addEventListener('click', (e) => {
-      if (isMenuOpen && !mobileMenu.contains(e.target) && e.target !== hamburger) {
-        mobileMenu.classList.remove('show');
-        hamburger.classList.remove('open');
-        isMenuOpen = false;
-      }
-    });
-  
-    window.addEventListener('scroll', () => {
-      if (isMenuOpen) {
-        mobileMenu.classList.remove('show');
-        hamburger.classList.remove('open');
-        isMenuOpen = false;
-      }
-    });
-  });
-  
-  // New Code Here
-  document.addEventListener('DOMContentLoaded', function() {
-  
-  // --- Mobile Navigation ---
-  const navToggle = document.getElementById('nav-toggle');
-  const nav = document.getElementById('main-nav');
-  // NOTE: You'll need to add a mobile navigation pane to your HTML
-  // to make this fully functional, similar to your original design.
-  if (navToggle) {
-    navToggle.addEventListener('click', function() {
-      // Logic to show/hide mobile nav
-      alert('Mobile nav toggle clicked! Implement your mobile menu logic here.');
-    });
-  }
+}
 
-  // --- Dark Mode Toggle ---
-  const themeToggle = document.getElementById('theme-toggle');
-  const body = document.body;
-
-  // Function to apply the saved theme
-  const applyTheme = (theme) => {
-    if (theme === 'dark') {
-      body.classList.add('dark-mode');
-    } else {
-      body.classList.remove('dark-mode');
+// ============================================
+// THEME TOGGLE
+// ============================================
+function initThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const body = document.body;
+    
+    if (!themeToggle) return;
+    
+    // Check for saved theme or system preference
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        body.classList.add('dark-mode');
     }
-  };
+    
+    themeToggle.addEventListener('click', function() {
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+        if (!localStorage.getItem('theme')) {
+            if (e.matches) {
+                body.classList.add('dark-mode');
+            } else {
+                body.classList.remove('dark-mode');
+            }
+        }
+    });
+}
 
-  // Check for saved theme in localStorage
-  const savedTheme = localStorage.getItem('theme');
-  
-  // Check for system preference if no theme is saved
-  if (!savedTheme && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      applyTheme('dark');
-  } else {
-      applyTheme(savedTheme || 'light');
-  }
+// ============================================
+// SMOOTH SCROLL
+// ============================================
+function initSmoothScroll() {
+    const links = document.querySelectorAll('a[href^="#"]');
+    
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                const headerHeight = document.querySelector('.header').offsetHeight;
+                const targetPosition = target.offsetTop - headerHeight - 20;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
 
+// ============================================
+// HEADER SCROLL EFFECT
+// ============================================
+function initHeaderScroll() {
+    const header = document.getElementById('header');
+    if (!header) return;
+    
+    let lastScroll = 0;
+    
+    window.addEventListener('scroll', function() {
+        const currentScroll = window.pageYOffset;
+        
+        if (currentScroll > 100) {
+            header.style.boxShadow = 'var(--shadow-md)';
+        } else {
+            header.style.boxShadow = 'none';
+        }
+        
+        lastScroll = currentScroll;
+    });
+}
 
-  themeToggle.addEventListener('click', () => {
-    if (body.classList.contains('dark-mode')) {
-      body.classList.remove('dark-mode');
-      localStorage.setItem('theme', 'light');
-    } else {
-      body.classList.add('dark-mode');
-      localStorage.setItem('theme', 'dark');
-    }
-  });
+// ============================================
+// SCROLL ANIMATIONS
+// ============================================
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+    
+    // Observe elements
+    const animateElements = document.querySelectorAll(
+        '.feature-card, .step-card, .showcase-item, .pricing-card, .testimonial-card'
+    );
+    
+    animateElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+    
+    // Add CSS for animated state
+    const style = document.createElement('style');
+    style.textContent = `
+        .animate-in {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+    `;
+    document.head.appendChild(style);
+}
 
-});
+// ============================================
+// UTILITY: Debounce function
+// ============================================
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
