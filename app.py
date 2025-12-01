@@ -136,6 +136,119 @@ dash_app.layout = html.Div([
             ], className="welcome-header"),
         ], className="welcome-section"),
 
+        # Herd Stats Section (condensed version)
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Span("🐷", className="section-icon"),
+                    html.Span("Herd Overview", className="section-title"),
+                ], className="section-header"),
+            ], className="section-title-wrapper"),
+            
+            html.Div([
+                # Total Herd
+                html.Div([
+                    html.Div([
+                        html.H3(id="total-pigs", className="herd-value"),
+                        html.P("Total Herd", className="herd-label"),
+                    ], className="herd-inner"),
+                ], className="herd-card featured"),
+
+                # Sows
+                html.Div([
+                    html.Div([
+                        html.H3(id="total-sows", className="herd-value"),
+                        html.P("Sows", className="herd-label"),
+                    ], className="herd-inner"),
+                ], className="herd-card"),
+
+                # Boars
+                html.Div([
+                    html.Div([
+                        html.H3(id="total-boars", className="herd-value"),
+                        html.P("Boars", className="herd-label"),
+                    ], className="herd-inner"),
+                ], className="herd-card"),
+
+                # Growth Stages (combined)
+                html.Div([
+                    html.Div([
+                        html.Div([
+                            html.Span(id="pre_weaners", className="stage-num"),
+                            html.Span("Pre-W", className="stage-abbr"),
+                        ], className="stage-item pre-weaning"),
+                        html.Div([
+                            html.Span(id="weaners", className="stage-num"),
+                            html.Span("Wean", className="stage-abbr"),
+                        ], className="stage-item weaner"),
+                        html.Div([
+                            html.Span(id="growers", className="stage-num"),
+                            html.Span("Grow", className="stage-abbr"),
+                        ], className="stage-item grower"),
+                        html.Div([
+                            html.Span(id="finishers", className="stage-num"),
+                            html.Span("Fin", className="stage-abbr"),
+                        ], className="stage-item finisher"),
+                    ], className="stages-compact"),
+                ], className="herd-card stages-card"),
+            ], className="herd-grid"),
+        ], className="herd-section"),
+
+        # Upcoming Farrowings Section (same as before)
+        html.Div([
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Span("📅", className="section-icon"),
+                        html.Span("Upcoming Farrowings", className="section-title"),
+                    ], className="section-header"),
+                    html.Div([
+                        html.Span(id="farrowing-count", className="count-badge"),
+                    ], className="section-badge"),
+                ], className="section-header-row"),
+            ], className="table-section-header"),
+
+            html.Div([
+                dash_table.DataTable(
+                    id="sow-service-table",
+                    columns=[
+                        {"name": "Sow ID", "id": "sow_id"},
+                        {"name": "Service Date", "id": "service_date"},
+                        {"name": "Litter Guard 1", "id": "litter_guard1_date"},
+                        {"name": "Litter Guard 2", "id": "litter_guard2_date"},
+                        {"name": "Due Date", "id": "due_date"},
+                    ],
+                    sort_action="native",
+                    page_size=5,
+                    style_table={'overflowX': 'auto', 'borderRadius': '12px'},
+                    style_header={
+                        'backgroundColor': '#059669',
+                        'color': 'white',
+                        'textAlign': 'center',
+                        'fontWeight': '600',
+                        'fontSize': '11px',
+                        'textTransform': 'uppercase',
+                        'padding': '12px 8px',
+                    },
+                    style_cell={
+                        'padding': '12px 8px',
+                        'textAlign': 'center',
+                        'fontSize': '13px',
+                        'border': 'none',
+                        'borderBottom': '1px solid var(--border-light)',
+                    },
+                    style_data={
+                        'backgroundColor': 'var(--bg-lighter)',
+                        'color': 'var(--text-dark)',
+                    },
+                    style_data_conditional=[
+                        {'if': {'row_index': 'odd'}, 'backgroundColor': 'var(--bg-lightest)'},
+                        {'if': {'column_id': 'due_date'}, 'fontWeight': '600', 'color': '#059669'},
+                    ],
+                ),
+            ], className="table-wrapper compact"),
+        ], className="table-section compact"),
+
         # Financial Summary Cards
         html.Div([
             html.Div([
@@ -279,119 +392,6 @@ dash_app.layout = html.Div([
             ], className="charts-row"),
         ], className="charts-section"),
 
-        # Herd Stats Section (condensed version)
-        html.Div([
-            html.Div([
-                html.Div([
-                    html.Span("🐷", className="section-icon"),
-                    html.Span("Herd Overview", className="section-title"),
-                ], className="section-header"),
-            ], className="section-title-wrapper"),
-            
-            html.Div([
-                # Total Herd
-                html.Div([
-                    html.Div([
-                        html.H3(id="total-pigs", className="herd-value"),
-                        html.P("Total Herd", className="herd-label"),
-                    ], className="herd-inner"),
-                ], className="herd-card featured"),
-
-                # Sows
-                html.Div([
-                    html.Div([
-                        html.H3(id="total-sows", className="herd-value"),
-                        html.P("Sows", className="herd-label"),
-                    ], className="herd-inner"),
-                ], className="herd-card"),
-
-                # Boars
-                html.Div([
-                    html.Div([
-                        html.H3(id="total-boars", className="herd-value"),
-                        html.P("Boars", className="herd-label"),
-                    ], className="herd-inner"),
-                ], className="herd-card"),
-
-                # Growth Stages (combined)
-                html.Div([
-                    html.Div([
-                        html.Div([
-                            html.Span(id="pre_weaners", className="stage-num"),
-                            html.Span("Pre-W", className="stage-abbr"),
-                        ], className="stage-item pre-weaning"),
-                        html.Div([
-                            html.Span(id="weaners", className="stage-num"),
-                            html.Span("Wean", className="stage-abbr"),
-                        ], className="stage-item weaner"),
-                        html.Div([
-                            html.Span(id="growers", className="stage-num"),
-                            html.Span("Grow", className="stage-abbr"),
-                        ], className="stage-item grower"),
-                        html.Div([
-                            html.Span(id="finishers", className="stage-num"),
-                            html.Span("Fin", className="stage-abbr"),
-                        ], className="stage-item finisher"),
-                    ], className="stages-compact"),
-                ], className="herd-card stages-card"),
-            ], className="herd-grid"),
-        ], className="herd-section"),
-
-        # Upcoming Farrowings Section (same as before)
-        html.Div([
-            html.Div([
-                html.Div([
-                    html.Div([
-                        html.Span("📅", className="section-icon"),
-                        html.Span("Upcoming Farrowings", className="section-title"),
-                    ], className="section-header"),
-                    html.Div([
-                        html.Span(id="farrowing-count", className="count-badge"),
-                    ], className="section-badge"),
-                ], className="section-header-row"),
-            ], className="table-section-header"),
-
-            html.Div([
-                dash_table.DataTable(
-                    id="sow-service-table",
-                    columns=[
-                        {"name": "Sow ID", "id": "sow_id"},
-                        {"name": "Service Date", "id": "service_date"},
-                        {"name": "Litter Guard 1", "id": "litter_guard1_date"},
-                        {"name": "Litter Guard 2", "id": "litter_guard2_date"},
-                        {"name": "Due Date", "id": "due_date"},
-                    ],
-                    sort_action="native",
-                    page_size=5,
-                    style_table={'overflowX': 'auto', 'borderRadius': '12px'},
-                    style_header={
-                        'backgroundColor': '#059669',
-                        'color': 'white',
-                        'textAlign': 'center',
-                        'fontWeight': '600',
-                        'fontSize': '11px',
-                        'textTransform': 'uppercase',
-                        'padding': '12px 8px',
-                    },
-                    style_cell={
-                        'padding': '12px 8px',
-                        'textAlign': 'center',
-                        'fontSize': '13px',
-                        'border': 'none',
-                        'borderBottom': '1px solid var(--border-light)',
-                    },
-                    style_data={
-                        'backgroundColor': 'var(--bg-lighter)',
-                        'color': 'var(--text-dark)',
-                    },
-                    style_data_conditional=[
-                        {'if': {'row_index': 'odd'}, 'backgroundColor': 'var(--bg-lightest)'},
-                        {'if': {'column_id': 'due_date'}, 'fontWeight': '600', 'color': '#059669'},
-                    ],
-                ),
-            ], className="table-wrapper compact"),
-        ], className="table-section compact"),
-
         # Intervals and Location
         dcc.Interval(id="interval-update", interval=30 * 1000, n_intervals=0),
         dcc.Interval(id="chart-interval", interval=60 * 1000, n_intervals=0),
@@ -517,7 +517,6 @@ def update_financial_summary(period):
         profit_class,
         margin_class,
     )
-
 
 # Callback for Revenue vs Expenses chart
 @dash_app.callback(
@@ -651,7 +650,6 @@ def update_revenue_expenses_chart(period, chart_type, n):
     
     return fig
 
-
 # Callback for Expense Breakdown Pie Chart
 @dash_app.callback(
     dash.Output("expense-breakdown-chart", "figure"),
@@ -728,7 +726,6 @@ def update_expense_breakdown(period, n):
     
     return fig
 
-
 def update_monthly_profit(period, n):
     data = get_financial_data(period)
     
@@ -794,7 +791,6 @@ def update_monthly_profit(period, n):
     )
     
     return fig
-
 
 # Main callback to update herd data and table
 @dash_app.callback(
