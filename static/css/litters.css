@@ -431,7 +431,7 @@
 .litter-table tbody td {
   padding: 10px 8px;
   text-align: center;
-  color: var(--text-dark);
+  color: black;
   border-bottom: 1px solid var(--border-light);
   white-space: nowrap;
 }
