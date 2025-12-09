@@ -400,7 +400,6 @@ dash_app.layout = html.Div([
     ], className="dashboard-container"),
 ], className="dashboard-app")
 
-
 # Helper function to get financial data
 def get_financial_data(period='90'):
     """Get revenue and expense data for the specified period"""
@@ -459,7 +458,6 @@ def get_financial_data(period='90'):
         'profit_margin': profit_margin,
     }
 
-
 # Callback for financial summary cards
 @dash_app.callback(
     [
@@ -476,6 +474,7 @@ def get_financial_data(period='90'):
     ],
     [dash.Input("period-selector", "value")],
 )
+
 def update_financial_summary(period):
     data = get_financial_data(period)
     
@@ -527,6 +526,7 @@ def update_financial_summary(period):
         dash.Input("chart-interval", "n_intervals"),
     ],
 )
+
 def update_revenue_expenses_chart(period, chart_type, n):
     data = get_financial_data(period)
     
@@ -658,6 +658,7 @@ def update_revenue_expenses_chart(period, chart_type, n):
         dash.Input("chart-interval", "n_intervals"),
     ],
 )
+
 def update_expense_breakdown(period, n):
     data = get_financial_data(period)
     
@@ -808,6 +809,7 @@ def update_monthly_profit(period, n):
     ],
     [dash.Input("interval-update", "n_intervals")],
 )
+
 def callback_update_dashboard(n_intervals):
     from datetime import datetime
     
@@ -1041,7 +1043,6 @@ def google_auth():
     login_user(user)
     flash("Logged in successfully with Google!", "success")
     return redirect(url_for('dashboard'))
-
 
 # Logout route
 @app.route('/logout', methods=['POST','GET'])
@@ -1665,7 +1666,6 @@ def expense_totals():
 
 @app.route('/delete-expense/<int:expense_id>', methods=['POST'])
 @login_required
-
 def delete_expense(expense_id):
     #Query the expense id
     expense = Expense.query.filter_by(id=expense_id, user_id=current_user.id).first_or_404()
