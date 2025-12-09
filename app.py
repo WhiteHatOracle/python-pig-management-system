@@ -1008,27 +1008,40 @@ def google_login():
 def google_auth():
     token = google.authorize_access_token()
     user_info = google.get('userinfo').json()
-    
-    # Check if user already exists by email (username)
-    user = User.query.filter_by(username=user_info['email']).first()
-    
+
+    email = user_info['email']
+    google_id = user_info.get('id')
+
+    # Check if user already exists by email OR google_id
+    user = User.query.filter(
+        (User.email == email) | (User.google_id == google_id)
+    ).first()
+
     if user is None:
         # Create a new user with Google info
         user = User(
-            username=user_info['email'],
-            email=user_info['email'],
-            google_id=user_info['id'],
+            username=email,
+            email=email,
+            google_id=google_id,
             name=user_info.get('name'),
             profile_pic=user_info.get('picture'),
-            password=None  # No password for Google users
+            password=None,  # No password for Google users
+            is_verified=True  # Google emails are verified
         )
         db.session.add(user)
-        db.session.commit()
-    
-    # Log in the user
+    else:
+        # Update user info so it's always current
+        user.google_id = google_id
+        user.name = user_info.get('name')
+        user.profile_pic = user_info.get('picture')
+
+    db.session.commit()
+
+    # Log the user in
     login_user(user)
-    flash("Logged in successfully with Google!", "Success")
+    flash("Logged in successfully with Google!", "success")
     return redirect(url_for('dashboard'))
+
 
 # Logout route
 @app.route('/logout', methods=['POST','GET'])
