@@ -219,7 +219,7 @@ dash_app.layout = html.Div([
                         {"name": "Due Date", "id": "due_date"},
                     ],
                     sort_action="native",
-                    page_size=5,
+                    page_size=100,
                     style_table={'overflowX': 'auto', 'borderRadius': '12px'},
                     style_header={
                         'backgroundColor': '#059669',
