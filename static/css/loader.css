@@ -42,6 +42,7 @@
     height: 48px;
     object-fit: contain;
     animation: pulse-scale 1.5s ease-in-out infinite;
+    display: none;
 }
 
 /* Logo Animation */
