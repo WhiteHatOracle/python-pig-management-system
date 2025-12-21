@@ -1442,3 +1442,127 @@ body,
 .dark-mode .js-plotly-plot .ytick text {
   fill: var(--text-muted) !important;
 }
+
+
+
+/* Financial Overview Theme Support */
+[data-theme="dark"] .finance-value,
+.dark-theme .finance-value,
+.dark-mode .finance-value {
+    color: #F7FAFC !important;
+}
+
+[data-theme="dark"] .finance-label,
+.dark-theme .finance-label,
+.dark-mode .finance-label {
+    color: #A0AEC0 !important;
+}
+
+[data-theme="dark"] .finance-change,
+.dark-theme .finance-change,
+.dark-mode .finance-change {
+    color: #A0AEC0 !important;
+}
+
+[data-theme="dark"] .finance-change.positive,
+.dark-theme .finance-change.positive,
+.dark-mode .finance-change.positive {
+    color: #48BB78 !important;
+}
+
+[data-theme="dark"] .finance-change.negative,
+.dark-theme .finance-change.negative,
+.dark-mode .finance-change.negative {
+    color: #FC8181 !important;
+}
+
+[data-theme="dark"] .revenue-value,
+.dark-theme .revenue-value,
+.dark-mode .revenue-value {
+    color: #48BB78 !important;
+}
+
+[data-theme="dark"] .expenses-value,
+.dark-theme .expenses-value,
+.dark-mode .expenses-value {
+    color: #FC8181 !important;
+}
+
+[data-theme="dark"] .profit-value.positive,
+.dark-theme .profit-value.positive,
+.dark-mode .profit-value.positive {
+    color: #48BB78 !important;
+}
+
+[data-theme="dark"] .profit-value.negative,
+.dark-theme .profit-value.negative,
+.dark-mode .profit-value.negative {
+    color: #FC8181 !important;
+}
+
+[data-theme="dark"] .section-title,
+.dark-theme .section-title,
+.dark-mode .section-title {
+    color: #F7FAFC !important;
+}
+
+[data-theme="dark"] .chart-card,
+.dark-theme .chart-card,
+.dark-mode .chart-card {
+    background-color: #2D3748 !important;
+    border-color: #4A5568 !important;
+}
+
+[data-theme="dark"] .finance-card,
+.dark-theme .finance-card,
+.dark-mode .finance-card {
+    background-color: #2D3748 !important;
+    border-color: #4A5568 !important;
+}
+
+/* Period Dropdown Dark Theme */
+[data-theme="dark"] .period-dropdown .Select-control,
+.dark-theme .period-dropdown .Select-control,
+.dark-mode .period-dropdown .Select-control {
+    background-color: #2D3748 !important;
+    border-color: #4A5568 !important;
+}
+
+[data-theme="dark"] .period-dropdown .Select-value-label,
+.dark-theme .period-dropdown .Select-value-label,
+.dark-mode .period-dropdown .Select-value-label {
+    color: #F7FAFC !important;
+}
+
+[data-theme="dark"] .period-dropdown .Select-menu-outer,
+.dark-theme .period-dropdown .Select-menu-outer,
+.dark-mode .period-dropdown .Select-menu-outer {
+    background-color: #2D3748 !important;
+    border-color: #4A5568 !important;
+}
+
+[data-theme="dark"] .period-dropdown .Select-option,
+.dark-theme .period-dropdown .Select-option,
+.dark-mode .period-dropdown .Select-option {
+    background-color: #2D3748 !important;
+    color: #F7FAFC !important;
+}
+
+[data-theme="dark"] .period-dropdown .Select-option:hover,
+.dark-theme .period-dropdown .Select-option:hover,
+.dark-mode .period-dropdown .Select-option:hover {
+    background-color: #4A5568 !important;
+}
+
+/* Chart Radio Buttons Dark Theme */
+[data-theme="dark"] .chart-radio-label,
+.dark-theme .chart-radio-label,
+.dark-mode .chart-radio-label {
+    color: #A0AEC0 !important;
+}
+
+[data-theme="dark"] .chart-radio-label:hover,
+.dark-theme .chart-radio-label:hover,
+.dark-mode .chart-radio-label:hover {
+    color: #F7FAFC !important;
+}

@@ -1,10 +1,11 @@
 from authlib.integrations.flask_client import OAuth
 from sqlalchemy.engine import Engine
+from plotly.subplots import make_subplots
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from sqlalchemy import func, event
+from sqlalchemy import func, event, extract
 from flask_mail import Mail, Message
 from datetime import timedelta, datetime, timezone
 from dotenv import load_dotenv
@@ -18,23 +19,10 @@ import uuid
 import logging
 import secrets
 import traceback
-
-from dash import html, dcc, dash_table
-import dash
-
-from dash import html, dcc, dash_table
-import dash
+import plotly.graph_objects as go
 import plotly.express as px
-import plotly.graph_objects as go
-from dash import html, dcc, dash_table
+import pandas as pd
 import dash
-import plotly.graph_objects as go
-import pandas as pd
-from datetime import datetime, timedelta
-from plotly.subplots import make_subplots
-import pandas as pd
-from datetime import datetime, timedelta
-from sqlalchemy import func, extract
 
 from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
 from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort, get_flashed_messages
@@ -396,9 +384,72 @@ dash_app.layout = html.Div([
         dcc.Interval(id="interval-update", interval=30 * 1000, n_intervals=0),
         dcc.Interval(id="chart-interval", interval=60 * 1000, n_intervals=0),
         dcc.Location(id='url', refresh=True),
+        dcc.Store(id='theme-store', data='light'),
+        html.Div(id='theme-detector', style={'display': 'none'}),
 
     ], className="dashboard-container"),
 ], className="dashboard-app")
+
+# Add this after your dash_app.layout definition
+dash_app.clientside_callback(
+    """
+    function(n) {
+        // Check various ways theme might be set
+        const html = document.documentElement;
+        const body = document.body;
+        
+        const isDark = html.classList.contains('dark-theme') || 
+                       html.classList.contains('dark-mode') ||
+                       html.classList.contains('dark') ||
+                       body.classList.contains('dark-theme') ||
+                       body.classList.contains('dark-mode') ||
+                       body.classList.contains('dark') ||
+                       html.getAttribute('data-theme') === 'dark' ||
+                       body.getAttribute('data-theme') === 'dark';
+        
+        return isDark ? 'dark' : 'light';
+    }
+    """,
+    dash.Output('theme-store', 'data'),
+    dash.Input('interval-update', 'n_intervals'),
+)
+
+# color helper function
+
+def get_theme_colors(theme='light'):
+    """Return color scheme based on current theme"""
+    if theme == 'dark':
+        return {
+            'text_primary': '#F7FAFC',      # Light text for dark bg
+            'text_secondary': '#A0AEC0',     # Muted light text
+            'text_muted': '#718096',         # Even more muted
+            'bg_primary': '#1A202C',         # Dark background
+            'bg_secondary': '#2D3748',       # Slightly lighter dark
+            'grid_color': '#4A5568',         # Grid lines
+            'border_color': '#4A5568',       # Borders
+            'chart_bg': 'rgba(26, 32, 44, 0)',  # Transparent dark
+            'positive': '#48BB78',           # Green for profit
+            'negative': '#FC8181',           # Red for loss
+            'revenue': '#48BB78',            # Revenue color
+            'expenses': '#FC8181',           # Expenses color
+            'pie_center_text': '#F7FAFC',    # Pie chart center text
+        }
+    else:
+        return {
+            'text_primary': '#1A202C',       # Dark text for light bg
+            'text_secondary': '#4A5568',     # Muted dark text
+            'text_muted': '#718096',         # Even more muted
+            'bg_primary': '#FFFFFF',         # Light background
+            'bg_secondary': '#F7FAFC',       # Slightly darker light
+            'grid_color': '#E2E8F0',         # Grid lines
+            'border_color': '#E2E8F0',       # Borders
+            'chart_bg': 'rgba(255, 255, 255, 0)',  # Transparent light
+            'positive': '#10B981',           # Green for profit
+            'negative': '#EF4444',           # Red for loss
+            'revenue': '#10B981',            # Revenue color
+            'expenses': '#EF4444',           # Expenses color
+            'pie_center_text': '#1A202C',    # Pie chart center text
+        }
 
 # Helper function to get financial data
 def get_financial_data(period='90'):
@@ -524,27 +575,28 @@ def update_financial_summary(period):
         dash.Input("period-selector", "value"),
         dash.Input("chart-type-selector", "value"),
         dash.Input("chart-interval", "n_intervals"),
+        dash.Input("theme-store", "data"),  # Add theme input
     ],
 )
-
-def update_revenue_expenses_chart(period, chart_type, n):
+def update_revenue_expenses_chart(period, chart_type, n, theme):
+    colors = get_theme_colors(theme)
     data = get_financial_data(period)
     
     # Combine all months
     all_months = sorted(set(list(data['revenue_by_month'].keys()) + list(data['expense_by_month'].keys())))
     
     if not all_months:
-        # Return empty chart
+        # Return empty chart with theme-aware colors
         fig = go.Figure()
         fig.add_annotation(
             text="No data available for selected period",
             xref="paper", yref="paper",
             x=0.5, y=0.5, showarrow=False,
-            font=dict(size=16, color="#718096")
+            font=dict(size=16, color=colors['text_secondary'])
         )
         fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor=colors['chart_bg'],
+            paper_bgcolor=colors['chart_bg'],
             height=350,
         )
         return fig
@@ -566,14 +618,14 @@ def update_revenue_expenses_chart(period, chart_type, n):
             name='Revenue',
             x=df['Month_Label'],
             y=df['Revenue'],
-            marker_color='#10B981',
+            marker_color=colors['revenue'],
             marker_line_width=0,
         ))
         fig.add_trace(go.Bar(
             name='Expenses',
             x=df['Month_Label'],
             y=df['Expenses'],
-            marker_color='#EF4444',
+            marker_color=colors['expenses'],
             marker_line_width=0,
         ))
         fig.update_layout(barmode='group')
@@ -585,7 +637,7 @@ def update_revenue_expenses_chart(period, chart_type, n):
             x=df['Month_Label'],
             y=df['Revenue'],
             mode='lines+markers',
-            line=dict(color='#10B981', width=3),
+            line=dict(color=colors['revenue'], width=3),
             marker=dict(size=8),
         ))
         fig.add_trace(go.Scatter(
@@ -593,20 +645,24 @@ def update_revenue_expenses_chart(period, chart_type, n):
             x=df['Month_Label'],
             y=df['Expenses'],
             mode='lines+markers',
-            line=dict(color='#EF4444', width=3),
+            line=dict(color=colors['expenses'], width=3),
             marker=dict(size=8),
         ))
         
     else:  # area
         fig = go.Figure()
+        # Adjust fill colors based on theme
+        revenue_fill = 'rgba(72, 187, 120, 0.3)' if theme == 'dark' else 'rgba(16, 185, 129, 0.3)'
+        expense_fill = 'rgba(252, 129, 129, 0.3)' if theme == 'dark' else 'rgba(239, 68, 68, 0.3)'
+        
         fig.add_trace(go.Scatter(
             name='Revenue',
             x=df['Month_Label'],
             y=df['Revenue'],
             fill='tozeroy',
             mode='lines',
-            line=dict(color='#10B981', width=2),
-            fillcolor='rgba(16, 185, 129, 0.3)',
+            line=dict(color=colors['revenue'], width=2),
+            fillcolor=revenue_fill,
         ))
         fig.add_trace(go.Scatter(
             name='Expenses',
@@ -614,14 +670,14 @@ def update_revenue_expenses_chart(period, chart_type, n):
             y=df['Expenses'],
             fill='tozeroy',
             mode='lines',
-            line=dict(color='#EF4444', width=2),
-            fillcolor='rgba(239, 68, 68, 0.3)',
+            line=dict(color=colors['expenses'], width=2),
+            fillcolor=expense_fill,
         ))
     
-    # Update layout
+    # Update layout with theme-aware colors
     fig.update_layout(
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor=colors['chart_bg'],
+        paper_bgcolor=colors['chart_bg'],
         height=350,
         margin=dict(l=20, r=20, t=20, b=40),
         legend=dict(
@@ -630,36 +686,45 @@ def update_revenue_expenses_chart(period, chart_type, n):
             y=1.02,
             xanchor="right",
             x=1,
-            font=dict(size=12),
+            font=dict(size=12, color=colors['text_primary']),
+            bgcolor='rgba(0,0,0,0)',
         ),
         xaxis=dict(
             showgrid=False,
             showline=True,
-            linecolor='#E2E8F0',
-            tickfont=dict(size=11, color='#718096'),
+            linecolor=colors['border_color'],
+            tickfont=dict(size=11, color=colors['text_secondary']),
         ),
         yaxis=dict(
             showgrid=True,
-            gridcolor='#E2E8F0',
+            gridcolor=colors['grid_color'],
             showline=False,
-            tickfont=dict(size=11, color='#718096'),
+            tickfont=dict(size=11, color=colors['text_secondary']),
             tickprefix='K',
         ),
         hovermode='x unified',
+        hoverlabel=dict(
+            bgcolor=colors['bg_secondary'],
+            font_color=colors['text_primary'],
+            bordercolor=colors['border_color'],
+        ),
     )
     
     return fig
 
-# Callback for Expense Breakdown Pie Chart
+# Pie Chart Callback
 @dash_app.callback(
     dash.Output("expense-breakdown-chart", "figure"),
     [
         dash.Input("period-selector", "value"),
         dash.Input("chart-interval", "n_intervals"),
+        dash.Input("theme-store", "data"),  # Add theme input
     ],
 )
 
-def update_expense_breakdown(period, n):
+# Pie Chart Update
+def update_expense_breakdown(period, n, theme):
+    colors = get_theme_colors(theme)
     data = get_financial_data(period)
     
     categories = list(data['expense_by_category'].keys())
@@ -671,47 +736,51 @@ def update_expense_breakdown(period, n):
             text="No expenses recorded",
             xref="paper", yref="paper",
             x=0.5, y=0.5, showarrow=False,
-            font=dict(size=14, color="#718096")
+            font=dict(size=14, color=colors['text_secondary'])
         )
         fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor=colors['chart_bg'],
+            paper_bgcolor=colors['chart_bg'],
             height=300,
         )
         return fig
     
-    # Color palette
-    colors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16']
+    # Color palette - slightly adjusted for dark theme visibility
+    if theme == 'dark':
+        pie_colors = ['#48BB78', '#63B3ED', '#F6AD55', '#FC8181', '#B794F4', '#F687B3', '#4FD1C5', '#9AE6B4']
+    else:
+        pie_colors = ['#10B981', '#3B82F6', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16']
     
     fig = go.Figure(data=[go.Pie(
         labels=categories,
         values=values,
         hole=0.55,
-        marker=dict(colors=colors[:len(categories)]),
+        marker=dict(colors=pie_colors[:len(categories)]),
         textinfo='percent',
         textposition='outside',
-        textfont=dict(size=11),
+        textfont=dict(size=11, color=colors['text_primary']),
         hovertemplate="<b>%{label}</b><br>K%{value:,.2f}<br>%{percent}<extra></extra>",
+        outsidetextfont=dict(color=colors['text_primary']),
     )])
     
-    # Add center text
+    # Add center text with theme-aware colors
     total = sum(values)
     fig.add_annotation(
         text=f"K{total:,.0f}",
         x=0.5, y=0.55,
-        font=dict(size=18, color='#1A202C', family='Poppins'),
+        font=dict(size=18, color=colors['pie_center_text'], family='Poppins'),
         showarrow=False,
     )
     fig.add_annotation(
         text="Total",
         x=0.5, y=0.45,
-        font=dict(size=12, color='#718096'),
+        font=dict(size=12, color=colors['text_secondary']),
         showarrow=False,
     )
     
     fig.update_layout(
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor=colors['chart_bg'],
+        paper_bgcolor=colors['chart_bg'],
         height=300,
         margin=dict(l=20, r=20, t=20, b=20),
         showlegend=True,
@@ -721,13 +790,28 @@ def update_expense_breakdown(period, n):
             y=-0.2,
             xanchor="center",
             x=0.5,
-            font=dict(size=10),
+            font=dict(size=10, color=colors['text_primary']),
+            bgcolor='rgba(0,0,0,0)',
+        ),
+        hoverlabel=dict(
+            bgcolor=colors['bg_secondary'],
+            font_color=colors['text_primary'],
+            bordercolor=colors['border_color'],
         ),
     )
     
     return fig
 
-def update_monthly_profit(period, n):
+@dash_app.callback(
+    dash.Output("monthly-profit-chart", "figure"),  # If you have this chart
+    [
+        dash.Input("period-selector", "value"),
+        dash.Input("chart-interval", "n_intervals"),
+        dash.Input("theme-store", "data"),  # Add theme input
+    ],
+)
+def update_monthly_profit(period, n, theme):
+    colors = get_theme_colors(theme)
     data = get_financial_data(period)
     
     all_months = sorted(set(list(data['revenue_by_month'].keys()) + list(data['expense_by_month'].keys())))
@@ -738,56 +822,61 @@ def update_monthly_profit(period, n):
             text="No data available",
             xref="paper", yref="paper",
             x=0.5, y=0.5, showarrow=False,
-            font=dict(size=14, color="#718096")
+            font=dict(size=14, color=colors['text_secondary'])
         )
         fig.update_layout(
-            plot_bgcolor='rgba(0,0,0,0)',
-            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor=colors['chart_bg'],
+            paper_bgcolor=colors['chart_bg'],
             height=300,
         )
         return fig
     
     # Calculate profit/loss for each month
     profits = []
-    colors = []
+    bar_colors = []
     for m in all_months:
         rev = data['revenue_by_month'].get(m, 0)
         exp = data['expense_by_month'].get(m, 0)
         profit = rev - exp
         profits.append(profit)
-        colors.append('#10B981' if profit >= 0 else '#EF4444')
+        bar_colors.append(colors['positive'] if profit >= 0 else colors['negative'])
     
     month_labels = [datetime.strptime(m, '%Y-%m').strftime('%b %Y') for m in all_months]
     
     fig = go.Figure(data=[go.Bar(
         x=month_labels,
         y=profits,
-        marker_color=colors,
+        marker_color=bar_colors,
         marker_line_width=0,
         hovertemplate="<b>%{x}</b><br>K%{y:,.2f}<extra></extra>",
     )])
     
     # Add zero line
-    fig.add_hline(y=0, line_dash="dash", line_color="#718096", line_width=1)
+    fig.add_hline(y=0, line_dash="dash", line_color=colors['text_muted'], line_width=1)
     
     fig.update_layout(
-        plot_bgcolor='rgba(0,0,0,0)',
-        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor=colors['chart_bg'],
+        paper_bgcolor=colors['chart_bg'],
         height=300,
         margin=dict(l=20, r=20, t=20, b=40),
         xaxis=dict(
             showgrid=False,
             showline=True,
-            linecolor='#E2E8F0',
-            tickfont=dict(size=10, color='#718096'),
+            linecolor=colors['border_color'],
+            tickfont=dict(size=10, color=colors['text_secondary']),
         ),
         yaxis=dict(
             showgrid=True,
-            gridcolor='#E2E8F0',
+            gridcolor=colors['grid_color'],
             showline=False,
-            tickfont=dict(size=10, color='#718096'),
+            tickfont=dict(size=10, color=colors['text_secondary']),
             tickprefix='K',
             zeroline=False,
+        ),
+        hoverlabel=dict(
+            bgcolor=colors['bg_secondary'],
+            font_color=colors['text_primary'],
+            bordercolor=colors['border_color'],
         ),
     )
     
