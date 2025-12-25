@@ -1,109 +1,160 @@
-from authlib.integrations.flask_client import OAuth
-from sqlalchemy.engine import Engine
-from plotly.subplots import make_subplots
-from sqlalchemy.exc import IntegrityError
-from flask_migrate import Migrate
-from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from sqlalchemy import func, event, extract
-from flask_mail import Mail, Message
-from datetime import timedelta, datetime, timezone
-from dotenv import load_dotenv
-from dash import dcc, html, dash_table
-import dash_bootstrap_components as dbc
-import datetime as dt
+# =========================
+# Standard Library Imports
+# =========================
 import os
 import re
-import dash
 import uuid
 import logging
 import secrets
 import traceback
-import plotly.graph_objects as go
-import plotly.express as px
-import pandas as pd
+from datetime import datetime, timedelta, timezone
+
+# =========================
+# Third-Party Libraries
+# =========================
+from dotenv import load_dotenv
+from flask import (
+    Flask, render_template, url_for, redirect, flash,
+    make_response, request, jsonify, session, abort,
+    get_flashed_messages
+)
+from flask_login import (
+    LoginManager, login_user, login_required,
+    logout_user, current_user
+)
+from flask_admin import Admin
+from flask_mail import Mail
+from flask_bcrypt import Bcrypt
+from flask_migrate import Migrate
+from sqlalchemy import func, event, extract
+from sqlalchemy.engine import Engine
+from sqlalchemy.exc import IntegrityError
+from authlib.integrations.flask_client import OAuth
+
+# =========================
+# Dash / Plotly
+# =========================
 import dash
+import dash_bootstrap_components as dbc
+from dash import html, dcc, dash_table
+import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+import pandas as pd
 
-from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
-from flask import Flask, render_template, url_for, redirect, flash, make_response, request, jsonify, session, abort, get_flashed_messages
-from forms import ResetPasswordForm, ForgotPasswordForm, LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm, ChangePasswordForm
-from utils import get_sow_service_records, parse_range, update_dashboard, get_total_counts, generate_invoice_pdf, get_litter_stage
-
-# Configure logging to show in console
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-#Load enviroment variables 
-load_dotenv()
-
-@event.listens_for(Engine, "connect")
-def set_sqlite_pragma(dbapi_connection, connection_record):
-    if 'sqlite' in app.config['SQLALCHEMY_DATABASE_URI']:
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA foreign_keys=ON")
-        cursor.close()
-
-app = Flask(__name__) # Initialize Flask app
-app.secret_key= os.getenv("SECRET_KEY")
-
-# Initialize Dash app
-dash_app = dash.Dash(
-    __name__, 
-    server=app,
-    url_base_pathname='/dashboard_internal/',  # This sets the base path for Dash
-    external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"])
-
-#configure OAuth
-oauth = OAuth(app)
-google = oauth.register(
-    name='google',
-    client_id=os.getenv("GOOGLE_CLIENT_ID"),
-    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-    access_token_url='https://oauth2.googleapis.com/token',
-    access_token_params=None,
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    authorize_params=None,
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    userinfo_endpoint='https://openidconnect.googleapis.com/userinfo',
-    client_kwargs={'scope': 'openid email profile'},
-    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration'
+# =========================
+# Application Modules
+# =========================
+from models import (
+    db, Litter, User, Boars, Sows,
+    ServiceRecords, Invoice, Expense
+)
+from forms import (
+    ResetPasswordForm, ForgotPasswordForm, LitterForm, SowForm,
+    BoarForm, RegisterForm, LoginForm, FeedCalculatorForm,
+    InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm,
+    CompleteFeedForm, ChangePasswordForm
+)
+from utils import (
+    get_sow_service_records, parse_range, update_dashboard,
+    get_total_counts, generate_invoice_pdf, get_litter_stage
 )
 
-# Load configuration from environment variables
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SECRET_KEY'] = 'supercalifragilisticexpialidocious' 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")  # Set in .env
-app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")  # Set in .env
-# app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+# =========================
+# Logging & Environment Setup
+# =========================
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
-# Make `enumerate` available in Jinja2 templates
+load_dotenv()   # Load environment variables from .env
+
+
+# =========================
+# Flask Application Setup
+# =========================
+app = Flask(__name__)
+
+# Secret key (prefer ENV value in production)
+app.secret_key = os.getenv("SECRET_KEY", "dev-secret")
+
+# Database & Mail Configuration
+app.config.update(
+    SQLALCHEMY_DATABASE_URI="sqlite:///database.db",
+    SECRET_KEY=os.getenv("SECRET_KEY", "supercalifragilisticexpialidocious"),
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_PORT=587,
+    MAIL_USE_TLS=True,
+    MAIL_USE_SSL=False,
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
+)
+
+# Make enumerate usable inside Jinja templates
 app.jinja_env.globals.update(enumerate=enumerate)
 
-# Initialize database, bcrypt, and login manager
+
+# =========================
+# SQLite Foreign Key Support
+# =========================
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, _):
+    """Ensure SQLite enforces foreign-key constraints."""
+    if "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
+        cursor = dbapi_connection.cursor()
+        cursor.execute("PRAGMA foreign_keys = ON")
+        cursor.close()
+
+
+# =========================
+# Extension Initialization
+# =========================
 db.init_app(app)
-mail = Mail(app)  # Initialize Flask-Mail
-migrate = Migrate(app, db)
 bcrypt = Bcrypt(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = "signin"  # Redirect here if unauthorized access is attempted
+mail = Mail(app)
+migrate = Migrate(app, db)
+
+# Flask-Admin (create instance first, then attach)
+admin = Admin(app, name="Pig Management Admin")
+
+# Login Manager
+login_manager = LoginManager(app)
+login_manager.login_view = "signin"   # Redirect when auth is required
+
+
+# =========================
+# OAuth Configuration (Google)
+# =========================
+oauth = OAuth(app)
+google = oauth.register(
+    name="google",
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    access_token_url="https://oauth2.googleapis.com/token",
+    authorize_url="https://accounts.google.com/o/oauth2/auth",
+    api_base_url="https://www.googleapis.com/oauth2/v1/",
+    userinfo_endpoint="https://openidconnect.googleapis.com/userinfo",
+    client_kwargs={"scope": "openid email profile"},
+    server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
+)
+
+
+# =========================
+# Dash Application (Internal Dashboard)
+# =========================
+dash_app = dash.Dash(
+    __name__,
+    server=app,
+    url_base_pathname="/dashboard_internal/",
+    external_stylesheets=[dbc.themes.BOOTSTRAP, "/static/css/dashboard.css"],
+)
 
 # Load user for login management
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
-from dash import html, dcc, dash_table
-import dash
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import pandas as pd
-from datetime import datetime, timedelta
-from sqlalchemy import func, extract
 
 # Dashboard Layout with Charts
 dash_app.layout = html.Div([
