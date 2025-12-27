@@ -7,7 +7,8 @@ import uuid
 import logging
 import secrets
 import traceback
-from datetime import datetime, timedelta, timezone
+import datetime as dt
+from datetime import datetime, timedelta, timezone, date
 
 # =========================
 # Third-Party Libraries
@@ -23,7 +24,7 @@ from flask_login import (
     logout_user, current_user
 )
 from flask_admin import Admin
-from flask_mail import Mail
+from flask_mail import Mail, Message
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from sqlalchemy import func, event, extract
@@ -58,6 +59,9 @@ from forms import (
 from utils import (
     get_sow_service_records, parse_range, update_dashboard,
     get_total_counts, generate_invoice_pdf, get_litter_stage
+)
+from extensions import (
+    db, admin, login_manager, migrate
 )
 
 # =========================
@@ -110,18 +114,37 @@ def set_sqlite_pragma(dbapi_connection, _):
 # =========================
 # Extension Initialization
 # =========================
-db.init_app(app)
 bcrypt = Bcrypt(app)
 mail = Mail(app)
-migrate = Migrate(app, db)
 
-# Flask-Admin (create instance first, then attach)
-admin = Admin(app, name="Pig Management Admin")
+db.init_app(app)
+admin.init_app(app, index_view=None)  # Initialize first
+admin.template_mode = 'bootstrap4'     # ✅ Set template_mode AFTER init
+login_manager.init_app(app)
+migrate.init_app(app, db)
 
 # Login Manager
-login_manager = LoginManager(app)
 login_manager.login_view = "signin"   # Redirect when auth is required
 
+# =========================
+# Import Models AFTER db.init_app()
+# =========================
+from models import User, Boars, Sows, ServiceRecords, Invoice, Expense, Litter
+
+
+# =========================
+# Setup Admin Views AFTER models are imported
+# =========================
+from admin_setup import setup_admin_views
+setup_admin_views()
+
+
+# =========================
+# User Loader for Flask-Login
+# =========================
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # =========================
 # OAuth Configuration (Google)
@@ -306,7 +329,7 @@ dash_app.layout = html.Div([
                             {'label': 'This Year', 'value': '365'},
                             {'label': 'All Time', 'value': 'all'},
                         ],
-                        value='90',
+                        value='all',
                         clearable=False,
                         className='period-dropdown'
                     ),
@@ -388,7 +411,10 @@ dash_app.layout = html.Div([
                             id='expense-breakdown-chart',
                             config={
                                 'displayModeBar': False,
-                                'responsive': True
+                                'responsive': True,
+                                'scrollZoom': False,
+                                'doubleClick': False,
+                                'staticPlot': True
                             },
                             className='pie-chart'
                         ),
@@ -422,7 +448,10 @@ dash_app.layout = html.Div([
                             id='revenue-expenses-chart',
                             config={
                                 'displayModeBar': False,
-                                'responsive': True
+                                'responsive': True,
+                                'scrollZoom': False,
+                                'doubleClick': False,
+                                'staticPlot': True
                             },
                             className='main-chart'
                         ),
@@ -1268,7 +1297,9 @@ def invoice_Generator():
     form = InvoiceGeneratorForm()
     if form.validate_on_submit():
         company_name = form.company.data
+        invoice_date = form.invoice_date.data if form.invoice_date.data else date.today()
         weights = [float(w.strip()) for w in form.weights.data.split(',')if w.strip() != '']
+
 
         #Ensure there are weights provided
         if not weights:
@@ -1321,7 +1352,8 @@ def invoice_Generator():
                                total_pigs=total_pigs,
                                total_cost=f"K{total_cost:,.2f}",
                                total_weight=f"{total_weight:,.2f}Kg",
-                               average_weight = f"{average_weight:,.2f}Kg"
+                               average_weight = f"{average_weight:,.2f}Kg",
+                               invoice_date = invoice_date.strftime('%B %d, %Y')
                                )
 
     return render_template('invoiceGenerator.html', form=form)
@@ -1335,6 +1367,16 @@ def download_invoice():
     average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
     total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
     total_pigs = int(request.form.get("total_pigs"))
+
+     # Get invoice_date from form and parse it
+    invoice_date_str = request.form.get("invoice_date")
+    try:
+        # Parse the formatted date string (e.g., "January 15, 2025")
+        invoice_date = datetime.strptime(invoice_date_str, '%B %d, %Y').date()
+    except (ValueError, TypeError):
+        # Fallback to today's date if parsing fails
+        invoice_date = date.today()
+
     #generate unique invoice number
     invoice_number = f"INV-{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
@@ -1343,7 +1385,7 @@ def download_invoice():
         invoice_number=invoice_number,
         num_of_pigs=total_pigs,
         company_name=company_name,
-        date=datetime.now().date(),
+        date=invoice_date,
         total_weight=total_weight,
         average_weight=average_weight,
         total_price=total_cost,

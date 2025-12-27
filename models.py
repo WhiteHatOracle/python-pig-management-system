@@ -1,9 +1,8 @@
 from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-
-# Initialize the database
-db = SQLAlchemy()
+from flask_admin.contrib.sqla import ModelView
+from extensions import db, admin
 
 # Define User model
 class User(db.Model, UserMixin):

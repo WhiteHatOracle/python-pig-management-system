@@ -532,9 +532,9 @@
     font-size: 0.875rem;
   }
 
-  .invoice-tab span {
+  /* .invoice-tab span {
     display: none;
-  }
+  } */
 
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);

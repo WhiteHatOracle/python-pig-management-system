@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 from models import Sows, Boars, User
 from wtforms.fields import DateField
 from flask_login import current_user
+from datetime import date
 
 # Define Sow Management Form
 class SowForm(FlaskForm):
@@ -86,16 +87,25 @@ class InvoiceGeneratorForm(FlaskForm):
     thirdBandRange  = StringField(validators=[InputRequired(), Length(min=4, max=10)])
     thirdBandPrice  = DecimalField(validators=[InputRequired()])
     weights         = TextAreaField(validators=[InputRequired()])
+
+    # ADD THIS NEW FIELD
+    invoice_date = DateField(
+        'Invoice Date',
+        format='%Y-%m-%d',
+        default=date.today,
+        validators=[DataRequired()]
+    )
+
     submit          = SubmitField("Generate Invoice")
 
 class ExpenseForm(FlaskForm):
-    date = DateField(format='%d-%m-%Y',validators=[DataRequired()])
-    amount = FloatField(validators=[InputRequired()])
-    category = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment'),('transport', 'Transport'),('utilities','Utilities')], validators=[InputRequired()])
-    invoice_number = StringField(validators=[InputRequired()])
-    vendor = StringField(validators=[InputRequired()])
-    description = StringField()
-    submit = SubmitField("Add Expense")
+    date            = DateField(format='%d-%m-%Y',validators=[DataRequired()])
+    amount          = FloatField(validators=[InputRequired()])
+    category        = SelectField(choices=[('feed', 'Feed'), ('vet', 'Veterinary'), ('labor', 'Labor'), ('equipment', 'Equipment'),('transport', 'Transport'),('utilities','Utilities')], validators=[InputRequired()])
+    invoice_number  = StringField(validators=[InputRequired()])
+    vendor          = StringField(validators=[InputRequired()])
+    description     = StringField()
+    submit          = SubmitField("Add Expense")
 
 # litter management form
 class LitterForm(FlaskForm):

@@ -758,6 +758,8 @@ body,
   background: var(--bg-lighter);
   border-bottom: 1px solid var(--border-light);
   flex-shrink: 0;
+
+  display: none;
 }
 
 .quick-actions-header {

@@ -321,6 +321,7 @@ input[type="text"]::placeholder {
   .boar-table {
     margin: 16px 0;
     font-size: 0.875rem;
+    padding-bottom: 70px;
   }
 
   .sow-table thead tr th,
