@@ -220,6 +220,7 @@
 /* Number input styling */
 .form-input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .form-input[type="number"]::-webkit-outer-spin-button,
@@ -860,5 +861,6 @@
     background: #f5f5f5 !important;
     color: #000 !important;
     -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 }

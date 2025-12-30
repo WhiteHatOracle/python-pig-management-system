@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 from flask import (
     Flask, render_template, url_for, redirect, flash,
     make_response, request, jsonify, session, abort,
-    get_flashed_messages
+    get_flashed_messages, Blueprint
 )
 from flask_login import (
     LoginManager, login_user, login_required,
@@ -48,7 +48,9 @@ import pandas as pd
 # =========================
 from models import (
     db, Litter, User, Boars, Sows,
-    ServiceRecords, Invoice, Expense
+    ServiceRecords, Invoice, Expense,
+    LitterManagement, VaccinationRecord, 
+    WeightRecord, MortalityRecord, SaleRecord
 )
 from forms import (
     ResetPasswordForm, ForgotPasswordForm, LitterForm, SowForm,
@@ -1657,12 +1659,53 @@ def sow_service_records(sow_id):
 
     return render_template('sow_service_records.html', sow=sow, form=form)
 
+from flask import render_template, request, redirect, url_for, flash, abort
+from flask_login import login_required, current_user
+from datetime import datetime, timedelta, date
+from models import db, Sows, ServiceRecords, Litter, LitterManagement, VaccinationRecord, WeightRecord, MortalityRecord, SaleRecord
+from forms import LitterForm  # Your existing form
+
+
+# Helper function to parse dates from form
+def parse_date(date_string):
+    """Parse date string in dd-mm-YYYY format"""
+    if date_string:
+        try:
+            return datetime.strptime(date_string, '%d-%m-%Y').date()
+        except ValueError:
+            return None
+    return None
+
+
+# Helper function to determine litter stage
+def get_litter_stage(farrow_date):
+    """Determine the growth stage based on age"""
+    if not farrow_date:
+        return 'unknown'
+    
+    age_days = (date.today() - farrow_date).days
+    
+    if age_days < 0:
+        return 'unknown'
+    elif age_days <= 21:
+        return 'preweaning'
+    elif age_days <= 56:
+        return 'weaner'
+    elif age_days <= 98:
+        return 'grower'
+    else:
+        return 'finisher'
+
+
+# ==================== MAIN LITTER RECORDS ROUTE ====================
+
 @app.route('/litter-records/<int:service_id>', methods=['GET', 'POST'])
 @login_required
 def litter_records(service_id):
     form = LitterForm()
     serviceRecord = ServiceRecords.query.get_or_404(service_id)
 
+    # Authorization check
     if serviceRecord.sow.user_id != current_user.id:
         abort(403)
 
@@ -1670,12 +1713,35 @@ def litter_records(service_id):
     existing_litter = serviceRecord.litter
     sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
 
-    # Add stage if there's a litter
+    # Prepare litters list with stage
     litters = [existing_litter] if existing_litter else []
     for litter in litters:
         if litter:
             litter.stage = get_litter_stage(litter.farrowDate)
 
+    # Get related records if litter exists
+    management_records = []
+    vaccination_records = []
+    weight_records = []
+    mortality_records = []
+    sale_records = []
+    upcoming_vaccinations = []
+    total_revenue = 0
+
+    if existing_litter:
+        management_records = existing_litter.management_records
+        vaccination_records = sorted(existing_litter.vaccination_records, key=lambda x: x.date, reverse=True)
+        weight_records = sorted(existing_litter.weight_records, key=lambda x: x.date, reverse=True)
+        mortality_records = sorted(existing_litter.mortality_records, key=lambda x: x.date, reverse=True)
+        sale_records = sorted(existing_litter.sale_records, key=lambda x: x.date, reverse=True)
+        
+        # Get upcoming vaccinations
+        upcoming_vaccinations = [v for v in vaccination_records if v.next_due_date and v.next_due_date >= date.today()]
+        
+        # Calculate total revenue
+        total_revenue = sum(s.total_amount or 0 for s in sale_records)
+
+    # Handle POST for adding new litter
     if form.validate_on_submit():
         if existing_litter:
             flash("This service record already has an associated litter. You can't add another.", "error")
@@ -1685,45 +1751,49 @@ def litter_records(service_id):
         totalBorn = form.totalBorn.data
         bornAlive = form.bornAlive.data
         stillBorn = form.stillBorn.data
+        mummified = form.mummified.data if hasattr(form, 'mummified') else 0
 
+        # Parse weights
         try:
             weights = [float(w.strip()) for w in form.weights.data.split(',') if w.strip()]
         except ValueError:
             flash('Please enter valid numeric weight values separated by commas.', 'error')
             return redirect(url_for('litter_records', service_id=service_id))
 
+        # Validate weights count
         if not weights or len(weights) != bornAlive:
             flash('Number of weights must match the number of piglets born alive!', 'error')
             return redirect(url_for('litter_records', service_id=service_id))
         
+        # Validate totals
         if stillBorn + bornAlive != totalBorn:
-            flash('The total  number of piglets born are not equal to the still born and born alive')
+            flash('The total number of piglets born must equal still born plus born alive!', 'error')
             return redirect(url_for('litter_records', service_id=service_id))
-            
-
 
         averageWeight = round(sum(weights) / len(weights), 1)
 
-        # Date calculations
+        # Calculate procedure dates
         iron_injection_date = farrowDate + timedelta(days=3)
-        tail_dorking_date = farrowDate + timedelta(days=3)
+        tail_docking_date = farrowDate + timedelta(days=3)
         castration_date = farrowDate + timedelta(days=3)
         teeth_clipping_date = farrowDate + timedelta(days=3)
         wean_date = farrowDate + timedelta(days=28)
 
         new_litter = Litter(
-            service_record_id=serviceRecord.id,
+            sow_id=sow_id,
+            service_id=serviceRecord.id,
             farrowDate=farrowDate,
             totalBorn=totalBorn,
             bornAlive=bornAlive,
             stillBorn=stillBorn,
+            mummified=mummified,
             averageWeight=averageWeight,
+            weights=form.weights.data,  # Store original weights string
             iron_injection_date=iron_injection_date,
-            tail_dorking_date=tail_dorking_date,
+            tail_docking_date=tail_docking_date,
             castration_date=castration_date,
             wean_date=wean_date,
-            teeth_clipping_date=teeth_clipping_date,
-            sow_id=sow_id
+            teeth_clipping_date=teeth_clipping_date
         )
 
         try:
@@ -1735,22 +1805,364 @@ def litter_records(service_id):
             db.session.rollback()
             flash(f'An error occurred while saving the litter: {str(e)}', 'error')
 
-    return render_template('litterRecord.html', form=form, sow=sow ,serviceRecord=serviceRecord, litters=litters, sow_id=sow_id, existing_litter=existing_litter, service_id=service_id)
+    return render_template(
+        'litterRecord.html',
+        form=form,
+        sow=sow,
+        serviceRecord=serviceRecord,
+        litters=litters,
+        sow_id=sow_id,
+        existing_litter=existing_litter,
+        service_id=service_id,
+        # New data for tabs
+        management_records=management_records,
+        vaccination_records=vaccination_records,
+        weight_records=weight_records,
+        mortality_records=mortality_records,
+        sale_records=sale_records,
+        upcoming_vaccinations=upcoming_vaccinations,
+        total_revenue=total_revenue
+    )
 
-@app.route('/delete-litter/<int:litter_id>', methods=['POST'])
+
+# ==================== LITTER MANAGEMENT ROUTES ====================
+
+@app.route('/litter/<int:litter_id>/management', methods=['POST'])
+@login_required
+def litter_management(litter_id):
+    litter = Litter.query.get_or_404(litter_id)
+    
+    # Authorization check
+    if litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    record = LitterManagement(
+        litter_id=litter_id,
+        date=parse_date(request.form.get('management_date')),
+        management_type=request.form.get('management_type'),
+        other_litter_id=request.form.get('other_litter_id'),
+        piglets_moved=request.form.get('piglets_moved', type=int),
+        notes=request.form.get('management_notes')
+    )
+    
+    try:
+        db.session.add(record)
+        db.session.commit()
+        flash('Management record added successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding management record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=litter.service_id))
+
+
+# ==================== VACCINATION ROUTES ====================
+
+@app.route('/litter/<int:litter_id>/vaccination', methods=['POST'])
+@login_required
+def add_vaccination(litter_id):
+    litter = Litter.query.get_or_404(litter_id)
+    
+    # Authorization check
+    if litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    vaccine_type = request.form.get('vaccine_type')
+    if vaccine_type == 'other':
+        vaccine_type = request.form.get('other_vaccine_name')
+    
+    record = VaccinationRecord(
+        litter_id=litter_id,
+        date=parse_date(request.form.get('vaccination_date')),
+        vaccine_type=vaccine_type,
+        piglets_vaccinated=request.form.get('piglets_vaccinated', type=int),
+        dosage=request.form.get('dosage', type=float),
+        next_due_date=parse_date(request.form.get('next_due_date')),
+        administered_by=request.form.get('administered_by'),
+        batch_number=request.form.get('batch_number'),
+        notes=request.form.get('vaccination_notes')
+    )
+    
+    try:
+        db.session.add(record)
+        db.session.commit()
+        flash('Vaccination record added successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding vaccination record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=litter.service_id))
+
+
+# ==================== WEIGHT RECORD ROUTES ====================
+
+@app.route('/litter/<int:litter_id>/weight', methods=['POST'])
+@login_required
+def add_weight_record(litter_id):
+    litter = Litter.query.get_or_404(litter_id)
+    
+    # Authorization check
+    if litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    weight_type = request.form.get('weight_type')
+    individual_weights = request.form.get('individual_weights', '')
+    
+    # Calculate average weight based on type
+    if weight_type == 'individual' and individual_weights:
+        try:
+            weights = [float(w.strip()) for w in individual_weights.split(',') if w.strip()]
+            average_weight = sum(weights) / len(weights) if weights else 0
+            piglets_weighed = len(weights)
+        except ValueError:
+            flash('Please enter valid numeric weight values.', 'error')
+            return redirect(url_for('litter_records', service_id=litter.service_id))
+    else:
+        average_weight = request.form.get('average_weight', type=float)
+        piglets_weighed = request.form.get('piglets_weighed', type=int)
+    
+    record = WeightRecord(
+        litter_id=litter_id,
+        date=parse_date(request.form.get('weight_date')),
+        weight_type=weight_type,
+        piglets_weighed=piglets_weighed,
+        average_weight=average_weight,
+        individual_weights=individual_weights if weight_type == 'individual' else None,
+        total_weight=request.form.get('total_weight', type=float),
+        notes=request.form.get('weight_notes')
+    )
+    
+    try:
+        db.session.add(record)
+        db.session.commit()
+        flash('Weight record added successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding weight record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=litter.service_id))
+
+
+# ==================== MORTALITY ROUTES ====================
+
+@app.route('/litter/<int:litter_id>/mortality', methods=['POST'])
+@login_required
+def add_mortality(litter_id):
+    litter = Litter.query.get_or_404(litter_id)
+    
+    # Authorization check
+    if litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    cause = request.form.get('cause_of_death')
+    if cause == 'other':
+        cause = request.form.get('other_cause', 'other')
+    
+    number_died = request.form.get('number_died', type=int)
+    
+    # Validate: can't record more deaths than currently alive
+    if number_died and number_died > litter.current_alive:
+        flash(f'Cannot record {number_died} deaths. Only {litter.current_alive} piglets currently alive.', 'error')
+        return redirect(url_for('litter_records', service_id=litter.service_id))
+    
+    record = MortalityRecord(
+        litter_id=litter_id,
+        date=parse_date(request.form.get('mortality_date')),
+        number_died=number_died,
+        cause=cause,
+        age_at_death=request.form.get('age_at_death', type=int),
+        weight_at_death=request.form.get('weight_at_death', type=float),
+        notes=request.form.get('mortality_notes')
+    )
+    
+    try:
+        db.session.add(record)
+        db.session.commit()
+        flash('Mortality record added.', 'warning')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding mortality record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=litter.service_id))
+
+
+# ==================== SALE ROUTES ====================
+
+@app.route('/litter/<int:litter_id>/sale', methods=['POST'])
+@login_required
+def add_sale(litter_id):
+    litter = Litter.query.get_or_404(litter_id)
+    
+    # Authorization check
+    if litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    number_sold = request.form.get('number_sold', type=int)
+    
+    # Validate: can't sell more than currently alive
+    if number_sold and number_sold > litter.current_alive:
+        flash(f'Cannot sell {number_sold} pigs. Only {litter.current_alive} currently available.', 'error')
+        return redirect(url_for('litter_records', service_id=litter.service_id))
+    
+    record = SaleRecord(
+        litter_id=litter_id,
+        date=parse_date(request.form.get('sale_date')),
+        number_sold=number_sold,
+        average_weight=request.form.get('average_sale_weight', type=float),
+        total_weight=request.form.get('total_weight_sold', type=float),
+        price_per_kg=request.form.get('price_per_kg', type=float),
+        total_amount=request.form.get('total_sale_amount', type=float),
+        buyer_name=request.form.get('buyer_name'),
+        buyer_contact=request.form.get('buyer_contact'),
+        sale_type=request.form.get('sale_type'),
+        notes=request.form.get('sale_notes')
+    )
+    
+    try:
+        db.session.add(record)
+        db.session.commit()
+        flash('Sale record added successfully!', 'success')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error adding sale record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=litter.service_id))
+
+
+# ==================== DELETE ROUTES ====================
+
+@app.route('/management/<int:record_id>/delete', methods=['POST'])
+@login_required
+def delete_management_record(record_id):
+    record = LitterManagement.query.get_or_404(record_id)
+    
+    # Authorization check
+    if record.litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    service_id = record.litter.service_id
+    
+    try:
+        db.session.delete(record)
+        db.session.commit()
+        flash('Management record deleted.', 'info')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=service_id))
+
+
+@app.route('/vaccination/<int:record_id>/delete', methods=['POST'])
+@login_required
+def delete_vaccination(record_id):
+    record = VaccinationRecord.query.get_or_404(record_id)
+    
+    # Authorization check
+    if record.litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    service_id = record.litter.service_id
+    
+    try:
+        db.session.delete(record)
+        db.session.commit()
+        flash('Vaccination record deleted.', 'info')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=service_id))
+
+
+@app.route('/weight/<int:record_id>/delete', methods=['POST'])
+@login_required
+def delete_weight_record(record_id):
+    record = WeightRecord.query.get_or_404(record_id)
+    
+    # Authorization check
+    if record.litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    service_id = record.litter.service_id
+    
+    try:
+        db.session.delete(record)
+        db.session.commit()
+        flash('Weight record deleted.', 'info')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=service_id))
+
+
+@app.route('/mortality/<int:record_id>/delete', methods=['POST'])
+@login_required
+def delete_mortality(record_id):
+    record = MortalityRecord.query.get_or_404(record_id)
+    
+    # Authorization check
+    if record.litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    service_id = record.litter.service_id
+    
+    try:
+        db.session.delete(record)
+        db.session.commit()
+        flash('Mortality record deleted.', 'info')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=service_id))
+
+
+@app.route('/sale/<int:record_id>/delete', methods=['POST'])
+@login_required
+def delete_sale(record_id):
+    record = SaleRecord.query.get_or_404(record_id)
+    
+    # Authorization check
+    if record.litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    service_id = record.litter.service_id
+    
+    try:
+        db.session.delete(record)
+        db.session.commit()
+        flash('Sale record deleted.', 'info')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting record: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=service_id))
+
+
+# ==================== LITTER DELETE ROUTE ====================
+
+@app.route('/litter/<int:litter_id>/delete', methods=['POST'])
 @login_required
 def delete_litter(litter_id):
     litter = Litter.query.get_or_404(litter_id)
-    # Fetch the litter and join with the service record to check ownership
-    service_id = litter.service_record_id
-
-    # Optional: Add a confirmation check here if needed
-    db.session.delete(litter)
-    db.session.commit()
-    flash('Litter record deleted successfully!', 'success')
     
-    # Redirect back to the litter records page or wherever you want
-    return redirect(url_for('litter_records', service_id=service_id))
+    # Authorization check
+    if litter.sow.user_id != current_user.id:
+        abort(403)
+    
+    service_id = litter.service_id
+    
+    try:
+        db.session.delete(litter)
+        db.session.commit()
+        flash('Litter record deleted.', 'info')
+    except Exception as e:
+        db.session.rollback()
+        flash(f'Error deleting litter: {str(e)}', 'error')
+    
+    return redirect(url_for('litter_records', service_id=service_id)) 
 
 @app.route('/delete-service-record/<int:record_id>', methods=['POST'])
 @login_required

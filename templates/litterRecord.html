@@ -5,12 +5,14 @@
     <!-- flatpickr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- styling links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/litters.css') }}">
     <!-- javascript links -->
-    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/litters.js')}}" defer></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
 {% endblock %}  
 
@@ -51,48 +53,35 @@
         </div>
     </div>
 
-    <!-- Add Litter Form -->
-    {% if not existing_litter %}
-    <div class="form-card">
-        <div class="form-card-header">
-            <h2>Add Litter Record</h2>
+    <!-- Litter Summary Card (shown only if litter exists) -->
+    {% if existing_litter %}
+    <div class="litter-summary-card">
+        <div class="summary-header">
+            <h3>Current Litter Status</h3>
+            <span class="stage-badge stage-{{ existing_litter.stage }}">{{ existing_litter.stage|capitalize }}</span>
         </div>
-        <form class="litter-form" method="POST" action="{{ url_for('litter_records', service_id=serviceRecord.id) }}">
-            {{ form.hidden_tag() }}
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="farrowDate">Farrow Date</label>
-                    {{ form.farrowDate(class="form-input", type="date", id="date") }}
-                </div>
-                <div class="form-group">
-                    <label for="totalBorn">Total Born</label>
-                    {{ form.totalBorn(class="form-input", autocomplete="off", placeholder="Enter total born") }}
-                </div>
-                <div class="form-group">
-                    <label for="bornAlive">Born Alive</label>
-                    {{ form.bornAlive(class="form-input", autocomplete="off", placeholder="Enter born alive") }}
-                </div>
-                <div class="form-group">
-                    <label for="stillBorn">Still Born</label>
-                    {{ form.stillBorn(class="form-input", autocomplete="off", placeholder="Enter still born") }}
-                </div>
-                <div class="form-group form-group-full">
-                    <label for="weights">Weights (comma separated)</label>
-                    {{ form.weights(class="form-input form-textarea", autocomplete="off", placeholder="e.g., 1.2, 1.4, 1.3, 1.5") }}
-                </div>
+        <div class="summary-stats">
+            <div class="stat-item">
+                <span class="stat-value">{{ existing_litter.bornAlive }}</span>
+                <span class="stat-label">Born Alive</span>
             </div>
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
-                    <span>Add Litter Record</span>
-                </button>
+            <div class="stat-item">
+                <span class="stat-value">{{ existing_litter.current_alive }}</span>
+                <span class="stat-label">Currently Alive</span>
             </div>
-        </form>
-    </div>
-    {% else %}
-    <div class="info-banner">
-        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-280q17 0 28.5-11.5T520-320v-160q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480v160q0 17 11.5 28.5T480-280Zm0-320q17 0 28.5-11.5T520-640q0-17-11.5-28.5T480-680q-17 0-28.5 11.5T440-640q0 17 11.5 28.5T480-600Zm0 520q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
-        <span>A litter record already exists for this service.</span>
+            <div class="stat-item">
+                <span class="stat-value">{{ existing_litter.total_mortalities }}</span>
+                <span class="stat-label">Mortalities</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">{{ existing_litter.total_sold }}</span>
+                <span class="stat-label">Sold</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value">{{ existing_litter.latest_avg_weight or existing_litter.averageWeight }} kg</span>
+                <span class="stat-label">Avg Weight</span>
+            </div>
+        </div>
     </div>
     {% endif %}
 
@@ -107,100 +96,1108 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Stage Legend -->
-    <div class="legend-card">
-        <div class="legend-title">Growth Stages</div>
-        <div class="legend-items">
-            <div class="legend-item">
-                <span class="legend-dot stage-preweaning"></span>
-                <span>Pre-weaning</span>
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+        <button class="tab-btn active" data-tab="birth">
+            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+            <span>Litter</span>
+        </button>
+        <button class="tab-btn" data-tab="management" {% if not existing_litter %}disabled{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Z"/></svg>
+            <span>Management</span>
+        </button>
+        <button class="tab-btn" data-tab="vaccinations" {% if not existing_litter %}disabled{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m540-520 200-200v120h80v-280H540v80h120L460-600l80 80Z"/></svg>
+            <span>Vaccinations</span>
+        </button>
+        <button class="tab-btn" data-tab="weights" {% if not existing_litter %}disabled{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80Z"/></svg>
+            <span>Weights</span>
+        </button>
+        <button class="tab-btn" data-tab="mortality" {% if not existing_litter %}disabled{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+            <span>Mortality</span>
+        </button>
+        <button class="tab-btn" data-tab="sales" {% if not existing_litter %}disabled{% endif %}>
+            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Z"/></svg>
+            <span>Sales</span>
+        </button>
+    </div>
+
+    <!-- ==================== BIRTH TAB ==================== -->
+    <div class="tab-content active" id="birth-tab">
+        <!-- Add Litter Form -->
+        {% if not existing_litter %}
+        <div class="form-card">
+            <div class="form-card-header">
+                <h2>Add Litter Record</h2>
             </div>
-            <div class="legend-item">
-                <span class="legend-dot stage-weaner"></span>
-                <span>Weaners</span>
+            <form class="litter-form" method="POST" action="{{ url_for('litter_records', service_id=serviceRecord.id) }}">
+                {{ form.hidden_tag() }}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="farrowDate">Farrow Date</label>
+                        {{ form.farrowDate(class="form-input date-picker", id="farrowDate") }}
+                    </div>
+                    <div class="form-group">
+                        <label for="totalBorn">Total Born</label>
+                        {{ form.totalBorn(class="form-input", autocomplete="off", placeholder="Enter total born") }}
+                    </div>
+                    <div class="form-group">
+                        <label for="bornAlive">Born Alive</label>
+                        {{ form.bornAlive(class="form-input", autocomplete="off", placeholder="Enter born alive") }}
+                    </div>
+                    <div class="form-group">
+                        <label for="stillBorn">Still Born</label>
+                        {{ form.stillBorn(class="form-input", autocomplete="off", placeholder="Enter still born") }}
+                    </div>
+                    <div class="form-group">
+                        <label for="mummified">Mummified</label>
+                        {{ form.mummified(class="form-input", autocomplete="off", placeholder="Enter mummified count") }}
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="weights">Individual litter Weights (comma separated, in kg)</label>
+                        {{ form.weights(class="form-input form-textarea", autocomplete="off", placeholder="e.g., 1.2, 1.4, 1.3, 1.5, 1.1, 1.6") }}
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        <span>Add Litter Record</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% else %}
+        <!-- Birth Record Display -->
+        <div class="record-display-card">
+            <div class="record-display-header">
+                <h3>Birth Record Details</h3>
+                <span class="record-date">{{ existing_litter.farrowDate.strftime('%d-%b-%Y') }}</span>
             </div>
-            <div class="legend-item">
-                <span class="legend-dot stage-grower"></span>
-                <span>Growers</span>
+            <div class="record-display-grid">
+                <div class="display-item">
+                    <span class="display-label">Total Born</span>
+                    <span class="display-value">{{ existing_litter.totalBorn }}</span>
+                </div>
+                <div class="display-item">
+                    <span class="display-label">Born Alive</span>
+                    <span class="display-value">{{ existing_litter.bornAlive }}</span>
+                </div>
+                <div class="display-item">
+                    <span class="display-label">Still Born</span>
+                    <span class="display-value">{{ existing_litter.stillBorn }}</span>
+                </div>
+                <div class="display-item">
+                    <span class="display-label">Mummified</span>
+                    <span class="display-value">{{ existing_litter.mummified or 0 }}</span>
+                </div>
+                <div class="display-item">
+                    <span class="display-label">Average Birth Weight</span>
+                    <span class="display-value">{{ existing_litter.averageWeight }} kg</span>
+                </div>
             </div>
-            <div class="legend-item">
-                <span class="legend-dot stage-finisher"></span>
-                <span>Finishers</span>
+        </div>
+        {% endif %}
+
+        <!-- Stage Legend -->
+        <div class="legend-card">
+            <div class="legend-title">Growth Stages</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="legend-dot stage-preweaning"></span>
+                    <span>Pre-weaning (0-21 days)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot stage-weaner"></span>
+                    <span>Weaners (21-56 days)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot stage-grower"></span>
+                    <span>Growers (56-98 days)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot stage-finisher"></span>
+                    <span>Finishers (98+ days)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Litter Records Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>All Litter Records</h2>
+                <span class="record-count">{{ litters|length }} record(s)</span>
+            </div>
+            
+            <div class="table-wrapper">
+                <table class="litter-table">
+                    <thead>
+                        <tr>
+                            <th>Farrow</th>
+                            <th>Total</th>
+                            <th>Alive</th>
+                            <th>Still</th>
+                            <th>Avg Wt</th>
+                            <th>Iron Inj.</th>
+                            <th>Teeth Clip</th>
+                            <th>Tail Dock</th>
+                            <th>Castration</th>
+                            <th>Weaning</th>
+                            <th class="col-actions">Action</th>
+                        </tr>
+                    </thead>
+                    {% if litters %}
+                    <tbody>
+                        {% for litter in litters %}
+                        <tr class="stage-row stage-{{ litter.stage }}">
+                            <td data-label="Farrow Date">{{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
+                            <td data-label="Total Born">{{ litter.totalBorn }}</td>
+                            <td data-label="Born Alive">{{ litter.bornAlive }}</td>
+                            <td data-label="Still Born">{{ litter.stillBorn }}</td>
+                            <td data-label="Avg Weight">{{ litter.averageWeight }} kg</td>
+                            <td data-label="Iron Injection">{{ litter.iron_injection_date.strftime("%d-%b-%Y") if litter.iron_injection_date else 'Pending' }}</td>
+                            <td data-label="Teeth Clipping">{{ litter.teeth_clipping_date.strftime("%d-%b-%Y") if litter.teeth_clipping_date else 'Pending' }}</td>
+                            <td data-label="Tail Docking">{{ litter.tail_docking_date.strftime("%d-%b-%Y") if litter.tail_docking_date else 'Pending' }}</td>
+                            <td data-label="Castration">{{ litter.castration_date.strftime("%d-%b-%Y") if litter.castration_date else 'Pending' }}</td>
+                            <td data-label="Weaning" class="weaning-date">{{ litter.wean_date.strftime('%d-%b-%Y') if litter.wean_date else 'Pending' }}</td>
+                            <td class="col-actions" data-label="Action">
+                                <form action="{{ url_for('delete_litter', litter_id=litter.id) }}" method="POST" onsubmit="return confirmDelete();">
+                                    <button type="submit" class="action-btn delete-btn" title="Delete Record">
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/></svg>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    {% else %}
+                    <tbody>
+                        <tr class="empty-row">
+                            <td colspan="11">
+                                <div class="empty-state">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Z"/></svg>
+                                    <p>No litter records found</p>
+                                    <span>Add a birth record using the form above</span>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endif %}
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- Litter Records Table -->
-    <div class="table-card">
-        <div class="table-header">
-            <h2>Litter History</h2>
-            <span class="record-count">{{ litters|length }} record(s)</span>
+    <!-- ==================== MANAGEMENT TAB ==================== -->
+    <div class="tab-content" id="management-tab">
+        <div class="form-card">
+            <div class="form-card-header">
+                <h2>Litter Management</h2>
+                <p class="form-subtitle">Record cross-fostering or litter combination details</p>
+            </div>
+            <form class="management-form" method="POST" action="{{ url_for('litter_management', litter_id=existing_litter.id if existing_litter else 0) }}">
+                {{ management_form.hidden_tag() if management_form }}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="management_type">Management Type</label>
+                        <select name="management_type" id="management_type" class="form-input" required>
+                            <option value="">Select type...</option>
+                            <option value="single">Keep as Single Litter</option>
+                            <option value="cross_foster_in">Cross-Foster In (Received piglets)</option>
+                            <option value="cross_foster_out">Cross-Foster Out (Gave piglets)</option>
+                            <option value="combined">Combined with Another Litter</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="management_date">Date</label>
+                        <input type="text" name="management_date" id="management_date" class="form-input date-picker" required>
+                    </div>
+                    <div class="form-group" id="other-litter-group" style="display: none;">
+                        <label for="other_litter_id">Other Litter/Sow ID</label>
+                        <input type="text" name="other_litter_id" id="other_litter_id" class="form-input" placeholder="Enter sow ID">
+                    </div>
+                    <div class="form-group" id="piglets-moved-group" style="display: none;">
+                        <label for="piglets_moved">Number of Piglets</label>
+                        <input type="number" name="piglets_moved" id="piglets_moved" class="form-input" min="1" placeholder="Enter count">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="management_notes">Notes</label>
+                        <textarea name="management_notes" id="management_notes" class="form-input form-textarea" placeholder="Reason for cross-fostering, observations, etc."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        <span>Save Management Record</span>
+                    </button>
+                </div>
+            </form>
         </div>
-        
-        <div class="table-wrapper">
-            <table class="litter-table">
-                <thead>
-                    <tr>
-                        <th>Farrow</th>
-                        <th>Total</th>
-                        <th>Alive</th>
-                        <th>Still</th>
-                        <th>Avg Wt</th>
-                        <th>Iron Inj.</th>
-                        <th>Teeth Clip</th>
-                        <th>Tail Dock</th>
-                        <th>Castration</th>
-                        <th>Weaning</th>
-                        <th class="col-actions">Action</th>
-                    </tr>
-                </thead>
-                {% if litters %}
-                <tbody>
-                    {% for litter in litters %}
-                    <tr class="stage-row stage-{{ litter.stage }}">
-                        <td data-label="Farrow Date">{{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
-                        <td data-label="Total Born">{{ litter.totalBorn }}</td>
-                        <td data-label="Born Alive">{{ litter.bornAlive }}</td>
-                        <td data-label="Still Born">{{ litter.stillBorn }}</td>
-                        <td data-label="Avg Weight">{{ litter.averageWeight }} kg</td>
-                        <td data-label="Iron Injection">{{ litter.iron_injection_date.strftime("%d-%b-%Y") }}</td>
-                        <td data-label="Teeth Clipping">{{ litter.teeth_clipping_date.strftime("%d-%b-%Y") }}</td>
-                        <td data-label="Tail Docking">{{ litter.tail_dorking_date.strftime("%d-%b-%Y") }}</td>
-                        <td data-label="Castration">{{ litter.castration_date.strftime("%d-%b-%Y") }}</td>
-                        <td data-label="Weaning" class="weaning-date">{{ litter.wean_date.strftime('%d-%b-%Y') }}</td>
-                        <td class="col-actions" data-label="Action">
-                            <form action="{{ url_for('delete_litter', litter_id=litter.id) }}" method="POST" onsubmit="return confirmDelete();">
-                                <button type="submit" class="action-btn delete-btn" title="Delete Record">
-                                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
-                                    <span>Delete</span>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+
+        <!-- Management History Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Management History</h2>
+                <span class="record-count">{{ management_records|length if management_records else 0 }} record(s)</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Type</th>
+                            <th>Other Litter</th>
+                            <th>Piglets Moved</th>
+                            <th>Notes</th>
+                            <th class="col-actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if management_records %}
+                            {% for record in management_records %}
+                            <tr>
+                                <td data-label="Date">{{ record.date.strftime('%d-%b-%Y') }}</td>
+                                <td data-label="Type">
+                                    <span class="type-badge type-{{ record.management_type }}">{{ record.management_type|replace('_', ' ')|title }}</span>
+                                </td>
+                                <td data-label="Other Litter">{{ record.other_litter_id or '-' }}</td>
+                                <td data-label="Piglets Moved">{{ record.piglets_moved or '-' }}</td>
+                                <td data-label="Notes">{{ record.notes or '-' }}</td>
+                                <td class="col-actions" data-label="Action">
+                                    <form action="{{ url_for('delete_management_record', record_id=record.id) }}" method="POST" onsubmit="return confirmDelete();">
+                                        <button type="submit" class="action-btn delete-btn" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-row">
+                                <td colspan="6">
+                                    <div class="empty-state">
+                                        <p>No management records found</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== VACCINATIONS TAB ==================== -->
+    <div class="tab-content" id="vaccinations-tab">
+        <div class="form-card">
+            <div class="form-card-header">
+                <h2>Add Vaccination Record</h2>
+            </div>
+            <form class="vaccination-form" method="POST" action="{{ url_for('add_vaccination', litter_id=existing_litter.id if existing_litter else 0) }}">
+                {{ vaccination_form.hidden_tag() if vaccination_form }}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="vaccine_type">Vaccine Type</label>
+                        <select name="vaccine_type" id="vaccine_type" class="form-input" required>
+                            <option value="">Select vaccine...</option>
+                            <option value="iron_dextran">Iron Dextran Injection</option>
+                            <option value="mycoplasma">Mycoplasma Vaccine</option>
+                            <option value="circovirus">Circovirus (PCV2) Vaccine</option>
+                            <option value="erysipelas">Erysipelas Vaccine</option>
+                            <option value="prrs">PRRS Vaccine</option>
+                            <option value="app">APP Vaccine</option>
+                            <option value="swine_fever">Classical Swine Fever</option>
+                            <option value="dewormer">Dewormer</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="other-vaccine-group" style="display: none;">
+                        <label for="other_vaccine_name">Vaccine Name</label>
+                        <input type="text" name="other_vaccine_name" id="other_vaccine_name" class="form-input" placeholder="Enter vaccine name">
+                    </div>
+                    <div class="form-group">
+                        <label for="vaccination_date">Date Administered</label>
+                        <input type="text" name="vaccination_date" id="vaccination_date" class="form-input date-picker" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="piglets_vaccinated">Number Vaccinated</label>
+                        <input type="number" name="piglets_vaccinated" id="piglets_vaccinated" class="form-input" min="1" value="{{ existing_litter.current_alive if existing_litter else '' }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dosage">Dosage (ml)</label>
+                        <input type="number" name="dosage" id="dosage" class="form-input" step="0.1" min="0.1" placeholder="e.g., 2.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="next_due_date">Next Due Date (if applicable)</label>
+                        <input type="text" name="next_due_date" id="next_due_date" class="form-input date-picker-future">
+                    </div>
+                    <div class="form-group">
+                        <label for="administered_by">Administered By</label>
+                        <input type="text" name="administered_by" id="administered_by" class="form-input" placeholder="Name of person">
+                    </div>
+                    <div class="form-group">
+                        <label for="batch_number">Vaccine Batch Number</label>
+                        <input type="text" name="batch_number" id="batch_number" class="form-input" placeholder="Batch/Lot number">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="vaccination_notes">Notes</label>
+                        <textarea name="vaccination_notes" id="vaccination_notes" class="form-input form-textarea" placeholder="Any reactions, observations, etc."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        <span>Add Vaccination Record</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Upcoming Vaccinations Alert -->
+        {% if upcoming_vaccinations %}
+        <div class="alert-card alert-warning">
+            <div class="alert-header">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor"><path d="M480-280q17 0 28.5-11.5T520-320q0-17-11.5-28.5T480-360q-17 0-28.5 11.5T440-320q0 17 11.5 28.5T480-280Zm-40-160h80v-240h-80v240Z"/></svg>
+                <h3>Upcoming Vaccinations</h3>
+            </div>
+            <ul class="upcoming-list">
+                {% for vax in upcoming_vaccinations %}
+                <li>
+                    <span class="vax-name">{{ vax.vaccine_type|replace('_', ' ')|title }}</span>
+                    <span class="vax-date">Due: {{ vax.next_due_date.strftime('%d-%b-%Y') }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- Vaccination History Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Vaccination History</h2>
+                <span class="record-count">{{ vaccination_records|length if vaccination_records else 0 }} record(s)</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Vaccine</th>
+                            <th>Qty Vaccinated</th>
+                            <th>Dosage</th>
+                            <th>Next Due</th>
+                            <th>Administered By</th>
+                            <th class="col-actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if vaccination_records %}
+                            {% for record in vaccination_records %}
+                            <tr>
+                                <td data-label="Date">{{ record.date.strftime('%d-%b-%Y') }}</td>
+                                <td data-label="Vaccine">{{ record.vaccine_type|replace('_', ' ')|title }}</td>
+                                <td data-label="Qty">{{ record.piglets_vaccinated }}</td>
+                                <td data-label="Dosage">{{ record.dosage }} ml</td>
+                                <td data-label="Next Due">{{ record.next_due_date.strftime('%d-%b-%Y') if record.next_due_date else '-' }}</td>
+                                <td data-label="By">{{ record.administered_by or '-' }}</td>
+                                <td class="col-actions" data-label="Action">
+                                    <form action="{{ url_for('delete_vaccination', record_id=record.id) }}" method="POST" onsubmit="return confirmDelete();">
+                                        <button type="submit" class="action-btn delete-btn" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-row">
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <p>No vaccination records found</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== WEIGHTS TAB ==================== -->
+    <div class="tab-content" id="weights-tab">
+        <div class="form-card">
+            <div class="form-card-header">
+                <h2>Add Weight Record</h2>
+                <p class="form-subtitle">Track growth by recording periodic weight measurements</p>
+            </div>
+            <form class="weight-form" method="POST" action="{{ url_for('add_weight_record', litter_id=existing_litter.id if existing_litter else 0) }}">
+                {{ weight_form.hidden_tag() if weight_form }}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="weight_date">Date Weighed</label>
+                        <input type="text" name="weight_date" id="weight_date" class="form-input date-picker" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight_type">Recording Type</label>
+                        <select name="weight_type" id="weight_type" class="form-input" required>
+                            <option value="average">Average Weight (Batch)</option>
+                            <option value="individual">Individual Weights</option>
+                            <option value="sample">Sample Weights (5-10 piglets)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="piglets-weighed-group">
+                        <label for="piglets_weighed">Number Weighed</label>
+                        <input type="number" name="piglets_weighed" id="piglets_weighed" class="form-input" min="1" value="{{ existing_litter.current_alive if existing_litter else '' }}">
+                    </div>
+                    <div class="form-group" id="average-weight-group">
+                        <label for="average_weight">Average Weight (kg)</label>
+                        <input type="number" name="average_weight" id="average_weight" class="form-input" step="0.1" min="0.1" placeholder="e.g., 25.5">
+                    </div>
+                    <div class="form-group form-group-full" id="individual-weights-group" style="display: none;">
+                        <label for="individual_weights">Individual Weights (comma separated, in kg)</label>
+                        <textarea name="individual_weights" id="individual_weights" class="form-input form-textarea" placeholder="e.g., 24.5, 26.0, 25.5, 27.0, 24.0"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="total_weight">Total Batch Weight (kg) - optional</label>
+                        <input type="number" name="total_weight" id="total_weight" class="form-input" step="0.1" min="0" placeholder="If available">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="weight_notes">Notes</label>
+                        <textarea name="weight_notes" id="weight_notes" class="form-input form-textarea" placeholder="Growth observations, any concerns, etc."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        <span>Add Weight Record</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Growth Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <h3>Growth Chart</h3>
+                <p class="chart-subtitle">Weight progression over time</p>
+            </div>
+            <div class="chart-container">
+                {% if weight_records and weight_records|length > 0 %}
+                <canvas id="growthChart"></canvas>
                 {% else %}
-                <tbody>
-                    <tr class="empty-row">
-                        <td colspan="11">
-                            <div class="empty-state">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor"><path d="M180-120q-24 0-42-18t-18-42v-600q0-24 18-42t42-18h600q24 0 42 18t18 42v600q0 24-18 42t-42 18H180Zm0-60h600v-600H180v600Zm100-100h400v-60H280v60Zm0-160h400v-60H280v60Zm0-160h400v-60H280v60ZM180-180v-600 600Z"/></svg>
-                                <p>No litter records found</p>
-                                <span>Add a litter record using the form above</span>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
+                <div class="chart-empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor">
+                        <path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z"/>
+                    </svg>
+                    <p>No weight data to display</p>
+                    <span>Add weight records to see the growth chart</span>
+                </div>
                 {% endif %}
-            </table>
+            </div>
+        </div>
+
+        <!-- Weight History Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Weight History</h2>
+                <span class="record-count">{{ weight_records|length if weight_records else 0 }} record(s)</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Age (Days)</th>
+                            <th>Avg Weight (kg)</th>
+                            <th>Piglets Weighed</th>
+                            <th>Growth Rate</th>
+                            <th>Notes</th>
+                            <th class="col-actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if weight_records %}
+                            {% for record in weight_records %}
+                            <tr>
+                                <td data-label="Date">{{ record.date.strftime('%d-%b-%Y') }}</td>
+                                <td data-label="Age">{{ record.age_days }} days</td>
+                                <td data-label="Avg Weight">{{ record.average_weight }} kg</td>
+                                <td data-label="Weighed">{{ record.piglets_weighed }}</td>
+                                <td data-label="Growth Rate">
+                                    {% if record.daily_gain %}
+                                    <span class="growth-indicator {{ 'positive' if record.daily_gain > 0.5 else 'warning' if record.daily_gain > 0.3 else 'negative' }}">
+                                        {{ record.daily_gain }} kg/day
+                                    </span>
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td data-label="Notes">{{ record.notes or '-' }}</td>
+                                <td class="col-actions" data-label="Action">
+                                    <form action="{{ url_for('delete_weight_record', record_id=record.id) }}" method="POST" onsubmit="return confirmDelete();">
+                                        <button type="submit" class="action-btn delete-btn" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-row">
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <p>No weight records found</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MORTALITY TAB ==================== -->
+    <div class="tab-content" id="mortality-tab">
+        <div class="form-card">
+            <div class="form-card-header">
+                <h2>Record Mortality</h2>
+                <p class="form-subtitle">Track piglet deaths and causes</p>
+            </div>
+            <form class="mortality-form" method="POST" action="{{ url_for('add_mortality', litter_id=existing_litter.id if existing_litter else 0) }}">
+                {{ mortality_form.hidden_tag() if mortality_form }}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="mortality_date">Date of Death</label>
+                        <input type="text" name="mortality_date" id="mortality_date" class="form-input date-picker" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="number_died">Number of Deaths</label>
+                        <input type="number" name="number_died" id="number_died" class="form-input" min="1" required placeholder="Enter count">
+                    </div>
+                    <div class="form-group">
+                        <label for="cause_of_death">Cause of Death</label>
+                        <select name="cause_of_death" id="cause_of_death" class="form-input" required>
+                            <option value="">Select cause...</option>
+                            <option value="crushing">Crushing by Sow</option>
+                            <option value="starvation">Starvation/Low Milk</option>
+                            <option value="diarrhea">Diarrhea/Scours</option>
+                            <option value="respiratory">Respiratory Disease</option>
+                            <option value="weakness">Born Weak/Low Birth Weight</option>
+                            <option value="infection">Infection</option>
+                            <option value="injury">Injury</option>
+                            <option value="savaging">Savaging by Sow</option>
+                            <option value="hypothermia">Hypothermia (Cold Stress)</option>
+                            <option value="unknown">Unknown</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="other-cause-group" style="display: none;">
+                        <label for="other_cause">Specify Cause</label>
+                        <input type="text" name="other_cause" id="other_cause" class="form-input" placeholder="Describe cause of death">
+                    </div>
+                    <div class="form-group">
+                        <label for="age_at_death">Age at Death (days)</label>
+                        <input type="number" name="age_at_death" id="age_at_death" class="form-input" min="0" placeholder="Approximate age">
+                    </div>
+                    <div class="form-group">
+                        <label for="weight_at_death">Weight at Death (kg) - optional</label>
+                        <input type="number" name="weight_at_death" id="weight_at_death" class="form-input" step="0.1" min="0" placeholder="If known">
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="mortality_notes">Notes/Observations</label>
+                        <textarea name="mortality_notes" id="mortality_notes" class="form-input form-textarea" placeholder="Symptoms, observations, actions taken, etc."></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        <span>Record Mortality</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Mortality Summary -->
+        <div class="summary-cards">
+            <div class="summary-card mortality-summary">
+                <div class="summary-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+                </div>
+                <div class="summary-content">
+                    <span class="summary-value">{{ existing_litter.total_mortalities if existing_litter else 0 }}</span>
+                    <span class="summary-label">Total Deaths</span>
+                </div>
+            </div>
+            <div class="summary-card survival-summary">
+                <div class="summary-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="currentColor"><path d="M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z"/></svg>
+                </div>
+                <div class="summary-content">
+                    <span class="summary-value">{{ existing_litter.current_alive if existing_litter else 0 }}</span>
+                    <span class="summary-label">Currently Alive</span>
+                </div>
+            </div>
+            <div class="summary-card rate-summary">
+                <div class="summary-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="32px" viewBox="0 -960 960 960" width="32px" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+                </div>
+                <div class="summary-content">
+                    <span class="summary-value">{{ "%.1f"|format(existing_litter.survival_rate) if existing_litter else 0 }}%</span>
+                    <span class="summary-label">Survival Rate</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mortality History Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Mortality Records</h2>
+                <span class="record-count">{{ mortality_records|length if mortality_records else 0 }} record(s)</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Number Died</th>
+                            <th>Cause</th>
+                            <th>Age (Days)</th>
+                            <th>Weight (kg)</th>
+                            <th>Notes</th>
+                            <th class="col-actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if mortality_records %}
+                            {% for record in mortality_records %}
+                            <tr>
+                                <td data-label="Date">{{ record.date.strftime('%d-%b-%Y') }}</td>
+                                <td data-label="Number">{{ record.number_died }}</td>
+                                <td data-label="Cause">
+                                    <span class="cause-badge cause-{{ record.cause }}">{{ record.cause|replace('_', ' ')|title }}</span>
+                                </td>
+                                <td data-label="Age">{{ record.age_at_death or '-' }}</td>
+                                <td data-label="Weight">{{ record.weight_at_death or '-' }}</td>
+                                <td data-label="Notes">{{ record.notes or '-' }}</td>
+                                <td class="col-actions" data-label="Action">
+                                    <form action="{{ url_for('delete_mortality', record_id=record.id) }}" method="POST" onsubmit="return confirmDelete();">
+                                        <button type="submit" class="action-btn delete-btn" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-row">
+                                <td colspan="7">
+                                    <div class="empty-state">
+                                        <p>No mortality records found</p>
+                                        <span>That's good news! 🎉</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SALES TAB ==================== -->
+    <div class="tab-content" id="sales-tab">
+        <div class="form-card">
+            <div class="form-card-header">
+                <h2>Record Sale</h2>
+                <p class="form-subtitle">Track when pigs reach market weight and are sold</p>
+            </div>
+            <form class="sales-form" method="POST" action="{{ url_for('add_sale', litter_id=existing_litter.id if existing_litter else 0) }}">
+                {{ sale_form.hidden_tag() if sale_form }}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="sale_date">Sale Date</label>
+                        <input type="text" name="sale_date" id="sale_date" class="form-input date-picker" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="number_sold">Number Sold</label>
+                        <input type="number" name="number_sold" id="number_sold" class="form-input" min="1" max="{{ existing_litter.current_alive if existing_litter else 100 }}" required placeholder="Enter count">
+                    </div>
+                    <div class="form-group">
+                        <label for="average_sale_weight">Average Sale Weight (kg)</label>
+                        <input type="number" name="average_sale_weight" id="average_sale_weight" class="form-input" step="0.1" min="1" required placeholder="e.g., 110.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="total_weight_sold">Total Weight Sold (kg)</label>
+                        <input type="number" name="total_weight_sold" id="total_weight_sold" class="form-input" step="0.1" min="1" placeholder="Auto-calculated or enter">
+                    </div>
+                    <div class="form-group">
+                        <label for="price_per_kg">Price per kg</label>
+                        <input type="number" name="price_per_kg" id="price_per_kg" class="form-input" step="0.01" min="0" placeholder="Enter price">
+                    </div>
+                    <div class="form-group">
+                        <label for="total_sale_amount">Total Sale Amount</label>
+                        <input type="number" name="total_sale_amount" id="total_sale_amount" class="form-input" step="0.01" min="0" placeholder="Auto-calculated or enter">
+                    </div>
+                    <div class="form-group">
+                        <label for="buyer_name">Buyer Name</label>
+                        <input type="text" name="buyer_name" id="buyer_name" class="form-input" placeholder="Enter buyer name">
+                    </div>
+                    <div class="form-group">
+                        <label for="buyer_contact">Buyer Contact</label>
+                        <input type="text" name="buyer_contact" id="buyer_contact" class="form-input" placeholder="Phone or email">
+                    </div>
+                    <div class="form-group">
+                        <label for="sale_type">Sale Type</label>
+                        <select name="sale_type" id="sale_type" class="form-input">
+                            <option value="market">Market Weight Sale</option>
+                            <option value="breeding">Breeding Stock</option>
+                            <option value="weaner">Weaner Sale</option>
+                            <option value="culled">Culled/Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label for="sale_notes">Notes</label>
+                        <textarea name="sale_notes" id="sale_notes" class="form-input form-textarea" placeholder="Any additional information about the sale"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+                        <span>Record Sale</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sales Summary -->
+        <div class="summary-cards">
+            <div class="summary-card sold-summary">
+                <div class="summary-content">
+                    <span class="summary-value">{{ existing_litter.total_sold if existing_litter else 0 }}</span>
+                    <span class="summary-label">Total Sold</span>
+                </div>
+            </div>
+            <div class="summary-card remaining-summary">
+                <div class="summary-content">
+                    <span class="summary-value">{{ existing_litter.current_alive if existing_litter else 0 }}</span>
+                    <span class="summary-label">Remaining</span>
+                </div>
+            </div>
+            <div class="summary-card revenue-summary">
+                <div class="summary-content">
+                    <span class="summary-value">{{ "%.2f"|format(total_revenue) if total_revenue else '0.00' }}</span>
+                    <span class="summary-label">Total Revenue</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales History Table -->
+        <div class="table-card">
+            <div class="table-header">
+                <h2>Sales History</h2>
+                <span class="record-count">{{ sale_records|length if sale_records else 0 }} record(s)</span>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Qty Sold</th>
+                            <th>Avg Weight</th>
+                            <th>Total Weight</th>
+                            <th>Price/kg</th>
+                            <th>Total Amount</th>
+                            <th>Buyer</th>
+                            <th>Type</th>
+                            <th class="col-actions">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if sale_records %}
+                            {% for record in sale_records %}
+                            <tr>
+                                <td data-label="Date">{{ record.date.strftime('%d-%b-%Y') }}</td>
+                                <td data-label="Qty">{{ record.number_sold }}</td>
+                                <td data-label="Avg Weight">{{ record.average_weight }} kg</td>
+                                <td data-label="Total Weight">{{ record.total_weight }} kg</td>
+                                <td data-label="Price/kg">{{ record.price_per_kg or '-' }}</td>
+                                <td data-label="Total">{{ record.total_amount or '-' }}</td>
+                                <td data-label="Buyer">{{ record.buyer_name or '-' }}</td>
+                                <td data-label="Type">
+                                    <span class="type-badge type-{{ record.sale_type }}">{{ record.sale_type|title }}</span>
+                                </td>
+                                <td class="col-actions" data-label="Action">
+                                    <form action="{{ url_for('delete_sale', record_id=record.id) }}" method="POST" onsubmit="return confirmDelete();">
+                                        <button type="submit" class="action-btn delete-btn" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/></svg>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr class="empty-row">
+                                <td colspan="9">
+                                    <div class="empty-state">
+                                        <p>No sales records found</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </main>
 
 <script>
-    flatpickr("#date", {
+    // Initialize date pickers
+    flatpickr(".date-picker", {
         dateFormat: "d-m-Y",
         maxDate: "today"
-    });    
+    });
+    
+    flatpickr(".date-picker-future", {
+        dateFormat: "d-m-Y",
+        minDate: "today"
+    });
+
+    // Tab navigation
+    document.querySelectorAll('.tab-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.disabled) return;
+            
+            // Remove active class from all tabs and content
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding content
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab') + '-tab';
+            document.getElementById(tabId).classList.add('active');
+        });
+    });
+
+    // Management form - show/hide fields based on type
+    document.getElementById('management_type')?.addEventListener('change', function() {
+        const otherLitterGroup = document.getElementById('other-litter-group');
+        const pigletsMovedGroup = document.getElementById('piglets-moved-group');
+        
+        if (this.value === 'cross_foster_in' || this.value === 'cross_foster_out' || this.value === 'combined') {
+            otherLitterGroup.style.display = 'block';
+            pigletsMovedGroup.style.display = 'block';
+        } else {
+            otherLitterGroup.style.display = 'none';
+            pigletsMovedGroup.style.display = 'none';
+        }
+    });
+
+    // Vaccine form - show/hide other vaccine field
+    document.getElementById('vaccine_type')?.addEventListener('change', function() {
+        const otherVaccineGroup = document.getElementById('other-vaccine-group');
+        otherVaccineGroup.style.display = this.value === 'other' ? 'block' : 'none';
+    });
+
+    // Weight form - toggle individual weights field
+    document.getElementById('weight_type')?.addEventListener('change', function() {
+        const individualWeightsGroup = document.getElementById('individual-weights-group');
+        const averageWeightGroup = document.getElementById('average-weight-group');
+        
+        if (this.value === 'individual') {
+            individualWeightsGroup.style.display = 'block';
+            averageWeightGroup.style.display = 'none';
+        } else {
+            individualWeightsGroup.style.display = 'none';
+            averageWeightGroup.style.display = 'block';
+        }
+    });
+
+    // Mortality form - show/hide other cause field
+    document.getElementById('cause_of_death')?.addEventListener('change', function() {
+        const otherCauseGroup = document.getElementById('other-cause-group');
+        otherCauseGroup.style.display = this.value === 'other' ? 'block' : 'none';
+    });
+
+    // Sales form - auto-calculate totals
+    const numberSold = document.getElementById('number_sold');
+    const avgWeight = document.getElementById('average_sale_weight');
+    const totalWeight = document.getElementById('total_weight_sold');
+    const pricePerKg = document.getElementById('price_per_kg');
+    const totalAmount = document.getElementById('total_sale_amount');
+
+    function calculateSaleTotals() {
+        if (numberSold && avgWeight && numberSold.value && avgWeight.value) {
+            totalWeight.value = (parseFloat(numberSold.value) * parseFloat(avgWeight.value)).toFixed(1);
+        }
+        if (totalWeight && pricePerKg && totalWeight.value && pricePerKg.value) {
+            totalAmount.value = (parseFloat(totalWeight.value) * parseFloat(pricePerKg.value)).toFixed(2);
+        }
+    }
+
+    numberSold?.addEventListener('input', calculateSaleTotals);
+    avgWeight?.addEventListener('input', calculateSaleTotals);
+    pricePerKg?.addEventListener('input', calculateSaleTotals);
+
+    // Confirm delete
+    function confirmDelete() {
+        return confirm('Are you sure you want to delete this record? This action cannot be undone.');
+    }
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ==================== GROWTH CHART ====================
+    {% if weight_records and weight_records|length > 0 %}
+    (function() {
+        const ctx = document.getElementById('growthChart');
+        
+        if (!ctx) return;
+        
+        // Prepare data from weight records
+        const weightData = [
+            {% if existing_litter and existing_litter.averageWeight %}
+            {
+                date: '{{ existing_litter.farrowDate.strftime("%d-%b") }}',
+                weight: {{ existing_litter.averageWeight }},
+                age: 0,
+                label: 'Birth'
+            },
+            {% endif %}
+            {% for record in weight_records|reverse %}
+            {
+                date: '{{ record.date.strftime("%d-%b") }}',
+                weight: {{ record.average_weight }},
+                age: {{ record.age_days if record.age_days else 0 }},
+                label: 'Day {{ record.age_days if record.age_days else "?" }}'
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+        
+        // If no data points, don't create chart
+        if (weightData.length === 0) return;
+        
+        // Check for dark mode
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        
+        // Chart colors matching your theme (use let for variables that change)
+        const accentColor = '#00A86B';
+        let textMuted = isDarkMode ? '#9CA3AF' : '#718096';
+        let gridColor = isDarkMode ? '#374151' : '#E2E8F0';
+        let pointBorderColor = isDarkMode ? '#1F2937' : '#fff';
+        
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: weightData.map(d => d.label),
+                datasets: [{
+                    label: 'Average Weight (kg)',
+                    data: weightData.map(d => d.weight),
+                    borderColor: accentColor,
+                    backgroundColor: accentColor + '20',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: accentColor,
+                    pointBorderColor: pointBorderColor,
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    pointHoverBackgroundColor: accentColor,
+                    pointHoverBorderColor: pointBorderColor,
+                    pointHoverBorderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        titleFont: {
+                            size: 14,
+                            weight: '600'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            title: function(context) {
+                                const idx = context[0].dataIndex;
+                                return weightData[idx].date;
+                            },
+                            label: function(context) {
+                                const idx = context.dataIndex;
+                                const data = weightData[idx];
+                                return [
+                                    'Weight: ' + data.weight + ' kg',
+                                    'Age: ' + data.age + ' days'
+                                ];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: textMuted,
+                            font: {
+                                size: 11,
+                                weight: '500'
+                            }
+                        }
+                    },
+                    y: {
+                        display: true,
+                        beginAtZero: false,
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: textMuted,
+                            font: {
+                                size: 11,
+                                weight: '500'
+                            },
+                            callback: function(value) {
+                                return value + ' kg';
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Weight (kg)',
+                            color: textMuted,
+                            font: {
+                                size: 12,
+                                weight: '500'
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    })();
+    {% endif %}
+    
+});
 </script>
 {% endblock %}

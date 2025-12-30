@@ -1,11 +1,10 @@
 from wtforms import EmailField,StringField, PasswordField, SubmitField, BooleanField, IntegerField, DecimalField, TextAreaField, DateField, FloatField, SelectField
-from wtforms.validators import InputRequired, Length, ValidationError, InputRequired, DataRequired, EqualTo
+from wtforms.validators import InputRequired, Length, ValidationError, InputRequired, DataRequired, EqualTo, Optional, NumberRange
 from flask_wtf import FlaskForm
 from models import Sows, Boars, User
 from wtforms.fields import DateField
 from flask_login import current_user
 from datetime import date
-
 # Define Sow Management Form
 class SowForm(FlaskForm):
     sowID = StringField(validators=[DataRequired(), Length(min=3, max=20)])
@@ -114,6 +113,7 @@ class LitterForm(FlaskForm):
     bornAlive = IntegerField("Born Alive", validators=[InputRequired()])
     stillBorn = IntegerField("Still Born", validators=[InputRequired()])  # 👈 allow 0
     weights = TextAreaField("Weights", validators=[DataRequired()],render_kw={"Placeholder": "e.g 5,3.1,4,..."})
+    mummified = IntegerField('Mummified', validators=[Optional(), NumberRange(min=0)])
     submit = SubmitField("Add Litter")
 
 # change password form
