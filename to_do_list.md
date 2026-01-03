@@ -119,3 +119,16 @@ where knowledge meets opportunity,
 innovation meets purpose 
 and 
 students become leaders of tomorrow
+
+
+
+
+
+
+dont forget to change:
+
+    service_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE'), nullable=True)
+
+to 
+
+    service_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE'), nullable=Fals)
