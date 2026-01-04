@@ -65,6 +65,16 @@ from utils import (
 from extensions import (
     db, admin, login_manager, migrate
 )
+from dashboard_helpers import (
+    get_herd_counts_by_stage, 
+    get_upcoming_farrowings,
+    get_active_litters_summary,
+    get_theme_colors,
+    get_sales_summary,
+    get_financial_data,
+    get_mortality_summary,
+)
+
 
 # =========================
 # Logging & Environment Setup
@@ -496,101 +506,6 @@ dash_app.clientside_callback(
     dash.Input('interval-update', 'n_intervals'),
 )
 
-# color helper function
-
-def get_theme_colors(theme='light'):
-    """Return color scheme based on current theme"""
-    if theme == 'dark':
-        return {
-            'text_primary': '#F7FAFC',      # Light text for dark bg
-            'text_secondary': '#A0AEC0',     # Muted light text
-            'text_muted': '#718096',         # Even more muted
-            'bg_primary': '#1A202C',         # Dark background
-            'bg_secondary': '#2D3748',       # Slightly lighter dark
-            'grid_color': '#4A5568',         # Grid lines
-            'border_color': '#4A5568',       # Borders
-            'chart_bg': 'rgba(26, 32, 44, 0)',  # Transparent dark
-            'positive': '#48BB78',           # Green for profit
-            'negative': '#FC8181',           # Red for loss
-            'revenue': '#48BB78',            # Revenue color
-            'expenses': '#FC8181',           # Expenses color
-            'pie_center_text': '#F7FAFC',    # Pie chart center text
-        }
-    else:
-        return {
-            'text_primary': '#1A202C',       # Dark text for light bg
-            'text_secondary': '#4A5568',     # Muted dark text
-            'text_muted': '#718096',         # Even more muted
-            'bg_primary': '#FFFFFF',         # Light background
-            'bg_secondary': '#F7FAFC',       # Slightly darker light
-            'grid_color': '#E2E8F0',         # Grid lines
-            'border_color': '#E2E8F0',       # Borders
-            'chart_bg': 'rgba(255, 255, 255, 0)',  # Transparent light
-            'positive': '#10B981',           # Green for profit
-            'negative': '#EF4444',           # Red for loss
-            'revenue': '#10B981',            # Revenue color
-            'expenses': '#EF4444',           # Expenses color
-            'pie_center_text': '#1A202C',    # Pie chart center text
-        }
-
-# Helper function to get financial data
-def get_financial_data(period='90'):
-    """Get revenue and expense data for the specified period"""
-    from models import Invoice, Expense  # Import your models
-    
-    today = datetime.now().date()
-    
-    if period == 'all':
-        start_date = datetime(2000, 1, 1).date()
-    else:
-        days = int(period)
-        start_date = today - timedelta(days=days)
-    
-    # Get invoices (revenue)
-    invoices = Invoice.query.filter(Invoice.date >= start_date).all()
-    
-    # Get expenses
-    expenses = Expense.query.filter(Expense.date >= start_date).all()
-    
-    # Process revenue data
-    revenue_by_month = {}
-    for inv in invoices:
-        month_key = inv.date.strftime('%Y-%m')
-        if month_key not in revenue_by_month:
-            revenue_by_month[month_key] = 0
-        revenue_by_month[month_key] += float(inv.total_price or 0)
-    
-    # Process expense data
-    expense_by_month = {}
-    expense_by_category = {}
-    for exp in expenses:
-        month_key = exp.date.strftime('%Y-%m')
-        if month_key not in expense_by_month:
-            expense_by_month[month_key] = 0
-        expense_by_month[month_key] += float(exp.amount or 0)
-        
-        # Category breakdown
-        category = exp.category or 'Other'
-        if category not in expense_by_category:
-            expense_by_category[category] = 0
-        expense_by_category[category] += float(exp.amount or 0)
-    
-    # Calculate totals
-    total_revenue = sum(revenue_by_month.values())
-    total_expenses = sum(expense_by_month.values())
-    net_profit = total_revenue - total_expenses
-    profit_margin = (net_profit / total_revenue * 100) if total_revenue > 0 else 0
-    
-    return {
-        'revenue_by_month': revenue_by_month,
-        'expense_by_month': expense_by_month,
-        'expense_by_category': expense_by_category,
-        'total_revenue': total_revenue,
-        'total_expenses': total_expenses,
-        'net_profit': net_profit,
-        'profit_margin': profit_margin,
-    }
-
 # Callback for financial summary cards
 @dash_app.callback(
     [
@@ -892,6 +807,7 @@ def update_expense_breakdown(period, n, theme):
         dash.Input("theme-store", "data"),  # Add theme input
     ],
 )
+
 def update_monthly_profit(period, n, theme):
     colors = get_theme_colors(theme)
     data = get_financial_data(period)
@@ -984,8 +900,17 @@ def update_monthly_profit(period, n, theme):
 def callback_update_dashboard(n_intervals):
     from datetime import datetime
     
-    # Get your existing data
-    total_pigs, total_sows, total_boars, pre_weaners, weaners, growers, finishers, table_data = update_dashboard(n_intervals)
+    # Get dashboard data
+    (
+        total_pigs,
+        total_sows,
+        total_boars,
+        pre_weaners,
+        weaners,
+        growers,
+        finishers,
+        table_data
+    ) = update_dashboard(n_intervals)
     
     # Calculate farrowing count
     farrowing_count = len(table_data) if table_data else 0
@@ -1659,13 +1584,6 @@ def sow_service_records(sow_id):
 
     return render_template('sow_service_records.html', sow=sow, form=form)
 
-from flask import render_template, request, redirect, url_for, flash, abort
-from flask_login import login_required, current_user
-from datetime import datetime, timedelta, date
-from models import db, Sows, ServiceRecords, Litter, LitterManagement, VaccinationRecord, WeightRecord, MortalityRecord, SaleRecord
-from forms import LitterForm  # Your existing form
-
-
 # Helper function to parse dates from form
 def parse_date(date_string):
     """Parse date string in dd-mm-YYYY format"""
@@ -1675,7 +1593,6 @@ def parse_date(date_string):
         except ValueError:
             return None
     return None
-
 
 # Helper function to determine litter stage
 def get_litter_stage(farrow_date):
@@ -1696,9 +1613,7 @@ def get_litter_stage(farrow_date):
     else:
         return 'finisher'
 
-
 # ==================== MAIN LITTER RECORDS ROUTE ====================
-
 @app.route('/litter-records/<int:service_id>', methods=['GET', 'POST'])
 @login_required
 def litter_records(service_id):
@@ -1715,9 +1630,6 @@ def litter_records(service_id):
 
     # Prepare litters list with stage
     litters = [existing_litter] if existing_litter else []
-    for litter in litters:
-        if litter:
-            litter.stage = get_litter_stage(litter.farrowDate)
 
     # Get related records if litter exists
     management_records = []
@@ -1824,9 +1736,7 @@ def litter_records(service_id):
         total_revenue=total_revenue
     )
 
-
 # ==================== LITTER MANAGEMENT ROUTES ====================
-
 @app.route('/litter/<int:litter_id>/management', methods=['POST'])
 @login_required
 def litter_management(litter_id):
@@ -1855,9 +1765,7 @@ def litter_management(litter_id):
     
     return redirect(url_for('litter_records', service_id=litter.service_id))
 
-
 # ==================== VACCINATION ROUTES ====================
-
 @app.route('/litter/<int:litter_id>/vaccination', methods=['POST'])
 @login_required
 def add_vaccination(litter_id):
@@ -1893,9 +1801,7 @@ def add_vaccination(litter_id):
     
     return redirect(url_for('litter_records', service_id=litter.service_id))
 
-
 # ==================== WEIGHT RECORD ROUTES ====================
-
 @app.route('/litter/<int:litter_id>/weight', methods=['POST'])
 @login_required
 def add_weight_record(litter_id):
@@ -1942,9 +1848,7 @@ def add_weight_record(litter_id):
     
     return redirect(url_for('litter_records', service_id=litter.service_id))
 
-
 # ==================== MORTALITY ROUTES ====================
-
 @app.route('/litter/<int:litter_id>/mortality', methods=['POST'])
 @login_required
 def add_mortality(litter_id):
@@ -1985,9 +1889,7 @@ def add_mortality(litter_id):
     
     return redirect(url_for('litter_records', service_id=litter.service_id))
 
-
 # ==================== SALE ROUTES ====================
-
 @app.route('/litter/<int:litter_id>/sale', methods=['POST'])
 @login_required
 def add_sale(litter_id):
@@ -2028,9 +1930,7 @@ def add_sale(litter_id):
     
     return redirect(url_for('litter_records', service_id=litter.service_id))
 
-
 # ==================== DELETE ROUTES ====================
-
 @app.route('/management/<int:record_id>/delete', methods=['POST'])
 @login_required
 def delete_management_record(record_id):
@@ -2051,7 +1951,6 @@ def delete_management_record(record_id):
         flash(f'Error deleting record: {str(e)}', 'error')
     
     return redirect(url_for('litter_records', service_id=service_id))
-
 
 @app.route('/vaccination/<int:record_id>/delete', methods=['POST'])
 @login_required
@@ -2074,7 +1973,6 @@ def delete_vaccination(record_id):
     
     return redirect(url_for('litter_records', service_id=service_id))
 
-
 @app.route('/weight/<int:record_id>/delete', methods=['POST'])
 @login_required
 def delete_weight_record(record_id):
@@ -2095,7 +1993,6 @@ def delete_weight_record(record_id):
         flash(f'Error deleting record: {str(e)}', 'error')
     
     return redirect(url_for('litter_records', service_id=service_id))
-
 
 @app.route('/mortality/<int:record_id>/delete', methods=['POST'])
 @login_required
@@ -2118,7 +2015,6 @@ def delete_mortality(record_id):
     
     return redirect(url_for('litter_records', service_id=service_id))
 
-
 @app.route('/sale/<int:record_id>/delete', methods=['POST'])
 @login_required
 def delete_sale(record_id):
@@ -2140,9 +2036,7 @@ def delete_sale(record_id):
     
     return redirect(url_for('litter_records', service_id=service_id))
 
-
 # ==================== LITTER DELETE ROUTE ====================
-
 @app.route('/litter/<int:litter_id>/delete', methods=['POST'])
 @login_required
 def delete_litter(litter_id):

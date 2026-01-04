@@ -157,13 +157,12 @@ class Expense(db.Model):
 
 
 # ==================== LITTER AND RELATED MODELS ====================
+# In models.py - Update the Litter class
 
 class Litter(db.Model):
     __tablename__ = 'litter'
     
     id = db.Column(db.Integer, primary_key=True)
-    
-    # Foreign keys - BOTH sow_id and service_id
     sow_id = db.Column(db.Integer, db.ForeignKey('sows.id', ondelete='CASCADE'), nullable=False)
     service_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE'), nullable=False)
     
@@ -174,8 +173,7 @@ class Litter(db.Model):
     stillBorn = db.Column(db.Integer, default=0)
     mummified = db.Column(db.Integer, default=0)
     averageWeight = db.Column(db.Float)
-    weights = db.Column(db.String(500))  # Comma-separated weights
-    stage = db.Column(db.String(20), default='preweaning')
+    weights = db.Column(db.String(500))
     
     # Early life procedures
     iron_injection_date = db.Column(db.Date)
@@ -186,81 +184,52 @@ class Litter(db.Model):
     
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
-    # Relationships back to parents
+    # Relationships
     sow = db.relationship("Sows", back_populates="litters")
     service_record = db.relationship("ServiceRecords", back_populates="litter")
+    management_records = db.relationship('LitterManagement', back_populates='litter', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    vaccination_records = db.relationship('VaccinationRecord', back_populates='litter', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    weight_records = db.relationship('WeightRecord', back_populates='litter', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    mortality_records = db.relationship('MortalityRecord', back_populates='litter', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    sale_records = db.relationship('SaleRecord', back_populates='litter', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
     
-    # Relationships to child records
-    management_records = db.relationship(
-        'LitterManagement', 
-        back_populates='litter', 
-        lazy=True, 
-        cascade='all, delete-orphan',
-        passive_deletes=True
-    )
-    vaccination_records = db.relationship(
-        'VaccinationRecord', 
-        back_populates='litter', 
-        lazy=True, 
-        cascade='all, delete-orphan',
-        passive_deletes=True
-    )
-    weight_records = db.relationship(
-        'WeightRecord', 
-        back_populates='litter', 
-        lazy=True, 
-        cascade='all, delete-orphan',
-        passive_deletes=True
-    )
-    mortality_records = db.relationship(
-        'MortalityRecord', 
-        back_populates='litter', 
-        lazy=True, 
-        cascade='all, delete-orphan',
-        passive_deletes=True
-    )
-    sale_records = db.relationship(
-        'SaleRecord', 
-        back_populates='litter', 
-        lazy=True, 
-        cascade='all, delete-orphan',
-        passive_deletes=True
-    )
-    
-    # Computed properties
     @property
     def total_mortalities(self):
+        """Total number of piglets that died"""
         return sum(m.number_died for m in self.mortality_records)
     
     @property
     def total_sold(self):
+        """Total number of piglets sold"""
         return sum(s.number_sold for s in self.sale_records)
+    
+    @property
+    def total_fostered_in(self):
+        """Total piglets received from other litters"""
+        return sum(
+            m.piglets_moved or 0 
+            for m in self.management_records 
+            if m.management_type == 'cross_foster_in'
+        )
+    
+    @property
+    def total_fostered_out(self):
+        """Total piglets given to other litters"""
+        return sum(
+            m.piglets_moved or 0 
+            for m in self.management_records 
+            if m.management_type == 'cross_foster_out'
+        )
     
     @property
     def current_alive(self):
         """Calculate currently alive piglets"""
         alive = self.bornAlive or 0
-        for mgmt in self.management_records:
-            if mgmt.management_type == 'cross_foster_in':
-                alive += mgmt.piglets_moved or 0
-            elif mgmt.management_type == 'cross_foster_out':
-                alive -= mgmt.piglets_moved or 0
+        alive += self.total_fostered_in
+        alive -= self.total_fostered_out
         alive -= self.total_mortalities
         alive -= self.total_sold
         return max(0, alive)
-    
-    @property
-    def survival_rate(self):
-        if not self.bornAlive or self.bornAlive == 0:
-            return 0
-        return (self.current_alive / self.bornAlive) * 100
-    
-    @property
-    def latest_avg_weight(self):
-        if self.weight_records:
-            latest = max(self.weight_records, key=lambda x: x.date)
-            return latest.average_weight
-        return None
     
     @property
     def age_days(self):
@@ -268,12 +237,43 @@ class Litter(db.Model):
         if self.farrowDate:
             from datetime import date
             return (date.today() - self.farrowDate).days
+        return 0
+    
+    @property
+    def stage(self):
+        """Determine current growth stage based on age"""
+        age = self.age_days
+        
+        if age < 0:
+            return 'unknown'
+        elif age <= 21:
+            return 'preweaning'
+        elif age <= 56:
+            return 'weaner'
+        elif age <= 98:
+            return 'grower'
+        else:
+            return 'finisher'
+    
+    @property
+    def survival_rate(self):
+        """Calculate survival rate as percentage"""
+        initial = self.bornAlive + self.total_fostered_in
+        if initial == 0:
+            return 0
+        return round((self.current_alive / initial) * 100, 1)
+    
+    @property
+    def latest_avg_weight(self):
+        """Get the most recent average weight"""
+        if self.weight_records:
+            latest = max(self.weight_records, key=lambda x: x.date)
+            return latest.average_weight
         return None
-
+    
     def __repr__(self):
-        return f'<Litter {self.id} - Sow {self.sow_id}>'
-
-
+        return f'<Litter {self.id} - Sow {self.sow_id} - {self.current_alive} alive>'
+    
 class LitterManagement(db.Model):
     __tablename__ = 'litter_management'
     

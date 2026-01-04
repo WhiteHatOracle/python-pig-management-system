@@ -1,11 +1,17 @@
-from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
-from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 from flask_login import current_user
-from datetime import date, timedelta
-import datetime
 from sqlalchemy import func, event
+from datetime import date, timedelta
+from models import db, Litter, User, Boars, Sows, ServiceRecords, Invoice, Expense
+from flask import has_request_context
+from forms import LitterForm, SowForm, BoarForm, RegisterForm, LoginForm, FeedCalculatorForm, InvoiceGeneratorForm, ServiceRecordForm, ExpenseForm, CompleteFeedForm
 from fpdf import FPDF
 import logging
+import datetime
+
+from dashboard_helpers import (
+    get_herd_counts_by_stage, 
+    get_upcoming_farrowings
+)
 
 # Utility function to parse weight ranges/ this is for the invoice generator
 def parse_range(range_str):
@@ -62,23 +68,83 @@ def get_sow_service_records():
     return data
 
 def update_dashboard(n):
-    try:
-        total_pigs, total_sows, total_boars, total_porkers, pre_weaners, weaners, growers, finishers = get_total_counts()
-        service_records = get_sow_service_records()
-        return (
-            str(total_pigs),
-            str(total_sows),
-            str(total_boars),
-            str(pre_weaners),
-            str(weaners),
-            str(growers),
-            str(finishers),
-            service_records
-        )
+    """
+    Update dashboard with current herd data.
+    This is called by the Dash callback.
+    """
     
+    # Default values
+    default_counts = {
+        'total_herd': 0,
+        'sows': 0,
+        'boars': 0,
+        'preweaning': 0,
+        'weaner': 0,
+        'grower': 0,
+        'finisher': 0,
+        'total_piglets': 0
+    }
+    
+    try:
+        # Check if we have a logged-in user
+        if has_request_context() and current_user.is_authenticated:
+            user_id = current_user.id
+        else:
+            # For testing or when no user context
+            return (
+                default_counts['total_herd'],
+                default_counts['sows'],
+                default_counts['boars'],
+                default_counts['preweaning'],
+                default_counts['weaner'],
+                default_counts['grower'],
+                default_counts['finisher'],
+                []
+            )
+        
+        # Get accurate herd counts
+        herd_counts = get_herd_counts_by_stage(user_id)
+        
+        # Get upcoming farrowings for the table
+        upcoming = get_upcoming_farrowings(user_id, days_ahead=60)
+        
+        # Format table data
+        table_data = [
+            {
+                'sow_id': row['sow_id'],
+                'service_date': row['service_date'],
+                'litter_guard1_date': row['litter_guard1_date'],
+                'litter_guard2_date': row['litter_guard2_date'],
+                'due_date': row['due_date'],
+            }
+            for row in upcoming
+        ]
+        
+        return (
+            herd_counts['total_herd'],
+            herd_counts['sows'],
+            herd_counts['boars'],
+            herd_counts['preweaning'],
+            herd_counts['weaner'],
+            herd_counts['grower'],
+            herd_counts['finisher'],
+            table_data
+        )
+        
     except Exception as e:
-        print("Error updating dashboard:", e)
-        return "Error", "Error", "Error", "Error", "Error", "Error", "Error", []
+        print(f"Dashboard update error: {e}")
+        import traceback
+        traceback.print_exc()
+        return (
+            default_counts['total_herd'],
+            default_counts['sows'],
+            default_counts['boars'],
+            default_counts['preweaning'],
+            default_counts['weaner'],
+            default_counts['grower'],
+            default_counts['finisher'],
+            []
+        )
 
 def get_total_counts():
     today=date.today()
