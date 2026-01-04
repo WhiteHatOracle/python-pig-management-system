@@ -97,32 +97,39 @@
     {% endwith %}
 
     <!-- Tab Navigation -->
-    <div class="tab-navigation">
-        <button class="tab-btn active" data-tab="birth">
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
-            <span>Litter</span>
-        </button>
-        <button class="tab-btn" data-tab="management" {% if not existing_litter %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Z"/></svg>
-            <span>Management</span>
-        </button>
-        <button class="tab-btn" data-tab="vaccinations" {% if not existing_litter %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m540-520 200-200v120h80v-280H540v80h120L460-600l80 80Z"/></svg>
-            <span>Vaccinations</span>
-        </button>
-        <button class="tab-btn" data-tab="weights" {% if not existing_litter %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80Z"/></svg>
-            <span>Weights</span>
-        </button>
-        <button class="tab-btn" data-tab="mortality" {% if not existing_litter %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
-            <span>Mortality</span>
-        </button>
-        <button class="tab-btn" data-tab="sales" {% if not existing_litter %}disabled{% endif %}>
-            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Z"/></svg>
-            <span>Sales</span>
-        </button>
-    </div>
+    <!-- Tab Navigation -->
+<div class="tab-navigation">
+    <button class="tab-btn active" data-tab="birth" title="Litter Birth Records" aria-label="Litter Birth Records">
+        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
+        <span class="tab-label-full">Litter</span>
+        <span class="tab-label-short">Litter</span>
+    </button>
+    <button class="tab-btn" data-tab="management" title="Litter Management - Cross-fostering & Combinations" aria-label="Litter Management" {% if not existing_litter %}disabled{% endif %}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M0-240v-63q0-43 44-70t116-27q13 0 25 .5t23 2.5q-14 21-21 44t-7 48v65H0Zm240 0v-65q0-32 17.5-58.5T307-410q32-20 76.5-30t96.5-10q53 0 97.5 10t76.5 30q32 20 49 46.5t17 58.5v65H240Z"/></svg>
+        <span class="tab-label-full">Management</span>
+        <span class="tab-label-short">Mgmt</span>
+    </button>
+    <button class="tab-btn" data-tab="vaccinations" title="Vaccination Records" aria-label="Vaccination Records" {% if not existing_litter %}disabled{% endif %}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m540-520 200-200v120h80v-280H540v80h120L460-600l80 80Z"/></svg>
+        <span class="tab-label-full">Vaccinations</span>
+        <span class="tab-label-short">Vax</span>
+    </button>
+    <button class="tab-btn" data-tab="weights" title="Weight & Growth Records" aria-label="Weight Records" {% if not existing_litter %}disabled{% endif %}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80Z"/></svg>
+        <span class="tab-label-full">Weights</span>
+        <span class="tab-label-short">Wts</span>
+    </button>
+    <button class="tab-btn" data-tab="mortality" title="Mortality Records - Track Deaths" aria-label="Mortality Records" {% if not existing_litter %}disabled{% endif %}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z"/></svg>
+        <span class="tab-label-full">Mortality</span>
+        <span class="tab-label-short">Death</span>
+    </button>
+    <button class="tab-btn" data-tab="sales" title="Sales Records - Track Sold Pigs" aria-label="Sales Records" {% if not existing_litter %}disabled{% endif %}>
+        <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M560-440q-50 0-85-35t-35-85q0-50 35-85t85-35q50 0 85 35t35 85q0 50-35 85t-85 35ZM280-320q-33 0-56.5-23.5T200-400v-320q0-33 23.5-56.5T280-800h560q33 0 56.5 23.5T920-720v320q0 33-23.5 56.5T840-320H280Z"/></svg>
+        <span class="tab-label-full">Sales</span>
+        <span class="tab-label-short">Sales</span>
+    </button>
+</div>
 
     <!-- ==================== BIRTH TAB ==================== -->
     <div class="tab-content active" id="birth-tab">
@@ -250,7 +257,7 @@
                     {% if litters %}
                     <tbody>
                         {% for litter in litters %}
-                        <tr class="stage-row stage-{{ litter.stage }}">
+                        <tr class="stage-row stage-{{ litter.stage }}" data-stage="{{ litter.stage }}">
                             <td data-label="Farrow Date">{{ litter.farrowDate.strftime('%d-%b-%Y') }}</td>
                             <td data-label="Total Born">{{ litter.totalBorn }}</td>
                             <td data-label="Born Alive">{{ litter.bornAlive }}</td>
@@ -953,9 +960,10 @@
         </div>
     </div>
 </main>
-
 <script>
-    // Initialize date pickers
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // ==================== DATE PICKERS ====================
     flatpickr(".date-picker", {
         dateFormat: "d-m-Y",
         maxDate: "today"
@@ -966,63 +974,60 @@
         minDate: "today"
     });
 
-    // Tab navigation
+    // ==================== TAB NAVIGATION ====================
     document.querySelectorAll('.tab-btn').forEach(button => {
         button.addEventListener('click', () => {
             if (button.disabled) return;
             
-            // Remove active class from all tabs and content
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             
-            // Add active class to clicked tab and corresponding content
             button.classList.add('active');
             const tabId = button.getAttribute('data-tab') + '-tab';
-            document.getElementById(tabId).classList.add('active');
+            const tabContent = document.getElementById(tabId);
+            if (tabContent) tabContent.classList.add('active');
         });
     });
 
-    // Management form - show/hide fields based on type
-    document.getElementById('management_type')?.addEventListener('change', function() {
-        const otherLitterGroup = document.getElementById('other-litter-group');
-        const pigletsMovedGroup = document.getElementById('piglets-moved-group');
-        
-        if (this.value === 'cross_foster_in' || this.value === 'cross_foster_out' || this.value === 'combined') {
-            otherLitterGroup.style.display = 'block';
-            pigletsMovedGroup.style.display = 'block';
-        } else {
-            otherLitterGroup.style.display = 'none';
-            pigletsMovedGroup.style.display = 'none';
-        }
+    // ==================== MANAGEMENT FORM ====================
+    const managementType = document.getElementById('management_type');
+    const otherLitterGroup = document.getElementById('other-litter-group');
+    const pigletsMovedGroup = document.getElementById('piglets-moved-group');
+    
+    managementType?.addEventListener('change', function() {
+        const showFields = ['cross_foster_in', 'cross_foster_out', 'combined'].includes(this.value);
+        if (otherLitterGroup) otherLitterGroup.style.display = showFields ? 'block' : 'none';
+        if (pigletsMovedGroup) pigletsMovedGroup.style.display = showFields ? 'block' : 'none';
     });
 
-    // Vaccine form - show/hide other vaccine field
-    document.getElementById('vaccine_type')?.addEventListener('change', function() {
-        const otherVaccineGroup = document.getElementById('other-vaccine-group');
-        otherVaccineGroup.style.display = this.value === 'other' ? 'block' : 'none';
+    // ==================== VACCINE FORM ====================
+    const vaccineType = document.getElementById('vaccine_type');
+    const otherVaccineGroup = document.getElementById('other-vaccine-group');
+    
+    vaccineType?.addEventListener('change', function() {
+        if (otherVaccineGroup) otherVaccineGroup.style.display = this.value === 'other' ? 'block' : 'none';
     });
 
-    // Weight form - toggle individual weights field
-    document.getElementById('weight_type')?.addEventListener('change', function() {
-        const individualWeightsGroup = document.getElementById('individual-weights-group');
-        const averageWeightGroup = document.getElementById('average-weight-group');
-        
-        if (this.value === 'individual') {
-            individualWeightsGroup.style.display = 'block';
-            averageWeightGroup.style.display = 'none';
-        } else {
-            individualWeightsGroup.style.display = 'none';
-            averageWeightGroup.style.display = 'block';
-        }
+    // ==================== WEIGHT FORM ====================
+    const weightType = document.getElementById('weight_type');
+    const individualWeightsGroup = document.getElementById('individual-weights-group');
+    const averageWeightGroup = document.getElementById('average-weight-group');
+    
+    weightType?.addEventListener('change', function() {
+        const isIndividual = this.value === 'individual';
+        if (individualWeightsGroup) individualWeightsGroup.style.display = isIndividual ? 'block' : 'none';
+        if (averageWeightGroup) averageWeightGroup.style.display = isIndividual ? 'none' : 'block';
     });
 
-    // Mortality form - show/hide other cause field
-    document.getElementById('cause_of_death')?.addEventListener('change', function() {
-        const otherCauseGroup = document.getElementById('other-cause-group');
-        otherCauseGroup.style.display = this.value === 'other' ? 'block' : 'none';
+    // ==================== MORTALITY FORM ====================
+    const causeOfDeath = document.getElementById('cause_of_death');
+    const otherCauseGroup = document.getElementById('other-cause-group');
+    
+    causeOfDeath?.addEventListener('change', function() {
+        if (otherCauseGroup) otherCauseGroup.style.display = this.value === 'other' ? 'block' : 'none';
     });
 
-    // Sales form - auto-calculate totals
+    // ==================== SALES FORM AUTO-CALCULATE ====================
     const numberSold = document.getElementById('number_sold');
     const avgWeight = document.getElementById('average_sale_weight');
     const totalWeight = document.getElementById('total_weight_sold');
@@ -1030,10 +1035,10 @@
     const totalAmount = document.getElementById('total_sale_amount');
 
     function calculateSaleTotals() {
-        if (numberSold && avgWeight && numberSold.value && avgWeight.value) {
+        if (numberSold && avgWeight && totalWeight && numberSold.value && avgWeight.value) {
             totalWeight.value = (parseFloat(numberSold.value) * parseFloat(avgWeight.value)).toFixed(1);
         }
-        if (totalWeight && pricePerKg && totalWeight.value && pricePerKg.value) {
+        if (totalWeight && pricePerKg && totalAmount && totalWeight.value && pricePerKg.value) {
             totalAmount.value = (parseFloat(totalWeight.value) * parseFloat(pricePerKg.value)).toFixed(2);
         }
     }
@@ -1042,21 +1047,12 @@
     avgWeight?.addEventListener('input', calculateSaleTotals);
     pricePerKg?.addEventListener('input', calculateSaleTotals);
 
-    // Confirm delete
-    function confirmDelete() {
-        return confirm('Are you sure you want to delete this record? This action cannot be undone.');
-    }
-
-document.addEventListener('DOMContentLoaded', function() {
-    
     // ==================== GROWTH CHART ====================
     {% if weight_records and weight_records|length > 0 %}
     (function() {
         const ctx = document.getElementById('growthChart');
-        
         if (!ctx) return;
         
-        // Prepare data from weight records
         const weightData = [
             {% if existing_litter and existing_litter.averageWeight %}
             {
@@ -1076,17 +1072,13 @@ document.addEventListener('DOMContentLoaded', function() {
             {% endfor %}
         ];
         
-        // If no data points, don't create chart
         if (weightData.length === 0) return;
         
-        // Check for dark mode
         const isDarkMode = document.body.classList.contains('dark-mode');
-        
-        // Chart colors matching your theme (use let for variables that change)
         const accentColor = '#00A86B';
-        let textMuted = isDarkMode ? '#9CA3AF' : '#718096';
-        let gridColor = isDarkMode ? '#374151' : '#E2E8F0';
-        let pointBorderColor = isDarkMode ? '#1F2937' : '#fff';
+        const textMuted = isDarkMode ? '#9CA3AF' : '#718096';
+        const gridColor = isDarkMode ? '#374151' : '#E2E8F0';
+        const pointBorderColor = isDarkMode ? '#1F2937' : '#fff';
         
         new Chart(ctx, {
             type: 'line',
@@ -1118,35 +1110,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     mode: 'index'
                 },
                 plugins: {
-                    legend: {
-                        display: false
-                    },
+                    legend: { display: false },
                     tooltip: {
                         backgroundColor: isDarkMode ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.8)',
                         titleColor: '#fff',
                         bodyColor: '#fff',
-                        titleFont: {
-                            size: 14,
-                            weight: '600'
-                        },
-                        bodyFont: {
-                            size: 13
-                        },
+                        titleFont: { size: 14, weight: '600' },
+                        bodyFont: { size: 13 },
                         padding: 12,
                         cornerRadius: 8,
                         displayColors: false,
                         callbacks: {
                             title: function(context) {
-                                const idx = context[0].dataIndex;
-                                return weightData[idx].date;
+                                return weightData[context[0].dataIndex].date;
                             },
                             label: function(context) {
-                                const idx = context.dataIndex;
-                                const data = weightData[idx];
-                                return [
-                                    'Weight: ' + data.weight + ' kg',
-                                    'Age: ' + data.age + ' days'
-                                ];
+                                const data = weightData[context.dataIndex];
+                                return ['Weight: ' + data.weight + ' kg', 'Age: ' + data.age + ' days'];
                             }
                         }
                     }
@@ -1154,42 +1134,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 scales: {
                     x: {
                         display: true,
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: textMuted,
-                            font: {
-                                size: 11,
-                                weight: '500'
-                            }
-                        }
+                        grid: { display: false },
+                        ticks: { color: textMuted, font: { size: 11, weight: '500' } }
                     },
                     y: {
                         display: true,
                         beginAtZero: false,
-                        grid: {
-                            color: gridColor,
-                            drawBorder: false
-                        },
+                        grid: { color: gridColor, drawBorder: false },
                         ticks: {
                             color: textMuted,
-                            font: {
-                                size: 11,
-                                weight: '500'
-                            },
-                            callback: function(value) {
-                                return value + ' kg';
-                            }
+                            font: { size: 11, weight: '500' },
+                            callback: function(value) { return value + ' kg'; }
                         },
                         title: {
                             display: true,
                             text: 'Weight (kg)',
                             color: textMuted,
-                            font: {
-                                size: 12,
-                                weight: '500'
-                            }
+                            font: { size: 12, weight: '500' }
                         }
                     }
                 }
@@ -1198,6 +1159,11 @@ document.addEventListener('DOMContentLoaded', function() {
     })();
     {% endif %}
     
-});
+}); // End DOMContentLoaded
+
+// ==================== CONFIRM DELETE (Global) ====================
+function confirmDelete() {
+    return confirm('Are you sure you want to delete this record? This action cannot be undone.');
+}
 </script>
 {% endblock %}

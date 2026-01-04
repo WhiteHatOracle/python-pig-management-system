@@ -165,7 +165,7 @@ class Litter(db.Model):
     
     # Foreign keys - BOTH sow_id and service_id
     sow_id = db.Column(db.Integer, db.ForeignKey('sows.id', ondelete='CASCADE'), nullable=False)
-    service_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE'), nullable=True)
+    service_id = db.Column(db.Integer, db.ForeignKey('service_records.id', ondelete='CASCADE'), nullable=False)
     
     # Birth data
     farrowDate = db.Column(db.Date, nullable=False)
