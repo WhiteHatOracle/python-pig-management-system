@@ -1,0 +1,188 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Admin Management{% endblock %}
+{% block page_title %}Admin Management{% endblock %}
+
+{% block content %}
+<div class="admins-page">
+    <div class="page-header">
+        <p class="page-description">Manage administrators who have access to this panel.</p>
+        <a href="{{ url_for('admin.create_admin') }}" class="create-btn">
+            ➕ Add New Admin
+        </a>
+    </div>
+    
+    <div class="admins-grid">
+        {% for admin in admins %}
+        <div class="admin-card">
+            <div class="admin-avatar-large">
+                {{ admin.username[0].upper() }}
+            </div>
+            <div class="admin-details">
+                <h3 class="admin-name-large">{{ admin.username }}</h3>
+                <span class="admin-email">{{ admin.email }}</span>
+                <div class="admin-badges">
+                    {% if admin.is_super_admin %}
+                        <span class="badge super">👑 Super Admin</span>
+                    {% else %}
+                        <span class="badge regular">🔐 Admin</span>
+                    {% endif %}
+                    {% if admin.is_active %}
+                        <span class="badge active">✅ Active</span>
+                    {% else %}
+                        <span class="badge inactive">❌ Inactive</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="admin-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Created</span>
+                    <span class="meta-value">{{ admin.created_at.strftime('%b %d, %Y') }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Last Login</span>
+                    <span class="meta-value">{{ admin.last_login.strftime('%b %d, %Y') if admin.last_login else 'Never' }}</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.admins-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-description {
+    color: var(--admin-text-muted);
+    font-size: 0.9375rem;
+}
+
+.create-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--admin-primary);
+    color: #fff;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.create-btn:hover {
+    background: var(--admin-primary-hover);
+    transform: translateY(-2px);
+}
+
+.admins-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+
+.admin-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px var(--admin-shadow);
+}
+
+.admin-avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-hover));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.admin-name-large {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--admin-text);
+    margin-bottom: 0.25rem;
+}
+
+.admin-email {
+    font-size: 0.875rem;
+    color: var(--admin-text-muted);
+}
+
+.admin-badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.badge.super {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+}
+
+.badge.regular {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+}
+
+.badge.active {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.badge.inactive {
+    background: rgba(239, 68, 68, 0.1);
+    color: #DC2626;
+}
+
+.admin-meta {
+    display: flex;
+    gap: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--admin-border);
+    width: 100%;
+    justify-content: center;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.meta-label {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--admin-text-muted);
+}
+
+.meta-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--admin-text);
+}
+</style>
+{% endblock %}

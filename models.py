@@ -410,3 +410,93 @@ class SaleRecord(db.Model):
 
     def __repr__(self):
         return f'<SaleRecord {self.id} - {self.number_sold} sold>'
+    
+    
+# ==================== ADMIN MODELS ====================
+
+class AdminUser(db.Model, UserMixin):
+    """Separate admin user model for security"""
+    __tablename__ = 'admin_user'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(256), nullable=False)
+    is_super_admin = db.Column(db.Boolean, default=False)  # Can manage other admins
+    is_active = db.Column(db.Boolean, default=True)
+    last_login = db.Column(db.DateTime(timezone=True))
+    created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    
+    # For Flask-Login to distinguish from regular User
+    @property
+    def is_admin(self):
+        return True
+    
+    def set_password(self, password):
+        from werkzeug.security import generate_password_hash
+        self.password_hash = generate_password_hash(password)
+    
+    def check_password(self, password):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.password_hash, password)
+    
+    def __repr__(self):
+        return f'<AdminUser {self.username}>'
+
+
+class PageView(db.Model):
+    """Track page views for traffic analytics"""
+    __tablename__ = 'page_view'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(500), nullable=False, index=True)
+    method = db.Column(db.String(10), default='GET')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'), nullable=True)
+    ip_address = db.Column(db.String(50))
+    user_agent = db.Column(db.String(500))
+    referrer = db.Column(db.String(500))
+    country = db.Column(db.String(100))
+    device_type = db.Column(db.String(20))  # mobile, tablet, desktop
+    browser = db.Column(db.String(50))
+    response_time = db.Column(db.Float)  # in milliseconds
+    status_code = db.Column(db.Integer)
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
+    
+    def __repr__(self):
+        return f'<PageView {self.path} at {self.timestamp}>'
+
+
+class ActivityLog(db.Model):
+    """Track user and admin actions"""
+    __tablename__ = 'activity_log'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'), nullable=True)
+    admin_id = db.Column(db.Integer, db.ForeignKey('admin_user.id', ondelete='SET NULL'), nullable=True)
+    action = db.Column(db.String(100), nullable=False, index=True)  # e.g., 'user_login', 'sow_created', 'invoice_generated'
+    entity_type = db.Column(db.String(50))  # e.g., 'user', 'sow', 'boar', 'invoice'
+    entity_id = db.Column(db.Integer)
+    details = db.Column(db.Text)  # JSON string with additional details
+    ip_address = db.Column(db.String(50))
+    timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
+    
+    # Relationships
+    user = db.relationship('User', foreign_keys=[user_id], backref='activity_logs')
+    admin = db.relationship('AdminUser', foreign_keys=[admin_id], backref='activity_logs')
+    
+    def __repr__(self):
+        return f'<ActivityLog {self.action} at {self.timestamp}>'
+
+
+class SystemSetting(db.Model):
+    """Store system-wide settings"""
+    __tablename__ = 'system_setting'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    key = db.Column(db.String(100), unique=True, nullable=False)
+    value = db.Column(db.Text)
+    description = db.Column(db.String(255))
+    updated_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    
+    def __repr__(self):
+        return f'<SystemSetting {self.key}>'

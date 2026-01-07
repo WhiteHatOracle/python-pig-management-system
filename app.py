@@ -20,7 +20,7 @@ from flask import (
     get_flashed_messages, Blueprint
 )
 from flask_login import (
-    LoginManager, login_user, login_required,
+    LoginManager, login_user,
     logout_user, current_user
 )
 from flask_mail import Mail, Message
@@ -73,7 +73,36 @@ from dashboard_helpers import (
     get_financial_data,
     get_mortality_summary,
 )
-
+from admin import(
+    admin_bp
+)
+from admin.middleware import(
+    track_page_view
+)
+from models import(
+    AdminUser,
+    PageView,
+    ActivityLog,
+    SystemSetting
+)
+from admin.helpers import (
+    log_activity
+)
+from admin.settings_helper import (
+    is_registration_allowed,
+    is_google_login_allowed,
+    is_email_verification_required,
+    get_max_sows_per_user,
+    get_site_name
+)
+from admin.settings_middleware import (
+    init_settings_middleware,
+    registration_required,
+    google_login_required
+)
+from decorators import(
+     login_required, login_required_no_verify
+)
 
 # =========================
 # Logging & Environment Setup
@@ -90,6 +119,23 @@ load_dotenv()   # Load environment variables from .env
 # Flask Application Setup
 # =========================
 app = Flask(__name__)
+
+# ==================== 
+# INITIALIZE SETTINGS MIDDLEWARE 
+# ====================
+init_settings_middleware(app)
+
+
+# ==================== 
+# REGISTER ADMIN BLUEPRINT 
+# ====================
+app.register_blueprint(admin_bp)
+
+# ==================== 
+# ADD TRAFFIC TRACKING MIDDLEWARE 
+# ====================
+from admin.middleware import track_page_view
+track_page_view(app, db, PageView)
 
 # Secret key (prefer ENV value in production)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret")
@@ -109,6 +155,13 @@ app.config.update(
 # Make enumerate usable inside Jinja templates
 app.jinja_env.globals.update(enumerate=enumerate)
 
+# ==================== 
+# TEMPLATE CONTEXT PROCESSOR 
+# ====================
+# Add current datetime to all templates
+@app.context_processor
+def inject_now():
+    return {'now': datetime.now}
 
 # =========================
 # SQLite Foreign Key Support
@@ -127,7 +180,6 @@ def set_sqlite_pragma(dbapi_connection, _):
 # =========================
 bcrypt = Bcrypt(app)
 mail = Mail(app)
-
 db.init_app(app)
 login_manager.init_app(app)
 migrate.init_app(app, db)
@@ -179,6 +231,21 @@ dash_app = dash.Dash(
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+# ==================== ACTIVITY LOGGING HELPER ====================
+# You can call this from any route to log user activity
+
+def log_user_activity(action, entity_type=None, entity_id=None, details=None):
+    """Log user activity from anywhere in the app"""
+    
+    user_id = current_user.id if current_user.is_authenticated else None
+    log_activity(
+        action=action,
+        entity_type=entity_type,
+        entity_id=entity_id,
+        details=details,
+        user_id=user_id,
+        ip_address=request.remote_addr
+    )
 
 # Dashboard Layout with Charts
 dash_app.layout = html.Div([
@@ -931,6 +998,15 @@ def dashboard():
 def home():
     return render_template('home.html')
 
+@app.route('/verification-pending')
+@login_required_no_verify  # Use no_verify so they can access this page!
+def verification_pending():
+    """Page shown to users who haven't verified their email"""
+    if current_user.is_verified:
+        return redirect(url_for('dashboard'))  # Change 'dashboard' to your main page route name
+    
+    return render_template('verification_pending.html')
+
 # login route
 @app.route('/')
 def login():
@@ -972,8 +1048,14 @@ def signin():
     return render_template('signin.html', form=form)
 
 @app.route('/signup', methods=['GET', 'POST'])
+@registration_required
 def signup():
     form = RegisterForm()
+
+    if not is_registration_allowed():
+        flash('New registrations are currently dissabled','error')
+        return redirect(url_for('signin'))
+
     if form.validate_on_submit():
         # check for an existing username
         existing_user =User.query.filter_by(username=form.username.data.strip()).first()
@@ -1087,7 +1169,12 @@ def verify_email(token):
 
 # Google login route
 @app.route('/google-login')
+@google_login_required
 def google_login():
+    if not is_google_login_allowed():
+        flash('google login is currently disabled.', 'error')
+        return redirect(url_for('signin'))
+
     redirect_uri = url_for('google_auth', _external=True)
     return google.authorize_redirect(redirect_uri)
 
@@ -1447,8 +1534,15 @@ def edit_boar(boar_id):
 @app.route('/sow-manager', methods=['GET', 'POST'])
 @login_required
 def sows():
-    form = SowForm()
 
+    max_sows = get_max_sows_per_user()
+    if max_sows > 0:
+        current_sow_count = Sows.query.filter_by(user_id=current_user.id).count()
+        if current_sow_count > max_sows:
+            flash('You have reached the maximum limit of {max_sows} sows.','error')
+            return redirect(url_for('sows'))
+
+    form = SowForm()
     if form.validate_on_submit():
         sow_id = re.sub(r'\s+', '', form.sowID.data).upper()
         breed = re.sub(r'\s+', '', form.Breed.data).upper()

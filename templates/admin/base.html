@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %} | Pig Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="admin-body">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">🐷</span>
+                <span class="logo-text">Admin Panel</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <span class="nav-section-title">Main</span>
+                <a href="{{ url_for('admin.dashboard') }}" class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Dashboard</span>
+                </a>
+                <a href="{{ url_for('admin.users') }}" class="nav-link {% if 'user' in request.endpoint %}active{% endif %}">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Users</span>
+                </a>
+                <a href="{{ url_for('admin.traffic') }}" class="nav-link {% if request.endpoint == 'admin.traffic' %}active{% endif %}">
+                    <span class="nav-icon">📈</span>
+                    <span class="nav-text">Traffic</span>
+                </a>
+                <a href="{{ url_for('admin.activity') }}" class="nav-link {% if request.endpoint == 'admin.activity' %}active{% endif %}">
+                    <span class="nav-icon">📋</span>
+                    <span class="nav-text">Activity Logs</span>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <span class="nav-section-title">System</span>
+                <a href="{{ url_for('admin.admins') }}" class="nav-link {% if 'admin' in request.endpoint and 'dashboard' not in request.endpoint %}active{% endif %}">
+                    <span class="nav-icon">🔐</span>
+                    <span class="nav-text">Admins</span>
+                </a>
+                <a href="{{ url_for('admin.settings') }}" class="nav-link {% if request.endpoint == 'admin.settings' %}active{% endif %}">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-text">Settings</span>
+                </a>
+            </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="admin-info">
+                <div class="admin-avatar">{{ session.get('admin_username', 'A')[0].upper() }}</div>
+                <div class="admin-details">
+                    <span class="admin-name">{{ session.get('admin_username', 'Admin') }}</span>
+                    <span class="admin-role">Administrator</span>
+                </div>
+            </div>
+            <a href="{{ url_for('admin.logout') }}" class="logout-btn">
+                <span>🚪</span> Logout
+            </a>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="admin-main" id="mainContent">
+        <!-- Top Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12h18M3 6h18M3 18h18"/>
+                    </svg>
+                </button>
+                <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+            </div>
+            <div class="header-right">
+                <span class="current-date">{{ now().strftime('%B %d, %Y') }}</span>
+                <button class="theme-toggle" id="themeToggle">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
+        </header>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            <span>{{ message }}</span>
+                            <button class="flash-close">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Page Content -->
+        <div class="admin-content">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+    
+    <script>
+        // Sidebar toggle
+        document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('mainContent').classList.toggle('expanded');
+        });
+        
+        // Mobile menu
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+        });
+        
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle?.querySelector('.theme-icon');
+        
+        // Check saved theme
+        if (localStorage.getItem('adminTheme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            if (themeIcon) themeIcon.textContent = '☀️';
+        }
+        
+        themeToggle?.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('adminTheme', isDark ? 'dark' : 'light');
+            if (themeIcon) themeIcon.textContent = isDark ? '☀️' : '🌙';
+        });
+        
+        // Flash message close
+        document.querySelectorAll('.flash-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.parentElement.remove();
+            });
+        });
+        
+        // Auto-hide flash messages
+        setTimeout(() => {
+            document.querySelectorAll('.flash-message').forEach(msg => {
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 300);
+            });
+        }, 5000);
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

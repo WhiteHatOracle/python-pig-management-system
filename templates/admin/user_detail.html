@@ -1,0 +1,402 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}User: {{ user.username }}{% endblock %}
+{% block page_title %}User Details{% endblock %}
+
+{% block content %}
+<div class="user-detail-page">
+    <!-- Back Button -->
+    <a href="{{ url_for('admin.users') }}" class="back-btn">
+        ← Back to Users
+    </a>
+    
+    <!-- User Profile Card -->
+    <div class="profile-card">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {% if user.profile_pic %}
+                    <img src="{{ user.profile_pic }}" alt="{{ user.username }}">
+                {% else %}
+                    {{ user.username[0].upper() }}
+                {% endif %}
+            </div>
+            <div class="profile-info">
+                <h2 class="profile-name">{{ user.name or user.username }}</h2>
+                <span class="profile-username">@{{ user.username }}</span>
+                <div class="profile-badges">
+                    {% if user.google_id %}
+                        <span class="badge google">🔵 Google Account</span>
+                    {% else %}
+                        <span class="badge email">📧 Email Account</span>
+                    {% endif %}
+                    {% if user.is_verified %}
+                        <span class="badge verified">✅ Verified</span>
+                    {% else %}
+                        <span class="badge unverified">⏳ Unverified</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="profile-actions">
+                <form method="POST" action="{{ url_for('admin.toggle_user_verify', user_id=user.id) }}">
+                    <button type="submit" class="btn {% if user.is_verified %}btn-warning{% else %}btn-success{% endif %}">
+                        {% if user.is_verified %}🔓 Remove Verification{% else %}✅ Verify User{% endif %}
+                    </button>
+                </form>
+                <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" 
+                      onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
+                    <button type="submit" class="btn btn-danger">🗑️ Delete User</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-icon">📧</span>
+            <div class="stat-content">
+                <span class="stat-label">Email</span>
+                <span class="stat-value">{{ user.email }}</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">📅</span>
+            <div class="stat-content">
+                <span class="stat-label">Joined</span>
+                <span class="stat-value">{{ user.created_at.strftime('%B %d, %Y') }}</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">🐷</span>
+            <div class="stat-content">
+                <span class="stat-label">Total Sows</span>
+                <span class="stat-value">{{ sow_count }}</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">🐗</span>
+            <div class="stat-content">
+                <span class="stat-label">Total Boars</span>
+                <span class="stat-value">{{ boar_count }}</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">🧾</span>
+            <div class="stat-content">
+                <span class="stat-label">Invoices</span>
+                <span class="stat-value">{{ invoice_count }}</span>
+            </div>
+        </div>
+        <div class="stat-item">
+            <span class="stat-icon">💸</span>
+            <div class="stat-content">
+                <span class="stat-label">Expenses</span>
+                <span class="stat-value">{{ expense_count }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Activity Log -->
+    <div class="activity-card">
+        <div class="card-header">
+            <h3 class="card-title">📋 User Activity</h3>
+        </div>
+        <div class="card-body">
+            <div class="activity-timeline">
+                {% for log in activity %}
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <span class="timeline-action">{{ log.action.replace('_', ' ').title() }}</span>
+                        <span class="timeline-time">{{ log.timestamp.strftime('%b %d, %Y at %H:%M') }}</span>
+                        {% if log.details %}
+                        <span class="timeline-details">{{ log.details }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="empty-activity">
+                    <span>No activity recorded for this user.</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.user-detail-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    font-size: 0.9375rem;
+    transition: color 0.2s;
+}
+
+.back-btn:hover {
+    color: var(--admin-primary);
+}
+
+.profile-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 2px 8px var(--admin-shadow);
+    overflow: hidden;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    flex-wrap: wrap;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
+    background: var(--admin-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 600;
+    overflow: hidden;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--admin-text);
+    margin-bottom: 0.25rem;
+}
+
+.profile-username {
+    font-size: 0.9375rem;
+    color: var(--admin-text-muted);
+    display: block;
+    margin-bottom: 0.75rem;
+}
+
+.profile-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge.google {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+}
+
+.badge.email {
+    background: rgba(156, 163, 175, 0.1);
+    color: #6B7280;
+}
+
+.badge.verified {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.badge.unverified {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-success {
+    background: var(--admin-success);
+    color: #fff;
+}
+
+.btn-success:hover {
+    background: #059669;
+}
+
+.btn-warning {
+    background: var(--admin-warning);
+    color: #fff;
+}
+
+.btn-warning:hover {
+    background: #D97706;
+}
+
+.btn-danger {
+    background: var(--admin-danger);
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background: #DC2626;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.stat-item {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+}
+
+.stat-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stat-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--admin-text);
+}
+
+.activity-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 2px 8px var(--admin-shadow);
+}
+
+.activity-timeline {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.timeline-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--admin-border);
+    position: relative;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-dot {
+    width: 12px;
+    height: 12px;
+    background: var(--admin-primary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+}
+
+.timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.timeline-action {
+    font-weight: 500;
+    color: var(--admin-text);
+}
+
+.timeline-time {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+}
+
+.timeline-details {
+    font-size: 0.8125rem;
+    color: var(--admin-text-muted);
+    background: var(--admin-bg);
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-top: 0.25rem;
+}
+
+.empty-activity {
+    text-align: center;
+    padding: 2rem;
+    color: var(--admin-text-muted);
+}
+
+@media (max-width: 768px) {
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .profile-actions {
+        width: 100%;
+    }
+    
+    .profile-actions .btn {
+        flex: 1;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,297 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Settings{% endblock %}
+{% block page_title %}System Settings{% endblock %}
+
+{% block content %}
+<div class="settings-page">
+    <form method="POST" class="settings-form">
+        <!-- General Settings -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <h3 class="settings-title">⚙️ General Settings</h3>
+            </div>
+            <div class="settings-body">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Site Name</label>
+                        <span class="setting-description">The name displayed in the browser tab and emails</span>
+                    </div>
+                    <input type="text" name="setting_site_name" value="{{ settings.get('site_name', 'Pig Management System') }}" class="setting-input">
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Support Email</label>
+                        <span class="setting-description">Email address for user support inquiries</span>
+                    </div>
+                    <input type="email" name="setting_support_email" value="{{ settings.get('support_email', '') }}" class="setting-input" placeholder="support@example.com">
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Max Sows per User</label>
+                        <span class="setting-description">Maximum number of sows a user can register (0 = unlimited)</span>
+                    </div>
+                    <input type="number" name="setting_max_sows" value="{{ settings.get('max_sows', '0') }}" class="setting-input" min="0">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Registration Settings -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <h3 class="settings-title">📝 Registration Settings</h3>
+            </div>
+            <div class="settings-body">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Allow Registration</label>
+                        <span class="setting-description">Enable or disable new user registrations</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="setting_allow_registration" 
+                            {% if settings.get('allow_registration', 'true') == 'true' %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                 </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Require Email Verification</label>
+                        <span class="setting-description">Users must verify email before accessing the app</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="setting_require_verification"
+                            {% if settings.get('require_verification', 'true') == 'true' %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Allow Google Login</label>
+                        <span class="setting-description">Enable Google OAuth login option</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="setting_allow_google"
+                            {% if settings.get('allow_google', 'true') == 'true' %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Maintenance -->
+        <div class="settings-card">
+            <div class="settings-header">
+                <h3 class="settings-title">🔧 Maintenance</h3>
+            </div>
+            <div class="settings-body">
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Maintenance Mode</label>
+                        <span class="setting-description">Put the site in maintenance mode (only admins can access)</span>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" name="setting_maintenance_mode"
+                            {% if settings.get('maintenance_mode', 'false') == 'true' %}checked{% endif %}>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <div class="setting-info">
+                        <label class="setting-label">Maintenance Message</label>
+                        <span class="setting-description">Message shown to users during maintenance</span>
+                    </div>
+                    <textarea name="setting_maintenance_message" class="setting-textarea" rows="2">{{ settings.get('maintenance_message', 'We are currently performing scheduled maintenance. Please check back soon.') }}</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <div class="settings-actions">
+            <button type="submit" class="save-btn">💾 Save Settings</button>
+        </div>
+    </form>
+</div>
+
+<style>
+.settings-page {
+    max-width: 800px;
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.settings-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border);
+    overflow: hidden;
+}
+
+.settings-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--admin-border);
+    background: var(--admin-bg);
+}
+
+.settings-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+.settings-body {
+    padding: 0.5rem 0;
+}
+
+.setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-info {
+    flex: 1;
+}
+
+.setting-label {
+    display: block;
+    font-weight: 500;
+    color: var(--admin-text);
+    margin-bottom: 0.25rem;
+}
+
+.setting-description {
+    font-size: 0.8125rem;
+    color: var(--admin-text-muted);
+}
+
+.setting-input {
+    width: 250px;
+    padding: 0.625rem 1rem;
+    border: 2px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-size: 0.9375rem;
+}
+
+.setting-input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+}
+
+.setting-textarea {
+    width: 100%;
+    max-width: 400px;
+    padding: 0.625rem 1rem;
+    border: 2px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-size: 0.9375rem;
+    resize: vertical;
+    font-family: inherit;
+}
+
+.setting-textarea:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 52px;
+    height: 28px;
+    cursor: pointer;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--admin-border);
+    border-radius: 14px;
+    transition: all 0.3s;
+}
+
+.toggle-slider:before {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.3s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--admin-primary);
+}
+
+.toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 2rem;
+    background: var(--admin-primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.save-btn:hover {
+    background: var(--admin-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
+}
+
+@media (max-width: 768px) {
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .setting-input,
+    .setting-textarea {
+        width: 100%;
+        max-width: none;
+    }
+}
+</style>
+{% endblock %}

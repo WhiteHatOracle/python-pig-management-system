@@ -1,0 +1,561 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}User Management{% endblock %}
+{% block page_title %}User Management{% endblock %}
+
+{% block content %}
+<div class="users-page">
+    <!-- Filters & Search -->
+    <div class="filters-card">
+        <form method="GET" class="filters-form">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" name="search" value="{{ search }}" placeholder="Search users by name, email..." class="search-input">
+            </div>
+            
+            <div class="filter-buttons">
+                <a href="{{ url_for('admin.users') }}" class="filter-btn {% if filter_type == 'all' %}active{% endif %}">
+                    All <span class="badge">{{ users.total }}</span>
+                </a>
+                <a href="{{ url_for('admin.users', filter='verified') }}" class="filter-btn {% if filter_type == 'verified' %}active{% endif %}">
+                    ✅ Verified
+                </a>
+                <a href="{{ url_for('admin.users', filter='unverified') }}" class="filter-btn {% if filter_type == 'unverified' %}active{% endif %}">
+                    ⏳ Unverified
+                </a>
+                <a href="{{ url_for('admin.users', filter='google') }}" class="filter-btn {% if filter_type == 'google' %}active{% endif %}">
+                    🔵 Google
+                </a>
+                <a href="{{ url_for('admin.users', filter='email') }}" class="filter-btn {% if filter_type == 'email' %}active{% endif %}">
+                    📧 Email
+                </a>
+            </div>
+            
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+    </div>
+    
+    <!-- Users Table -->
+    <div class="table-card">
+        <div class="table-header">
+            <h3 class="table-title">👥 Users ({{ users.total }})</h3>
+            <div class="table-actions">
+                <button class="export-btn" onclick="exportUsers()">
+                    📥 Export CSV
+                </button>
+            </div>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Email</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users.items %}
+                    <tr>
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">
+                                    {% if user.profile_pic %}
+                                        <img src="{{ user.profile_pic }}" alt="{{ user.username }}">
+                                    {% else %}
+                                        {{ user.username[0].upper() }}
+                                    {% endif %}
+                                </div>
+                                <div class="user-info">
+                                    <span class="user-name">{{ user.name or user.username }}</span>
+                                    <span class="user-username">@{{ user.username }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="email-text">{{ user.email }}</span>
+                        </td>
+                        <td>
+                            {% if user.google_id %}
+                                <span class="type-badge google">🔵 Google</span>
+                            {% else %}
+                                <span class="type-badge email">📧 Email</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.is_verified %}
+                                <span class="status-badge verified">✅ Verified</span>
+                            {% else %}
+                                <span class="status-badge unverified">⏳ Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="date-text">{{ user.created_at.strftime('%b %d, %Y') }}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" class="action-btn view" title="View Details">
+                                    👁️
+                                </a>
+                                <form method="POST" action="{{ url_for('admin.toggle_user_verify', user_id=user.id) }}" style="display: inline;">
+                                    <button type="submit" class="action-btn toggle" title="Toggle Verification">
+                                        {% if user.is_verified %}🔓{% else %}🔒{% endif %}
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-table">
+                                <span class="empty-icon">👤</span>
+                                <span class="empty-text">No users found</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if users.pages > 1 %}
+        <div class="pagination">
+            {% if users.has_prev %}
+                <a href="{{ url_for('admin.users', page=users.prev_num, search=search, filter=filter_type) }}" class="page-btn">← Previous</a>
+            {% endif %}
+            
+            <div class="page-numbers">
+                {% for page in users.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page %}
+                        <a href="{{ url_for('admin.users', page=page, search=search, filter=filter_type) }}" 
+                           class="page-num {% if page == users.page %}active{% endif %}">
+                            {{ page }}
+                        </a>
+                    {% else %}
+                        <span class="page-ellipsis">...</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            {% if users.has_next %}
+                <a href="{{ url_for('admin.users', page=users.next_num, search=search, filter=filter_type) }}" class="page-btn">Next →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+/* Users Page Specific Styles */
+.users-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.filters-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    padding: 1.25rem;
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 2px 8px var(--admin-shadow);
+}
+
+.filters-form {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border: 2px solid var(--admin-border);
+    border-radius: 10px;
+    font-size: 0.9375rem;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    transition: all 0.2s;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    color: var(--admin-text-muted);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.filter-btn:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+}
+
+.filter-btn.active {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+    color: #fff;
+}
+
+.filter-btn .badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.125rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.search-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--admin-primary);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.search-btn:hover {
+    background: var(--admin-primary-hover);
+}
+
+/* Table Card */
+.table-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 2px 8px var(--admin-shadow);
+    overflow: hidden;
+}
+
+.table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.table-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--admin-text);
+}
+
+.export-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    color: var(--admin-text);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.export-btn:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--admin-border);
+}
+
+.data-table th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--admin-text-muted);
+    background: var(--admin-bg);
+}
+
+.data-table tbody tr:hover {
+    background: var(--admin-bg);
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--admin-primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+    overflow: hidden;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 500;
+    color: var(--admin-text);
+    font-size: 0.9375rem;
+}
+
+.user-username {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+}
+
+.email-text {
+    font-size: 0.875rem;
+    color: var(--admin-text);
+}
+
+.type-badge, .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.type-badge.google {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3B82F6;
+}
+
+.type-badge.email {
+    background: rgba(156, 163, 175, 0.1);
+    color: #6B7280;
+}
+
+.status-badge.verified {
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.status-badge.unverified {
+    background: rgba(245, 158, 11, 0.1);
+    color: #D97706;
+}
+
+.date-text {
+    font-size: 0.875rem;
+    color: var(--admin-text-muted);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--admin-border);
+    background: var(--admin-bg);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.action-btn:hover {
+    border-color: var(--admin-primary);
+    background: rgba(0, 168, 107, 0.1);
+}
+
+.action-btn.danger:hover {
+    border-color: var(--admin-danger);
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.empty-table {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    color: var(--admin-text-muted);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-text {
+    font-size: 1rem;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1.25rem;
+    border-top: 1px solid var(--admin-border);
+}
+
+.page-btn {
+    padding: 0.5rem 1rem;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.page-btn:hover {
+    border-color: var(--admin-primary);
+    color: var(--admin-primary);
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.page-num {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid var(--admin-border);
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.page-num:hover {
+    border-color: var(--admin-primary);
+}
+
+.page-num.active {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+    color: #fff;
+}
+
+.page-ellipsis {
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--admin-text-muted);
+}
+
+@media (max-width: 768px) {
+    .filters-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-wrapper {
+        min-width: 100%;
+    }
+    
+    .filter-buttons {
+        justify-content: center;
+    }
+    
+    .search-btn {
+        width: 100%;
+    }
+    
+    .data-table th,
+    .data-table td {
+        padding: 0.75rem 1rem;
+    }
+    
+    .user-cell {
+        min-width: 180px;
+    }
+}
+</style>
+
+<script>
+function exportUsers() {
+    window.location.href = "{{ url_for('admin.users') }}?export=csv&filter={{ filter_type }}&search={{ search }}";
+}
+</script>
+{% endblock %}

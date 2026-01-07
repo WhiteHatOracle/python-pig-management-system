@@ -1,0 +1,394 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Traffic Analytics{% endblock %}
+{% block page_title %}Traffic Analytics{% endblock %}
+
+{% block content %}
+<div class="traffic-page">
+    <!-- Period Selector -->
+    <div class="period-card">
+        <div class="period-buttons">
+            <a href="{{ url_for('admin.traffic', days=7) }}" class="period-btn {% if days == 7 %}active{% endif %}">7 Days</a>
+            <a href="{{ url_for('admin.traffic', days=14) }}" class="period-btn {% if days == 14 %}active{% endif %}">14 Days</a>
+            <a href="{{ url_for('admin.traffic', days=30) }}" class="period-btn {% if days == 30 %}active{% endif %}">30 Days</a>
+            <a href="{{ url_for('admin.traffic', days=90) }}" class="period-btn {% if days == 90 %}active{% endif %}">90 Days</a>
+        </div>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="traffic-stats">
+        <div class="traffic-stat-card">
+            <span class="traffic-stat-icon">👁️</span>
+            <div class="traffic-stat-info">
+                <span class="traffic-stat-value">{{ today_views }}</span>
+                <span class="traffic-stat-label">Today's Views</span>
+            </div>
+        </div>
+        <div class="traffic-stat-card">
+            <span class="traffic-stat-icon">📊</span>
+            <div class="traffic-stat-info">
+                <span class="traffic-stat-value">{{ traffic_data.daily_views | sum(attribute=1) if traffic_data.daily_views else 0 }}</span>
+                <span class="traffic-stat-label">Total Views ({{ days }} days)</span>
+            </div>
+        </div>
+        <div class="traffic-stat-card">
+            <span class="traffic-stat-icon">⚡</span>
+            <div class="traffic-stat-info">
+                <span class="traffic-stat-value">{{ avg_response_time }}ms</span>
+                <span class="traffic-stat-label">Avg Response Time</span>
+            </div>
+        </div>
+        <div class="traffic-stat-card">
+            <span class="traffic-stat-icon">📱</span>
+            <div class="traffic-stat-info">
+                <span class="traffic-stat-value">{{ traffic_data.devices.get('mobile', 0) }}</span>
+                <span class="traffic-stat-label">Mobile Visits</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="charts-row">
+        <!-- Page Views Chart -->
+        <div class="chart-card wide">
+            <div class="card-header">
+                <h3 class="card-title">📈 Page Views Over Time</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="pageViewsChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="charts-row split">
+        <!-- Device Breakdown -->
+        <div class="chart-card">
+            <div class="card-header">
+                <h3 class="card-title">📱 Device Breakdown</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="deviceChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #10B981;"></span>
+                    <span>Desktop ({{ traffic_data.devices.get('desktop', 0) }})</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #3B82F6;"></span>
+                    <span>Mobile ({{ traffic_data.devices.get('mobile', 0) }})</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #F59E0B;"></span>
+                    <span>Tablet ({{ traffic_data.devices.get('tablet', 0) }})</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Browser Breakdown -->
+        <div class="chart-card">
+            <div class="card-header">
+                <h3 class="card-title">🌐 Browser Breakdown</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="browserChart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Top Pages -->
+    <div class="table-card">
+        <div class="card-header">
+            <h3 class="card-title">🔥 Top Pages</h3>
+        </div>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Page URL</th>
+                        <th>Views</th>
+                        <th>% of Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set total_views = traffic_data.top_pages | sum(attribute=1) if traffic_data.top_pages else 1 %}
+                    {% for path, views in traffic_data.top_pages %}
+                    <tr>
+                        <td><span class="rank-badge">{{ loop.index }}</span></td>
+                        <td><code class="path-text">{{ path }}</code></td>
+                        <td><strong>{{ views }}</strong></td>
+                        <td>
+                            <div class="progress-cell">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: {{ (views / total_views * 100) | round(1) }}%"></div>
+                                </div>
+                                <span class="progress-text">{{ (views / total_views * 100) | round(1) }}%</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">
+                            <div class="empty-table">
+                                <span>No page view data available</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+.traffic-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.period-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    padding: 1rem;
+    border: 1px solid var(--admin-border);
+}
+
+.period-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.period-btn {
+    padding: 0.625rem 1.25rem;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.period-btn:hover {
+    border-color: var(--admin-primary);
+}
+
+.period-btn.active {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+    color: #fff;
+}
+
+.traffic-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.traffic-stat-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 2px 8px var(--admin-shadow);
+}
+
+.traffic-stat-icon {
+    font-size: 2rem;
+}
+
+.traffic-stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.traffic-stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--admin-text);
+}
+
+.traffic-stat-label {
+    font-size: 0.8125rem;
+    color: var(--admin-text-muted);
+}
+
+.charts-row.split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.chart-card.wide {
+    grid-column: span 2;
+}
+
+.chart-card .card-body {
+    height: 300px;
+}
+
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--admin-bg);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--admin-text-muted);
+}
+
+.path-text {
+    background: var(--admin-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    color: var(--admin-primary);
+}
+
+.progress-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--admin-border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--admin-primary);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+    min-width: 45px;
+}
+
+@media (max-width: 1024px) {
+    .traffic-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .charts-row.split {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-card.wide {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 600px) {
+    .traffic-stats {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Page Views Chart
+    const pageViewsCtx = document.getElementById('pageViewsChart').getContext('2d');
+    const dailyViews = {{ traffic_data.daily_views | tojson }};
+    
+    new Chart(pageViewsCtx, {
+        type: 'line',
+        data: {
+            labels: dailyViews.map(d => d[0]),
+            datasets: [{
+                label: 'Page Views',
+                data: dailyViews.map(d => d[1]),
+                borderColor: '#00A86B',
+                backgroundColor: 'rgba(0, 168, 107, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#00A86B'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+    
+    // Device Chart
+    const deviceCtx = document.getElementById('deviceChart').getContext('2d');
+    const devices = {{ traffic_data.devices | tojson }};
+    
+    new Chart(deviceCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(devices),
+            datasets: [{
+                data: Object.values(devices),
+                backgroundColor: ['#10B981', '#3B82F6', '#F59E0B'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            cutout: '65%'
+        }
+    });
+    
+    // Browser Chart
+    const browserCtx = document.getElementById('browserChart').getContext('2d');
+    const browsers = {{ traffic_data.browsers | tojson }};
+    
+    new Chart(browserCtx, {
+        type: 'bar',
+        data: {
+            labels: Object.keys(browsers),
+            datasets: [{
+                label: 'Users',
+                data: Object.values(browsers),
+                backgroundColor: '#00A86B',
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+</script>
+{% endblock %}

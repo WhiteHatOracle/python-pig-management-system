@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #F7FAFC;
+            --bg-card: #FFFFFF;
+            --text-dark: #1A202C;
+            --text-muted: #718096;
+            --accent: #00A86B;
+            --accent-hover: #0e8e72;
+            --border: #E2E8F0;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .message {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 0.5rem;
+        }
+
+        .email {
+            background: var(--bg-primary);
+            padding: 0.75rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: inline-block;
+            margin: 1rem 0 2rem 0;
+            border: 1px solid var(--border);
+        }
+
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 168, 107, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-dark);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+
+        .help-text {
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        /* Flash messages */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .flash {
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .flash-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .flash-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #DC2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .flash-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .icon {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="icon">📧</div>
+        <h1>Verify Your Email</h1>
+        <p class="message">We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.</p>
+        
+        <div class="email">{{ current_user.email }}</div>
+        
+        <div class="actions">
+            <a href="{{ url_for('resend_verification') }}" class="btn btn-primary">
+                🔄 Resend Verification Email
+            </a>
+        </div>
+        
+        <div class="divider"><span>or</span></div>
+        
+        <div class="actions">
+            <a href="{{ url_for('signout') }}" class="btn btn-secondary">
+                🚪 Logout
+            </a>
+        </div>
+        
+        <p class="help-text">
+            Didn't receive the email? Check your spam/junk folder.<br>
+            Make sure <strong>{{ current_user.email }}</strong> is correct.
+        </p>
+    </div>
+</body>
+</html>

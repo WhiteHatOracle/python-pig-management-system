@@ -1,0 +1,224 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Activity Logs{% endblock %}
+{% block page_title %}Activity Logs{% endblock %}
+
+{% block content %}
+<div class="activity-page">
+    <!-- Filters -->
+    <div class="filters-card">
+        <form method="GET" class="filters-form">
+            <div class="filter-group">
+                <label class="filter-label">Filter by Action</label>
+                <select name="action" class="filter-select" onchange="this.form.submit()">
+                    <option value="">All Actions</option>
+                    {% for action in action_types %}
+                    <option value="{{ action }}" {% if action_filter == action %}selected{% endif %}>
+                        {{ action.replace('_', ' ').title() }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Activity Table -->
+    <div class="table-card">
+        <div class="card-header">
+            <h3 class="card-title">📋 Activity Logs</h3>
+            <span class="total-count">{{ logs.total }} total entries</span>
+        </div>
+        
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Action</th>
+                        <th>User</th>
+                        <th>Entity</th>
+                        <th>IP Address</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in logs.items %}
+                    <tr>
+                        <td>
+                            <div class="action-cell">
+                                <span class="action-icon">
+                                    {% if 'login' in log.action %}🔑
+                                    {% elif 'created' in log.action %}➕
+                                    {% elif 'updated' in log.action %}✏️
+                                    {% elif 'deleted' in log.action %}🗑️
+                                    {% elif 'logout' in log.action %}🚪
+                                    {% else %}📌{% endif %}
+                                </span>
+                                <span class="action-text">{{ log.action.replace('_', ' ').title() }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            {% if log.user %}
+                                <a href="{{ url_for('admin.user_detail', user_id=log.user.id) }}" class="user-link">
+                                    {{ log.user.username }}
+                                </a>
+                            {% elif log.admin %}
+                                <span class="admin-badge">{{ log.admin.username }} (Admin)</span>
+                            {% else %}
+                                <span class="text-muted">System</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if log.entity_type %}
+                                <span class="entity-badge">{{ log.entity_type }} #{{ log.entity_id or '-' }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <code class="ip-text">{{ log.ip_address or '-' }}</code>
+                        </td>
+                        <td>
+                            <span class="timestamp">{{ log.timestamp.strftime('%b %d, %Y %H:%M:%S') }}</span>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-table">
+                                <span class="empty-icon">📋</span>
+                                <span class="empty-text">No activity logs found</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {% if logs.pages > 1 %}
+        <div class="pagination">
+            {% if logs.has_prev %}
+                <a href="{{ url_for('admin.activity', page=logs.prev_num, action=action_filter) }}" class="page-btn">← Previous</a>
+            {% endif %}
+            
+            <div class="page-numbers">
+                {% for page in logs.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page %}
+                        <a href="{{ url_for('admin.activity', page=page, action=action_filter) }}" 
+                           class="page-num {% if page == logs.page %}active{% endif %}">
+                            {{ page }}
+                        </a>
+                    {% else %}
+                        <span class="page-ellipsis">...</span>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            {% if logs.has_next %}
+                <a href="{{ url_for('admin.activity', page=logs.next_num, action=action_filter) }}" class="page-btn">Next →</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.activity-page {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filter-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--admin-text);
+}
+
+.filter-select {
+    padding: 0.625rem 1rem;
+    border: 2px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-size: 0.875rem;
+    min-width: 200px;
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+}
+
+.total-count {
+    font-size: 0.875rem;
+    color: var(--admin-text-muted);
+}
+
+.action-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.action-icon {
+    font-size: 1.125rem;
+}
+
+.action-text {
+    font-weight: 500;
+    color: var(--admin-text);
+}
+
+.user-link {
+    color: var(--admin-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.user-link:hover {
+    text-decoration: underline;
+}
+
+.admin-badge {
+    background: rgba(139, 92, 246, 0.1);
+    color: #7C3AED;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+}
+
+.entity-badge {
+    background: var(--admin-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    color: var(--admin-text-muted);
+}
+
+.ip-text {
+    background: var(--admin-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    color: var(--admin-text-muted);
+}
+
+.timestamp {
+    font-size: 0.8125rem;
+    color: var(--admin-text-muted);
+}
+
+.text-muted {
+    color: var(--admin-text-muted);
+}
+</style>
+{% endblock %}

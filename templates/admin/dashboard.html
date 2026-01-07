@@ -1,0 +1,248 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-grid">
+    <!-- Quick Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card primary">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats.users.total }}</span>
+                <span class="stat-label">Total Users</span>
+                <span class="stat-change positive">+{{ stats.users.new_week }} this week</span>
+            </div>
+        </div>
+        
+        <div class="stat-card success">
+            <div class="stat-icon">🐷</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats.pigs.total_piglets }}</span>
+                <span class="stat-label">Total Piglets</span>
+                <span class="stat-sub">{{ stats.pigs.total_sows }} sows, {{ stats.pigs.total_boars }} boars</span>
+            </div>
+        </div>
+        
+        <div class="stat-card info">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ stats.traffic.today_views }}</span>
+                <span class="stat-label">Today's Views</span>
+                <span class="stat-sub">{{ stats.traffic.unique_today }} unique visitors</span>
+            </div>
+        </div>
+        
+        <div class="stat-card warning">
+            <div class="stat-icon">💰</div>
+            <div class="stat-info">
+                <span class="stat-value">{{ "K{:,.0f}".format(stats.financial.profit) }}</span>
+                <span class="stat-label">Total Profit</span>
+                <span class="stat-sub">Revenue: ${{ "{:,.0f}".format(stats.financial.total_revenue) }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="charts-row">
+        <!-- User Growth Chart -->
+        <div class="chart-card">
+            <div class="card-header">
+                <h3 class="card-title">📈 User Growth (14 days)</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="userGrowthChart"></canvas>
+            </div>
+        </div>
+        
+        <!-- User Breakdown -->
+        <div class="chart-card">
+            <div class="card-header">
+                <h3 class="card-title">👥 User Breakdown</h3>
+            </div>
+            <div class="card-body">
+                <canvas id="userBreakdownChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #10B981;"></span>
+                    <span>Verified ({{ stats.users.verified }})</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #EF4444;"></span>
+                    <span>Unverified ({{ stats.users.unverified }})</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pig Stages & Recent Activity -->
+    <div class="info-row">
+        <!-- Pig Stages -->
+        <div class="info-card">
+            <div class="card-header">
+                <h3 class="card-title">🐖 Pig Stages</h3>
+            </div>
+            <div class="card-body">
+                <div class="stages-grid">
+                    <div class="stage-item preweaning">
+                        <span class="stage-value">{{ stats.pigs.stages.preweaning }}</span>
+                        <span class="stage-label">Pre-weaning</span>
+                        <div class="stage-bar">
+                            <div class="stage-fill" style="width: {{ (stats.pigs.stages.preweaning / (stats.pigs.total_piglets or 1)) * 100 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="stage-item weaner">
+                        <span class="stage-value">{{ stats.pigs.stages.weaner }}</span>
+                        <span class="stage-label">Weaner</span>
+                        <div class="stage-bar">
+                            <div class="stage-fill" style="width: {{ (stats.pigs.stages.weaner / (stats.pigs.total_piglets or 1)) * 100 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="stage-item grower">
+                        <span class="stage-value">{{ stats.pigs.stages.grower }}</span>
+                        <span class="stage-label">Grower</span>
+                        <div class="stage-bar">
+                            <div class="stage-fill" style="width: {{ (stats.pigs.stages.grower / (stats.pigs.total_piglets or 1)) * 100 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="stage-item finisher">
+                        <span class="stage-value">{{ stats.pigs.stages.finisher }}</span>
+                        <span class="stage-label">Finisher</span>
+                        <div class="stage-bar">
+                            <div class="stage-fill" style="width: {{ (stats.pigs.stages.finisher / (stats.pigs.total_piglets or 1)) * 100 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="info-card">
+            <div class="card-header">
+                <h3 class="card-title">📋 Recent Activity</h3>
+                <a href="{{ url_for('admin.activity') }}" class="view-all">View All →</a>
+            </div>
+            <div class="card-body">
+                <div class="activity-list">
+                    {% for log in recent_activity %}
+                    <div class="activity-item">
+                        <div class="activity-icon {{ log.action.split('_')[0] }}">
+                            {% if 'login' in log.action %}🔑
+                            {% elif 'created' in log.action %}➕
+                            {% elif 'updated' in log.action %}✏️
+                            {% elif 'deleted' in log.action %}🗑️
+                            {% else %}📌{% endif %}
+                        </div>
+                        <div class="activity-content">
+                            <span class="activity-action">{{ log.action.replace('_', ' ').title() }}</span>
+                            <span class="activity-time">{{ log.timestamp.strftime('%b %d, %H:%M') }}</span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="empty-state">
+                        <span>No recent activity</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Stats Cards -->
+    <div class="quick-stats-row">
+        <div class="quick-stat">
+            <span class="quick-icon">📧</span>
+            <div class="quick-info">
+                <span class="quick-value">{{ stats.users.email_users }}</span>
+                <span class="quick-label">Email Signups</span>
+            </div>
+        </div>
+        <div class="quick-stat">
+            <span class="quick-icon">🔵</span>
+            <div class="quick-info">
+                <span class="quick-value">{{ stats.users.google_users }}</span>
+                <span class="quick-label">Google Signups</span>
+            </div>
+        </div>
+        <div class="quick-stat">
+            <span class="quick-icon">🐽</span>
+            <div class="quick-info">
+                <span class="quick-value">{{ stats.pigs.total_litters }}</span>
+                <span class="quick-label">Total Litters</span>
+            </div>
+        </div>
+        <div class="quick-stat">
+            <span class="quick-icon">💸</span>
+            <div class="quick-info">
+                <span class="quick-value">${{ "{:,.0f}".format(stats.financial.total_expenses) }}</span>
+                <span class="quick-label">Total Expenses</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // User Growth Chart
+    const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+    const userGrowthData = {{ user_growth | tojson }};
+    
+    new Chart(userGrowthCtx, {
+        type: 'line',
+        data: {
+            labels: userGrowthData.map(d => d[0]),
+            datasets: [{
+                label: 'New Users',
+                data: userGrowthData.map(d => d[1]),
+                borderColor: '#00A86B',
+                backgroundColor: 'rgba(0, 168, 107, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#00A86B'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            }
+        }
+    });
+    
+    // User Breakdown Chart
+    const userBreakdownCtx = document.getElementById('userBreakdownChart').getContext('2d');
+    new Chart(userBreakdownCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Verified', 'Unverified'],
+            datasets: [{
+                data: [{{ stats.users.verified }}, {{ stats.users.unverified }}],
+                backgroundColor: ['#10B981', '#EF4444'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            cutout: '70%'
+        }
+    });
+</script>
+{% endblock %}

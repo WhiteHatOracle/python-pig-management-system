@@ -1,0 +1,202 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Create Admin{% endblock %}
+{% block page_title %}Create New Admin{% endblock %}
+
+{% block content %}
+<div class="create-admin-page">
+    <a href="{{ url_for('admin.admins') }}" class="back-btn">
+        ← Back to Admins
+    </a>
+    
+    <div class="form-card">
+        <div class="form-header">
+            <h2 class="form-title">➕ Create New Admin</h2>
+            <p class="form-description">Add a new administrator to the system.</p>
+        </div>
+        
+        <form method="POST" class="admin-form">
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-input" placeholder="Enter username" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-input" placeholder="Enter email address" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" name="password" class="form-input" placeholder="Enter password" required minlength="8">
+                <span class="form-hint">Minimum 8 characters</span>
+            </div>
+            
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_super_admin" class="checkbox-input">
+                    <span class="checkbox-custom"></span>
+                    <span class="checkbox-text">Grant Super Admin privileges</span>
+                </label>
+                <span class="form-hint">Super Admins can manage other admins and access all settings.</span>
+            </div>
+            
+            <div class="form-actions">
+                <a href="{{ url_for('admin.admins') }}" class="cancel-btn">Cancel</a>
+                <button type="submit" class="submit-btn">Create Admin</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.create-admin-page {
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-card {
+    background: var(--admin-card-bg);
+    border-radius: var(--admin-radius);
+    border: 1px solid var(--admin-border);
+    overflow: hidden;
+}
+
+.form-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--admin-border);
+    background: var(--admin-bg);
+}
+
+.form-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--admin-text);
+    margin-bottom: 0.25rem;
+}
+
+.form-description {
+    font-size: 0.875rem;
+    color: var(--admin-text-muted);
+}
+
+.admin-form {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--admin-text);
+}
+
+.form-input {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--admin-border);
+    border-radius: 10px;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--admin-primary);
+    box-shadow: 0 0 0 4px rgba(0, 168, 107, 0.1);
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.checkbox-input {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--admin-border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.checkbox-input:checked + .checkbox-custom {
+    background: var(--admin-primary);
+    border-color: var(--admin-primary);
+}
+
+.checkbox-input:checked + .checkbox-custom::after {
+    content: '✓';
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.checkbox-text {
+    font-weight: 500;
+    color: var(--admin-text);
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--admin-border);
+}
+
+.cancel-btn {
+    padding: 0.75rem 1.5rem;
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    color: var(--admin-text);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+    background: var(--admin-border);
+}
+
+.submit-btn {
+    padding: 0.75rem 2rem;
+    background: var(--admin-primary);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.submit-btn:hover {
+    background: var(--admin-primary-hover);
+    transform: translateY(-2px);
+}
+</style>
+{% endblock %}
