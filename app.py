@@ -575,6 +575,7 @@ def update_financial_summary(period):
         dash.Input("theme-store", "data"),  # Add theme input
     ],
 )
+
 def update_revenue_expenses_chart(period, chart_type, n, theme):
     colors = get_theme_colors(theme)
     data = get_financial_data(period)
