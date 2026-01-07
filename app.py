@@ -23,7 +23,6 @@ from flask_login import (
     LoginManager, login_user, login_required,
     logout_user, current_user
 )
-from flask_admin import Admin
 from flask_mail import Mail, Message
 from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
@@ -63,7 +62,7 @@ from utils import (
     get_total_counts, generate_invoice_pdf, get_litter_stage
 )
 from extensions import (
-    db, admin, login_manager, migrate
+    db, login_manager, migrate
 )
 from dashboard_helpers import (
     get_herd_counts_by_stage, 
@@ -130,8 +129,6 @@ bcrypt = Bcrypt(app)
 mail = Mail(app)
 
 db.init_app(app)
-admin.init_app(app, index_view=None)  # Initialize first
-admin.template_mode = 'bootstrap4'     # ✅ Set template_mode AFTER init
 login_manager.init_app(app)
 migrate.init_app(app, db)
 
@@ -142,14 +139,6 @@ login_manager.login_view = "signin"   # Redirect when auth is required
 # Import Models AFTER db.init_app()
 # =========================
 from models import User, Boars, Sows, ServiceRecords, Invoice, Expense, Litter
-
-
-# =========================
-# Setup Admin Views AFTER models are imported
-# =========================
-from admin_setup import setup_admin_views
-setup_admin_views()
-
 
 # =========================
 # User Loader for Flask-Login
