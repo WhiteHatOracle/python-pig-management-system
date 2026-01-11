@@ -1438,38 +1438,55 @@ def invoice_Generator():
 @app.route('/download-invoice', methods=['POST'])
 @login_required
 def download_invoice():
-    invoice_data = eval(request.form.get("invoice_data"))  # Parse invoice data passed from the form
-    company_name = request.form.get("company_name")
-    total_weight = float(request.form.get("total_weight").replace("Kg", "").replace(",", ""))
-    average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
-    total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
-    total_pigs = int(request.form.get("total_pigs"))
+    import json
+    try:
+        invoice_data = json.loads(request.form.get("invoice_data", "[]"))
+    except json.JSONDecodeError:
+        flash("Invalid invoice data", "error")
+        return redirect(url_for("invoice_Generator"))
 
-     # Get invoice_date from form and parse it
+    company_name = request.form.get("company_name")
+
+    # parse numerical values
+    try:
+        total_weight = float(request.form.get("total_weight").replace("Kg", "").replace(",", ""))
+        average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
+        total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
+        total_pigs = int(request.form.get("total_pigs"))
+    except ValueError:
+        flash("Invalid Numerical data", "error")
+        return redirect(url_for('invoice_Generator'))
+
+    # Get invoice_date from form and parse it
     invoice_date_str = request.form.get("invoice_date")
     try:
-        # Parse the formatted date string (e.g., "January 15, 2025")
-        invoice_date = datetime.strptime(invoice_date_str, '%B %d, %Y').date()
-    except (ValueError, TypeError):
+        # Parse the date string in YYYY-MM-DD format (HTML5 date input format)
+        invoice_date = datetime.strptime(invoice_date_str, '%Y-%m-%d').date()
+    except (ValueError, TypeError, AttributeError):
         # Fallback to today's date if parsing fails
         invoice_date = date.today()
 
-    #generate unique invoice number
+    # Generate unique invoice number
     invoice_number = f"INV-{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
-    #store invoice data in db just before downloading
-    new_invoice = Invoice(
-        invoice_number=invoice_number,
-        num_of_pigs=total_pigs,
-        company_name=company_name,
-        date=invoice_date,
-        total_weight=total_weight,
-        average_weight=average_weight,
-        total_price=total_cost,
-        user_id=current_user.id
-    )
-    db.session.add(new_invoice)
-    db.session.commit()
+    # Store invoice data in db just before downloading
+    try:
+        new_invoice = Invoice(
+            invoice_number=invoice_number,
+            num_of_pigs=total_pigs,
+            company_name=company_name,
+            date=invoice_date,
+            total_weight=total_weight,
+            average_weight=average_weight,
+            total_price=total_cost,
+            user_id=current_user.id
+        )
+        db.session.add(new_invoice)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        flash(f"Error saving invoice: {str(e)}", "error")
+        return redirect(url_for('invoice_Generator'))
 
     pdf = generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weight, average_weight, total_cost)
     response = make_response(pdf)
