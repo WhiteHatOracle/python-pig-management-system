@@ -161,7 +161,7 @@ app.jinja_env.globals.update(enumerate=enumerate)
 # Add current datetime to all templates
 @app.context_processor
 def inject_now():
-    return {'now': datetime.now}
+    return {'now': datetime.now()}
 
 # =========================
 # SQLite Foreign Key Support
