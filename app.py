@@ -533,6 +533,7 @@ dash_app.layout = html.Div([
         dcc.Interval(id="chart-interval", interval=60 * 1000, n_intervals=0),
         dcc.Location(id='url', refresh=True),
         dcc.Store(id='theme-store', data='light'),
+        dcc.Store(id='user-id-store', data=None),
         html.Div(id='theme-detector', style={'display': 'none'}),
 
     ], className="dashboard-container"),
@@ -562,6 +563,27 @@ dash_app.clientside_callback(
     dash.Input('interval-update', 'n_intervals'),
 )
 
+# Add this after your dash_app.layout
+dash_app.clientside_callback(
+    """
+    async function(n) {
+        try {
+            const response = await fetch('/api/current-user-id');
+            if (response.ok) {
+                const data = await response.json();
+                return data.user_id;
+            }
+        } catch (e) {
+            console.error('Failed to get user ID:', e);
+        }
+        return null;
+    }
+    """,
+    dash.Output('user-id-store', 'data'),
+    dash.Input('interval-update', 'n_intervals'),
+    prevent_initial_call=False,
+)
+
 # Callback for financial summary cards
 @dash_app.callback(
     [
@@ -576,11 +598,22 @@ dash_app.clientside_callback(
         dash.Output("net-profit", "className"),
         dash.Output("profit-margin-pct", "className"),
     ],
-    [dash.Input("period-selector", "value")],
+    [
+        dash.Input("period-selector", "value"),
+        dash.Input("user-id-store", "data"),
+    ],
 )
 
-def update_financial_summary(period):
-    data = get_financial_data(period)
+def update_financial_summary(period, user_id):
+
+    if user_id is None:
+        return(
+            "K0.00", "K0.00", "K0.00", "0.0%",
+            "Loading...", "Loading...", "-", "-",
+            "finance-value profit-value", "finance-value margin-value"
+        )
+
+    data = get_financial_data(period, user_id=user_id)
     
     total_revenue = f"K{data['total_revenue']:,.2f}"
     total_expenses = f"K{data['total_expenses']:,.2f}"
@@ -628,13 +661,30 @@ def update_financial_summary(period):
         dash.Input("period-selector", "value"),
         dash.Input("chart-type-selector", "value"),
         dash.Input("chart-interval", "n_intervals"),
-        dash.Input("theme-store", "data"),  # Add theme input
+        dash.Input("theme-store", "data"),
+        dash.Input("user-id-store", "data"),
     ],
 )
 
-def update_revenue_expenses_chart(period, chart_type, n, theme):
+def update_revenue_expenses_chart(period, chart_type, n, theme,user_id):
     colors = get_theme_colors(theme)
-    data = get_financial_data(period)
+    
+    if user_id is None:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="Loading...",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=16, color=colors['text_secondary'])
+        )
+        fig.update_layout(
+            plot_bgcolor=colors['chart_bg'],
+            paper_bgcolor=colors['chart_bg'],
+            height=350,
+        )
+        return fig
+
+    data = get_financial_data(period, user_id=user_id)
     
     # Combine all months
     all_months = sorted(set(list(data['revenue_by_month'].keys()) + list(data['expense_by_month'].keys())))
@@ -772,14 +822,31 @@ def update_revenue_expenses_chart(period, chart_type, n, theme):
     [
         dash.Input("period-selector", "value"),
         dash.Input("chart-interval", "n_intervals"),
-        dash.Input("theme-store", "data"),  # Add theme input
+        dash.Input("theme-store", "data"),
+        dash.Input("user-id-store", "data"),
     ],
 )
 
 # Pie Chart Update
-def update_expense_breakdown(period, n, theme):
+def update_expense_breakdown(period, n, theme, user_id):
     colors = get_theme_colors(theme)
-    data = get_financial_data(period)
+
+    if user_id is None:
+        fig = go.Figure()
+        fig.add_annotation(
+            text="Loading...",
+            xref="paper", yref="paper",
+            x=0.5, y=0.5, showarrow=False,
+            font=dict(size=14, color=colors['text_secondary'])
+        )
+        fig.update_layout(
+            plot_bgcolor=colors['chart_bg'],
+            paper_bgcolor=colors['chart_bg'],
+            height=300,
+        )
+        return fig
+
+    data = get_financial_data(period, user_id=user_id)
     
     categories = list(data['expense_by_category'].keys())
     values = list(data['expense_by_category'].values())
@@ -993,6 +1060,12 @@ def callback_update_dashboard(n_intervals):
 @app.route("/dashboard/")
 def dashboard():
     return render_template("dashboard.html")
+
+# app.py - Add this route
+@app.route('/api/current-user-id')
+@login_required
+def get_current_user_id():
+    return jsonify({'user_id': current_user.id})
 
 @app.route('/home', methods=['GET','POST'])
 def home():

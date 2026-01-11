@@ -2,6 +2,7 @@
 from datetime import date, datetime, timedelta
 from models import db, Sows, Boars, Litter, ServiceRecords, Invoice, Expense
 from flask_login import current_user
+from sqlalchemy import func, extract
 
 
 def get_herd_counts_by_stage(user_id):
@@ -63,7 +64,6 @@ def get_herd_counts_by_stage(user_id):
     
     return stage_counts
 
-
 def get_active_litters_summary(user_id):
     """
     Get detailed summary of all active litters (those with piglets still alive).
@@ -103,7 +103,6 @@ def get_active_litters_summary(user_id):
     summary.sort(key=lambda x: x['farrow_date'], reverse=True)
     
     return summary
-
 
 def get_upcoming_farrowings(user_id, days_ahead=30):
     """
@@ -145,7 +144,6 @@ def get_upcoming_farrowings(user_id, days_ahead=30):
     
     return upcoming
 
-
 def get_mortality_summary(user_id, days=30):
     """
     Get mortality statistics for the specified period.
@@ -178,7 +176,6 @@ def get_mortality_summary(user_id, days=30):
         'total': total_deaths,
         'period_days': days
     }
-
 
 def get_sales_summary(user_id, days=30):
     """
@@ -222,7 +219,6 @@ def get_sales_summary(user_id, days=30):
         'period_days': days
     }
 
-
 def get_theme_colors(theme='light'):
     """Return color scheme based on current theme"""
     if theme == 'dark':
@@ -259,60 +255,124 @@ def get_theme_colors(theme='light'):
         }
 
 # Helper function to get financial data
-def get_financial_data(period='90'):
-    """Get revenue and expense data for the specified period"""
-    from models import Invoice, Expense  # Import your models
-    
-    today = datetime.now().date()
-    
+# dashboard_helpers.py
+
+from datetime import datetime, timedelta
+from models import db, Invoice, Expense
+from sqlalchemy import func
+
+def get_financial_data(period, user_id=None):
+    """
+    Get financial data filtered by user_id and time period.
+
+    Args:
+        period: '30', '90', '180', '365', or 'all'
+        user_id: The current user's ID (required for filtering)
+
+    Returns:
+        Dictionary with financial summary data
+    """
+
+    # Default empty response
+    empty_response = {
+        'total_revenue': 0,
+        'total_expenses': 0,
+        'net_profit': 0,
+        'profit_margin': 0,
+        'revenue_by_month': {},
+        'expense_by_month': {},
+        'expense_by_category': {},
+    }
+
+    # Safety: no user → no data
+    if user_id is None:
+        return empty_response
+
+    # Calculate date filter
     if period == 'all':
-        start_date = datetime(2000, 1, 1).date()
+        start_date = None
     else:
         days = int(period)
-        start_date = today - timedelta(days=days)
-    
-    # Get invoices (revenue)
-    invoices = Invoice.query.filter(Invoice.date >= start_date).all()
-    
-    # Get expenses
-    expenses = Expense.query.filter(Expense.date >= start_date).all()
-    
-    # Process revenue data
-    revenue_by_month = {}
-    for inv in invoices:
-        month_key = inv.date.strftime('%Y-%m')
-        if month_key not in revenue_by_month:
-            revenue_by_month[month_key] = 0
-        revenue_by_month[month_key] += float(inv.total_price or 0)
-    
-    # Process expense data
-    expense_by_month = {}
-    expense_by_category = {}
-    for exp in expenses:
-        month_key = exp.date.strftime('%Y-%m')
-        if month_key not in expense_by_month:
-            expense_by_month[month_key] = 0
-        expense_by_month[month_key] += float(exp.amount or 0)
-        
-        # Category breakdown
-        category = exp.category or 'Other'
-        if category not in expense_by_category:
-            expense_by_category[category] = 0
-        expense_by_category[category] += float(exp.amount or 0)
-    
-    # Calculate totals
+        start_date = datetime.now() - timedelta(days=days)
+
+    # ===== REVENUE QUERY (Invoices ONLY) =====
+    revenue_query = db.session.query(
+        func.strftime('%Y-%m', Invoice.date),
+        func.sum(Invoice.total_price)
+    ).filter(
+        Invoice.user_id == user_id
+    )
+
+    if start_date:
+        revenue_query = revenue_query.filter(Invoice.date >= start_date)
+
+    revenue_by_month_results = revenue_query.group_by(
+        func.strftime('%Y-%m', Invoice.date)
+    ).all()
+
+    # ===== EXPENSES BY MONTH =====
+    expense_query = db.session.query(
+        func.strftime('%Y-%m', Expense.date),
+        func.sum(Expense.amount)
+    ).filter(
+        Expense.user_id == user_id
+    )
+
+    if start_date:
+        expense_query = expense_query.filter(Expense.date >= start_date)
+
+    expense_by_month_results = expense_query.group_by(
+        func.strftime('%Y-%m', Expense.date)
+    ).all()
+
+    # ===== EXPENSES BY CATEGORY =====
+    category_query = db.session.query(
+        Expense.category,
+        func.sum(Expense.amount)
+    ).filter(
+        Expense.user_id == user_id
+    )
+
+    if start_date:
+        category_query = category_query.filter(Expense.date >= start_date)
+
+    expense_by_category_results = category_query.group_by(
+        Expense.category
+    ).all()
+
+    # ===== PROCESS RESULTS =====
+    revenue_by_month = {
+        month: float(amount)
+        for month, amount in revenue_by_month_results
+        if month and amount
+    }
+
+    expense_by_month = {
+        month: float(amount)
+        for month, amount in expense_by_month_results
+        if month and amount
+    }
+
+    expense_by_category = {
+        category or 'Other': float(amount)
+        for category, amount in expense_by_category_results
+        if amount
+    }
+
+    # ===== TOTALS =====
     total_revenue = sum(revenue_by_month.values())
     total_expenses = sum(expense_by_month.values())
     net_profit = total_revenue - total_expenses
     profit_margin = (net_profit / total_revenue * 100) if total_revenue > 0 else 0
-    
+
     return {
-        'revenue_by_month': revenue_by_month,
-        'expense_by_month': expense_by_month,
-        'expense_by_category': expense_by_category,
         'total_revenue': total_revenue,
         'total_expenses': total_expenses,
         'net_profit': net_profit,
         'profit_margin': profit_margin,
+        'revenue_by_month': revenue_by_month,
+        'expense_by_month': expense_by_month,
+        'expense_by_category': expense_by_category,
     }
+
 
