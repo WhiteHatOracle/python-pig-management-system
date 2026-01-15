@@ -1,15 +1,27 @@
-// disappearing flask messages
+// Auto-dismiss flash messages after 5 seconds
 document.addEventListener('DOMContentLoaded', function() {
-const flashMessages = document.querySelectorAll('.flash'); // Select all elements with class 'alert'
-if (flashMessages.length > 0) {
-    setTimeout(function() {
+    const flashMessages = document.querySelectorAll('.flash-message');
+    
     flashMessages.forEach(function(message) {
-        message.style.transition = 'opacity 1s ease-out'; // Add a fade-out transition
-        message.style.opacity = '0'; // Start fading out
+        // Auto-dismiss after 5 seconds
         setTimeout(function() {
-        message.remove(); // Remove the element after the fade-out
-        }, 2000); // Wait for the transition to complete (2 second here)
+            dismissFlash(message);
+        }, 5000);
     });
-    }, 5000); // 5000 milliseconds = 5 seconds delay
+});
+
+function dismissFlash(element) {
+    element.classList.add('dismissing');
+    setTimeout(function() {
+        element.remove();
+    }, 300); // Match animation duration
 }
+
+// Update close button to use smooth animation
+document.addEventListener('click', function(e) {
+    if (e.target.closest('.flash-close')) {
+        e.preventDefault();
+        const flashMessage = e.target.closest('.flash-message');
+        dismissFlash(flashMessage);
+    }
 });

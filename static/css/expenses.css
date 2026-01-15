@@ -122,25 +122,6 @@
     margin-top: 0.25rem;
 }
 
-/* ============================================
-   FLASH MESSAGES
-   ============================================ */
-.flash-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-}
-
-.flash-message {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.25rem;
-    border-radius: 12px;
-    animation: slideIn 0.3s ease-out;
-    border: 1px solid transparent;
-}
-
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -150,60 +131,6 @@
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-.flash-success {
-    background: rgba(40, 167, 69, 0.1);
-    border-color: rgba(40, 167, 69, 0.3);
-    color: #28a745;
-}
-
-.flash-error,
-.flash-danger {
-    background: rgba(220, 53, 69, 0.1);
-    border-color: rgba(220, 53, 69, 0.3);
-    color: #dc3545;
-}
-
-.flash-warning {
-    background: rgba(255, 193, 7, 0.1);
-    border-color: rgba(255, 193, 7, 0.3);
-    color: #d39e00;
-}
-
-.flash-info {
-    background: rgba(23, 162, 184, 0.1);
-    border-color: rgba(23, 162, 184, 0.3);
-    color: #17a2b8;
-}
-
-.flash-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.flash-text {
-    flex: 1;
-    font-weight: 500;
-}
-
-.flash-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0.25rem;
-    border-radius: 50%;
-    opacity: 0.7;
-    transition: all 0.2s ease;
-}
-
-.flash-close:hover {
-    opacity: 1;
-    background: rgba(0, 0, 0, 0.1);
 }
 
 /* ============================================

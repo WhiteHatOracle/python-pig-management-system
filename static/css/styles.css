@@ -77,6 +77,243 @@ body {
 }
 
 /* ============================================
+   FLASH MESSAGES STYLES
+   ============================================ */
+/* Flash Messages Container */
+.flash-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    width: 100%;
+    pointer-events: none;
+}
+
+/* Individual Flash Message */
+.flash-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    pointer-events: auto;
+    animation: slideIn 0.3s ease-out;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.flash-message::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: currentColor;
+}
+
+/* Flash Message Hover Effect */
+.flash-message:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Success Message */
+.flash-success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.flash-success .flash-icon svg {
+    fill: #28a745;
+}
+
+/* Error/Danger Message */
+.flash-error,
+.flash-danger {
+    background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.flash-error .flash-icon svg,
+.flash-danger .flash-icon svg {
+    fill: #dc3545;
+}
+
+/* Warning Message */
+.flash-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 1px solid #ffeaa7;
+    color: #856404;
+}
+
+.flash-warning .flash-icon svg {
+    fill: #ffc107;
+}
+
+/* Info Message */
+.flash-info {
+    background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+.flash-info .flash-icon svg {
+    fill: #17a2b8;
+}
+
+/* Flash Icon */
+.flash-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+}
+
+.flash-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Flash Text */
+.flash-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* Flash Close Button */
+.flash-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    opacity: 0.6;
+}
+
+.flash-close:hover {
+    opacity: 1;
+    background: rgba(0, 0, 0, 0.1);
+    transform: rotate(90deg);
+}
+
+.flash-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+.flash-success .flash-close svg {
+    fill: #155724;
+}
+
+.flash-error .flash-close svg,
+.flash-danger .flash-close svg {
+    fill: #721c24;
+}
+
+.flash-warning .flash-close svg {
+    fill: #856404;
+}
+
+.flash-info .flash-close svg {
+    fill: #0c5460;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+}
+
+/* Auto-dismiss animation */
+.flash-message.dismissing {
+    animation: slideOut 0.3s ease-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .flash-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .flash-message {
+        padding: 14px 16px;
+    }
+
+    .flash-text {
+        font-size: 13px;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateY(-100px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes slideOut {
+        from {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateY(-100px);
+            opacity: 0;
+        }
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    .flash-message {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+}
+/* ==================================================================== */
+
+/* ============================================
    AUTH CONTAINER - SPLIT LAYOUT
    ============================================ */
 .auth-container {
@@ -447,71 +684,6 @@ body {
 
 .form-header p {
     color: var(--text-muted);
-}
-
-/* ============================================
-   FLASH MESSAGES
-   ============================================ */
-.flash-container {
-    margin-bottom: 1.5rem;
-}
-
-.flash-message {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1rem;
-    border-radius: 10px;
-    margin-bottom: 0.75rem;
-    animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.flash-success {
-    background: rgba(40, 167, 69, 0.1);
-    border: 1px solid rgba(40, 167, 69, 0.3);
-    color: #28a745;
-}
-
-.flash-error,
-.flash-danger {
-    background: rgba(220, 53, 69, 0.1);
-    border: 1px solid rgba(220, 53, 69, 0.3);
-    color: #dc3545;
-}
-
-.flash-icon {
-    display: flex;
-    flex-shrink: 0;
-}
-
-.flash-text {
-    flex: 1;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-.flash-close {
-    display: flex;
-    background: none;
-    border: none;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.2s;
-}
-
-.flash-close:hover {
-    opacity: 1;
 }
 
 /* ============================================
@@ -954,8 +1126,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
     .branding-bg img,
     .auth-branding::before,
-    .auth-form-container,
-    .flash-message {
+    .auth-form-container{
         animation: none;
     }
     

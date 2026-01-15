@@ -1324,30 +1324,6 @@ select.form-input {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%239CA3AF' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }
 
-.dark-mode .flash.success {
-    background-color: rgba(16, 185, 129, 0.2);
-    color: #34D399;
-    border-color: rgba(16, 185, 129, 0.3);
-}
-
-.dark-mode .flash.error {
-    background-color: rgba(239, 68, 68, 0.2);
-    color: #F87171;
-    border-color: rgba(239, 68, 68, 0.3);
-}
-
-.dark-mode .flash.warning {
-    background-color: rgba(245, 158, 11, 0.2);
-    color: #FBBF24;
-    border-color: rgba(245, 158, 11, 0.3);
-}
-
-.dark-mode .flash.info {
-    background-color: rgba(59, 130, 246, 0.2);
-    color: #60A5FA;
-    border-color: rgba(59, 130, 246, 0.3);
-}
-
 .dark-mode .alert-warning {
     background-color: rgba(245, 158, 11, 0.15);
     border-color: rgba(245, 158, 11, 0.3);
