@@ -1018,12 +1018,30 @@ def update_monthly_profit(period, n, theme):
         dash.Output("farrowing-count", "children"),
         dash.Output("current-date", "children"),
     ],
-    [dash.Input("interval-update", "n_intervals")],
+    [
+        dash.Input("interval-update", "n_intervals"),
+        dash.Input("user-id-store", "data"),
+    ],
 )
 
-def callback_update_dashboard(n_intervals):
-    from datetime import datetime
+def callback_update_dashboard(n_intervals, user_id):
     
+    current_date = datetime.now().strftime("%A, %B, %d, %Y")
+
+    if user_id is None:
+        return(
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            [],
+            "Loading",
+            current_date,
+        )
+
     # Get dashboard data
     (
         total_pigs,
@@ -1034,14 +1052,11 @@ def callback_update_dashboard(n_intervals):
         growers,
         finishers,
         table_data
-    ) = update_dashboard(n_intervals)
+    ) = update_dashboard(n_intervals, user_id=user_id)
     
     # Calculate farrowing count
     farrowing_count = len(table_data) if table_data else 0
     farrowing_text = f"{farrowing_count} sow{'s' if farrowing_count != 1 else ''}"
-    
-    # Current date
-    current_date = datetime.now().strftime("%A, %B %d, %Y")
     
     return (
         total_pigs,
@@ -1066,6 +1081,70 @@ def dashboard():
 @login_required
 def get_current_user_id():
     return jsonify({'user_id': current_user.id})
+
+@app.route('/api/debug-farrowings')
+@login_required
+def debug_farrowings():
+    """Debug endpoint to check farrowing data"""
+    from models import Sows, ServiceRecords
+    from datetime import date, timedelta
+    
+    user_id = current_user.id
+    today = date.today()
+    future_date = today + timedelta(days=60)
+    
+    debug_info = {
+        'user_id': user_id,
+        'today': str(today),
+        'future_date': str(future_date),
+        'sows': [],
+        'all_service_records': [],
+        'upcoming_farrowings': []
+    }
+    
+    # Get all sows for this user
+    sows = Sows.query.filter_by(user_id=user_id).all()
+    debug_info['sow_count'] = len(sows)
+    
+    for sow in sows:
+        sow_info = {
+            'id': sow.id,
+            'sowID': sow.sowID,
+            'service_records_count': len(sow.service_records)
+        }
+        debug_info['sows'].append(sow_info)
+        
+        for service in sow.service_records:
+            record_info = {
+                'sow_id': sow.sowID,
+                'service_date': str(service.service_date) if service.service_date else None,
+                'due_date': str(service.due_date) if service.due_date else None,
+                'has_litter': service.litter is not None,
+                'litter_id': service.litter.id if service.litter else None,
+            }
+            debug_info['all_service_records'].append(record_info)
+            
+            # Check why it might not be included
+            reasons_excluded = []
+            if service.litter is not None:
+                reasons_excluded.append("has_litter_already")
+            if not service.due_date:
+                reasons_excluded.append("no_due_date")
+            elif service.due_date < today:
+                reasons_excluded.append(f"due_date_in_past ({service.due_date})")
+            elif service.due_date > future_date:
+                reasons_excluded.append(f"due_date_too_far ({service.due_date})")
+            
+            record_info['reasons_excluded'] = reasons_excluded
+            record_info['would_be_included'] = len(reasons_excluded) == 0
+            
+            if len(reasons_excluded) == 0:
+                debug_info['upcoming_farrowings'].append(record_info)
+    
+    debug_info['total_service_records'] = len(debug_info['all_service_records'])
+    debug_info['qualifying_farrowings'] = len(debug_info['upcoming_farrowings'])
+    
+    return jsonify(debug_info)
 
 @app.route('/home', methods=['GET','POST'])
 def home():

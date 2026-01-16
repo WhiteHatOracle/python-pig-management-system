@@ -104,45 +104,49 @@ def get_active_litters_summary(user_id):
     
     return summary
 
-def get_upcoming_farrowings(user_id, days_ahead=30):
+def get_upcoming_farrowings(user_id, days_ahead=None):
     """
-    Get list of sows with upcoming farrowing dates.
+    Get ALL sows with pending farrowings (no litter recorded yet).
     
     Args:
         user_id: The user's ID
-        days_ahead: Number of days to look ahead (default 30)
+        days_ahead: Optional limit on future days (None = show all)
     
     Returns:
         list: List of dicts with service record details
     """
     today = date.today()
-    future_date = today + timedelta(days=days_ahead)
     
-    upcoming = []
+    pending = []
     
-    # Get all service records for this user's sows that don't have a litter yet
     sows = Sows.query.filter_by(user_id=user_id).all()
     
     for sow in sows:
         for service in sow.service_records:
-            # Only include if no litter recorded yet and due date is in the future
+            # Only include if no litter recorded yet
             if service.litter is None and service.due_date:
-                if today <= service.due_date <= future_date:
-                    upcoming.append({
-                        'sow_id': sow.sowID,
-                        'service_date': service.service_date.strftime('%d-%b-%Y') if service.service_date else '-',
-                        'boar_used': service.boar_used or '-',
-                        'checkup_date': service.checkup_date.strftime('%d-%b-%Y') if service.checkup_date else '-',
-                        'litter_guard1_date': service.litter_guard1_date.strftime('%d-%b-%Y') if service.litter_guard1_date else '-',
-                        'litter_guard2_date': service.litter_guard2_date.strftime('%d-%b-%Y') if service.litter_guard2_date else '-',
-                        'due_date': service.due_date.strftime('%d-%b-%Y') if service.due_date else '-',
-                        'days_until_due': (service.due_date - today).days
-                    })
+                days_until_due = (service.due_date - today).days
+                
+                # Apply days_ahead filter only if specified
+                if days_ahead is not None and days_until_due > days_ahead:
+                    continue
+                
+                record = {
+                    'sow_id': sow.sowID,
+                    'service_date': service.service_date.strftime('%d-%b-%Y') if service.service_date else '-',
+                    'litter_guard1_date': service.litter_guard1_date.strftime('%d-%b-%Y') if service.litter_guard1_date else '-',
+                    'litter_guard2_date': service.litter_guard2_date.strftime('%d-%b-%Y') if service.litter_guard2_date else '-',
+                    'due_date': service.due_date.strftime('%d-%b-%Y') if service.due_date else '-',
+                    'days_until_due': days_until_due,
+                    'status': 'overdue' if days_until_due < 0 else ('due_soon' if days_until_due <= 7 else 'upcoming')
+                }
+                
+                pending.append(record)
     
-    # Sort by due date
-    upcoming.sort(key=lambda x: x['days_until_due'])
+    # Sort by due date (overdue first, then soonest upcoming)
+    pending.sort(key=lambda x: x['days_until_due'])
     
-    return upcoming
+    return pending
 
 def get_mortality_summary(user_id, days=30):
     """
@@ -253,13 +257,6 @@ def get_theme_colors(theme='light'):
             'expenses': '#EF4444',           # Expenses color
             'pie_center_text': '#1A202C',    # Pie chart center text
         }
-
-# Helper function to get financial data
-# dashboard_helpers.py
-
-from datetime import datetime, timedelta
-from models import db, Invoice, Expense
-from sqlalchemy import func
 
 def get_financial_data(period, user_id=None):
     """
