@@ -7,10 +7,10 @@ from flask_login import current_user
 from datetime import date
 # Define Sow Management Form
 class SowForm(FlaskForm):
-    sowID = StringField(validators=[DataRequired(), Length(min=3, max=20)])
-    Breed = StringField(validators=[DataRequired(), Length(min=3, max=50)])
-    DOB = DateField(format='%d-%m-%Y',validators=[DataRequired()])
-    submit = SubmitField("Add Sow")
+    sowID   = StringField(validators=[DataRequired(), Length(min=3, max=20)])
+    Breed   = StringField(validators=[DataRequired(), Length(min=3, max=50)])
+    DOB     = DateField(format='%d-%m-%Y',validators=[DataRequired()])
+    submit  = SubmitField("Add Sow")
 
     def __init__(self, sow_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -19,7 +19,7 @@ class SowForm(FlaskForm):
     def validate_sowID(self, sowID):
         existing_sow = Sows.query.filter_by(sowID=sowID.data.strip().upper(),user_id=current_user.id).first()
         if existing_sow and existing_sow.id != self.sow_id:
-            raise ValidationError('The sow already exists. Please choose a different sow ID')
+            raise ValidationError('The sow already exists. Use a different sow ID')
      
 #Define sow service record Form
 class ServiceRecordForm(FlaskForm):
