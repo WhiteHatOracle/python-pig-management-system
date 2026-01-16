@@ -83,51 +83,42 @@ def get_sow_service_records(user_id=None):
 
 
 def update_dashboard(n_intervals, user_id=None):
-    """
-    Update dashboard with current herd data.
-    This is called by the Dash callback.
-    """
+    """Update dashboard with current herd data."""
     
     default_return = (0, 0, 0, 0, 0, 0, 0, [])
     
     try:
-        # ===== FIXED: Use passed user_id first, only fall back to current_user if None =====
         if user_id is None:
             if has_request_context() and current_user.is_authenticated:
                 user_id = current_user.id
-                logging.info(f"update_dashboard: Got user_id {user_id} from current_user")
             else:
-                logging.warning("update_dashboard: No user_id available")
                 return default_return
-        else:
-            logging.info(f"update_dashboard: Using passed user_id {user_id}")
         
-        # Get accurate herd counts
+        # Get herd counts
         herd_counts = get_herd_counts_by_stage(user_id)
         
         if herd_counts is None:
-            logging.error(f"get_herd_counts_by_stage returned None")
             herd_counts = {
                 'total_herd': 0, 'sows': 0, 'boars': 0,
                 'preweaning': 0, 'weaner': 0, 'grower': 0, 'finisher': 0,
             }
         
-        # Get upcoming farrowings for the table
-        upcoming = get_upcoming_farrowings(user_id, days_ahead=None)
-        
-        logging.info(f"update_dashboard: get_upcoming_farrowings returned {len(upcoming) if upcoming else 0} records")
+        # Get upcoming farrowings (including overdue)
+        upcoming = get_upcoming_farrowings(user_id, days_ahead=120)
         
         if upcoming is None:
             upcoming = []
         
-        # Format table data
+        # Format table data - INCLUDE days_until_due for conditional styling
         table_data = [
             {
+                'status': row.get('status', ''),
                 'sow_id': row.get('sow_id', ''),
                 'service_date': row.get('service_date', ''),
                 'litter_guard1_date': row.get('litter_guard1_date', ''),
                 'litter_guard2_date': row.get('litter_guard2_date', ''),
                 'due_date': row.get('due_date', ''),
+                'days_until_due': row.get('days_until_due', 999),  # For conditional styling
             }
             for row in upcoming
         ]

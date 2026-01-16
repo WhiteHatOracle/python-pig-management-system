@@ -324,7 +324,7 @@ dash_app.layout = html.Div([
             ], className="herd-grid"),
         ], className="herd-section"),
 
-        # Upcoming Farrowings Section (same as before)
+        # Upcoming Farrowings Section
         html.Div([
             html.Div([
                 html.Div([
@@ -334,6 +334,7 @@ dash_app.layout = html.Div([
                     ], className="section-header"),
                     html.Div([
                         html.Span(id="farrowing-count", className="count-badge"),
+                        html.Span(id="overdue-count", className="overdue-badge"),  # NEW
                     ], className="section-badge"),
                 ], className="section-header-row"),
             ], className="table-section-header"),
@@ -342,6 +343,7 @@ dash_app.layout = html.Div([
                 dash_table.DataTable(
                     id="sow-service-table",
                     columns=[
+                        {"name": "Status", "id": "status"},  # NEW COLUMN
                         {"name": "Sow ID", "id": "sow_id"},
                         {"name": "Service Date", "id": "service_date"},
                         {"name": "Litter Guard 1", "id": "litter_guard1_date"},
@@ -372,8 +374,54 @@ dash_app.layout = html.Div([
                         'color': 'var(--text-dark)',
                     },
                     style_data_conditional=[
-                        {'if': {'row_index': 'odd'}, 'backgroundColor': 'var(--bg-lightest)'},
-                        {'if': {'column_id': 'due_date'}, 'fontWeight': '600', 'color': '#059669'},
+                        # Overdue rows - Red background
+                        {
+                            'if': {
+                                'filter_query': '{days_until_due} < 0',
+                            },
+                            'backgroundColor': 'rgba(239, 68, 68, 0.15)',
+                            'borderLeft': '4px solid #EF4444',
+                        },
+                        # Due today or within 3 days - Orange background
+                        {
+                            'if': {
+                                'filter_query': '{days_until_due} >= 0 && {days_until_due} <= 3',
+                            },
+                            'backgroundColor': 'rgba(249, 115, 22, 0.15)',
+                            'borderLeft': '4px solid #F97316',
+                        },
+                        # Due within 7 days - Yellow background
+                        {
+                            'if': {
+                                'filter_query': '{days_until_due} > 3 && {days_until_due} <= 7',
+                            },
+                            'backgroundColor': 'rgba(234, 179, 8, 0.1)',
+                            'borderLeft': '4px solid #EAB308',
+                        },
+                        # Due within 14 days - Light green background
+                        {
+                            'if': {
+                                'filter_query': '{days_until_due} > 7 && {days_until_due} <= 14',
+                            },
+                            'backgroundColor': 'rgba(34, 197, 94, 0.1)',
+                            'borderLeft': '4px solid #22C55E',
+                        },
+                        # Status column styling
+                        {
+                            'if': {'column_id': 'status'},
+                            'fontWeight': '600',
+                            'fontSize': '12px',
+                        },
+                        # Due date column
+                        {
+                            'if': {'column_id': 'due_date'},
+                            'fontWeight': '600',
+                        },
+                        # Alternate row colors (for non-urgent rows)
+                        {
+                            'if': {'row_index': 'odd'},
+                            'backgroundColor': 'var(--bg-lightest)'
+                        },
                     ],
                 ),
             ], className="table-wrapper compact"),
@@ -1016,6 +1064,7 @@ def update_monthly_profit(period, n, theme):
         dash.Output("finishers", "children"),
         dash.Output("sow-service-table", "data"),
         dash.Output("farrowing-count", "children"),
+        dash.Output("overdue-count", "children"),  # NEW OUTPUT
         dash.Output("current-date", "children"),
     ],
     [
@@ -1023,22 +1072,16 @@ def update_monthly_profit(period, n, theme):
         dash.Input("user-id-store", "data"),
     ],
 )
-
 def callback_update_dashboard(n_intervals, user_id):
     
-    current_date = datetime.now().strftime("%A, %B, %d, %Y")
+    current_date = datetime.now().strftime("%A, %B %d, %Y")
 
     if user_id is None:
-        return(
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
-            "0",
+        return (
+            "0", "0", "0", "0", "0", "0", "0",
             [],
-            "Loading",
+            "Loading...",
+            "",  # overdue count
             current_date,
         )
 
@@ -1054,9 +1097,18 @@ def callback_update_dashboard(n_intervals, user_id):
         table_data
     ) = update_dashboard(n_intervals, user_id=user_id)
     
-    # Calculate farrowing count
-    farrowing_count = len(table_data) if table_data else 0
-    farrowing_text = f"{farrowing_count} sow{'s' if farrowing_count != 1 else ''}"
+    # Calculate counts
+    total_pending = len(table_data) if table_data else 0
+    overdue_count = sum(1 for row in table_data if row.get('days_until_due', 0) < 0) if table_data else 0
+    
+    # Format display text
+    farrowing_text = f"{total_pending} pending"
+    
+    # Overdue badge text (only show if there are overdue)
+    if overdue_count > 0:
+        overdue_text = f"⚠️ {overdue_count} overdue!"
+    else:
+        overdue_text = ""
     
     return (
         total_pigs,
@@ -1068,6 +1120,7 @@ def callback_update_dashboard(n_intervals, user_id):
         finishers,
         table_data,
         farrowing_text,
+        overdue_text,
         current_date,
     )
 

@@ -104,18 +104,20 @@ def get_active_litters_summary(user_id):
     
     return summary
 
-def get_upcoming_farrowings(user_id, days_ahead=None):
+def get_upcoming_farrowings(user_id, days_ahead=120):
     """
     Get ALL sows with pending farrowings (no litter recorded yet).
+    Includes overdue records and status indicators.
     
     Args:
         user_id: The user's ID
-        days_ahead: Optional limit on future days (None = show all)
+        days_ahead: Number of days to look ahead (default 120)
     
     Returns:
-        list: List of dicts with service record details
+        list: List of dicts with service record details, sorted by urgency
     """
     today = date.today()
+    future_date = today + timedelta(days=days_ahead)
     
     pending = []
     
@@ -127,9 +129,28 @@ def get_upcoming_farrowings(user_id, days_ahead=None):
             if service.litter is None and service.due_date:
                 days_until_due = (service.due_date - today).days
                 
-                # Apply days_ahead filter only if specified
-                if days_ahead is not None and days_until_due > days_ahead:
-                    continue
+                # Determine status and urgency level
+                if days_until_due < -7:
+                    status = f"⚠️ {abs(days_until_due)} days overdue"
+                    urgency = 1  # Highest urgency
+                elif days_until_due < 0:
+                    status = f"🔴 {abs(days_until_due)} days overdue"
+                    urgency = 2
+                elif days_until_due == 0:
+                    status = "🔴 Due Today!"
+                    urgency = 2
+                elif days_until_due <= 3:
+                    status = f"🟠 {days_until_due} days"
+                    urgency = 3
+                elif days_until_due <= 7:
+                    status = f"🟡 {days_until_due} days"
+                    urgency = 4
+                elif days_until_due <= 14:
+                    status = f"🟢 {days_until_due} days"
+                    urgency = 5
+                else:
+                    status = f"{days_until_due} days"
+                    urgency = 6
                 
                 record = {
                     'sow_id': sow.sowID,
@@ -138,13 +159,15 @@ def get_upcoming_farrowings(user_id, days_ahead=None):
                     'litter_guard2_date': service.litter_guard2_date.strftime('%d-%b-%Y') if service.litter_guard2_date else '-',
                     'due_date': service.due_date.strftime('%d-%b-%Y') if service.due_date else '-',
                     'days_until_due': days_until_due,
-                    'status': 'overdue' if days_until_due < 0 else ('due_soon' if days_until_due <= 7 else 'upcoming')
+                    'status': status,
+                    'urgency': urgency,
+                    'is_overdue': days_until_due < 0,
                 }
                 
                 pending.append(record)
     
-    # Sort by due date (overdue first, then soonest upcoming)
-    pending.sort(key=lambda x: x['days_until_due'])
+    # Sort by urgency (most urgent first), then by days_until_due
+    pending.sort(key=lambda x: (x['urgency'], x['days_until_due']))
     
     return pending
 

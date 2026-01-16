@@ -100,6 +100,78 @@ body,
   margin: 0 auto;
 }
 
+/*==================== Overdue Badge Styling ====================*/
+.overdue-badge {
+    background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+    color: #DC2626;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 8px;
+    animation: pulse-urgent 2s ease-in-out infinite;
+    border: 1px solid #FECACA;
+}
+
+.overdue-badge:empty {
+    display: none;
+}
+
+@keyframes pulse-urgent {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.02);
+    }
+}
+
+/* Dark theme overdue badge */
+.dark-theme .overdue-badge,
+[data-theme="dark"] .overdue-badge {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.3) 0%, rgba(220, 38, 38, 0.2) 100%);
+    color: #FCA5A5;
+    border-color: rgba(220, 38, 38, 0.4);
+}
+
+/* Section badge container */
+.section-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Count badge styling */
+.count-badge {
+    background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%);
+    color: #059669;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #A7F3D0;
+}
+
+.dark-theme .count-badge,
+[data-theme="dark"] .count-badge {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.2) 0%, rgba(5, 150, 105, 0.1) 100%);
+    color: #6EE7B7;
+    border-color: rgba(5, 150, 105, 0.3);
+}
+
+/* Table row urgency indicators */
+.dash-table-container .dash-spreadsheet-container {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Make status column more prominent */
+td[data-dash-column="status"] {
+    min-width: 120px !important;
+}
+
 /* ==================== WELCOME SECTION ==================== */
 .welcome-section {
   margin-bottom: 1.5rem;
