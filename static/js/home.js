@@ -82,81 +82,64 @@ function setActiveNavLink() {
 }
 
 // ============================================
-// GLOBAL DARK MODE
+// THEME TOGGLE FUNCTIONALITY
 // ============================================
 
-const THEME_KEY = 'theme';
-
-function initGlobalDarkMode() {
-    // One-time migration from old key
-    const oldDarkMode = localStorage.getItem('dark-mode');
-    if (oldDarkMode !== null) {
-        localStorage.setItem(THEME_KEY, oldDarkMode === 'enabled' ? 'dark' : 'light');
-        localStorage.removeItem('dark-mode');
-    }
+(function() {
+    'use strict';
     
-    // Check saved preference or system preference
-    const savedTheme = localStorage.getItem(THEME_KEY);
+    // Theme toggle elements
+    const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+    const sidebarThemeToggle = document.getElementById('sidebar-theme-toggle');
+    
+    // Check for saved theme preference or default to light
+    const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
-    // Apply saved theme or system preference
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-        body.classList.add('dark-mode');
-    } else {
-        body.classList.remove('dark-mode');
-    }
-}
-
-// ============================================
-// THEME TOGGLE (Settings Page)
-// ============================================
-
-function initThemeToggle() {
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const themeCheckbox = document.getElementById('theme-toggle-checkbox');
-    
-    // Only run if we're on a page with the toggle
-    if (!darkModeToggle || !themeCheckbox) return;
-    
-    // Sync checkbox with current state
-    themeCheckbox.checked = body.classList.contains('dark-mode');
-    
-    // Handle click on the entire row (excluding toggle switch)
-    darkModeToggle.addEventListener('click', function(e) {
-        // If clicking on the toggle switch area, let the checkbox handle it
-        if (e.target.closest('.toggle-switch')) {
-            return;
+    // Initialize theme
+    function initTheme() {
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
         }
-        // Otherwise, toggle the checkbox
-        themeCheckbox.checked = !themeCheckbox.checked;
-        applyTheme(themeCheckbox.checked);
-    });
-    
-    // Handle checkbox change directly
-    themeCheckbox.addEventListener('change', function() {
-        applyTheme(this.checked);
-    });
-}
-
-function applyTheme(isDark) {
-    if (isDark) {
-        body.classList.add('dark-mode');
-        localStorage.setItem(THEME_KEY, 'dark');
-    } else {
-        body.classList.remove('dark-mode');
-        localStorage.setItem(THEME_KEY, 'light');
     }
     
-    // Show notification
-    showThemeNotification(isDark ? 'Dark mode enabled' : 'Light mode enabled');
-}
-
-function syncThemeCheckbox() {
-    const themeCheckbox = document.getElementById('theme-toggle-checkbox');
-    if (themeCheckbox) {
-        themeCheckbox.checked = body.classList.contains('dark-mode');
+    // Toggle theme function
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
+        // Sync with settings page toggle if it exists
+        const settingsToggle = document.getElementById('theme-toggle-checkbox');
+        if (settingsToggle) {
+            settingsToggle.checked = isDark;
+        }
     }
-}
+    
+    // Initialize on page load
+    initTheme();
+    
+    // Add event listeners
+    if (mobileThemeToggle) {
+        mobileThemeToggle.addEventListener('click', toggleTheme);
+    }
+    
+    if (sidebarThemeToggle) {
+        sidebarThemeToggle.addEventListener('click', toggleTheme);
+    }
+    
+    // Listen for system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (!localStorage.getItem('theme')) {
+            if (e.matches) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+        }
+    });
+})();
 
 // ============================================
 // NOTIFICATIONS

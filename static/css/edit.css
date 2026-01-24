@@ -3,6 +3,29 @@
   display: none;
 }
 
+
+/* Field Error Styling */
+.field-error {
+    color: #dc3545;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 4px;
+}
+
+.form-group.has-error .form-input {
+    border-color: #dc3545;
+    background-color: #fff5f5;
+}
+
+.form-group.has-error .form-input:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15);
+}
+
+.form-group.has-error label {
+    color: #dc3545;
+}
+
 /* ==================== PAGE HEADER ==================== */
 .page-header {
   background: var(--bg-lighter);
@@ -554,6 +577,7 @@ select.form-input {
 /* ==================== NUMBER INPUT STYLING ==================== */
 .form-input[type="number"] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .form-input[type="number"]::-webkit-outer-spin-button,

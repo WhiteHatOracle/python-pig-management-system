@@ -5,14 +5,13 @@
     <!-- Flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
     <!-- style links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/sows.css')}}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
     <!-- javascript links -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/sows.js')}}" defer></script>  
-    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
+    <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>  
 {% endblock %}
 
 {% block content %}
@@ -27,8 +26,8 @@
         <label for="Breed">Breed </label>
         {{ form.Breed(autocomplete="off") }}
         
-        <label for="DOB">Date of Birth</label>
-        {{ form.DOB(autocomplete="off",id="dob_field") }}
+        <label for="dob_field">Date of Birth</label>
+        {{ form.DOB(autocomplete="off",id="dob_field",placeholder="Select date") }}
         
         <div class="submitBTN">
             {{ form.submit}}
@@ -186,8 +185,9 @@
             }
         
         flatpickr("#dob_field", {
-            dateFormat: "d-m-Y", // dd-mm-yyyy
-            maxDate:"today"
+            dateFormat: "d-m-Y",
+            maxDate: "today",
+            disableMobile: "true"
         });
     </script>
 {% endblock %}

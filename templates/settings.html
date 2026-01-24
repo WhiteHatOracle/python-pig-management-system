@@ -3,10 +3,8 @@
 {% block head %}
   <title>Settings</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- styling links -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css' )}}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css' )}}">
-  <!-- javascript links -->
   <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
   <script type="text/javascript" src="{{ url_for('static', filename='js/settings.js')}}" defer></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
@@ -56,44 +54,6 @@
 
     <!-- Settings Sections -->
     <div class="settings-container">
-        <!-- Appearance Section -->
-        <div class="settings-section">
-            <div class="section-header">
-                <h2>
-                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
-                        <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 32.5-156t88-127Q256-817 330-848.5T488-880q80 0 151 27.5t124.5 76q53.5 48.5 85 115T880-518q0 115-70 176.5T640-280h-74q-9 0-12.5 5t-3.5 11q0 12 15 34.5t15 51.5q0 50-27.5 74T480-80Zm0-400Zm-220 40q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120-160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm200 0q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120 160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Z"/>
-                    </svg>
-                    Appearance
-                </h2>
-                <p>Customize how the app looks</p>
-            </div>
-            
-            <ul class="settings-list">
-                <li id="dark-mode-toggle" class="settings-item" aria-label="toggle dark mode">
-                    <div class="item-content">
-                        <div class="item-icon theme-icon">
-                            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                                <path d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Z"/>
-                            </svg>
-                            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="currentColor">
-                                <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z"/>
-                            </svg>
-                        </div>
-                        <div class="item-details">
-                            <span class="item-title">Dark Mode</span>
-                            <span class="item-description">Switch between light and dark theme</span>
-                        </div>
-                    </div>
-                    <div class="toggle-switch">
-                        <input type="checkbox" id="theme-toggle-checkbox" class="toggle-input">
-                        <label for="theme-toggle-checkbox" class="toggle-label">
-                            <span class="toggle-slider"></span>
-                        </label>
-                    </div>
-                </li>
-            </ul>
-        </div>
-
         <!-- Security Section -->
         <div class="settings-section">
             <div class="section-header">

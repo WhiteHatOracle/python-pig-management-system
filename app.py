@@ -1072,6 +1072,7 @@ def update_monthly_profit(period, n, theme):
         dash.Input("user-id-store", "data"),
     ],
 )
+
 def callback_update_dashboard(n_intervals, user_id):
     
     current_date = datetime.now().strftime("%A, %B %d, %Y")
@@ -1732,31 +1733,40 @@ def sows():
 @app.route('/edit-sow/<int:sow_id>', methods=['GET', 'POST'])
 @login_required
 def edit_sow(sow_id):
-
     sow = Sows.query.filter_by(id=sow_id, user_id=current_user.id).first_or_404()
-    form = SowForm(sow_id=sow.id, obj=sow)  # Pre-fill form with existing data
-    form.sow_id = sow.id #prevents false validation errors
-
+    
+    # --- Form Initialization ---
+    # GET: Pre-fill with existing data
+    # POST: Use submitted form data
+    if request.method == 'GET':
+        form = SowForm(sow_id=sow.id, obj=sow)
+    else:
+        form = SowForm(sow_id=sow.id)
+    
+    # --- Handle Form Submission ---
     if form.validate_on_submit():
-
-        # Update the sow with new values
-        sow.sowID = form.sowID.data.upper()
-        sow.Breed = form.Breed.data.upper()
-        sow.DOB = form.DOB.data
+        new_sow_id = re.sub(r'\s+', '', form.sowID.data).upper()
+        new_breed = re.sub(r'\s+', '', form.Breed.data).upper()
+        new_dob = form.DOB.data
 
         try:
+            sow.sowID = new_sow_id
+            sow.Breed = new_breed
+            sow.DOB = new_dob
             db.session.commit()
             flash('Updated successfully!', 'success')
             return redirect(url_for('sows'))
+        
         except IntegrityError:
             db.session.rollback()
-            flash(f'{sow.sowID} already exists!', 'error')
-            return redirect(url_for('edit_sow', sow_id=sow.id))
+            db.session.refresh(sow)  # Restore original values
+            flash(f'{new_sow_id} already exists!', 'error')
+        
         except Exception as e:
             db.session.rollback()
+            db.session.refresh(sow)
             flash(f'An error occurred: {str(e)}', 'error')
-            return redirect(url_for('edit_sow', sow_id=sow.id))
-
+    
     return render_template('edit_sow.html', form=form, sow=sow)
 
 @app.route('/delete-sow/<string:sow_id>', methods=['POST','GET'])

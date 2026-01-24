@@ -15,11 +15,6 @@ class SowForm(FlaskForm):
     def __init__(self, sow_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.sow_id = sow_id    #store the sow for validation    
-    
-    def validate_sowID(self, sowID):
-        existing_sow = Sows.query.filter_by(sowID=sowID.data.strip().upper(),user_id=current_user.id).first()
-        if existing_sow and existing_sow.id != self.sow_id:
-            raise ValidationError('The sow already exists. Use a different sow ID')
      
 #Define sow service record Form
 class ServiceRecordForm(FlaskForm):
@@ -33,10 +28,6 @@ class BoarForm(FlaskForm):
     DOB = DateField(format="%d-%m-%Y",validators=[DataRequired()])
     submit = SubmitField("Add Boar")
 
-    def validate_BoarId(self, BoarId):
-        existing_boar = Boars.query.filter_by(BoarId=BoarId.data.strip().upper(),user_id=current_user.id).first()
-        if existing_boar and existing_boar.id != self.BoarId.data:
-            raise ValidationError('The Boar already exists. Please Choose a different ID')
 
 # Define Registration Form
 class RegisterForm(FlaskForm):
