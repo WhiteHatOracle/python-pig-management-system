@@ -786,7 +786,7 @@ body.dark-mode .theme-toggle-btn .moon-icon {
 }
 
 .mobile-header .theme-toggle-btn:hover {
-    background-color: var(--hover-bg, rgba(0, 0, 0, 0.05));
+    background-color: var(--hover-secondary);
 }
 
 .mobile-header .theme-toggle-btn:active {
@@ -801,7 +801,7 @@ body.dark-mode .theme-toggle-btn .moon-icon {
     width: 100%;
     padding: 12px 16px;
     border-radius: 8px;
-    color: var(--text-color, #333);
+    color: var(--text-dark);
     font-size: 0.95rem;
     font-weight: 500;
     text-align: left;
@@ -809,7 +809,7 @@ body.dark-mode .theme-toggle-btn .moon-icon {
 }
 
 #sidebar .theme-toggle-btn:hover {
-    background-color: var(--hover-bg, rgba(0, 0, 0, 0.05));
+    background-color: var(--hover-secondary);
 }
 
 #sidebar .theme-toggle-btn svg {
@@ -828,7 +828,7 @@ body.dark-mode .theme-toggle-btn .moon-icon {
 
 /* Animation for icon switch */
 .theme-toggle-btn svg {
-    transition: transform 0.3s ease, opacity 0.2s ease;
+    transition: transform var(--transition-speed) ease, opacity 0.2s ease;
 }
 
 .theme-toggle-btn:hover svg {
@@ -844,8 +844,8 @@ body.dark-mode .theme-toggle-btn .moon-icon {
     transform: translateY(-50%);
     margin-left: 10px;
     padding: 6px 12px;
-    background-color: var(--tooltip-bg, #333);
-    color: var(--tooltip-color, #fff);
+    background-color: var(--bg-primary);
+    color: var(--text-dark);
     border-radius: 6px;
     font-size: 0.85rem;
     white-space: nowrap;
@@ -853,6 +853,7 @@ body.dark-mode .theme-toggle-btn .moon-icon {
     visibility: hidden;
     transition: opacity 0.2s ease, visibility 0.2s ease;
     z-index: 1000;
+    box-shadow: 0 2px 8px var(--shadow-medium);
 }
 
 #sidebar.collapsed .theme-toggle-btn:hover::after {
