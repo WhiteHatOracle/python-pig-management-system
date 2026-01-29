@@ -1154,11 +1154,6 @@ def verification_pending():
 def login():
     return render_template('login.html')  # Displays Homepage
 
-#payement route
-@app.route('/payment_plans', methods=['GET','POST'])
-def payment_plans():
-    return render_template('payment_plans.html')
-
 # Sign in route
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
@@ -1836,7 +1831,7 @@ def sow_service_records(sow_id):
 
     return render_template('sow_service_records.html', sow=sow, form=form)
 
-# Helper function to parse dates from form
+# ==================== Helper function to parse dates from form
 def parse_date(date_string):
     """Parse date string in dd-mm-YYYY format"""
     if date_string:
@@ -1845,25 +1840,6 @@ def parse_date(date_string):
         except ValueError:
             return None
     return None
-
-# Helper function to determine litter stage
-def get_litter_stage(farrow_date):
-    """Determine the growth stage based on age"""
-    if not farrow_date:
-        return 'unknown'
-    
-    age_days = (date.today() - farrow_date).days
-    
-    if age_days < 0:
-        return 'unknown'
-    elif age_days <= 21:
-        return 'preweaning'
-    elif age_days <= 56:
-        return 'weaner'
-    elif age_days <= 98:
-        return 'grower'
-    else:
-        return 'finisher'
 
 # ==================== MAIN LITTER RECORDS ROUTE ====================
 @app.route('/litter-records/<int:service_id>', methods=['GET', 'POST'])

@@ -27,7 +27,6 @@ class User(db.Model, UserMixin):
     invoices = db.relationship("Invoice", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
     expenses = db.relationship("Expense", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
 
-
 # Define the Boar model
 class Boars(db.Model):
     __tablename__ = "boars"
@@ -43,7 +42,6 @@ class Boars(db.Model):
     __table_args__ = (
         db.UniqueConstraint('BoarId', 'user_id', name='uix_boarid_userid'),
     )
-
 
 # Define the Sows model
 class Sows(db.Model):
@@ -77,7 +75,6 @@ class Sows(db.Model):
         db.UniqueConstraint('sowID', 'user_id', name='uix_sowid_userid'),
     )
 
-
 # Define the Service Records
 class ServiceRecords(db.Model):
     __tablename__ = "service_records"
@@ -107,7 +104,6 @@ class ServiceRecords(db.Model):
     __table_args__ = (
         db.UniqueConstraint('sow_id', 'service_date', name='uix_sow_service_date'),
     )
-
     
 class Invoice(db.Model):
     __tablename__ = "invoice"
@@ -131,7 +127,6 @@ class Invoice(db.Model):
     def __repr__(self):
         return f"<Invoice {self.invoice_number}>"
 
-
 # Define the Expense model    
 class Expense(db.Model):
     __tablename__ = "expense"
@@ -154,10 +149,8 @@ class Expense(db.Model):
     def __repr__(self):
         return f'<Expense {self.id} - {self.category}>'
 
-
 # ==================== LITTER AND RELATED MODELS ====================
 # In models.py - Update the Litter class
-
 class Litter(db.Model):
     __tablename__ = 'litter'
     
@@ -291,7 +284,6 @@ class LitterManagement(db.Model):
     def __repr__(self):
         return f'<LitterManagement {self.id} - {self.management_type}>'
 
-
 class VaccinationRecord(db.Model):
     __tablename__ = 'vaccination_record'
     
@@ -313,7 +305,6 @@ class VaccinationRecord(db.Model):
 
     def __repr__(self):
         return f'<VaccinationRecord {self.id} - {self.vaccine_type}>'
-
 
 class WeightRecord(db.Model):
     __tablename__ = 'weight_record'
@@ -366,7 +357,6 @@ class WeightRecord(db.Model):
     def __repr__(self):
         return f'<WeightRecord {self.id} - {self.average_weight}kg>'
 
-
 class MortalityRecord(db.Model):
     __tablename__ = 'mortality_record'
     
@@ -386,7 +376,6 @@ class MortalityRecord(db.Model):
 
     def __repr__(self):
         return f'<MortalityRecord {self.id} - {self.number_died} died>'
-
 
 class SaleRecord(db.Model):
     __tablename__ = 'sale_record'
@@ -410,10 +399,8 @@ class SaleRecord(db.Model):
 
     def __repr__(self):
         return f'<SaleRecord {self.id} - {self.number_sold} sold>'
-    
-    
-# ==================== ADMIN MODELS ====================
 
+# ==================== ADMIN MODELS ====================
 class AdminUser(db.Model, UserMixin):
     """Separate admin user model for security"""
     __tablename__ = 'admin_user'
@@ -443,7 +430,6 @@ class AdminUser(db.Model, UserMixin):
     def __repr__(self):
         return f'<AdminUser {self.username}>'
 
-
 class PageView(db.Model):
     """Track page views for traffic analytics"""
     __tablename__ = 'page_view'
@@ -465,7 +451,6 @@ class PageView(db.Model):
     def __repr__(self):
         return f'<PageView {self.path} at {self.timestamp}>'
 
-
 class ActivityLog(db.Model):
     """Track user and admin actions"""
     __tablename__ = 'activity_log'
@@ -486,7 +471,6 @@ class ActivityLog(db.Model):
     
     def __repr__(self):
         return f'<ActivityLog {self.action} at {self.timestamp}>'
-
 
 class SystemSetting(db.Model):
     """Store system-wide settings"""
