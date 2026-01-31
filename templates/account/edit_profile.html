@@ -1,0 +1,118 @@
+<!-- templates/account/edit_profile.html -->
+{% extends "home.html" %}
+
+{% block head %}
+<title>Edit Profile - Farmigo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+<!-- intl-tel-input CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/css/intlTelInput.css">
+<!-- intl-tel-input JS (load before custom script) -->
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.5.3/build/js/intlTelInput.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/edit_profile.js')}}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <a href="{{ url_for('account.profile') }}" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+            </svg>
+            Back to Profile
+        </a>
+        <h1>Edit Personal Information</h1>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">
+                <span>{{ message }}</span>
+                <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Edit Form -->
+    <form method="POST" class="edit-form" id="editProfileForm">
+        <div class="form-card">
+            <h2>Personal Details</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" 
+                           id="first_name" 
+                           name="first_name" 
+                           value="{{ user.first_name or '' }}"
+                           placeholder="Enter your first name"
+                           class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" 
+                           id="last_name" 
+                           name="last_name" 
+                           value="{{ user.last_name or '' }}"
+                           placeholder="Enter your last name"
+                           class="form-input">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       value="{{ user.email }}"
+                       placeholder="your@email.com"
+                       class="form-input"
+                       required>
+                <span class="form-hint">We'll send important notifications to this email</span>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" 
+                       id="phone" 
+                       name="phone_display"
+                       value="{{ user.phone_number or '' }}"
+                       placeholder="Enter phone number"
+                       class="form-input"
+                       data-initial-country="{{ user.phone_country_iso or 'ug' }}">
+                <!-- Hidden inputs to store the parsed values -->
+                <input type="hidden" id="phone_country_code" name="phone_country_code" value="{{ user.phone_country_code or '' }}">
+                <input type="hidden" id="phone_number" name="phone_number" value="{{ user.phone_number or '' }}">
+                <input type="hidden" id="phone_country_iso" name="phone_country_iso" value="{{ user.phone_country_iso or '' }}">
+                <input type="hidden" id="full_phone_number" name="full_phone_number" value="">
+                
+                <div class="phone-error" id="phoneError">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    <span>Please enter a valid phone number</span>
+                </div>
+                
+                <div class="phone-valid-indicator" id="phoneValid">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                    <span>Valid phone number</span>
+                </div>
+                
+                <span class="form-hint">Select your country for the correct dialing code</span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('account.profile') }}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary" id="submitBtn">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

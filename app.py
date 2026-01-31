@@ -3,6 +3,7 @@
 # =========================
 import os
 import re
+import json
 import uuid
 import logging
 import secrets
@@ -43,8 +44,53 @@ from plotly.subplots import make_subplots
 import pandas as pd
 
 # =========================
-# Application Modules
+# Load Environment Variables FIRST
 # =========================
+load_dotenv()
+
+# =========================
+# Logging Setup
+# =========================
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+# =========================
+# Flask Application Setup
+# =========================
+app = Flask(__name__)
+
+# =========================
+# LOAD CONFIGURATION FROM config.py
+# =========================
+from config import Config, init_upload_folders
+
+# Load the Config class
+app.config.from_object(Config)
+
+# Override with any additional settings
+app.config.update(
+    # Keep your existing mail settings if they differ
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_PORT=587,
+    MAIL_USE_TLS=True,
+    MAIL_USE_SSL=False,
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
+    # Secret key
+    SECRET_KEY=os.getenv("SECRET_KEY", "dev-secret"),
+)
+
+# =========================
+# CREATE UPLOAD FOLDERS
+# =========================
+init_upload_folders(app)
+
+# =========================
+# Application Modules (import AFTER app is created)
+# =========================
+from routes.account_routes import account_bp
 from models import (
     db, Litter, User, Boars, Sows,
     ServiceRecords, Invoice, Expense,
@@ -73,21 +119,15 @@ from dashboard_helpers import (
     get_financial_data,
     get_mortality_summary,
 )
-from admin import(
-    admin_bp
-)
-from admin.middleware import(
-    track_page_view
-)
-from models import(
+from admin import admin_bp
+from admin.middleware import track_page_view
+from models import (
     AdminUser,
     PageView,
     ActivityLog,
     SystemSetting
 )
-from admin.helpers import (
-    log_activity
-)
+from admin.helpers import log_activity
 from admin.settings_helper import (
     is_registration_allowed,
     is_google_login_allowed,
@@ -100,65 +140,30 @@ from admin.settings_middleware import (
     registration_required,
     google_login_required
 )
-from decorators import(
-     login_required, login_required_no_verify
-)
+from decorators import login_required, login_required_no_verify
 
 # =========================
-# Logging & Environment Setup
+# INITIALIZE SETTINGS MIDDLEWARE
 # =========================
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-load_dotenv()   # Load environment variables from .env
-
-
-# =========================
-# Flask Application Setup
-# =========================
-app = Flask(__name__)
-
-# ==================== 
-# INITIALIZE SETTINGS MIDDLEWARE 
-# ====================
 init_settings_middleware(app)
 
-
-# ==================== 
-# REGISTER ADMIN BLUEPRINT 
-# ====================
+# =========================
+# REGISTER BLUEPRINTS
+# =========================
 app.register_blueprint(admin_bp)
+app.register_blueprint(account_bp)
 
-# ==================== 
-# ADD TRAFFIC TRACKING MIDDLEWARE 
-# ====================
-from admin.middleware import track_page_view
+# =========================
+# ADD TRAFFIC TRACKING MIDDLEWARE
+# =========================
 track_page_view(app, db, PageView)
-
-# Secret key (prefer ENV value in production)
-app.secret_key = os.getenv("SECRET_KEY", "dev-secret")
-
-# Database & Mail Configuration
-app.config.update(
-    SQLALCHEMY_DATABASE_URI="sqlite:///database.db",
-    SECRET_KEY=os.getenv("SECRET_KEY", "supercalifragilisticexpialidocious"),
-    MAIL_SERVER="smtp.gmail.com",
-    MAIL_PORT=587,
-    MAIL_USE_TLS=True,
-    MAIL_USE_SSL=False,
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
-)
 
 # Make enumerate usable inside Jinja templates
 app.jinja_env.globals.update(enumerate=enumerate)
 
-# ==================== 
-# TEMPLATE CONTEXT PROCESSOR 
-# ====================
-# Add current datetime to all templates
+# =========================
+# TEMPLATE CONTEXT PROCESSOR
+# =========================
 @app.context_processor
 def inject_now():
     return {'now': datetime.now()}
@@ -169,11 +174,10 @@ def inject_now():
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, _):
     """Ensure SQLite enforces foreign-key constraints."""
-    if "sqlite" in app.config["SQLALCHEMY_DATABASE_URI"]:
+    if "sqlite" in str(app.config.get("SQLALCHEMY_DATABASE_URI", "")):
         cursor = dbapi_connection.cursor()
         cursor.execute("PRAGMA foreign_keys = ON")
         cursor.close()
-
 
 # =========================
 # Extension Initialization
@@ -185,19 +189,14 @@ login_manager.init_app(app)
 migrate.init_app(app, db)
 
 # Login Manager
-login_manager.login_view = "signin"   # Redirect when auth is required
-
-# =========================
-# Import Models AFTER db.init_app()
-# =========================
-from models import User, Boars, Sows, ServiceRecords, Invoice, Expense, Litter
+login_manager.login_view = "signin"
 
 # =========================
 # User Loader for Flask-Login
 # =========================
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 # =========================
 # OAuth Configuration (Google)
@@ -215,9 +214,8 @@ google = oauth.register(
     server_metadata_url="https://accounts.google.com/.well-known/openid-configuration",
 )
 
-
 # =========================
-# Dash Application (Internal Dashboard)
+# Dash Application
 # =========================
 dash_app = dash.Dash(
     __name__,
@@ -233,7 +231,6 @@ def load_user(user_id):
 
 # ==================== ACTIVITY LOGGING HELPER ====================
 # You can call this from any route to log user activity
-
 def log_user_activity(action, entity_type=None, entity_id=None, details=None):
     """Log user activity from anywhere in the app"""
     
@@ -1431,20 +1428,54 @@ def calculate():
         }
     return render_template('feed-calculator.html', form = form, result = result)
 
+@app.route('/debug/check-logo')
+@login_required
+def debug_check_logo():
+    import os
+    
+    logos_folder = app.config.get('LOGOS_FOLDER', 'Not configured')
+    user_logo = current_user.farm_logo
+    
+    info = {
+        'logos_folder': logos_folder,
+        'folder_exists': os.path.exists(logos_folder) if logos_folder != 'Not configured' else False,
+        'user_logo_filename': user_logo,
+        'logo_full_path': None,
+        'logo_exists': False,
+        'files_in_folder': []
+    }
+    
+    if user_logo and logos_folder != 'Not configured':
+        full_path = os.path.join(logos_folder, user_logo)
+        info['logo_full_path'] = full_path
+        info['logo_exists'] = os.path.exists(full_path)
+    
+    if os.path.exists(logos_folder):
+        info['files_in_folder'] = os.listdir(logos_folder)
+    
+    return info
+
 # Invoice Generator route
-@app.route('/invoice-generator', methods=['GET','POST'])
+# app.py or routes/invoice.py
+@app.route('/invoice-generator', methods=['GET', 'POST'])
 @login_required
 def invoice_Generator():
     form = InvoiceGeneratorForm()
+    
     if form.validate_on_submit():
         company_name = form.company.data
         invoice_date = form.invoice_date.data if form.invoice_date.data else date.today()
-        weights = [float(w.strip()) for w in form.weights.data.split(',')if w.strip() != '']
+        weights = [float(w.strip()) for w in form.weights.data.split(',') if w.strip() != '']
 
+        # Buyer information (new fields)
+        buyer_name = form.buyer_name.data if hasattr(form, 'buyer_name') else company_name
+        buyer_phone = form.buyer_phone.data if hasattr(form, 'buyer_phone') else None
+        buyer_address = form.buyer_address.data if hasattr(form, 'buyer_address') else None
+        notes = form.notes.data if hasattr(form, 'notes') else None
 
-        #Ensure there are weights provided
+        # Ensure there are weights provided
         if not weights:
-            flash("Please enter valid weights.", "Error")
+            flash("Please enter valid weights.", "error")
             return redirect(url_for('invoice_Generator'))
 
         # Parse weight ranges and prices
@@ -1463,7 +1494,6 @@ def invoice_Generator():
         total_weight = sum(weights)
         average_weight = total_weight / len(weights) if weights else 0
         total_pigs = len(weights)
-        print(total_pigs)
 
         for weight in weights:
             if first_min <= weight <= first_max:
@@ -1478,31 +1508,52 @@ def invoice_Generator():
             cost = weight * price
             total_cost += cost
             invoice_data.append({
-                    "weight": round(weight, 2),
-                    "formatted_weight": f"{weight}kg",
-                    "price": price,  # Keep raw price
-                    "formatted_price": f"K{price:,.2f}",  # Format price as currency
-                    "cost": cost,  # Keep raw cost
-                    "formatted_cost": f"K{cost:,.2f}",  # Format cost as currency
-                    "Number_of_Pigs": f"{total_pigs}",
-                })
-        return render_template('invoiceGenerator.html', 
-                               form=form, 
-                               company_name=company_name,
-                               invoice_data=invoice_data, 
-                               total_pigs=total_pigs,
-                               total_cost=f"K{total_cost:,.2f}",
-                               total_weight=f"{total_weight:,.2f}Kg",
-                               average_weight = f"{average_weight:,.2f}Kg",
-                               invoice_date = invoice_date.strftime('%B %d, %Y')
-                               )
+                "weight": round(weight, 2),
+                "formatted_weight": f"{weight}kg",
+                "price": price,
+                "formatted_price": f"K{price:,.2f}",
+                "cost": cost,
+                "formatted_cost": f"K{cost:,.2f}",
+                "Number_of_Pigs": f"{total_pigs}",
+            })
+
+        # Prepare user data for display
+        user_display = {
+            'full_name': f"{current_user.first_name or ''} {current_user.last_name or ''}".strip() or current_user.email,
+            'email': current_user.email,
+            'phone': f"{current_user.phone_country_code or ''} {current_user.phone_number or ''}".strip() if current_user.phone_number else None,
+            'farm_name': getattr(current_user, 'farm_name', None),
+        }
+
+        return render_template(
+            'invoiceGenerator.html',
+            form=form,
+            company_name=company_name,
+            buyer_name=buyer_name,
+            buyer_phone=buyer_phone,
+            buyer_address=buyer_address,
+            notes=notes,
+            invoice_data=invoice_data,
+            total_pigs=total_pigs,
+            total_cost=f"K{total_cost:,.2f}",
+            total_cost_raw=total_cost,
+            total_weight=f"{total_weight:,.2f}Kg",
+            total_weight_raw=total_weight,
+            average_weight=f"{average_weight:,.2f}Kg",
+            average_weight_raw=average_weight,
+            invoice_date=invoice_date.strftime('%B %d, %Y'),
+            invoice_date_raw=invoice_date.strftime('%Y-%m-%d'),
+            user_display=user_display,
+        )
 
     return render_template('invoiceGenerator.html', form=form)
+
 
 @app.route('/download-invoice', methods=['POST'])
 @login_required
 def download_invoice():
     import json
+    
     try:
         invoice_data = json.loads(request.form.get("invoice_data", "[]"))
     except json.JSONDecodeError:
@@ -1510,30 +1561,64 @@ def download_invoice():
         return redirect(url_for("invoice_Generator"))
 
     company_name = request.form.get("company_name")
+    
+    # Buyer information
+    buyer_name = request.form.get("buyer_name") or company_name
+    buyer_phone = request.form.get("buyer_phone")
+    buyer_address = request.form.get("buyer_address")
+    notes = request.form.get("notes")
 
-    # parse numerical values
+    # Parse numerical values
     try:
-        total_weight = float(request.form.get("total_weight").replace("Kg", "").replace(",", ""))
-        average_weight = float(request.form.get("average_weight").replace("Kg", "").replace(",",""))
-        total_cost = float(request.form.get("total_cost").replace("K", "").replace(",", ""))
-        total_pigs = int(request.form.get("total_pigs"))
+        total_weight = float(request.form.get("total_weight", "0").replace("Kg", "").replace(",", ""))
+        average_weight = float(request.form.get("average_weight", "0").replace("Kg", "").replace(",", ""))
+        total_cost = float(request.form.get("total_cost", "0").replace("K", "").replace(",", ""))
+        total_pigs = int(request.form.get("total_pigs", "0"))
     except ValueError:
-        flash("Invalid Numerical data", "error")
+        flash("Invalid numerical data", "error")
         return redirect(url_for('invoice_Generator'))
 
     # Get invoice_date from form and parse it
     invoice_date_str = request.form.get("invoice_date")
     try:
-        # Parse the date string in YYYY-MM-DD format (HTML5 date input format)
         invoice_date = datetime.strptime(invoice_date_str, '%Y-%m-%d').date()
     except (ValueError, TypeError, AttributeError):
-        # Fallback to today's date if parsing fails
         invoice_date = date.today()
 
     # Generate unique invoice number
     invoice_number = f"INV-{datetime.now().strftime('%Y%m%d%H%M%S')}"
-    
-    # Store invoice data in db just before downloading
+
+    # Prepare user data from current_user
+    user_data = {
+        'first_name': current_user.first_name,
+        'last_name': current_user.last_name,
+        'email': current_user.email,
+        'phone_country_code': getattr(current_user, 'phone_country_code', None),
+        'phone_number': getattr(current_user, 'phone_number', None),
+        'farm_name': getattr(current_user, 'farm_name', None),
+        'address': getattr(current_user, 'address', None),
+        'bank_name': getattr(current_user, 'bank_name', None),
+        'account_name': getattr(current_user, 'account_name', None),
+        'account_number': getattr(current_user, 'account_number', None),
+        'mobile_money': getattr(current_user, 'mobile_money', None),
+    }
+
+    # FIXED: Get logo path correctly
+    logo_path = None
+    if hasattr(current_user, 'farm_logo') and current_user.farm_logo:
+        # Build the absolute path to the logo file
+        logo_path = os.path.join(
+            app.config.get('LOGOS_FOLDER', os.path.join(app.root_path, 'static', 'uploads', 'logos')),
+            current_user.farm_logo
+        )
+        # Verify file exists
+        if not os.path.exists(logo_path):
+            print(f"Logo file not found at: {logo_path}")
+            logo_path = None
+        else:
+            print(f"Logo found at: {logo_path}")
+
+    # Store invoice data in db
     try:
         new_invoice = Invoice(
             invoice_number=invoice_number,
@@ -1552,7 +1637,25 @@ def download_invoice():
         flash(f"Error saving invoice: {str(e)}", "error")
         return redirect(url_for('invoice_Generator'))
 
-    pdf = generate_invoice_pdf(company_name, invoice_number, invoice_data, total_weight, average_weight, total_cost)
+    # Generate PDF with user data
+    pdf = generate_invoice_pdf(
+        user_data=user_data,
+        buyer_name=buyer_name,
+        buyer_company=company_name,
+        buyer_phone=buyer_phone,
+        buyer_address=buyer_address,
+        invoice_number=invoice_number,
+        invoice_data=invoice_data,
+        total_weight=total_weight,
+        average_weight=average_weight,
+        total_cost=total_cost,
+        total_pigs=total_pigs,
+        currency_symbol="K",
+        notes=notes,
+        logo_path=logo_path,
+        invoice_date=invoice_date
+    )
+
     response = make_response(pdf)
     response.headers['Content-Type'] = 'application/pdf'
     response.headers['Content-Disposition'] = f'attachment; filename={invoice_number}.pdf'

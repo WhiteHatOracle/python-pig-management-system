@@ -1,0 +1,329 @@
+{% extends "home.html" %}
+
+{% block head %}
+<title>My Profile - Farmigo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/settings.css') }}">
+<style>
+    /* Default avatar styles */
+    .default-avatar {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--bg-accent), var(--hover-primary));
+        border-radius: 50%;
+    }
+    
+    .default-avatar svg {
+        width: 60%;
+        height: 60%;
+        fill: white;
+    }
+    
+    .profile-avatar-large img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="settings-main">
+    <div class="page-header">
+        <div class="header-content">
+            <a href="{{ url_for('settings') }}" class="back-link">
+                <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                    <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+                </svg>
+                Back to Settings
+            </a>
+            <div class="header-text">
+                <h1>My Profile</h1>
+                <p>Manage your personal and farm information</p>
+            </div>
+        </div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">
+                <span>{{ message }}</span>
+                <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <div class="settings-container">
+        <!-- Profile Card -->
+        <div class="settings-section profile-card-section">
+            <div class="profile-card-content">
+                <div class="profile-avatar-large">
+                    {% if user.profile_picture %}
+                        <img src="{{ url_for('static', filename='uploads/profile_pictures/' + user.profile_picture) }}" 
+                             alt="Profile Picture"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="default-avatar" style="display: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
+                                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/>
+                            </svg>
+                        </div>
+                    {% else %}
+                        <div class="default-avatar">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" fill="currentColor">
+                                <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/>
+                            </svg>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Upload Button -->
+                    <form action="{{ url_for('account.upload_profile_picture') }}" 
+                          method="POST" 
+                          enctype="multipart/form-data" 
+                          class="avatar-upload-form"
+                          id="profilePictureForm">
+                        <input type="file" 
+                               name="profile_picture" 
+                               id="profile_picture_input" 
+                               accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" 
+                               style="display: none;">
+                        <label for="profile_picture_input" class="avatar-edit-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M480-260q75 0 127.5-52.5T660-440q0-75-52.5-127.5T480-620q-75 0-127.5 52.5T300-440q0 75 52.5 127.5T480-260Zm0-80q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM160-120q-33 0-56.5-23.5T80-200v-480q0-33 23.5-56.5T160-760h126l74-80h240l74 80h126q33 0 56.5 23.5T880-680v480q0 33-23.5 56.5T800-120H160Z"/>
+                            </svg>
+                        </label>
+                    </form>
+                </div>
+                
+                <div class="profile-info">
+                    <h2 class="profile-name">{{ user.full_name }}</h2>
+                    <p class="profile-email">{{ user.email }}</p>
+                    {% if user.farm_name %}
+                    <p class="profile-farm">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 -960 960 960" width="16px" fill="currentColor">
+                            <path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z"/>
+                        </svg>
+                        {{ user.farm_name }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Stats -->
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-value">{{ user.sows|length if user.sows else 0 }}</span>
+                    <span class="stat-label">Sows</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ user.boars|length if user.boars else 0 }}</span>
+                    <span class="stat-label">Boars</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">{{ user.invoices|length if user.invoices else 0 }}</span>
+                    <span class="stat-label">Invoices</span>
+                </div>
+            </div>
+
+            {% if user.profile_picture %}
+            <div class="profile-picture-remove">
+                <form action="{{ url_for('account.delete_profile_picture') }}" method="POST">
+                    <button type="submit" class="btn-text-danger">Remove Photo</button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Personal Information -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                        <path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/>
+                    </svg>
+                    Personal Information
+                </h2>
+                <a href="{{ url_for('account.edit_profile') }}" class="edit-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                        <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Z"/>
+                    </svg>
+                    Edit
+                </a>
+            </div>
+            <ul class="settings-list info-list">
+                <li class="info-item">
+                    <span class="info-label">Full Name</span>
+                    <span class="info-value">{{ user.full_name or '—' }}</span>
+                </li>
+                <li class="info-item">
+                    <span class="info-label">Email</span>
+                    <span class="info-value">
+                        {{ user.email }}
+                        {% if user.is_verified %}
+                        <span class="badge badge-success">Verified</span>
+                        {% endif %}
+                    </span>
+                </li>
+                <li class="info-item">
+                    <span class="info-label">Phone</span>
+                    <span class="info-value">{{ user.full_phone or '—' }}</span>
+                </li>
+                <li class="info-item">
+                    <span class="info-label">Member Since</span>
+                    <span class="info-value">{{ user.created_at.strftime('%B %d, %Y') if user.created_at else '—' }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Farm Information -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                        <path d="M160-120v-480l320-240 320 240v480H560v-280H400v280H160Z"/>
+                    </svg>
+                    Farm Information
+                </h2>
+                <a href="{{ url_for('account.edit_farm') }}" class="edit-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                        <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Z"/>
+                    </svg>
+                    Edit
+                </a>
+            </div>
+            <ul class="settings-list info-list">
+                <li class="info-item">
+                    <span class="info-label">Farm Name</span>
+                    <span class="info-value">{{ user.farm_name or '—' }}</span>
+                </li>
+                <li class="info-item">
+                    <span class="info-label">Address</span>
+                    <span class="info-value">{{ user.full_address or '—' }}</span>
+                </li>
+                <li class="info-item">
+                    <span class="info-label">Tax ID</span>
+                    <span class="info-value">{{ user.tax_id or '—' }}</span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Farm Logo Section -->
+        <div class="settings-section">
+            <div class="section-header">
+                <h2>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                        <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-800v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z"/>
+                    </svg>
+                    Farm Logo
+                </h2>
+                <span class="section-subtitle">Used on invoices</span>
+            </div>
+            <div class="logo-upload-section">
+                {% if user.farm_logo %}
+                <div class="current-logo">
+                    <img src="{{ url_for('static', filename='uploads/logos/' + user.farm_logo) }}" 
+                         alt="Farm Logo"
+                         onerror="this.parentElement.innerHTML='<p class=\'logo-error-text\'>Logo could not be loaded</p>';">
+                </div>
+                <div class="logo-actions">
+                    <form method="POST" 
+                          action="{{ url_for('account.upload_farm_logo') }}" 
+                          enctype="multipart/form-data"
+                          id="changeLogoForm">
+                        <label class="btn btn-outline" for="changeLogoInput">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M440-320v-326L336-542l-56-58 200-200 200 200-56 58-104-104v326h-80ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/>
+                            </svg>
+                            Change Logo
+                        </label>
+                        <input type="file" 
+                               name="logo" 
+                               id="changeLogoInput"
+                               accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+                               style="display: none;">
+                    </form>
+                    
+                    <form method="POST" action="{{ url_for('account.delete_farm_logo') }}">
+                        <button type="submit" class="btn btn-danger-outline">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Z"/>
+                            </svg>
+                            Remove
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <form method="POST" 
+                      action="{{ url_for('account.upload_farm_logo') }}" 
+                      enctype="multipart/form-data"
+                      id="uploadLogoForm">
+                    <label class="logo-upload-placeholder" for="uploadLogoInput">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="48px" viewBox="0 -960 960 960" width="48px" fill="currentColor">
+                            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-800v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm40-80h480L570-480 450-320l-90-120-120 160Zm-40 80v-560 560Z"/>
+                        </svg>
+                        <p>Click to upload your farm logo</p>
+                        <span>PNG, JPG up to 2MB • Appears on invoices</span>
+                    </label>
+                    <input type="file" 
+                           name="logo" 
+                           id="uploadLogoInput"
+                           accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+                           style="display: none;">
+                </form>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- JavaScript for auto-submit on file select -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Profile picture upload
+    const profileInput = document.getElementById('profile_picture_input');
+    const profileForm = document.getElementById('profilePictureForm');
+    
+    if (profileInput && profileForm) {
+        profileInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                console.log('Profile picture selected:', this.files[0].name);
+                profileForm.submit();
+            }
+        });
+    }
+    
+    // Logo upload (new)
+    const uploadLogoInput = document.getElementById('uploadLogoInput');
+    const uploadLogoForm = document.getElementById('uploadLogoForm');
+    
+    if (uploadLogoInput && uploadLogoForm) {
+        uploadLogoInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                console.log('Logo selected:', this.files[0].name);
+                uploadLogoForm.submit();
+            }
+        });
+    }
+    
+    // Logo change
+    const changeLogoInput = document.getElementById('changeLogoInput');
+    const changeLogoForm = document.getElementById('changeLogoForm');
+    
+    if (changeLogoInput && changeLogoForm) {
+        changeLogoInput.addEventListener('change', function() {
+            if (this.files && this.files.length > 0) {
+                console.log('New logo selected:', this.files[0].name);
+                changeLogoForm.submit();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -2,13 +2,10 @@
 {% block head %}
     <title>Invoice Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Flatpickr CSS & JS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <!-- styling links -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/invoiceGenerator.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-    <!-- javascript links -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/invoiceGenerator.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
@@ -70,8 +67,8 @@
     <div class="generator-card">
         <div class="card-header">
             <div class="card-header-content">
-                <h2>Price Band Configuration</h2>
-                <p>Set up weight ranges and prices for automatic calculation</p>
+                <h2>Invoice Configuration</h2>
+                <p>Set up buyer details, weight ranges and prices</p>
             </div>
             <button type="button" class="clear-btn" onclick="clearForm()">
                 <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M440-122q-121-15-200.5-105.5T160-440q0-66 26-126.5T260-672l57 57q-38 34-57.5 79T240-440q0 88 56 155.5T440-202v80Zm80 0v-80q87-16 143.5-83T720-440q0-100-70-170t-170-70h-3l44 44-56 56-140-140 140-140 56 56-44 44h3q134 0 227 93t93 227q0 121-79.5 211.5T520-122Z"/></svg>
@@ -82,25 +79,35 @@
         <form class="generator-form" method="POST" action="?scroll=invoice" id="invoiceForm">
             {{ form.hidden_tag() }}
             
-            <!-- Company Section -->
+            <!-- Buyer Details Section -->
             <div class="form-section">
                 <div class="section-header">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M80-120v-720h400v160h400v560H80Zm80-80h240v-80H160v80Zm0-160h240v-80H160v80Zm0-160h240v-80H160v80Zm0-160h240v-80H160v80Zm320 480h320v-400H480v400Zm80-240v-80h160v80H560Zm0 160v-80h160v80H560Z"/></svg>
-                    <span>Company Details</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-480q-66 0-113-47t-47-113q0-66 47-113t113-47q66 0 113 47t47 113q0 66-47 113t-113 47ZM160-160v-112q0-34 17.5-62.5T224-378q62-31 126-46.5T480-440q66 0 130 15.5T736-378q29 15 46.5 43.5T800-272v112H160Z"/></svg>
+                    <span>Buyer Details</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="company">Company/Buyer Name *</label>
+                        {{ form.company(class="form-input", autocomplete="off", placeholder="Enter company or buyer name") }}
+                    </div>
+                    <div class="form-group">
+                        <label for="invoice_date">Invoice Date</label>
+                        {{ form.invoice_date(class="form-input", type="date") }}
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="buyer_name">Contact Name</label>
+                        <input type="text" name="buyer_name" id="buyer_name" class="form-input" placeholder="Contact person name" value="{{ buyer_name or '' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="buyer_phone">Phone Number</label>
+                        <input type="tel" name="buyer_phone" id="buyer_phone" class="form-input" placeholder="+260 97 1234567" value="{{ buyer_phone or '' }}">
+                    </div>
                 </div>
                 <div class="form-group full-width">
-                    <label for="company">Company Name</label>
-                    {{ form.company(class="form-input", autocomplete="off", placeholder="Enter company or buyer name") }}
-                </div>
-                <div class="form-group full-width">
-                    <label for="invoice_date">Invoice Date</label>
-                    {{ form.invoice_date(class="form-input", type="date") }}
-
-                    {% if form.invoice_date.errors %}
-                        {% for error in form.invoice_date.errors %}
-                            <span class="text-danger">{{ error }}</span>
-                        {% endfor %}
-                    {% endif %}
+                    <label for="buyer_address">Address</label>
+                    <textarea name="buyer_address" id="buyer_address" class="form-input form-textarea" rows="2" placeholder="Buyer's address (optional)">{{ buyer_address or '' }}</textarea>
                 </div>
             </div>
 
@@ -181,6 +188,18 @@
                 </div>
             </div>
 
+            <!-- Notes Section -->
+            <div class="form-section">
+                <div class="section-header">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Z"/></svg>
+                    <span>Additional Notes</span>
+                </div>
+                <div class="form-group full-width">
+                    <label for="notes">Invoice Notes (Optional)</label>
+                    <textarea name="notes" id="notes" class="form-input form-textarea" rows="2" placeholder="Payment terms, special instructions, etc.">{{ notes or '' }}</textarea>
+                </div>
+            </div>
+
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary btn-generate">
                     <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M320-240h60v-80h80v-60h-80v-80h-60v80h-80v60h80v80Zm200-30h200v-60H520v60Zm0-100h200v-60H520v60Zm44-152 56-56 56 56 42-42-56-58 56-56-42-42-56 56-56-56-42 42 56 56-56 58 42 42Zm-314-70h200v-60H250v60ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Z"/></svg>
@@ -200,16 +219,24 @@
             {% if invoice_data %}
             <div class="preview-actions">
                 <form method="POST" action="/download-invoice" class="download-form">
+                    <!-- Basic info -->
                     <input type="hidden" name="total_pigs" value="{{ total_pigs }}">
                     <input type="hidden" name="company_name" value="{{ company_name }}">
-                    <input type="hidden" name="invoice_data" value='{{ invoice_data | tojson}}'>
+                    <input type="hidden" name="invoice_data" value='{{ invoice_data | tojson }}'>
                     <input type="hidden" name="total_weight" value="{{ total_weight }}">
                     <input type="hidden" name="average_weight" value="{{ average_weight }}">
                     <input type="hidden" name="total_cost" value="{{ total_cost }}">
-                    <input type="hidden" name="invoice_date" value="{{invoice_date}}">
+                    <input type="hidden" name="invoice_date" value="{{ invoice_date_raw or '' }}">
+                    
+                    <!-- Buyer info -->
+                    <input type="hidden" name="buyer_name" value="{{ buyer_name or company_name }}">
+                    <input type="hidden" name="buyer_phone" value="{{ buyer_phone or '' }}">
+                    <input type="hidden" name="buyer_address" value="{{ buyer_address or '' }}">
+                    <input type="hidden" name="notes" value="{{ notes or '' }}">
+                    
                     <button type="submit" class="btn btn-download">
                         <svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 -960 960 960" width="18px" fill="currentColor"><path d="M480-320 280-520l56-58 104 104v-326h80v326l104-104 56 58-200 200ZM240-160q-33 0-56.5-23.5T160-240v-120h80v120h480v-120h80v120q0 33-23.5 56.5T720-160H240Z"/></svg>
-                        <span>Save Invoice</span>
+                        <span>Download PDF</span>
                     </button>
                 </form>
             </div>
@@ -218,25 +245,54 @@
 
         {% if invoice_data %}
         <div class="preview-content">
-            <!-- Invoice Header -->
+            <!-- Invoice Header with Seller Info -->
             <div class="invoice-header-info">
-                <div class="company-info">
-                    <h3>{{ company_name }}</h3>
-                    <span class="invoice-date">{{ now.strftime('%d %B %Y') if now else 'Today' }}</span>
+                <div class="seller-info">
+                    {% if current_user.farm_logo %}
+                    <img src="{{ url_for('static', filename='uploads/logos/' + current_user.farm_logo) }}" 
+                         alt="Logo" 
+                         class="invoice-logo"
+                         onerror="this.style.display='none'">
+                    {% endif %}
+                    <div class="seller-details">
+                        <h3>{{ current_user.farm_name or (current_user.first_name ~ ' ' ~ current_user.last_name) | trim or 'Your Business' }}</h3>
+                        {% if current_user.email %}
+                        <span class="seller-contact">{{ current_user.email }}</span>
+                        {% endif %}
+                        {% if current_user.phone_number %}
+                        <span class="seller-contact">{{ current_user.phone_country_code or '' }} {{ current_user.phone_number }}</span>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="invoice-stats">
-                    <div class="stat-item">
-                        <span class="stat-value">{{ invoice_data|length }}</span>
-                        <span class="stat-label">Animals</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ total_weight }}</span>
-                        <span class="stat-label">Total Kg</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-value">{{ average_weight }}</span>
-                        <span class="stat-label">Avg Kg</span>
-                    </div>
+                <div class="buyer-info">
+                    <span class="label">Bill To:</span>
+                    <h4>{{ buyer_name or company_name }}</h4>
+                    {% if company_name and company_name != buyer_name %}
+                    <span>{{ company_name }}</span>
+                    {% endif %}
+                    {% if buyer_phone %}
+                    <span>{{ buyer_phone }}</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Invoice Meta -->
+            <div class="invoice-meta">
+                <div class="meta-item">
+                    <span class="meta-label">Date</span>
+                    <span class="meta-value">{{ invoice_date }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Items</span>
+                    <span class="meta-value">{{ total_pigs }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Total Weight</span>
+                    <span class="meta-value">{{ total_weight }}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="meta-label">Avg Weight</span>
+                    <span class="meta-value">{{ average_weight }}</span>
                 </div>
             </div>
 
@@ -252,9 +308,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for idx, item in enumerate(invoice_data, start=1) %}
+                        {% for item in invoice_data %}
                         <tr>
-                            <td class="col-num">{{ idx }}</td>
+                            <td class="col-num">{{ loop.index }}</td>
                             <td class="col-weight" data-label="Weight">{{ item.formatted_weight }}</td>
                             <td class="col-price" data-label="Price/Kg">{{ item.formatted_price }}</td>
                             <td class="col-cost" data-label="Cost">{{ item.formatted_cost }}</td>
@@ -268,17 +324,28 @@
             <div class="invoice-summary">
                 <div class="summary-row">
                     <span class="summary-label">Total Weight</span>
-                    <span class="summary-value">{{ total_weight }} kg</span>
+                    <span class="summary-value">{{ total_weight }}</span>
                 </div>
                 <div class="summary-row">
                     <span class="summary-label">Average Weight</span>
-                    <span class="summary-value">{{ average_weight }} kg</span>
+                    <span class="summary-value">{{ average_weight }}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="summary-label">Number of Pigs</span>
+                    <span class="summary-value">{{ total_pigs }}</span>
                 </div>
                 <div class="summary-row total">
                     <span class="summary-label">Total Amount</span>
                     <span class="summary-value">{{ total_cost }}</span>
                 </div>
             </div>
+
+            {% if notes %}
+            <div class="invoice-notes">
+                <strong>Notes:</strong>
+                <p>{{ notes }}</p>
+            </div>
+            {% endif %}
         </div>
         {% else %}
         <div class="preview-empty">
@@ -293,14 +360,13 @@
     <div class="tips-card">
         <div class="tips-header">
             <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"/></svg>
-            <span>How Price Bands Work</span>
+            <span>Tips</span>
         </div>
         <div class="tips-content">
             <ul class="tips-list">
-                <li><strong>Band 1:</strong> Higher weight range with premium pricing</li>
-                <li><strong>Band 2:</strong> Medium weight range with typically higher price</li>
-                <li><strong>Band 3:</strong> Lower weight range with a specific price per kg</li>
-                <li>Each animal's weight is matched to the appropriate band for pricing</li>
+                <li>Your business details from your profile will appear on the invoice</li>
+                <li>Upload a logo in <a href="{{ url_for('account.profile') }}">Profile Settings</a> to brand your invoices</li>
+                <li>Each animal's weight is matched to the appropriate price band</li>
             </ul>
         </div>
     </div>

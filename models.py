@@ -2,30 +2,209 @@ from datetime import datetime, timezone
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from extensions import db
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 # Define User model
 class User(db.Model, UserMixin):
+    __tablename__ = 'user'  # Keep original table name
+    
+    # ==========================================
+    # PRIMARY FIELDS (Original)
+    # ==========================================
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), unique=True, nullable=False)  # usually email
+    username = db.Column(db.String(150), unique=True, nullable=False)
     email = db.Column(db.String(200), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=True)
+    password = db.Column(db.String(255), nullable=True)  # Keep original field name
+    
+    # ==========================================
+    # VERIFICATION FIELDS (Original)
+    # ==========================================
     verification_token = db.Column(db.String(200), nullable=True)
     verification_expiry = db.Column(db.DateTime(timezone=True), nullable=True)
     is_verified = db.Column(db.Boolean, default=False)
+    
+    # ==========================================
+    # PASSWORD RESET FIELDS (Original)
+    # ==========================================
     password_reset_token = db.Column(db.String(128), nullable=True)
     password_reset_expiry = db.Column(db.DateTime, nullable=True)
-
-    # Fields for Google login
+    
+    # ==========================================
+    # GOOGLE/OAUTH FIELDS (Original)
+    # ==========================================
     google_id = db.Column(db.String(255), unique=True, nullable=True)
-    name = db.Column(db.String(255), nullable=True)
-    profile_pic = db.Column(db.String(512), nullable=True)
+    name = db.Column(db.String(255), nullable=True)  # From Google
+    profile_pic = db.Column(db.String(512), nullable=True)  # From Google
+    
+    # ==========================================
+    # PERSONAL INFORMATION (New)
+    # ==========================================
+    first_name = db.Column(db.String(50), nullable=True)
+    last_name = db.Column(db.String(50), nullable=True)
+    phone_number = db.Column(db.String(20), nullable=True)
+    phone_country_code = db.Column(db.String(10), default='+1')
+    phone_country_iso = db.Column(db.String(5))
+    
+    # ==========================================
+    # FARM/BUSINESS INFORMATION (New)
+    # ==========================================
+    farm_name = db.Column(db.String(100), nullable=True)
+    farm_address = db.Column(db.Text, nullable=True)
+    farm_city = db.Column(db.String(50), nullable=True)
+    farm_state = db.Column(db.String(50), nullable=True)
+    farm_country = db.Column(db.String(50), nullable=True)
+    farm_postal_code = db.Column(db.String(20), nullable=True)
+    tax_id = db.Column(db.String(50), nullable=True)  # For invoices
+    
+    # ==========================================
+    # IMAGES (New - for uploaded images)
+    # ==========================================
+    profile_picture = db.Column(db.String(255), nullable=True)  # Uploaded profile picture
+    farm_logo = db.Column(db.String(255), nullable=True)        # Uploaded farm logo for invoices
+    
+    # ==========================================
+    # ACCOUNT STATUS (New)
+    # ==========================================
+    is_active = db.Column(db.Boolean, default=True)
+    email_verified = db.Column(db.Boolean, default=False)
+    phone_verified = db.Column(db.Boolean, default=False)
+    
+    # ==========================================
+    # TIMESTAMPS
+    # ==========================================
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
-
-    # Relationships for ownership
+    updated_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    last_login = db.Column(db.DateTime(timezone=True), nullable=True)
+    
+    # ==========================================
+    # NOTIFICATION PREFERENCES (New)
+    # ==========================================
+    notify_email = db.Column(db.Boolean, default=True)
+    notify_sms = db.Column(db.Boolean, default=False)
+    notify_push = db.Column(db.Boolean, default=False)
+    
+    # ==========================================
+    # RELATIONSHIPS (Original with additions)
+    # ==========================================
     boars = db.relationship("Boars", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
     sows = db.relationship("Sows", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
     invoices = db.relationship("Invoice", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
     expenses = db.relationship("Expense", back_populates="owner", cascade="all, delete-orphan", passive_deletes=True)
+    
+    # ==========================================
+    # METHODS
+    # ==========================================
+    
+    def set_password(self, password_text):
+        """Hash and set the password"""
+        self.password = generate_password_hash(password_text)
+    
+    def check_password(self, password_text):
+        """Check if password matches"""
+        if not self.password:
+            return False  # OAuth users don't have passwords
+        return check_password_hash(self.password, password_text)
+    
+    @property
+    def is_oauth_user(self):
+        """Check if user signed up via OAuth (Google)"""
+        return self.google_id is not None
+    
+    @property
+    def full_name(self):
+        """Return full name"""
+        if self.first_name and self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        elif self.first_name:
+            return self.first_name
+        elif self.last_name:
+            return self.last_name
+        return self.email.split('@')[0]  # Use email username as fallback
+    
+    @property
+    def full_phone(self):
+        """Return formatted phone number"""
+        if self.phone_country_code and self.phone_number:
+            return f"{self.phone_country_code} {self.phone_number}"
+        elif self.phone_number:
+            return self.phone_number
+        return None
+
+    
+    @property
+    def full_address(self):
+        """Return formatted full address"""
+        parts = []
+        if self.farm_address:
+            parts.append(self.farm_address)
+        if self.farm_city:
+            parts.append(self.farm_city)
+        if self.farm_state:
+            parts.append(self.farm_state)
+        if self.farm_postal_code:
+            parts.append(self.farm_postal_code)
+        if self.farm_country:
+            parts.append(self.farm_country)
+        return ', '.join(parts) if parts else None
+    
+    @property
+    def profile_picture_url(self):
+        """Return URL for profile picture or default"""
+        # First check for uploaded profile picture
+        if self.profile_picture:
+            return f"static/uploads/profiles/{self.profile_picture}"
+        # Fall back to Google profile pic
+        if self.profile_pic:
+            return self.profile_pic
+        # Default avatar
+        return "/static/images/default-avatar.png"
+    
+    @property
+    def farm_logo_url(self):
+        """Return URL for farm logo or None"""
+        if self.farm_logo:
+            return f"static/uploads/logos/{self.farm_logo}"
+        return None
+    
+    @property
+    def profile_completion(self):
+        """Calculate profile completion percentage"""
+        fields = [
+            self.first_name or self.name,  # Count Google name if no first_name
+            self.last_name,
+            self.email,
+            self.phone_number,
+            self.farm_name,
+            self.farm_address,
+            self.profile_picture or self.profile_pic,  # Count Google pic if no uploaded pic
+        ]
+        completed = sum(1 for f in fields if f)
+        return int((completed / len(fields)) * 100)
+    
+    def to_dict(self):
+        """Convert user to dictionary (for API responses)"""
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'full_name': self.full_name,
+            'phone_number': self.full_phone,
+            'farm_name': self.farm_name,
+            'farm_address': self.full_address,
+            'profile_picture': self.profile_picture_url,
+            'farm_logo': self.farm_logo_url,
+            'profile_completion': self.profile_completion,
+            'is_verified': self.is_verified,
+            'is_oauth_user': self.is_oauth_user,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+        }
+    
+    def __repr__(self):
+        return f'<User {self.username}>'
+
 
 # Define the Boar model
 class Boars(db.Model):
@@ -42,6 +221,7 @@ class Boars(db.Model):
     __table_args__ = (
         db.UniqueConstraint('BoarId', 'user_id', name='uix_boarid_userid'),
     )
+
 
 # Define the Sows model
 class Sows(db.Model):
@@ -75,6 +255,7 @@ class Sows(db.Model):
         db.UniqueConstraint('sowID', 'user_id', name='uix_sowid_userid'),
     )
 
+
 # Define the Service Records
 class ServiceRecords(db.Model):
     __tablename__ = "service_records"
@@ -104,6 +285,7 @@ class ServiceRecords(db.Model):
     __table_args__ = (
         db.UniqueConstraint('sow_id', 'service_date', name='uix_sow_service_date'),
     )
+
     
 class Invoice(db.Model):
     __tablename__ = "invoice"
@@ -127,6 +309,7 @@ class Invoice(db.Model):
     def __repr__(self):
         return f"<Invoice {self.invoice_number}>"
 
+
 # Define the Expense model    
 class Expense(db.Model):
     __tablename__ = "expense"
@@ -149,8 +332,8 @@ class Expense(db.Model):
     def __repr__(self):
         return f'<Expense {self.id} - {self.category}>'
 
+
 # ==================== LITTER AND RELATED MODELS ====================
-# In models.py - Update the Litter class
 class Litter(db.Model):
     __tablename__ = 'litter'
     
@@ -265,6 +448,7 @@ class Litter(db.Model):
     
     def __repr__(self):
         return f'<Litter {self.id} - Sow {self.sow_id} - {self.current_alive} alive>'
+
     
 class LitterManagement(db.Model):
     __tablename__ = 'litter_management'
@@ -272,17 +456,17 @@ class LitterManagement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     litter_id = db.Column(db.Integer, db.ForeignKey('litter.id', ondelete='CASCADE'), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    management_type = db.Column(db.String(50), nullable=False)  # single, cross_foster_in, cross_foster_out, combined
-    other_litter_id = db.Column(db.String(50))  # ID of other sow/litter involved
+    management_type = db.Column(db.String(50), nullable=False)
+    other_litter_id = db.Column(db.String(50))
     piglets_moved = db.Column(db.Integer)
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
-    # Relationship back to litter
     litter = db.relationship('Litter', back_populates='management_records')
 
     def __repr__(self):
         return f'<LitterManagement {self.id} - {self.management_type}>'
+
 
 class VaccinationRecord(db.Model):
     __tablename__ = 'vaccination_record'
@@ -300,11 +484,11 @@ class VaccinationRecord(db.Model):
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
-    # Relationship back to litter
     litter = db.relationship('Litter', back_populates='vaccination_records')
 
     def __repr__(self):
         return f'<VaccinationRecord {self.id} - {self.vaccine_type}>'
+
 
 class WeightRecord(db.Model):
     __tablename__ = 'weight_record'
@@ -312,27 +496,24 @@ class WeightRecord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     litter_id = db.Column(db.Integer, db.ForeignKey('litter.id', ondelete='CASCADE'), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    weight_type = db.Column(db.String(20), default='average')  # average, individual, sample
+    weight_type = db.Column(db.String(20), default='average')
     piglets_weighed = db.Column(db.Integer)
     average_weight = db.Column(db.Float, nullable=False)
-    individual_weights = db.Column(db.Text)  # Comma-separated weights
+    individual_weights = db.Column(db.Text)
     total_weight = db.Column(db.Float)
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
-    # Relationship back to litter
     litter = db.relationship('Litter', back_populates='weight_records')
     
     @property
     def age_days(self):
-        """Calculate age at time of weighing"""
         if self.litter and self.litter.farrowDate:
             return (self.date - self.litter.farrowDate).days
         return None
     
     @property
     def daily_gain(self):
-        """Calculate daily gain compared to previous weight record"""
         if not self.litter or not self.litter.weight_records:
             return None
         
@@ -343,7 +524,6 @@ class WeightRecord(db.Model):
             return None
         
         if idx == 0:
-            # Compare to birth weight
             if self.litter.averageWeight and self.age_days and self.age_days > 0:
                 return round((self.average_weight - self.litter.averageWeight) / self.age_days, 2)
             return None
@@ -357,6 +537,7 @@ class WeightRecord(db.Model):
     def __repr__(self):
         return f'<WeightRecord {self.id} - {self.average_weight}kg>'
 
+
 class MortalityRecord(db.Model):
     __tablename__ = 'mortality_record'
     
@@ -366,16 +547,16 @@ class MortalityRecord(db.Model):
     number_died = db.Column(db.Integer, nullable=False)
     cause = db.Column(db.String(50), nullable=False)
     other_cause = db.Column(db.String(200))
-    age_at_death = db.Column(db.Integer)  # days
+    age_at_death = db.Column(db.Integer)
     weight_at_death = db.Column(db.Float)
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
-    # Relationship back to litter
     litter = db.relationship('Litter', back_populates='mortality_records')
 
     def __repr__(self):
         return f'<MortalityRecord {self.id} - {self.number_died} died>'
+
 
 class SaleRecord(db.Model):
     __tablename__ = 'sale_record'
@@ -390,15 +571,15 @@ class SaleRecord(db.Model):
     total_amount = db.Column(db.Float)
     buyer_name = db.Column(db.String(100))
     buyer_contact = db.Column(db.String(100))
-    sale_type = db.Column(db.String(20), default='market')  # market, breeding, weaner, culled
+    sale_type = db.Column(db.String(20), default='market')
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
-    # Relationship back to litter
     litter = db.relationship('Litter', back_populates='sale_records')
 
     def __repr__(self):
         return f'<SaleRecord {self.id} - {self.number_sold} sold>'
+
 
 # ==================== ADMIN MODELS ====================
 class AdminUser(db.Model, UserMixin):
@@ -409,26 +590,24 @@ class AdminUser(db.Model, UserMixin):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(256), nullable=False)
-    is_super_admin = db.Column(db.Boolean, default=False)  # Can manage other admins
+    is_super_admin = db.Column(db.Boolean, default=False)
     is_active = db.Column(db.Boolean, default=True)
     last_login = db.Column(db.DateTime(timezone=True))
     created_at = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     
-    # For Flask-Login to distinguish from regular User
     @property
     def is_admin(self):
         return True
     
     def set_password(self, password):
-        from werkzeug.security import generate_password_hash
         self.password_hash = generate_password_hash(password)
     
     def check_password(self, password):
-        from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
     
     def __repr__(self):
         return f'<AdminUser {self.username}>'
+
 
 class PageView(db.Model):
     """Track page views for traffic analytics"""
@@ -442,14 +621,15 @@ class PageView(db.Model):
     user_agent = db.Column(db.String(500))
     referrer = db.Column(db.String(500))
     country = db.Column(db.String(100))
-    device_type = db.Column(db.String(20))  # mobile, tablet, desktop
+    device_type = db.Column(db.String(20))
     browser = db.Column(db.String(50))
-    response_time = db.Column(db.Float)  # in milliseconds
+    response_time = db.Column(db.Float)
     status_code = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
     
     def __repr__(self):
         return f'<PageView {self.path} at {self.timestamp}>'
+
 
 class ActivityLog(db.Model):
     """Track user and admin actions"""
@@ -458,19 +638,19 @@ class ActivityLog(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='SET NULL'), nullable=True)
     admin_id = db.Column(db.Integer, db.ForeignKey('admin_user.id', ondelete='SET NULL'), nullable=True)
-    action = db.Column(db.String(100), nullable=False, index=True)  # e.g., 'user_login', 'sow_created', 'invoice_generated'
-    entity_type = db.Column(db.String(50))  # e.g., 'user', 'sow', 'boar', 'invoice'
+    action = db.Column(db.String(100), nullable=False, index=True)
+    entity_type = db.Column(db.String(50))
     entity_id = db.Column(db.Integer)
-    details = db.Column(db.Text)  # JSON string with additional details
+    details = db.Column(db.Text)
     ip_address = db.Column(db.String(50))
     timestamp = db.Column(db.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
     
-    # Relationships
     user = db.relationship('User', foreign_keys=[user_id], backref='activity_logs')
     admin = db.relationship('AdminUser', foreign_keys=[admin_id], backref='activity_logs')
     
     def __repr__(self):
         return f'<ActivityLog {self.action} at {self.timestamp}>'
+
 
 class SystemSetting(db.Model):
     """Store system-wide settings"""

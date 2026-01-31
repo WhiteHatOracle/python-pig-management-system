@@ -1,8 +1,8 @@
-"""Initial
+"""empty message
 
-Revision ID: 74de1eb6727d
+Revision ID: 4a6ec2bad21e
 Revises: 
-Create Date: 2026-01-16 19:43:08.375020
+Create Date: 2026-01-29 21:30:19.453267
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '74de1eb6727d'
+revision = '4a6ec2bad21e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -53,7 +53,28 @@ def upgrade():
     sa.Column('google_id', sa.String(length=255), nullable=True),
     sa.Column('name', sa.String(length=255), nullable=True),
     sa.Column('profile_pic', sa.String(length=512), nullable=True),
+    sa.Column('first_name', sa.String(length=50), nullable=True),
+    sa.Column('last_name', sa.String(length=50), nullable=True),
+    sa.Column('phone_number', sa.String(length=20), nullable=True),
+    sa.Column('phone_country_code', sa.String(length=5), nullable=True),
+    sa.Column('farm_name', sa.String(length=100), nullable=True),
+    sa.Column('farm_address', sa.Text(), nullable=True),
+    sa.Column('farm_city', sa.String(length=50), nullable=True),
+    sa.Column('farm_state', sa.String(length=50), nullable=True),
+    sa.Column('farm_country', sa.String(length=50), nullable=True),
+    sa.Column('farm_postal_code', sa.String(length=20), nullable=True),
+    sa.Column('tax_id', sa.String(length=50), nullable=True),
+    sa.Column('profile_picture', sa.String(length=255), nullable=True),
+    sa.Column('farm_logo', sa.String(length=255), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.Column('email_verified', sa.Boolean(), nullable=True),
+    sa.Column('phone_verified', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('updated_at', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('last_login', sa.DateTime(timezone=True), nullable=True),
+    sa.Column('notify_email', sa.Boolean(), nullable=True),
+    sa.Column('notify_sms', sa.Boolean(), nullable=True),
+    sa.Column('notify_push', sa.Boolean(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('google_id'),

@@ -70,21 +70,20 @@ class CompleteFeedForm(FlaskForm):
 # Define Invoice Generator Form
 class InvoiceGeneratorForm(FlaskForm):
     company         = StringField(validators=[InputRequired(), Length(min=4, max=50)])
+    invoice_date = DateField('Invoice Date',format='%Y-%m-%d',default=date.today,validators=[DataRequired()])
+    weights         = TextAreaField(validators=[InputRequired()])
+
     firstBandRange  = StringField(validators=[InputRequired(), Length(min=4, max=10)])
     firstBandPrice  = DecimalField(validators=[InputRequired()])
     secondBandRange = StringField(validators=[InputRequired(), Length(min=4, max=10)])
     secondBandPrice = DecimalField(validators=[InputRequired()])
     thirdBandRange  = StringField(validators=[InputRequired(), Length(min=4, max=10)])
     thirdBandPrice  = DecimalField(validators=[InputRequired()])
-    weights         = TextAreaField(validators=[InputRequired()])
 
-    # ADD THIS NEW FIELD
-    invoice_date = DateField(
-        'Invoice Date',
-        format='%Y-%m-%d',
-        default=date.today,
-        validators=[DataRequired()]
-    )
+    buyer_name = StringField('Buyer Name', validators=[Optional(), Length(max=100)])
+    buyer_phone = StringField('Buyer Phone', validators=[Optional(), Length(max=20)])
+    buyer_address = TextAreaField('Buyer Address', validators=[Optional(), Length(max=300)])
+    notes = TextAreaField('Invoice Notes', validators=[Optional(), Length(max=500)])
 
     submit          = SubmitField("Generate Invoice")
 

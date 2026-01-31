@@ -1,0 +1,121 @@
+<!-- templates/account/edit_farm.html -->
+{% extends "home.html" %}
+
+{% block head %}
+<title>Edit Farm Information - Farmigo</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="account-container">
+    <!-- Page Header -->
+    <div class="page-header">
+        <a href="{{ url_for('account.profile') }}" class="back-link">
+            <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor">
+                <path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/>
+            </svg>
+            Back to Profile
+        </a>
+        <h1>Edit Farm Information</h1>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">
+                <span>{{ message }}</span>
+                <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Edit Form -->
+    <form method="POST" class="edit-form">
+        <div class="form-card">
+            <h2>Farm/Business Details</h2>
+            <p class="form-description">This information appears on your invoices</p>
+            
+            <div class="form-group">
+                <label for="farm_name">Farm/Business Name</label>
+                <input type="text" 
+                       id="farm_name" 
+                       name="farm_name" 
+                       value="{{ user.farm_name or '' }}"
+                       placeholder="e.g., Green Valley Farm"
+                       class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label for="farm_address">Street Address</label>
+                <textarea id="farm_address" 
+                          name="farm_address" 
+                          placeholder="123 Farm Road"
+                          class="form-input form-textarea"
+                          rows="2">{{ user.farm_address or '' }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="farm_city">City</label>
+                    <input type="text" 
+                           id="farm_city" 
+                           name="farm_city" 
+                           value="{{ user.farm_city or '' }}"
+                           placeholder="City"
+                           class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="farm_state">State/Province</label>
+                    <input type="text" 
+                           id="farm_state" 
+                           name="farm_state" 
+                           value="{{ user.farm_state or '' }}"
+                           placeholder="State"
+                           class="form-input">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="farm_postal_code">Postal/ZIP Code</label>
+                    <input type="text" 
+                           id="farm_postal_code" 
+                           name="farm_postal_code" 
+                           value="{{ user.farm_postal_code or '' }}"
+                           placeholder="12345"
+                           class="form-input">
+                </div>
+                <div class="form-group">
+                    <label for="farm_country">Country</label>
+                    <input type="text" 
+                           id="farm_country" 
+                           name="farm_country" 
+                           value="{{ user.farm_country or '' }}"
+                           placeholder="Country"
+                           class="form-input">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tax_id">Tax ID / VAT Number (Optional)</label>
+                <input type="text" 
+                       id="tax_id" 
+                       name="tax_id" 
+                       value="{{ user.tax_id or '' }}"
+                       placeholder="e.g., 12-3456789"
+                       class="form-input">
+                <span class="form-hint">Displayed on invoices for tax purposes</span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{{ url_for('account.profile') }}" class="btn btn-outline">Cancel</a>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
