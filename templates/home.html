@@ -46,8 +46,15 @@
     <header class="mobile-header">
         <div class="mobile-header-content">
             <div class="mobile-logo">
-                <img src="/static/assets/logo.png" alt="Farmigo Logo">
-                <span>Farmigo</span>
+                {% if current_user.profile_picture %}
+                <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ current_user.profile_picture) }}" alt="{{ current_user.name }}'s Profile">
+                {% else %}
+                    <div class="avatar-initials">
+                        {{ (current_user.name or current_user.username or 'U')[0] | upper }}
+                    </div>
+                {% endif %}
+                
+                <span>{{ current_user.name or current_user.username}}</span>
             </div>
             <div class="mobile-header-actions">
                 <!-- Theme Toggle Button -->
@@ -75,8 +82,15 @@
     <nav id="sidebar" aria-label="Main navigation">
         <div class="sidebar-header">
             <div class="logo">
-                <img src="/static/assets/logo.png" alt="Farmigo Logo">
-                <span class="logo-text">Farmigo</span>
+                {% if current_user.profile_picture %}
+                <img src="{{ url_for('static', filename='uploads/profile_pictures/' ~ current_user.profile_picture) }}" alt="{{ current_user.name }}'s Profile">
+                {% else %}
+                    <div class="avatar-initials">
+                        {{ (current_user.name or current_user.username or 'U')[0] | upper }}
+                    </div>
+                {% endif %}
+                
+                <span>{{ current_user.name or current_user.username}}</span>
             </div>
             <button id="toggle-btn" aria-label="Toggle sidebar" type="button">
                 <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M560-240 320-480l240-240 56 56-184 184 184 184-56 56Z"/></svg>

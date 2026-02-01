@@ -148,6 +148,19 @@ body.sidebar-collapsed {
   transition: opacity var(--transition-speed) ease;
 }
 
+.avatar-initials {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bg-accent), var(--hover-primary));
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
 /* Toggle Button */
 #toggle-btn {
   display: flex;
