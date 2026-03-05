@@ -90,7 +90,12 @@ init_upload_folders(app)
 # =========================
 # Application Modules (import AFTER app is created)
 # =========================
+from admin import admin_bp
+from notifications.routes import notifications_bp
 from routes.account_routes import account_bp
+from notifications import(
+    models
+)
 from models import (
     db, Litter, User, Boars, Sows,
     ServiceRecords, Invoice, Expense,
@@ -119,7 +124,6 @@ from dashboard_helpers import (
     get_financial_data,
     get_mortality_summary,
 )
-from admin import admin_bp
 from admin.middleware import track_page_view
 from models import (
     AdminUser,
@@ -152,6 +156,7 @@ init_settings_middleware(app)
 # =========================
 app.register_blueprint(admin_bp)
 app.register_blueprint(account_bp)
+app.register_blueprint(notifications_bp)
 
 # =========================
 # ADD TRAFFIC TRACKING MIDDLEWARE

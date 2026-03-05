@@ -1135,3 +1135,99 @@ button:focus {
     fill: #10a37f;
     flex-shrink: 0;
 }
+
+/* ============================================
+   NOTIFICATION BADGES
+   ============================================ */
+
+/* Base notification badge styles */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #dc3545;
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.4);
+    animation: badgePulse 2s infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Mobile header notification button */
+.mobile-header-actions .notification-btn {
+    position: relative;
+}
+
+.mobile-header-actions .notification-badge {
+    top: -2px;
+    right: -2px;
+    font-size: 9px;
+    min-width: 16px;
+    height: 16px;
+}
+
+/* Sidebar notification link */
+.notification-nav-link {
+    position: relative;
+}
+
+.notification-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-badge {
+    top: -8px;
+    right: -8px;
+    font-size: 9px;
+    min-width: 16px;
+    height: 16px;
+}
+
+/* When sidebar is collapsed */
+#sidebar.collapsed .sidebar-badge {
+    top: -5px;
+    right: -5px;
+}
+
+/* Mobile bottom nav notification */
+.notification-mobile-icon {
+    position: relative;
+}
+
+.mobile-bottom-badge {
+    top: -8px;
+    right: -8px;
+    font-size: 9px;
+    min-width: 16px;
+    height: 16px;
+}
+
+/* Active state for notification nav item */
+.notification-nav-link.active .notification-icon-wrapper svg,
+.mobile-nav-item.active .notification-mobile-icon svg {
+    fill: var(--primary-color, #4f46e5);
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .notification-badge {
+    box-shadow: 0 2px 4px rgba(220, 53, 69, 0.6);
+}

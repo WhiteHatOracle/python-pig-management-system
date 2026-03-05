@@ -1,4 +1,5 @@
 {% extends 'home.html' %}
+
 {% block head %}
     <title>Edit Sow - {{ sow.sowID }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +12,7 @@
     <!-- javascript links -->
     <script type="text/javascript" src="{{ url_for('static', filename='js/home.js')}}" defer></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/edit.js')}}" defer></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>  
+    <script type="text/javascript" src="{{ url_for('static', filename='js/flash.js')}}" defer></script>
 {% endblock %}
 
 {% block content %}

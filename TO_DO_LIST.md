@@ -1,3 +1,5 @@
+## Features to add (comment out what has been added)
+
 ## 1. implement the payement gateway
     - a user signs up and choses a subscription that they intend to apply for
     - if the user doesnt subscribe, they dont have access to the application.
@@ -10,9 +12,9 @@
 ## 2. Implement the notification system.
     - The user should recieve notifications for the dates of different things from farrow dates to vaccination dates.
 
-## 3. Create a user account management.
+<!-- ## 3. Create a user account management.
     - allow the user to manage their own account
     - adding email address
     - adding mobile numbers, for the invoice
     - adding farm name, for the invoice 
-    - adding profile picture(just for use within the app) and logo(for the invoice)
+    - adding profile picture(just for use within the app) and logo(for the invoice) -->

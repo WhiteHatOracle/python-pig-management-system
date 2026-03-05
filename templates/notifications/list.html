@@ -1,0 +1,183 @@
+{% extends "home.html" %}
+
+{% block head %}
+<title>Notifications</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script type="text/javascript" src="{{ url_for('static', filename='js/notification.js')}}" defer></script>
+{% endblock %}
+
+{% block content %}
+<main>
+<!-- <div class="notifications-page"> -->
+    <!-- Header -->
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class="fas fa-bell"></i>
+                Notifications
+            </h1>
+            <p>Stay updated on important farm events</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-outline-secondary" id="refreshNotifications">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh</span>
+            </button> 
+            <button class="btn btn-outline-primary" id="markAllRead" {% if unread_count == 0 %}disabled{% endif %}>
+                <i class="fas fa-check-double"></i>
+                <span>Mark All Read</span>
+            </button>
+            <a href="{{ url_for('notifications.notification_settings') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-row">
+        <div class="stat-card primary">
+            <div class="stat-info">
+                <h6>Unread</h6>
+                <h3 id="unreadCount">{{ unread_count }}</h3>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-envelope"></i>
+            </div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-info">
+                <h6>Overdue</h6>
+                <h3>{{ notifications|selectattr('is_overdue')|list|length }}</h3>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-info">
+                <h6>Due Today</h6>
+                <h3>{{ notifications|selectattr('days_until', 'equalto', 0)|list|length }}</h3>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-calendar-day"></i>
+            </div>
+        </div>
+        <div class="stat-card info">
+            <div class="stat-info">
+                <h6>Upcoming</h6>
+                <h3>{{ notifications|selectattr('days_until', 'greaterthan', 0)|list|length }}</h3>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="filter-tabs">
+        <button class="nav-link active" data-filter="all">
+            All <span class="badge">{{ notifications|length }}</span>
+        </button>
+        <button class="nav-link" data-filter="unread">
+            Unread <span class="badge">{{ unread_count }}</span>
+        </button>
+        <button class="nav-link" data-filter="overdue">
+            Overdue <span class="badge">{{ notifications|selectattr('is_overdue')|list|length }}</span>
+        </button>
+        <button class="nav-link" data-filter="farrow_due">
+            <i class="fas fa-piggy-bank"></i> Farrow
+        </button>
+        <button class="nav-link" data-filter="vaccination_due">
+            <i class="fas fa-syringe"></i> Vaccination
+        </button>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="card">
+        {% if notifications %}
+        <div class="list-group list-group-flush" id="notificationsList">
+            {% for notification in notifications %}
+            <div class="list-group-item notification-item {% if not notification.is_read %}unread{% endif %}"
+                 data-id="{{ notification.id }}"
+                 data-type="{{ notification.notification_type }}"
+                 data-read="{% if notification.is_read %}true{% else %}flase{% endif %}"
+                 data-overdue="{% if notification.is_overdue %}true{% else %}flase{% endif %}">
+                
+                <!-- Icon -->
+                <div class="notification-icon icon-{{ notification.color }}">
+                    <i class="fas {{ notification.icon }}"></i>
+                </div>
+                
+                <!-- Content -->
+                <div class="notification-content">
+                    <div class="notification-header">
+                        <h6 class="notification-title {% if not notification.is_read %}unread{% endif %}">
+                            {{ notification.title }}
+                        </h6>
+                        <div class="notification-actions">
+                            {% if notification.is_overdue %}
+                            <span class="badge badge-danger">Overdue</span>
+                            {% elif notification.days_until == 0 %}
+                            <span class="badge badge-warning">Today</span>
+                            {% elif notification.days_until == 1 %}
+                            <span class="badge badge-info">Tomorrow</span>
+                            {% elif notification.days_until <= 3 %}
+                            <span class="badge badge-secondary">{{ notification.days_until }} days</span>
+                            {% endif %}
+                            
+                            <!-- Action Dropdown -->
+                            <div class="dropdown">
+                                <button class="btn btn-link" type="button" onclick="toggleDropdown(this)">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    {% if not notification.is_read %}
+                                    <button class="dropdown-item mark-read-btn" data-id="{{ notification.id }}">
+                                        <i class="fas fa-check"></i> Mark as Read
+                                    </button>
+                                    {% endif %}
+                                    <button class="dropdown-item dismiss-btn" data-id="{{ notification.id }}">
+                                        <i class="fas fa-times"></i> Dismiss
+                                    </button>
+                                    {% if notification.entity_type and notification.entity_id %}
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-external-link-alt"></i> View Details
+                                    </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="notification-message">{{ notification.message }}</p>
+                    <small class="notification-meta">
+                        <i class="fas fa-calendar"></i>
+                        Scheduled: {{ notification.scheduled_date.strftime('%B %d, %Y') }}
+                        <span class="separator">•</span>
+                        <i class="fas fa-tag"></i>
+                        {{ notification.notification_type|replace('_', ' ')|title }}
+                    </small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-bell-slash"></i>
+            <h5>No notifications</h5>
+            <p>You're all caught up! Check back later for updates.</p>
+            <button class="btn btn-primary" id="refreshEmpty">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+        {% endif %}
+    </div>
+<!-- </div> -->
+</main>
+{% endblock %}

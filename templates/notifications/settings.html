@@ -1,0 +1,198 @@
+{% extends "home.html" %}
+
+{% block head %}
+<title>Notification Settings</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/notifications.css') }}">
+<script type="text/javascript" src="{{ url_for('static', filename='js/notification.js')}}" defer></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<main>
+<!-- <div class="notifications-page"> -->
+    <!-- Header -->
+    <div class="page-header mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ url_for('notifications.notification_list') }}">Notifications</a>
+                    </li>
+                    <li class="breadcrumb-item active">Settings</li>
+                </ol>
+            </nav>
+            <h1>
+                <i class="fas fa-cog"></i>
+                Notification Settings
+            </h1>
+            <p>Customize when and how you receive notifications</p>
+        </div>
+    </div>
+
+    <div class="settings-grid">
+        <!-- Main Content -->
+        <div class="settings-main">
+            <!-- Notification Types Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>
+                        <i class="fas fa-bell"></i>
+                        Notification Types
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="notificationSettingsForm">
+                        {% for type, pref in preferences.items() %}
+                        <div class="notification-setting-item">
+                            <div class="setting-header">
+                                <div class="form-check">
+                                    <input class="form-switch" type="checkbox" 
+                                           id="enable_{{ type }}" 
+                                           name="{{ type }}_enabled"
+                                           {% if pref.is_enabled %}checked{% endif %}>
+                                    <label class="form-label" for="enable_{{ type }}">
+                                        {{ pref.label }}
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="notification-options {% if not pref.is_enabled %}disabled{% endif %}">
+                                <div class="options-row">
+                                    <!-- Days before -->
+                                    <div class="option-group">
+                                        <span class="option-label">Remind me</span>
+                                        <select class="form-select form-select-sm" 
+                                                name="{{ type }}_days_before"
+                                                {% if not pref.is_enabled %}disabled{% endif %}>
+                                            <option value="0" {% if pref.days_before == 0 %}selected{% endif %}>0</option>
+                                            <option value="1" {% if pref.days_before == 1 %}selected{% endif %}>1</option>
+                                            <option value="2" {% if pref.days_before == 2 %}selected{% endif %}>2</option>
+                                            <option value="3" {% if pref.days_before == 3 %}selected{% endif %}>3</option>
+                                            <option value="5" {% if pref.days_before == 5 %}selected{% endif %}>5</option>
+                                            <option value="7" {% if pref.days_before == 7 %}selected{% endif %}>7</option>
+                                        </select>
+                                        <span class="option-label">days before</span>
+                                    </div>
+                                    
+                                    <!-- Delivery channels -->
+                                    <div class="option-group channels">
+                                        <div class="btn-group">
+                                            <input type="checkbox" class="btn-toggle" 
+                                                   id="{{ type }}_push" 
+                                                   name="{{ type }}_push"
+                                                   {% if pref.push_enabled %}checked{% endif %}
+                                                   {% if not pref.is_enabled %}disabled{% endif %}>
+                                            <label for="{{ type }}_push" title="In-app notifications">
+                                                <i class="fas fa-bell"></i>
+                                            </label>
+                                            
+                                            <input type="checkbox" class="btn-toggle" 
+                                                   id="{{ type }}_email" 
+                                                   name="{{ type }}_email"
+                                                   {% if pref.email_enabled %}checked{% endif %}
+                                                   {% if not pref.is_enabled %}disabled{% endif %}>
+                                            <label for="{{ type }}_email" title="Email notifications">
+                                                <i class="fas fa-envelope"></i>
+                                            </label>
+                                            
+                                            <input type="checkbox" class="btn-toggle" 
+                                                   id="{{ type }}_sms" 
+                                                   name="{{ type }}_sms"
+                                                   {% if pref.sms_enabled %}checked{% endif %}
+                                                   {% if not pref.is_enabled %}disabled{% endif %}>
+                                            <label for="{{ type }}_sms" title="SMS notifications">
+                                                <i class="fas fa-sms"></i>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <div class="footer-content">
+                        <span class="footer-hint">
+                            <i class="fas fa-info-circle"></i>
+                            Changes are saved when you click Save
+                        </span>
+                        <button class="btn btn-primary" id="saveSettings">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="settings-sidebar">
+            <!-- Delivery Channels Legend -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6>
+                        <i class="fas fa-info-circle"></i>
+                        Delivery Channels
+                    </h6>
+                </div>
+                <div class="card-body channel-list">
+                    <div class="channel-item">
+                        <div class="channel-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="channel-info">
+                            <strong>In-App</strong>
+                            <p>Notifications within the app</p>
+                        </div>
+                    </div>
+                    <div class="channel-item">
+                        <div class="channel-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="channel-info">
+                            <strong>Email</strong>
+                            <p>Sent to {{ current_user.email }}</p>
+                        </div>
+                    </div>
+                    <div class="channel-item">
+                        <div class="channel-icon">
+                            <i class="fas fa-sms"></i>
+                        </div>
+                        <div class="channel-info">
+                            <strong>SMS</strong>
+                            <p>
+                                {% if current_user.phone_number %}
+                                Sent to {{ current_user.full_phone }}
+                                {% else %}
+                                <a href="{{ url_for('account.account_settings') }}">Add phone number</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h6>
+                        <i class="fas fa-bolt"></i>
+                        Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body quick-actions">
+                    <button class="btn btn-outline-success" id="enableAll">
+                        <i class="fas fa-check-double"></i> Enable All
+                    </button>
+                    <button class="btn btn-outline-secondary" id="disableAll">
+                        <i class="fas fa-times"></i> Disable All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- </div> -->
+</main>
+{% endblock %}

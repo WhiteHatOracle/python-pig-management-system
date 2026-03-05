@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="csrf-token()">
     {% block title %}<title>Home</title>{% endblock %}
     
     <!-- Loader CSS - Load first for immediate display -->
@@ -57,6 +58,16 @@
                 <span>{{ current_user.name or current_user.username}}</span>
             </div>
             <div class="mobile-header-actions">
+
+                <!-- ========== ADD NOTIFICATION BELL HERE ========== -->
+                <a href="{{ url_for('notifications.notification_list') }}" class="header-icon-btn notification-btn" aria-label="Notifications">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                        <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/>
+                    </svg>
+                    <span class="notification-badge" id="mobileNotificationBadge" style="display: none;">0</span>
+                </a>
+                <!-- ========== END NOTIFICATION BELL ========== -->
+
                 <!-- Theme Toggle Button -->
                 <button id="mobile-theme-toggle" class="header-icon-btn theme-toggle-btn" aria-label="Toggle theme" type="button">
                     <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
@@ -66,9 +77,11 @@
                         <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q14 0 27.5 1t26.5 3q-41 29-65.5 75.5T444-660q0 90 63 153t153 63q55 0 101-24.5t75-65.5q2 13 3 26.5t1 27.5q0 150-105 255T480-120Z"/>
                     </svg>
                 </button>
+
                 <a href="{{ url_for('settings') }}" class="header-icon-btn" aria-label="Settings">
                     <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm110-260q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Z"/></svg>
                 </a>
+
                 <a href="{{ url_for('logout') }}" class="header-icon-btn logout-mobile-btn" aria-label="Logout">
                     <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor"><path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z"/></svg>
                 </a>
@@ -142,6 +155,21 @@
                     <span class="nav-text">Expenses</span>
                 </a>
             </li>
+
+            <!-- ========== ADD NOTIFICATIONS HERE ========== -->
+            <li>
+                <a href="{{ url_for('notifications.notification_list') }}" class="nav-link notification-nav-link" data-tooltip="Notifications">
+                    <div class="notification-icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="currentColor">
+                            <path d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z"/>
+                        </svg>
+                        <span class="notification-badge sidebar-badge" id="sidebarNotificationBadge" style="display: none;">0</span>
+                    </div>
+                    <span class="nav-text">Notifications</span>
+                </a>
+            </li>
+            <!-- ========== END NOTIFICATIONS ========== -->
+
         </ul>
 
         <div class="nav-divider"></div>
@@ -231,5 +259,46 @@
     <!-- Main Scripts -->
     <script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
     <script src="{{ url_for('static', filename='js/flash.js') }}" defer></script>
+    
+    <!-- ============================================
+     NOTIFICATION BADGE SCRIPT
+     ============================================ -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to update all notification badges
+        async function updateNotificationBadges() {
+            try {
+                const response = await fetch('/notifications/api/unread-count');
+                const data = await response.json();
+                const count = data.count || 0;
+                
+                // Get all badge elements
+                const badges = [
+                    document.getElementById('mobileNotificationBadge'),
+                    document.getElementById('sidebarNotificationBadge'),
+                    document.getElementById('mobileBottomNotificationBadge')
+                ];
+                
+                badges.forEach(badge => {
+                    if (badge) {
+                        badge.textContent = count > 99 ? '99+' : count;
+                        badge.style.display = count > 0 ? 'flex' : 'none';
+                    }
+                });
+            } catch (error) {
+                console.error('Failed to fetch notification count:', error);
+            }
+        }
+        
+        // Update badges on page load
+        updateNotificationBadges();
+        
+        // Update badges every 60 seconds
+        setInterval(updateNotificationBadges, 60000);
+        
+        // Expose function globally for manual updates
+        window.updateNotificationBadges = updateNotificationBadges;
+    });
+    </script>
 </body>
 </html>

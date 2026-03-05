@@ -1,0 +1,205 @@
+<!-- Notification Bell Dropdown for Navbar -->
+<li class="nav-item dropdown">
+    <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" 
+       data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+        <i class="fas fa-bell fa-lg"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+              id="navNotificationBadge" style="display: none; font-size: 0.6rem;">
+            0
+        </span>
+    </a>
+    
+    <div class="dropdown-menu dropdown-menu-end notification-dropdown p-0" style="width: 380px; max-height: 480px;">
+        <!-- Header -->
+        <div class="dropdown-header bg-light d-flex justify-content-between align-items-center py-2 px-3">
+            <strong>Notifications</strong>
+            <div>
+                <button class="btn btn-sm btn-link text-decoration-none p-0 me-2" id="markAllReadDropdown" title="Mark all as read">
+                    <i class="fas fa-check-double"></i>
+                </button>
+                <a href="{{ url_for('notifications.notification_settings') }}" class="btn btn-sm btn-link text-decoration-none p-0" title="Settings">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Notifications List -->
+        <div class="notification-dropdown-list" style="max-height: 360px; overflow-y: auto;" id="dropdownNotificationsList">
+            <div class="text-center py-4">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="dropdown-footer border-top text-center py-2">
+            <a href="{{ url_for('notifications.notification_list') }}" class="text-decoration-none small">
+                View All Notifications <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</li>
+
+<style>
+.notification-dropdown {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.notification-dropdown-item {
+    display: flex;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.15s;
+}
+
+.notification-dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-dropdown-item.unread {
+    background-color: #e7f1ff;
+}
+
+.notification-dropdown-item.unread:hover {
+    background-color: #d0e3ff;
+}
+
+.notification-dropdown-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+    flex-shrink: 0;
+}
+
+.notification-dropdown-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.notification-dropdown-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 0.125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.notification-dropdown-message {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 0.125rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.notification-dropdown-time {
+    font-size: 0.7rem;
+    color: #adb5bd;
+}
+
+.notification-empty {
+    padding: 2rem;
+    text-align: center;
+    color: #6c757d;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownEl = document.getElementById('notificationDropdown');
+    const badge = document.getElementById('navNotificationBadge');
+    const listContainer = document.getElementById('dropdownNotificationsList');
+    
+    // Load notifications when dropdown opens
+    dropdownEl?.addEventListener('show.bs.dropdown', loadNotifications);
+    
+    // Initial badge count
+    updateBadgeCount();
+    
+    // Refresh every 60 seconds
+    setInterval(updateBadgeCount, 60000);
+    
+    async function updateBadgeCount() {
+        try {
+            const response = await fetch('/notifications/api/unread-count');
+            const data = await response.json();
+            
+            if (badge) {
+                badge.textContent = data.count;
+                badge.style.display = data.count > 0 ? 'inline' : 'none';
+            }
+        } catch (e) {
+            console.error('Failed to fetch notification count', e);
+        }
+    }
+    
+    async function loadNotifications() {
+        listContainer.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin"></i></div>';
+        
+        try {
+            const response = await fetch('/notifications/api/list?limit=10');
+            const data = await response.json();
+            
+            if (data.notifications.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="notification-empty">
+                        <i class="fas fa-bell-slash fa-2x mb-2"></i>
+                        <p class="mb-0">No notifications</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            data.notifications.forEach(n => {
+                const colorClass = n.is_overdue ? 'danger' : (n.color || 'primary');
+                html += `
+                    <div class="notification-dropdown-item ${!n.is_read ? 'unread' : ''}" data-id="${n.id}">
+                        <div class="notification-dropdown-icon bg-${colorClass} bg-opacity-10">
+                            <i class="fas ${n.icon} text-${colorClass}"></i>
+                        </div>
+                        <div class="notification-dropdown-content">
+                            <div class="notification-dropdown-title">${n.title}</div>
+                            <div class="notification-dropdown-message">${n.message}</div>
+                            <div class="notification-dropdown-time">
+                                ${n.is_overdue ? '<span class="text-danger">Overdue</span>' : 
+                                  (n.days_until === 0 ? 'Today' : 
+                                   (n.days_until === 1 ? 'Tomorrow' : `In ${n.days_until} days`))}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            listContainer.innerHTML = html;
+            
+            // Update badge
+            badge.textContent = data.unread_count;
+            badge.style.display = data.unread_count > 0 ? 'inline' : 'none';
+            
+        } catch (e) {
+            listContainer.innerHTML = '<div class="notification-empty text-danger">Failed to load</div>';
+        }
+    }
+    
+    // Mark all as read from dropdown
+    document.getElementById('markAllReadDropdown')?.addEventListener('click', async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        await fetch('/notifications/api/mark-all-read', { method: 'POST' });
+        
+        listContainer.querySelectorAll('.unread').forEach(el => el.classList.remove('unread'));
+        badge.style.display = 'none';
+        badge.textContent = '0';
+    });
+});
+</script>
